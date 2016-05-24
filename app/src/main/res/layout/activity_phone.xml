@@ -1,0 +1,91 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:fitsSystemWindows="true"
+	tools:context="com.tween.viacelular.activities.PhoneActivity">
+	<include
+		android:id="@+id/toolbarRegister"
+		layout="@layout/tool_bar" />
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_below="@+id/toolbarRegister">
+		<RelativeLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingBottom="@dimen/activity_horizontal_margin"
+			android:paddingLeft="@dimen/activity_horizontal_margin"
+			android:paddingRight="@dimen/activity_horizontal_margin"
+			android:paddingTop="@dimen/activity_horizontal_margin"
+			android:id="@+id/rlPhone">
+			<TextView
+				android:id="@+id/txtCountry"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="20dp"
+				android:text="@string/country"
+				android:textColor="@color/gray"
+				android:layout_alignParentTop="true"
+				android:textSize="12sp" />
+			<Button
+				android:id="@+id/btnCountry"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_below="@+id/txtCountry"
+				android:layout_marginTop="10dp"
+				android:text="@string/country_hint"
+				android:onClick="showCountries"
+				android:textColor="@color/black"
+				android:background="@android:color/transparent"
+				android:shadowColor="@android:color/transparent"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:gravity="left" />
+			<TextView
+				android:id="@+id/inputCountry"
+				android:layout_below="@id/btnCountry"
+				android:layout_marginTop="20dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:textColor="@color/background_material_dark" />
+			<android.support.design.widget.TextInputLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/inputPhone"
+				android:layout_marginLeft="20dp"
+				android:layout_marginStart="20dp"
+				android:layout_below="@+id/btnCountry"
+				android:layout_toRightOf="@+id/inputCountry"
+				android:layout_toEndOf="@+id/inputCountry">
+				<EditText
+					android:id="@+id/editPhone"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:hint="@string/phone"
+					android:layout_marginTop="20dp"
+					android:textColorHint="@color/gray"
+					android:inputType="phone" />
+			</android.support.design.widget.TextInputLayout>
+			<!-- Adaptación a Material Design Guidelines -->
+			<Button
+				android:id="@+id/btnContinue"
+				android:layout_width="wrap_content"
+				android:minWidth="88dp"
+				android:layout_height="36dp"
+				android:text="@string/btn_continue"
+				android:textColor="@color/text"
+				android:textColorHint="@android:color/secondary_text_light"
+				android:textSize="14sp"
+				android:onClick="register"
+				android:background="@color/light_gray"
+				android:enabled="false"
+				android:paddingLeft="16dp"
+				android:paddingRight="16dp"
+				android:layout_below="@+id/inputPhone"
+				android:layout_marginTop="10dp"
+				android:layout_alignParentRight="true"
+				android:layout_alignParentEnd="true" />
+		</RelativeLayout>
+	</ScrollView>
+</RelativeLayout>

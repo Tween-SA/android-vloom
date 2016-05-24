@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	tools:context="com.tween.viacelular.activities.ProfileActivity"
+	android:fitsSystemWindows="true">
+	<include
+		android:id="@+id/toolBarProfile"
+		layout="@layout/tool_bar" />
+	<RelativeLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/toolBarProfile"
+		android:layout_marginTop="12dp"
+		android:id="@+id/relativeLayout">
+		<!-- Modificación para aplicar redondeo de logos -->
+		<de.hdodenhof.circleimageview.CircleImageView
+			android:id="@+id/circleView"
+			android:layout_width="60dp"
+			android:layout_height="60dp"
+			android:layout_marginLeft="20dp"
+			android:src="@drawable/ic_launcher"
+			app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />
+		<TextView
+			android:id="@+id/rowText"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:paddingLeft="10dp"
+			android:text="@string/app_name"
+			android:textColor="@color/black"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:layout_toRightOf="@+id/circleView"
+			android:layout_toEndOf="@+id/circleView" />
+		<TextView
+			android:id="@+id/rowSubText"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="2dp"
+			android:paddingLeft="10dp"
+			android:layout_marginBottom="4dp"
+			android:text="@string/no_messages_card"
+			android:textColor="@color/black"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:layout_below="@+id/rowText"
+			android:layout_alignLeft="@+id/rowText" />
+	</RelativeLayout>
+	<Button
+		android:id="@+id/btnUnsuscribe"
+		android:layout_width="wrap_content"
+		android:minWidth="88dp"
+		android:layout_height="36dp"
+		android:text="@string/landing_unsuscribe"
+		android:textColor="@color/accent"
+		android:textColorHint="@android:color/secondary_text_light"
+		android:textSize="14sp"
+		android:onClick="unSuscribe"
+		android:background="@color/light_gray"
+		android:paddingLeft="16dp"
+		android:paddingRight="16dp"
+		android:layout_marginRight="20dp"
+		android:layout_below="@+id/relativeLayout"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true" />
+	<View
+		android:id="@+id/dividerTitle"
+		android:background="@color/light_gray"
+		android:layout_width="wrap_content"
+		android:layout_height="1dp"
+		android:layout_marginLeft="20dp"
+		android:layout_marginRight="20dp"
+		android:layout_marginTop="8dp"
+		android:layout_below="@+id/btnUnsuscribe" />
+	<TextView
+		android:id="@+id/txtTitle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/text_margin"
+		android:textSize="16sp"
+		android:textColor="@color/gray"
+		android:textAlignment="center"
+		android:text="@string/landing_title"
+		android:lineSpacingExtra="6dp"
+		android:layout_below="@+id/dividerTitle" />
+	<View
+		android:id="@+id/dividerAction"
+		android:background="@color/light_gray"
+		android:layout_width="wrap_content"
+		android:layout_height="1dp"
+		android:layout_marginLeft="20dp"
+		android:layout_marginRight="20dp"
+		android:layout_marginTop="8dp"
+		android:layout_below="@+id/txtTitle" />
+	<ImageView
+		android:id="@+id/iconShowNotif"
+		android:layout_width="20dp"
+		android:layout_height="20dp"
+		android:layout_marginLeft="16dp"
+		android:layout_below="@id/dividerAction"
+		android:src="@drawable/ic_message_gray_48dp"
+		android:visibility="visible"
+		android:layout_marginTop="10dp"
+		android:contentDescription="@string/landing_contact" />
+	<TextView
+		android:id="@+id/txtShowNotif"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingLeft="60dp"
+		android:text="@string/notification_view"
+		android:textColor="@color/black"
+		android:layout_below="@id/dividerAction"
+		android:onClick="viewCards"
+		android:layout_marginTop="10dp"
+		android:textAppearance="?android:attr/textAppearanceMedium" />
+	<View
+		android:id="@+id/dividerContact"
+		android:background="@color/gray"
+		android:layout_width="wrap_content"
+		android:layout_height="1dp"
+		android:layout_marginTop="8dp"
+		android:layout_below="@+id/txtShowNotif" />
+	<include
+		android:id="@+id/contentContact"
+		layout="@layout/content_contact"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/dividerContact" />
+</RelativeLayout>

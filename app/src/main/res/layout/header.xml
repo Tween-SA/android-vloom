@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="180dp"
+	android:background="@drawable/background_hproflie">
+	<ImageView
+		android:id="@+id/circleView"
+		android:layout_width="80dp"
+		android:layout_height="80dp"
+		android:layout_marginLeft="20dp"
+		android:layout_marginTop="20dp"
+		android:layout_marginBottom="10dp"
+		android:src="@drawable/ic_launcher" />
+	<TextView
+		android:id="@+id/name"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="20dp"
+		android:textColor="@color/text"
+		android:layout_below="@+id/circleView"
+		android:textAppearance="?android:attr/textAppearanceSmall" />
+	<TextView
+		android:id="@+id/email"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="20dp"
+		android:layout_below="@+id/name"
+		android:layout_marginTop="5dp"
+		android:paddingBottom="10dp"
+		android:textColor="@color/text"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:textStyle="normal" />
+</RelativeLayout>

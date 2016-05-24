@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?><resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+	<string name="app_name">Vloom</string>
+	<string name="acepted">Accettato</string>
+	<string name="action_example">Esempio</string>
+	<string name="action_settings">Impostazioni</string>
+	<string name="activate_notif">Attiva notifiche</string>
+	<string name="agree">Accetta</string>
+	<string name="app">Applicazione</string>
+	<string name="bad_request">Richiesta non valida</string>
+	<string name="block_service_text">Non riceverai più notifiche o informazioni da questo servizio</string>
+	<string name="block_service">Blocca servizio</string>
+	<string name="block">Blocca</string>
+	<string name="btn_continue">Continua</string>
+	<string name="btn_next">Avanti</string>
+	<string name="btn_retry">Riprova</string>
+	<string name="btn_send">Invia</string>
+	<string name="btn_skip">Salta</string>
+	<string name="code_blank">Devi immettere il codice di verifica</string>
+	<string name="code_wrong">Il codice di verifica deve essere numerico</string>
+	<string name="code_alphanumeric">Il valore deve essere alfanumerico</string>
+	<string name="code">Codice</string>
+	<string name="company_unamed">Senza nome</string>
+	<string name="countries">Paesi</string>
+	<string name="country_hint">Seleziona un paese</string>
+	<string name="country">Scegli il tuo paese</string>
+	<string name="created">Creato</string>
+	<string name="day">giorno</string>
+	<string name="days">giorni</string>
+	<string name="disagree">Annulla</string>
+	<string name="email_blank">Devi immettere una e-mail</string>
+	<string name="email_wrong">Formato di e-mail non valido</string>
+	<string name="email">E-mail</string>
+	<string name="empty_messages_text">Cancellerai tutti i messaggi ricevuti.</string>
+	<string name="empty_messages">Elimina messaggi</string>
+	<string name="error_upgrade">Siamo tornati. Ci scusiamo per l\'inconveniente</string>
+	<string name="feedback_error">Scrivi un commento</string>
+	<string name="feedback_issue">Segnala come incidenza</string>
+	<string name="feedback_ok">Abbiamo ricevuto correttamente il tuo messaggio</string>
+	<string name="feedback_text">Condividi con noi la tua esperienza</string>
+	<string name="feedback_typepush">Risposta di supporto</string>
+	<string name="gcm_send_message">Token recuperato ed inviato al server</string>
+	<string name="get_play_services">Ottieni Google Play Services</string>
+	<string name="hello_world">Ciao</string>
+	<string name="home">Verifica il tuo numero di cellulare per una miglior esperienza con Vloom</string>
+	<string name="hours">ore</string>
+	<string name="i_read">Cliccando su Continua, accetti i Termini e le Condizioni</string>
+	<string name="invite">Invito</string>
+	<string name="landing_card_form_header">Migliora la tua esperienza</string><!-- after traslate -->
+	<string name="landing_card_form_text1">Ricevi notifiche personalizzate, inserisci il tuo </string><!-- after traslate -->
+	<string name="landing_card_form_text2"> e fare clic su Continua.</string><!-- after traslate -->
+	<string name="landing_card_error_header">Spiacenti!</string><!-- after traslate -->
+	<string name="landing_card_error_retry">Rispedire</string><!-- after traslate -->
+	<string name="landing_card_error_text">I suoi dati non saranno salvati, si prega di riprovare.</string><!-- after traslate -->
+	<string name="landing_card_loading_header">Solo un momento...</string><!-- after traslate -->
+	<string name="landing_card_loading_text">Stiamo mantenendo i vostri dati</string><!-- after traslate -->
+	<string name="landing_card_ok_header">Tutto su!</string><!-- after traslate -->
+	<string name="landing_card_ok_text">Mantenete il vostro ID cliente per fornire una migliore esperienza</string><!-- after traslate -->
+	<string name="landing_contact">Contatto</string>
+	<string name="landing_dismiss">Respingere</string><!-- after traslate -->
+	<string name="landing_example">Esempi di messaggi</string>
+	<string name="landing_suscribe">Abbonati</string>
+	<string name="landing_suscribed">Aggiunto</string>
+	<string name="landing_unsuscribe">Annulla abbonamento</string>
+	<string name="landing_title">Ricevi le notifiche di scadenza, promozioni e notizie di <xliff:g example="Empresa" id="company">%s</xliff:g></string>
+	<string name="login_begin">Login per iniziare</string>
+	<string name="login">Inizia la sessione con il tuo indirizzo e-mail</string>
+	<string name="logout">Chiudi sessione</string>
+	<string name="mail_android">\n* Android:</string>
+	<string name="mail_chooser">Invia email con</string>
+	<string name="mail_date">* Data:</string>
+	<string name="mail_device">\n* Dispositivo:</string>
+	<string name="mail_lang">\n* Lingua:</string>
+	<string name="mail_version">\n* Versione:</string>
+	<string name="main_channel">Impossibile svolgere questa azione in questo servizio</string>
+	<string name="minutes">minuti</string>
+	<string name="month">mese</string>
+	<string name="months">mesi</string>
+	<string name="mute_notifications">Silenzia le notifiche</string>
+	<string name="navigation_drawer_close">Chiudi il menu laterale</string>
+	<string name="navigation_drawer_open">Apri il menu laterale</string>
+	<string name="no_blocked">Non ci sono imprese bloccate</string>
+	<string name="no_subblocked">Quando ci sono imprese o servizi bloccati potrai vederli qui.</string>
+	<string name="no_content">Senza contenuto</string>
+	<string name="no_country">Devi selezionare il tuo paese</string>
+	<string name="no_internet">Nessun accesso a Internet</string>
+	<string name="no_messages_card">Nessun messaggio</string>
+	<string name="no_messages_text">Non hai ancora ricevuto niente qui, ti informeremo quando succede.</string>
+	<string name="no_notifications">Nessuna notifica</string>
+	<string name="no_subnotifications">Non hai ricevuto nessun messaggio da imprese o servizi.</string>
+	<string name="no_play_services">Vloom non funzionerà correttamente senza i servizi Google Play nel tuo dispositivo</string>
+	<string name="no_supported">Questo dispositivo non è compatibile con l\'applicazione</string>
+	<string name="not_available">Siamo spiacenti, questa funzione sarà disponibile in un aggiornamento futuro</string>
+	<string name="notification">Notifica</string>
+	<string name="notification_new">Hai una nuova notifica</string>
+	<string name="notification_view">Vedere le notifiche</string><!-- after traslate -->
+	<string name="now">Adesso</string>
+	<string name="ok">OK</string>
+	<string name="one_hour">1 ora</string>
+	<string name="one_minute">1 minuto</string>
+	<string name="password_blank">Devi immettere una password</string>
+	<string name="password_wrong">Le password non corrispondono</string>
+	<string name="password">Password</string>
+	<string name="phone_blank">Devi immettere il tuo numero di telefono</string>
+	<string name="phone_desc">Inviaremo un SMS con il codice di verifica al tuo numero. Pero utilizzare Vloom devi verificare il tuo numero di telefono.</string>
+	<string name="phone_example">Ad esempio:</string>
+	<string name="phone_hint">Posiziona il tuo telefono</string>
+	<string name="phone_invalid">Il tuo numero di telefono deve essere numerico</string>
+	<string name="phone_lenght">Il tuo numero di telefono deve rispettare il numero di cifre secondo il tuo paese</string>
+	<string name="phone">Telefono</string>
+	<string name="please_retry">Riprova più tardi</string>
+	<string name="please_wait">Attendere...</string>
+	<string name="progress_dialog">Elaborazione in corso...</string>
+	<string name="rate_dialog_title">Desideri valutare Vloom con 5 stelle?</string>
+	<string name="rate_dialog_message">Ci metterai solo un minuto. La tua opinione è importante per noi, grazie!</string>
+	<string name="rate_dialog_ok">Valuta</string>
+	<string name="rate_dialog_cancel">Più tardi</string>
+	<string name="rate_dialog_no">No grazie</string>
+	<string name="reciveInfo">Ottieni informazioni importanti sui tuoi servizi</string>
+	<string name="refresh_complete">Le iscrizioni si sono aggiornate</string>
+	<string name="refresh_menu">Aggiorna</string>
+	<string name="register_begin">Registrati per iniziare</string>
+	<string name="register_dialog">Registrazione in corso...</string>
+	<string name="register">Registrati con la tua e-mail</string>
+	<string name="registering_message">Generazione ID istanza per token...</string>
+	<string name="reimport_sms">Reimporta i miei messaggi SMS</string>
+	<string name="repassword_blank">Devi confermare la password</string>
+	<string name="repassword">Ripeti la password</string>
+	<string name="report">Denuncia</string>
+	<string name="response_invalid">La tua richiesta non può essere elaborata, riprova</string>
+	<string name="send_code">Abbiamo inviato un SMS con il codice di attivazione al numero</string>
+	<string name="send_mail_text">con Vloom Android:</string>
+	<string name="send_push_sms">Invia notifica di prova (SMS)</string>
+	<string name="send_push">Invia notifica di prova</string>
+	<string name="send_simil_sms">Invia SMS di prova</string>
+	<string name="send_statistics">Aiuta a migliorare</string>
+	<string name="sent_sms">Abbiamo inviato un SMS con il codice di attivazione al numero +000000000000</string>
+	<string name="service_unavailable">Servizio momentaneamente non disponibile</string>
+	<string name="settings">Configurazione</string>
+	<string name="share">Condividi</string>
+	<string name="silence_actived">Silenzio attivato</string>
+	<string name="silence_desactived">Silenzio disattivato</string>
+	<string name="silence">Silenzio</string>
+	<string name="sms_paid_continue">Vuoi continuare ricevendo questi messaggi?</string>
+	<string name="sms_text_paid">SMS a pagamento</string>
+	<string name="sms_text">SMS</string>
+	<string name="snack_blocked">1 impresa bloccata</string>
+	<string name="snack_empty">Notifiche eliminate</string>
+	<string name="snack_msg_deleted">1 messaggio cancellato</string>
+	<string name="snack_msg_spam">1 messaggio contrassegnato come spam</string>
+	<string name="snack_silence">Notifiche silenziate</string>
+	<string name="snack_unsilence">Notifiche attivate</string>
+	<string name="snack_unblocked">1 impresa sbloccata</string>
+	<string name="special_card_download">Scaricare</string><!-- after traslate -->
+	<string name="special_card_find">Trova dove paga</string><!-- after traslate -->
+	<string name="special_card_invoce">Visualizza fattura</string><!-- after traslate -->
+	<string name="special_card_maturity">scadenze precedenti</string><!-- after traslate -->
+	<string name="special_card_video">Vista rimorchio</string><!-- after traslate -->
+	<string name="special_card_view">Visualizza Ora</string><!-- after traslate -->
+	<string name="special_card_map">Visualizza mappa</string><!-- after traslate -->
+	<string name="sub_mute_notifications">Silenzia notifiche</string>
+	<string name="sub_send_stadistics">Invia statistiche di utilizzo</string>
+	<string name="sub_sms_paid_text">Questo servizio ha un costo per messaggio</string>
+	<string name="suggestions_atitle">Suggerimenti</string><!-- after traslate -->
+	<string name="suggestions_subtitle">Riceverai le informazioni utili dai vostri abbonamenti, ricorda che puoi cancellarti in qualsiasi momento, se lo si desidera.</string><!-- after traslate -->
+	<string name="suggestions_title">I tuoi primi abbonamenti</string><!-- after traslate -->
+	<string name="thank_you">Grazie!</string>
+	<string name="timer_count">Se non hai ricevuto il SMS, ti telefoneremo fra 0:00</string>
+	<string name="title_activity_card_view">Messaggi</string>
+	<string name="title_activity_code">Il tuo codice</string>
+	<string name="title_activity_home">Benvenuto</string>
+	<string name="title_activity_landing">Profilo dell\'impresa</string>
+	<string name="title_activity_login">Inizia sessione</string>
+	<string name="title_activity_phone">Verifica il tuo numero</string>
+	<string name="title_activity_register">Registrazione</string>
+	<string name="title_activity_splash">Benvenuto</string>
+	<string name="title_activity_feedback">La tua opinione</string>
+	<string name="title_blocked">Bloccate</string>
+	<string name="title_companies">Affari</string><!-- after traslate -->
+	<string name="title_companies_all">Tutto</string><!-- after traslate -->
+	<string name="title_companies_subscriptions">Sottoscrizioni</string><!-- after traslate -->
+	<string name="title_feedback">Contattaci</string>
+	<string name="title_help">Aiuto</string>
+	<string name="title_notifications">Notifiche</string>
+	<string name="title_services">Servizi</string>
+	<string name="title_settings">Impostazioni</string>
+	<string name="title_terms">Termini e Condizioni</string>
+	<string name="today">Oggi</string>
+	<string name="token_error_message">C\'è stato un errore nell\'ottenimento del token</string>
+	<string name="tomorrow">Domani</string>
+	<string name="unauthorized">Non autorizzato</string>
+	<string name="undo">ANNULLA</string>
+	<string name="unsuscribe">DISISCRIVERSI</string>
+	<string name="url">http://www.vloom.io/</string>
+	<string name="verify_dialog">Verifica in corso...</string>
+	<string name="version_settins">per Android v</string>
+	<string name="week">settimana</string>
+	<string name="weeks">settimane</string>
+	<string name="welcome_notification">Ti diamo il benvenuto</string>
+	<string name="welcome_text">Qui appariranno i messaggi delle tue imprese e i tuoi servizi quando vogliono contattarti.</string>
+	<string name="welcome">Dimentica di pagare in ritardo\ni tuoi servizi, arrivare\nin ritardo dal medico e\nperdere il tempo alla\nposta</string>
+	<string name="welcome1_sub">Organizziamo i messaggi ricevuti\ncon un disegno pratico e semplice</string>
+	<string name="welcome1">Tutto organizzato</string>
+	<string name="welcome2_sub">Organizza a modo tuo quello che vuoi\nricevere, solo ciò che ti interessa</string>
+	<string name="welcome2">Silenzia, Elimina o Blocca</string>
+	<string name="welcome3_sub">Identifica rapidamente i messaggi\nche hanno un costo per te</string>
+	<string name="welcome3">Senza SMS con costo</string>
+	<string name="welcome4_sub">Sentiti liberi di condividere quello che ricevi\nin applicazioni di terzi</string>
+	<string name="welcome4">Condividi facilmente</string>
+	<string name="year">anno</string>
+	<string name="years">anni</string>
+	<string name="yesterday">Ieri</string>
+	<string name="you_have_text">Puoi ricevere, condividere o silenziare i messaggi. Se ti disturbano, puoi bloccare l\'impresa, e anche denunciarla, per aiutarci a migliorare.</string>
+	<string name="you_have">Hai il controllo</string>
+	<string-array name="codes">
+		<item>+549</item>
+		<item>+569</item>
+		<item>+52</item>
+	</string-array>
+	<string-array name="countries">
+		<item>Argentina</item>
+		<item>Chile</item>
+		<item>Messico</item>
+	</string-array>
+	<string-array name="formats">
+		<item>2611222333</item>
+		<item>3211112222</item>
+		<item>6641222333</item>
+	</string-array>
+	<string-array name="isoCodes">
+		<item>AR</item>
+		<item>CL</item>
+		<item>MX</item>
+	</string-array>
+	<string-array name="minLength">
+		<item>7</item>
+		<item>8</item>
+		<item>10</item>
+	</string-array>
+	<string-array name="maxLength">
+		<item>12</item>
+		<item>8</item>
+		<item>15</item>
+	</string-array>
+	<string-array name="optionsCard">
+		<item>Condividi</item>
+		<item>Contrassegna come spam</item>
+		<item>Elimina</item>
+	</string-array>
+	<string-array name="optionsChannel">
+		<item>Silenzia</item>
+		<item>Elimina messaggi</item>
+		<item>Annulla abbonamento</item><!-- after traslate -->
+	</string-array>
+</resources>

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?><resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+	<string name="app_name">Vloom</string>
+	<string name="acepted">승인됨</string>
+	<string name="action_example">예시</string>
+	<string name="action_settings">설정</string>
+	<string name="activate_notif">알림 사용</string>
+	<string name="agree">수락</string>
+	<string name="app">신청</string>
+	<string name="bad_request">잘못된 요청</string>
+	<string name="block_service_text">이 서비스와 관련하여 추가 통지 또는 정보를 받을 수 없습니다.</string>
+	<string name="block_service">서비스 차단</string>
+	<string name="block">차단</string>
+	<string name="btn_continue">계속</string>
+	<string name="btn_next">다음</string>
+	<string name="btn_retry">재시도</string>
+	<string name="btn_send">보내기</string>
+	<string name="btn_skip">넘기기</string>
+	<string name="code_blank">인증 코드를 입력해야 합니다</string>
+	<string name="code_wrong">인증 코드는 숫자이어야 합니다</string>
+	<string name="code_alphanumeric">값은 숫자이어야합니다</string>
+	<string name="code">코드</string>
+	<string name="company_unamed">이름이 없습니다</string>
+	<string name="countries">국가</string>
+	<string name="country_hint">국가를 선택하세요</string>
+	<string name="country">귀하의 국가를 선택하세요</string>
+	<string name="created">생성됨</string>
+	<string name="day">일</string>
+	<string name="days">일</string>
+	<string name="disagree">취소</string>
+	<string name="email_blank">이메일 주소를 입력해야 합니다</string>
+	<string name="email_wrong">잘못된 이메일 형식</string>
+	<string name="email">이메일</string>
+	<string name="empty_messages_text">수신 메시지를 모두 삭제합니다.</string>
+	<string name="empty_messages">빈 메시지</string>
+	<string name="error_upgrade">백업 중입니다. 불편을 끼쳐 죄송합니다</string>
+	<string name="feedback_error">의견을 입력하세요</string>
+	<string name="feedback_issue">사고로 보고하기</string>
+	<string name="feedback_ok">귀하의 메시지를 성공적으로 수신하였습니다</string>
+	<string name="feedback_text">귀하의 경험을 공유하십시오</string>
+	<string name="feedback_typepush">지원팀의 응답</string>
+	<string name="gcm_send_message">토큰을 회수하여 서버로 전송함</string>
+	<string name="get_play_services">구글 플레이 서비스 받기</string>
+	<string name="hello_world">안녕하세요</string>
+	<string name="home">VíaCelular를 통한 더 나은 경험을 위해 휴대 전화를 확인하십시오</string>
+	<string name="hours">시</string>
+	<string name="i_read">계속을 선택함으로써, 당사의 이용 약관에 동의하게 됩니다</string>
+	<string name="invite">초대</string>
+	<string name="landing_card_form_header">귀하의 경험을 향상</string><!-- after traslate -->
+	<string name="landing_card_form_text1">입력 한 개인 알림을 받기 당신의 </string><!-- after traslate -->
+	<string name="landing_card_form_text2"> 하고 계속을 클릭합니다.</string><!-- after traslate -->
+	<string name="landing_card_error_header">아차</string><!-- after traslate -->
+	<string name="landing_card_error_retry">다시 보내기</string><!-- after traslate -->
+	<string name="landing_card_error_text">귀하의 데이터는, 다시 시도하십시오 저장되지 않습니다.</string><!-- after traslate -->
+	<string name="landing_card_loading_header">그냥 순간 ...</string><!-- after traslate -->
+	<string name="landing_card_loading_text">우리는 데이터를 유지하고 있습니다</string><!-- after traslate -->
+	<string name="landing_card_ok_header">모든 업!</string><!-- after traslate -->
+	<string name="landing_card_ok_text">더 나은 경험을 제공하기 위해 고객 ID를 유지</string><!-- after traslate -->
+	<string name="landing_contact">연락처</string>
+	<string name="landing_dismiss">버리다</string><!-- after traslate -->
+	<string name="landing_example">샘플 메시지</string>
+	<string name="landing_suscribe">구독 신청</string>
+	<string name="landing_suscribed">추가</string>
+	<string name="landing_unsuscribe">탈퇴</string>
+	<string name="landing_title"><xliff:g example="Empresa" id="company">%s</xliff:g> 의 지불 종료, 판촉 및 뉴스에 대한 알림을 수신하기</string>
+	<string name="login_begin">시작하기 위해 로그인하기</string>
+	<string name="login">이메일로 로그인하기</string>
+	<string name="logout">세션 닫기</string>
+	<string name="mail_android">\n* 안드로이드:</string>
+	<string name="mail_chooser">과 함께 메일 보내기</string>
+	<string name="mail_date">* 날짜:</string>
+	<string name="mail_device">\n* 장치:</string>
+	<string name="mail_lang">\n* 언어:</string>
+	<string name="mail_version">\n* 버전:</string>
+	<string name="main_channel">이 서비스에서 이 작업을 수행할 수 없습니다</string>
+	<string name="minutes">분</string>
+	<string name="month">월</string>
+	<string name="months">월</string>
+	<string name="mute_notifications">알림 음소거</string>
+	<string name="navigation_drawer_close">사이드 메뉴를 닫습니다</string>
+	<string name="navigation_drawer_open">사이드 메뉴를 엽니다</string>
+	<string name="no_blocked">차단된 회사가 없습니다</string>
+	<string name="no_subblocked">차단된 회사 또는 서비스가 없는 경우 이 곳에서 볼 수 있습니다</string>
+	<string name="no_content">표시할 내용 없음</string>
+	<string name="no_country">귀하의 국가를 선택해야 합니다</string>
+	<string name="no_internet">인터넷 연결을 사용할 수 없습니다</string>
+	<string name="no_messages_card">메시지 없음</string>
+	<string name="no_messages_text">수신된 메시지가 아직 없습니다. 수신될 경우 통지해 드립니다.</string>
+	<string name="no_notifications">알림이 없음</string>
+	<string name="no_subnotifications">회사 또는 서비스 업체에서 수신된 메시지가 아직 없습니다.</string>
+	<string name="no_play_services">귀하의 장치에 구글 플레이가 없으면 Vloom가 제대로 실행되지 않습니다</string>
+	<string name="no_supported">이 장치는 애플리케이션과 호환되지 않습니다</string>
+	<string name="not_available">죄송합니다. 이 기능은 향후 업데이트하여 사용할 수 있습니다</string>
+	<string name="notification">알림</string>
+	<string name="notification_new">새 알림이 있습니다</string>
+	<string name="notification_view">알림을 참조하십시오</string><!-- after traslate -->
+	<string name="now">지금</string>
+	<string name="ok">확인</string>
+	<string name="one_hour">1시간</string>
+	<string name="one_minute">1분</string>
+	<string name="password_blank">비밀번호를 입력해야 합니다</string>
+	<string name="password_wrong">비밀번호가 일치하지 않습니다</string>
+	<string name="password">비밀번호</string>
+	<string name="phone_blank">귀하의 전화 번호를 입력해야 합니다</string>
+	<string name="phone_desc">귀하의 번호로 인증 코드를 포함한 문자 메시지를 보낼 것입니다. Vloom를 사용하려면 귀하의 전화 번호를 확인해야 합니다.</string>
+	<string name="phone_example">예를 들어:</string>
+	<string name="phone_hint">전화번호 입력</string>
+	<string name="phone_invalid">전화번호는 숫자이어야 합니다</string>
+	<string name="phone_lenght">전화번호는 귀하 국가의 자리 수와 일치해야 합니다</string>
+	<string name="phone">전화</string>
+	<string name="please_retry">나중에 다시 시도하십시오</string>
+	<string name="please_wait">잠시 기다려주십시오 ...</string>
+	<string name="progress_dialog">처리 중 ...</string>
+	<string name="rate_dialog_title">별 5개로 Vloom를 평가하시겠습니까?</string>
+	<string name="rate_dialog_message">1분이면 충분합니다. 귀하의 의견은 저희에게 중요합니다. 감사합니다!</string>
+	<string name="rate_dialog_ok">평가하기</string>
+	<string name="rate_dialog_cancel">나중에</string>
+	<string name="rate_dialog_no">하지 않겠습니다</string>
+	<string name="reciveInfo">귀하의 서비스와 관련한 중요한 정보 얻기</string>
+	<string name="refresh_complete">귀하의 구독이 업데이트되었습니다</string>
+	<string name="refresh_menu">업데이트</string>
+	<string name="register_begin">시작하기 위해 등록</string>
+	<string name="register_dialog">등록 중...</string>
+	<string name="register">본인의 이메일로 등록하기</string>
+	<string name="registering_message">토큰을 위한 인스턴트 ID를 생성 중...</string>
+	<string name="reimport_sms">내 SMS 메시지를 다시 가져오기</string>
+	<string name="repassword_blank">귀하의 비밀번호를 확인해야 합니다</string>
+	<string name="repassword">비밀번호 재입력</string>
+	<string name="report">보고하기</string>
+	<string name="response_invalid">귀하의 요청을 처리할 수​​ 없습니다. 다시 시도해 주십시오</string>
+	<string name="send_code">번호에 활성화 코드를 포함한 문자 메시지를  전송했습니다</string>
+	<string name="send_mail_text">Vloom 안드로이드와 함께:</string>
+	<string name="send_push_sms">시험 알림(SMS) 보내기</string>
+	<string name="send_push">시험 알림 보내기</string>
+	<string name="send_simil_sms">시험 SMS 보내기</string>
+	<string name="send_statistics">저희의 개선을 도와주십시오</string>
+	<string name="sent_sms">번호 +000000000000로 활성화 코드를 포함한 문자 메시지를 보냈습니다</string>
+	<string name="service_unavailable">일시적으로 서비스를 사용할 수 없습니다</string>
+	<string name="settings">구성</string>
+	<string name="share">공유하기</string>
+	<string name="silence_actived">음소거 모드 활성화</string>
+	<string name="silence_desactived">음소거 모드 비활성화</string>
+	<string name="silence">음소거</string>
+	<string name="sms_paid_continue">이 메시지를 수신하시겠습니까?</string>
+	<string name="sms_text_paid">유료 SMS</string>
+	<string name="sms_text">SMS</string>
+	<string name="snack_blocked">1개의 회사가 차단됨</string>
+	<string name="snack_empty">알림이 삭제됨</string>
+	<string name="snack_msg_deleted">1개의 메시지 삭제</string>
+	<string name="snack_msg_spam">1개의 메시지가 스팸으로 표시됨</string>
+	<string name="snack_silence">알림을 무음으로 처리</string>
+	<string name="snack_unsilence">알림 활성화</string>
+	<string name="snack_unblocked">1개의 회사를 차단 해제</string>
+	<string name="special_card_download">다운로드</string><!-- after traslate -->
+	<string name="special_card_find">여기서 임금 찾기</string><!-- after traslate -->
+	<string name="special_card_invoce">보기 송장</string><!-- after traslate -->
+	<string name="special_card_maturity">이전 만기</string><!-- after traslate -->
+	<string name="special_card_video">보기 트레일러</string><!-- after traslate -->
+	<string name="special_card_view">지금보기</string><!-- after traslate -->
+	<string name="special_card_map">지도보기</string><!-- after traslate -->
+	<string name="sub_mute_notifications">음소거 알림</string>
+	<string name="sub_send_stadistics">사용 통계 보내기</string>
+	<string name="sub_sms_paid_text">이 서비스는 메시지당 비용이 발생합니다</string>
+	<string name="suggestions_atitle">제안</string><!-- after traslate -->
+	<string name="suggestions_subtitle">당신은 당신의 구독 관련 정보를받을 원하는 경우 언제든지 탈퇴 할 수있는 기억합니다.</string><!-- after traslate -->
+	<string name="suggestions_title">첫 번째 구독</string><!-- after traslate -->
+	<string name="thank_you">감사합니다!</string>
+	<string name="timer_count">SMS를 수신하지 않은 경우, 0:00 안에 전화할 예정입니다</string>
+	<string name="title_activity_card_view">메시지</string>
+	<string name="title_activity_code">귀하의 코드</string>
+	<string name="title_activity_home">환영합니다</string>
+	<string name="title_activity_landing">회사 소개</string>
+	<string name="title_activity_login">로그인</string>
+	<string name="title_activity_phone">귀하의 번호를 확인하십시오</string>
+	<string name="title_activity_register">등록</string>
+	<string name="title_activity_splash">환영합니다</string>
+	<string name="title_activity_feedback">귀하의 의견</string>
+	<string name="title_blocked">차단됨</string>
+	<string name="title_companies">사업</string><!-- after traslate -->
+	<string name="title_companies_all">모든</string><!-- after traslate -->
+	<string name="title_companies_subscriptions">구독</string><!-- after traslate -->
+	<string name="title_feedback">당사에 연락하기</string>
+	<string name="title_help">도움말</string>
+	<string name="title_notifications">알림</string>
+	<string name="title_services">서비스</string>
+	<string name="title_settings">설정</string>
+	<string name="title_terms">이용 약관</string>
+	<string name="today">오늘</string>
+	<string name="token_error_message">토큰을 획득하는 동안 오류가 발생했습니다</string>
+	<string name="tomorrow">내일</string>
+	<string name="unauthorized">권한 없음</string>
+	<string name="undo">실행 취소</string>
+	<string name="unsuscribe">취소하기</string>
+	<string name="url">http://www.vloom.io/</string>
+	<string name="verify_dialog">확인 중...</string>
+	<string name="version_settins">안드로이드 v용</string>
+	<string name="week">주</string>
+	<string name="weeks">주</string>
+	<string name="welcome_notification">환영합니다</string>
+	<string name="welcome_text">해당 회사와 서비스 업체가 귀하에게 연락하는 경우 여기에 메시지가 표시됩니다.</string>
+	<string name="welcome">청구서를 늦게 지불하고, 의사와의 상담 시간에 늦거나 우체국에서 시간을 허비하실 필요가 없습니다</string>
+	<string name="welcome1_sub">실용적이고 단순한 디자인으로 귀하의 수신 메시지를 정렬합니다</string>
+	<string name="welcome1">모두 구성됨.</string>
+	<string name="welcome2_sub">수신하길 원하는, 관심있는 메시지만 관리하십시오</string>
+	<string name="welcome2">음소거, 비우기 또는 차단</string>
+	<string name="welcome3_sub">비용을 유발하는 메시지를 신속하게 식별합니다</string>
+	<string name="welcome3">비용을 유발하는 문자 메시지에서 해방됩니다</string>
+	<string name="welcome4_sub">타사의 응용프로그램에서 수신하는 내용을 자유롭게 공유하십시오</string>
+	<string name="welcome4">쉽게 공유하기</string>
+	<string name="year">년</string>
+	<string name="years">년</string>
+	<string name="yesterday">어제</string>
+	<string name="you_have_text">메시지를 수신하고 공유하거나 음소거할 수 있습니다. 당신이 방해받을 경우, 해당 회사를 차단할 수 있으며 개선을 위해 신고할 수 있습니다.</string>
+	<string name="you_have">이제 제어할 수 있습니다</string>
+	<string-array name="codes">
+		<item>+549</item>
+		<item>+569</item>
+		<item>+52</item>
+	</string-array>
+	<string-array name="countries">
+		<item>아르헨티나</item>
+		<item>칠레</item>
+		<item>멕시코</item>
+	</string-array>
+	<string-array name="formats">
+		<item>2611222333</item>
+		<item>3211112222</item>
+		<item>6641222333</item>
+	</string-array>
+	<string-array name="isoCodes">
+		<item>AR</item>
+		<item>CL</item>
+		<item>MX</item>
+	</string-array>
+	<string-array name="minLength">
+		<item>7</item>
+		<item>8</item>
+		<item>10</item>
+	</string-array>
+	<string-array name="maxLength">
+		<item>12</item>
+		<item>8</item>
+		<item>15</item>
+	</string-array>
+	<string-array name="optionsCard">
+		<item>공유하기</item>
+		<item>스팸으로 표시하기</item>
+		<item>제거하기</item>
+	</string-array>
+	<string-array name="optionsChannel">
+		<item>음소거</item>
+		<item>빈 메시지</item>
+		<item>탈퇴</item><!-- after traslate -->
+	</string-array>
+</resources>

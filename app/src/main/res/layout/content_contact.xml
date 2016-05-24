@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/rlContact"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:paddingBottom="8dp"
+	android:paddingTop="8dp"
+	android:background="?android:attr/selectableItemBackground">
+	<TextView
+		android:id="@+id/txtContact"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/landing_contact"
+		android:textColor="@color/action"
+		android:layout_margin="@dimen/text_margin" />
+	<ImageView
+		android:id="@+id/iconUrl"
+		android:layout_width="20dp"
+		android:layout_height="20dp"
+		android:layout_marginLeft="16dp"
+		android:layout_below="@id/txtContact"
+		android:src="@drawable/ic_language_gray_48dp"
+		android:visibility="visible"
+		android:contentDescription="@string/landing_contact" />
+	<TextView
+		android:id="@+id/txtUrl"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingLeft="60dp"
+		android:text="@string/url"
+		android:textColor="@color/black"
+		android:layout_below="@id/txtContact"
+		android:autoLink="web"
+		android:textSize="15sp"
+		android:textAppearance="?android:attr/textAppearanceMedium" />
+	<ImageView
+		android:id="@+id/iconEmail"
+		android:layout_width="20dp"
+		android:layout_height="20dp"
+		android:layout_marginLeft="16dp"
+		android:layout_below="@id/txtContact"
+		android:src="@drawable/ic_mail_gray_48dp"
+		android:visibility="visible"
+		android:layout_marginTop="40dp"
+		android:contentDescription="@string/landing_contact" />
+	<TextView
+		android:id="@+id/txtEmail"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingLeft="60dp"
+		android:text="soporte@vloom.com"
+		android:textColor="@color/black"
+		android:layout_below="@id/txtContact"
+		android:layout_marginTop="40dp"
+		android:onClick="goTo"
+		android:textSize="15sp"
+		android:textAppearance="?android:attr/textAppearanceMedium" />
+	<ImageView
+		android:id="@+id/iconPhone"
+		android:layout_width="20dp"
+		android:layout_height="20dp"
+		android:layout_marginLeft="16dp"
+		android:layout_below="@id/txtContact"
+		android:src="@drawable/ic_phone_gray_48dp"
+		android:visibility="visible"
+		android:layout_marginTop="80dp"
+		android:contentDescription="@string/landing_contact" />
+	<TextView
+		android:id="@+id/txtPhone"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingLeft="60dp"
+		android:text="542614239139"
+		android:textColor="@color/black"
+		android:layout_below="@id/txtContact"
+		android:layout_marginTop="80dp"
+		android:textSize="15sp"
+		android:onClick="goTo"
+		android:textAppearance="?android:attr/textAppearanceMedium" />
+</RelativeLayout>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="@color/action"
+	android:elevation="4dp"
+	android:paddingTop="2dp"
+	android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+	android:theme="@style/ThemeOverlay.AppCompat.Dark"
+	app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+	app:title=""
+	app:subtitle="">
+	<!-- Modificación para aplicar redondeo de logos -->
+	<RelativeLayout
+		android:id="@+id/rlCollapsed"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+		<ImageView
+			android:contentDescription="@string/app_name"
+			android:id="@+id/ibBack"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/back"
+			android:gravity="center_vertical"
+			android:layout_marginTop="10dp"
+			android:onClick="goBack" />
+		<de.hdodenhof.circleimageview.CircleImageView
+			android:contentDescription="@string/app_name"
+			android:id="@+id/circleView"
+			android:layout_marginLeft="14dp"
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			android:gravity="center_vertical"
+			android:src="@drawable/ic_launcher"
+			android:layout_toRightOf="@+id/ibBack"
+			app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />
+		<TextView
+			android:id="@+id/txtTitle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center_vertical"
+			android:layout_marginTop="4dp"
+			android:layout_marginLeft="8dp"
+			android:textColor="@color/text"
+			android:text="@string/app_name"
+			android:layout_toRightOf="@+id/circleView"
+			android:singleLine="true"
+			android:ellipsize="end"
+			android:textSize="18sp" />
+		<TextView
+			android:id="@+id/txtSubTitleCollapsed"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:layout_marginTop="2dp"
+			android:layout_marginLeft="8dp"
+			android:textSize="14sp"
+			android:textColor="@color/light_gray"
+			android:layout_below="@+id/txtTitle"
+			android:layout_toRightOf="@+id/circleView"
+			android:text="@string/app"
+			android:singleLine="true"
+			android:ellipsize="end"
+			android:layout_alignParentLeft="@+id/txtTitle" />
+	</RelativeLayout>
+</android.support.v7.widget.Toolbar>

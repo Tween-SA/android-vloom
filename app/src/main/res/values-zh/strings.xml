@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?><resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+	<string name="app_name">Vloom</string>
+	<string name="acepted">已接受</string>
+	<string name="action_example">示例</string>
+	<string name="action_settings">设置</string>
+	<string name="activate_notif">启用通知</string>
+	<string name="agree">接受</string>
+	<string name="app">应用程序</string>
+	<string name="bad_request">无效请求</string>
+	<string name="block_service_text">您将不再收到通知或信息服务。</string>
+	<string name="block_service">模块服务</string>
+	<string name="block">模块</string>
+	<string name="btn_continue">继续</string>
+	<string name="btn_next">下一页</string>
+	<string name="btn_retry">重试</string>
+	<string name="btn_send">发送</string>
+	<string name="btn_skip">跳过</string>
+	<string name="code_blank">您必须输入验证码</string>
+	<string name="code_wrong">验证码必须为数字</string>
+	<string name="code_alphanumeric">该值必须是字母或数字</string>
+	<string name="code">代码</string>
+	<string name="company_unamed">无名字</string>
+	<string name="countries">国家</string>
+	<string name="country_hint">选择一个国家</string>
+	<string name="country">选择您的国家</string>
+	<string name="created">已创建</string>
+	<string name="day">天</string>
+	<string name="days">天</string>
+	<string name="disagree">取消</string>
+	<string name="email_blank">您必须输入一个电子邮件地址</string>
+	<string name="email_wrong">无效的电子邮件格式</string>
+	<string name="email">电子邮件</string>
+	<string name="empty_messages_text">您将删除所有您已接收的消息。</string>
+	<string name="empty_messages">空消息</string>
+	<string name="error_upgrade">我们已备份。很抱歉，给您造成不便</string>
+	<string name="feedback_error">请输入评论</string>
+	<string name="feedback_issue">报告为意外事件</string>
+	<string name="feedback_ok">我们已经顺利收到您的留言</string>
+	<string name="feedback_text">和我们分享您的体验</string>
+	<string name="feedback_typepush">来自支持的响应</string>
+	<string name="gcm_send_message">令牌已回收并发送给服务器</string>
+	<string name="get_play_services">获取 Google Play 服务</string>
+	<string name="hello_world">您好</string>
+	<string name="home">通过验证您的手机号码，获得更好的 VíaCelular 体验</string>
+	<string name="hours">小时</string>
+	<string name="i_read">通过选择“继续”，您将接受我们的条款和条件</string>
+	<string name="invite">邀请</string>
+	<string name="landing_card_form_header">增强您的体验</string><!-- after traslate -->
+	<string name="landing_card_form_text1">获取个性化通知，请输入您的 </string><!-- after traslate -->
+	<string name="landing_card_form_text2"> 然后点击继续。</string><!-- after traslate -->
+	<string name="landing_card_error_header">哎呀</string><!-- after traslate -->
+	<string name="landing_card_error_retry">重发</string><!-- after traslate -->
+	<string name="landing_card_error_text">您的数据将不会被保存，请重试。</string><!-- after traslate -->
+	<string name="landing_card_loading_header">就在那一刻......</string><!-- after traslate -->
+	<string name="landing_card_loading_text">我们让您的数据</string><!-- after traslate -->
+	<string name="landing_card_ok_header">所有了！</string><!-- after traslate -->
+	<string name="landing_card_ok_text">让您的客户ID，以提供更好的体验</string><!-- after traslate -->
+	<string name="landing_contact">联系</string>
+	<string name="landing_dismiss">解雇</string><!-- after traslate -->
+	<string name="landing_example">示例消息</string>
+	<string name="landing_suscribe">订阅</string>
+	<string name="landing_suscribed">额外</string>
+	<string name="landing_unsuscribe">退订</string>
+	<string name="landing_title">收到<xliff:g example="Empresa" id="company">%s</xliff:g>的到期通知、促销和新闻</string>
+	<string name="login_begin">登录以开始</string>
+	<string name="login">使用您的电子邮件进行登录</string>
+	<string name="logout">关闭会话</string>
+	<string name="mail_android">\n* Android 版：</string>
+	<string name="mail_chooser">发送邮件并附带</string>
+	<string name="mail_date">*日期：</string>
+	<string name="mail_device">\n*设备：</string>
+	<string name="mail_lang">\n*语言：</string>
+	<string name="mail_version">\n*版本：</string>
+	<string name="main_channel">您无法利用本服务进行此操作</string>
+	<string name="minutes">分钟</string>
+	<string name="month">月</string>
+	<string name="months">个月</string>
+	<string name="mute_notifications">静音通知</string>
+	<string name="navigation_drawer_close">关闭侧边栏菜单</string>
+	<string name="navigation_drawer_open">打开侧边栏菜单</string>
+	<string name="no_blocked">没有被拦截的公司</string>
+	<string name="no_subblocked">如果有被拦截的公司或服务时，将会在这里显示。</string>
+	<string name="no_content">无内容</string>
+	<string name="no_country">您必须选择您所在的国家</string>
+	<string name="no_internet">无可用互联网连接</string>
+	<string name="no_messages_card">无消息</string>
+	<string name="no_messages_text">您尚无任何消息，若有消息时我们将通知您。</string>
+	<string name="no_notifications">无通知</string>
+	<string name="no_subnotifications">您尚无收到来自公司或服务的任何消息。</string>
+	<string name="no_play_services">您的手机缺少 Google Play 服务，Vloom 无法正常运行</string>
+	<string name="no_supported">此设备不兼容本应用程序</string>
+	<string name="not_available">很抱歉，此功能将在以后的更新中可用</string>
+	<string name="notification">通知</string>
+	<string name="notification_new">您有一个新的通知</string>
+	<string name="notification_view">见通知</string><!-- after traslate -->
+	<string name="now">现在</string>
+	<string name="ok">确定</string>
+	<string name="one_hour">1 小时</string>
+	<string name="one_minute">1 分钟</string>
+	<string name="password_blank">您必须输入密码</string>
+	<string name="password_wrong">密码不匹配</string>
+	<string name="password">密码</string>
+	<string name="phone_blank">您必须输入您的电话号码</string>
+	<string name="phone_desc">我们已将一条含有验证码的短息发送到您的手机。若要使用 Vloom 需要验证您的手机号码。</string>
+	<string name="phone_example">例如：</string>
+	<string name="phone_hint">输入您的手机号码</string>
+	<string name="phone_invalid">您的手机号码必须是数字</string>
+	<string name="phone_lenght">您手机号码的位数必须与您所在国家要求的位数相一致</string>
+	<string name="phone">手机</string>
+	<string name="please_retry">请稍后再试</string>
+	<string name="please_wait">请稍候...</string>
+	<string name="progress_dialog">正在处理...</string>
+	<string name="rate_dialog_title">您是否想给 Vloom 5 星评价？</string>
+	<string name="rate_dialog_message">这仅需要一分钟。您的意见对我们很重要，谢谢！</string>
+	<string name="rate_dialog_ok">评价</string>
+	<string name="rate_dialog_cancel">稍后</string>
+	<string name="rate_dialog_no">不，谢谢</string>
+	<string name="reciveInfo">获取有关您的服务的重要信息</string>
+	<string name="refresh_complete">您的订阅已更新</string>
+	<string name="refresh_menu">更新</string>
+	<string name="register_begin">注册以开始</string>
+	<string name="register_dialog">正在注册...</string>
+	<string name="register">用您的电子邮件进行注册</string>
+	<string name="registering_message">正在生成的令牌实例 ID ...</string>
+	<string name="reimport_sms">重新导入我的短信</string>
+	<string name="repassword_blank">您必须确认您的密码</string>
+	<string name="repassword">重复密码</string>
+	<string name="report">报告</string>
+	<string name="response_invalid">无法处理您的请求，请再试一次</string>
+	<string name="send_code">我们已发送一条包含验证激活码的短信到该手机号码上。</string>
+	<string name="send_mail_text">利用 Vloom Android 版：</string>
+	<string name="send_push_sms">发送测试通知（短信）</string>
+	<string name="send_push">发送测试通知</string>
+	<string name="send_simil_sms">发送测试短信</string>
+	<string name="send_statistics">其有助于我们提高</string>
+	<string name="sent_sms">我们已发送一条包含验证激活码的短信到号码 +000000000000 上了。</string>
+	<string name="service_unavailable">服务暂时不可用</string>
+	<string name="settings">配置</string>
+	<string name="share">分享</string>
+	<string name="silence_actived">静默模式已启用</string>
+	<string name="silence_desactived">静默模式已禁用</string>
+	<string name="silence">静默</string>
+	<string name="sms_paid_continue">您想要继续接收这些消息？</string>
+	<string name="sms_text_paid">需付费短信</string>
+	<string name="sms_text">短信</string>
+	<string name="snack_blocked">1 个公司被拦截</string>
+	<string name="snack_empty">通知已删除</string>
+	<string name="snack_msg_deleted">1 条消息已删除</string>
+	<string name="snack_msg_spam">1 条消息被标记为垃圾</string>
+	<string name="snack_silence">通知已改为静默</string>
+	<string name="snack_unsilence">通知已启用</string>
+	<string name="snack_unblocked">1 个公司已解锁</string>
+	<string name="special_card_download">下载</string><!-- after traslate -->
+	<string name="special_card_find">寻找到付</string><!-- after traslate -->
+	<string name="special_card_invoce">查看发票</string><!-- after traslate -->
+	<string name="special_card_maturity">以前到期</string><!-- after traslate -->
+	<string name="special_card_video">查看预告片</string><!-- after traslate -->
+	<string name="special_card_view">现在查看</string><!-- after traslate -->
+	<string name="special_card_map">显示地图</string><!-- after traslate -->
+	<string name="sub_mute_notifications">静默通知</string>
+	<string name="sub_send_stadistics">发送使用统计信息</string>
+	<string name="sub_sms_paid_text">本项服务按消息条数收取费用</string>
+	<string name="suggestions_atitle">建议</string><!-- after traslate -->
+	<string name="suggestions_subtitle">你会从你的订阅收到相关信息，请记住，你可以随时取消订阅如果你想。</string><!-- after traslate -->
+	<string name="suggestions_title">你的第一个订阅</string><!-- after traslate -->
+	<string name="thank_you">谢谢！</string>
+	<string name="timer_count">如果您没有收到此短信，我们将在 0:00 之后致电您</string>
+	<string name="title_activity_card_view">消息</string>
+	<string name="title_activity_code">您的代码</string>
+	<string name="title_activity_home">欢迎使用</string>
+	<string name="title_activity_landing">公司简介</string>
+	<string name="title_activity_login">登录</string>
+	<string name="title_activity_phone">验证您的手机</string>
+	<string name="title_activity_register">注册</string>
+	<string name="title_activity_splash">欢迎使用</string>
+	<string name="title_activity_feedback">您的评论</string>
+	<string name="title_blocked">已拦截</string>
+	<string name="title_companies">生意</string><!-- after traslate -->
+	<string name="title_companies_all">所有</string><!-- after traslate -->
+	<string name="title_companies_subscriptions">订阅</string><!-- after traslate -->
+	<string name="title_feedback">联系我们</string>
+	<string name="title_help">帮助</string>
+	<string name="title_notifications">通知</string>
+	<string name="title_services">服务</string>
+	<string name="title_settings">设置</string>
+	<string name="title_terms">条款和条件</string>
+	<string name="today">今天</string>
+	<string name="token_error_message">在获取令牌时发生错误</string>
+	<string name="tomorrow">明天</string>
+	<string name="unauthorized">未经授权</string>
+	<string name="undo">撤销</string>
+	<string name="unsuscribe">取消</string>
+	<string name="url">http://www.vloom.io/</string>
+	<string name="verify_dialog">正在验证……</string>
+	<string name="version_settins">适用于 Android v</string>
+	<string name="week">周</string>
+	<string name="weeks">周</string>
+	<string name="welcome_notification">欢迎使用</string>
+	<string name="welcome_text">当他们想与您沟通时，来自在您的公司和服务将显示于此处。</string>
+	<string name="welcome">忘记逾期付款的账单、\n就诊预约迟到，\n以及在邮局浪费时间</string>
+	<string name="welcome1_sub">我们为您的消息提供一个实用且简洁的设计</string>
+	<string name="welcome1">所有内容已整理</string>
+	<string name="welcome2_sub">对收到的内容进行自定义管理\n只接收您感兴趣的内容</string>
+	<string name="welcome2">静默、清空或拦截</string>
+	<string name="welcome3_sub">快速识别耽误\n您时间的消息</string>
+	<string name="welcome3">没有短信费用</string>
+	<string name="welcome4_sub">随时分享您在第三方应用程序中\n获得的一切</string>
+	<string name="welcome4">轻松分享</string>
+	<string name="year">年</string>
+	<string name="years">年</string>
+	<string name="yesterday">昨天</string>
+	<string name="you_have_text">您可以接收、分享或静默消息，如果这给您造成不便，您可以拦截该公司，同时也可上报给我们以便改进。</string>
+	<string name="you_have">您可以控制</string>
+	<string-array name="codes">
+		<item>+549</item>
+		<item>+569</item>
+		<item>+52</item>
+	</string-array>
+	<string-array name="countries">
+		<item>阿根廷</item>
+		<item>智利</item>
+		<item>墨西哥</item>
+	</string-array>
+	<string-array name="formats">
+		<item>2611222333</item>
+		<item>3211112222</item>
+		<item>6641222333</item>
+	</string-array>
+	<string-array name="isoCodes">
+		<item>AR</item>
+		<item>CL</item>
+		<item>MX</item>
+	</string-array>
+	<string-array name="minLength">
+		<item>7</item>
+		<item>8</item>
+		<item>10</item>
+	</string-array>
+	<string-array name="maxLength">
+		<item>12</item>
+		<item>8</item>
+		<item>15</item>
+	</string-array>
+	<string-array name="optionsCard">
+		<item>分享</item>
+		<item>标记为垃圾</item>
+		<item>删除</item>
+	</string-array>
+	<string-array name="optionsChannel">
+		<item>静默</item>
+		<item>空消息</item>
+		<item>退订</item><!-- after traslate -->
+	</string-array>
+</resources>

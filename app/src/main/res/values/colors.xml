@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="swipe_color_1">#80DEEA</color><!-- Cyan 200 -->
+	<color name="swipe_color_2">#4DD0E1</color><!-- Cyan 300 -->
+	<color name="swipe_color_3">#26C6DA</color><!-- Cyan 400 -->
+	<color name="accent">#00BCD4</color><!-- Cyan 500 -->
+	<color name="action">#FF8F00</color><!-- Amber 800 -->
+	<color name="black">#202020</color>
+	<color name="button">#B56220</color>
+	<color name="dark_action">#CC7200</color>
+	<color name="dark_primary">#B56220</color>
+	<color name="detach">#0096A9</color>
+	<color name="google">#DC4B39</color>
+	<color name="gray">#717171</color>
+	<color name="light_gray">#DBDBDB</color>
+	<color name="snack_gray">#323232</color>
+	<color name="text">#FFFFFF</color>
+	<color name="sub_text">#727272</color>
+</resources>

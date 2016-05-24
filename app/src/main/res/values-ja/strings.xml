@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?><resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+	<string name="app_name">Vloom</string>
+	<string name="acepted">承認済み</string>
+	<string name="action_example">例</string>
+	<string name="action_settings">設定</string>
+	<string name="activate_notif">通知を有効化</string>
+	<string name="agree">承認</string>
+	<string name="app">アプリケーション</string>
+	<string name="bad_request">不正なリクエスト</string>
+	<string name="block_service_text">このサービスに関する通知や情報は受信されなくなります。</string>
+	<string name="block_service">サービスをブロック</string>
+	<string name="block">ブロック</string>
+	<string name="btn_continue">続行</string>
+	<string name="btn_next">次へ</string>
+	<string name="btn_retry">再試行</string>
+	<string name="btn_send">送信</string>
+	<string name="btn_skip">スキップ</string>
+	<string name="code_blank">認証コードを入力する必要があります</string>
+	<string name="code_wrong">認証コードは数字で入力してください</string>
+	<string name="code_alphanumeric">値は英数字でなければなりません</string>
+	<string name="code">コー​​ド</string>
+	<string name="company_unamed">名前がありません</string>
+	<string name="countries">国</string>
+	<string name="country_hint">国を選択</string>
+	<string name="country">自分の国を選択</string>
+	<string name="created">作成済み</string>
+	<string name="day">日</string>
+	<string name="days">日</string>
+	<string name="disagree">キャンセル</string>
+	<string name="email_blank">メールアドレスを入力する必要があります</string>
+	<string name="email_wrong">メール形式が無効です</string>
+	<string name="email">メール</string>
+	<string name="empty_messages_text">受信したすべてのメッセージを削除します。</string>
+	<string name="empty_messages">メッセージを空にする</string>
+	<string name="error_upgrade">バックアップ中です。ご不便をおかけしております。</string>
+	<string name="feedback_error">コメントを入力してください</string>
+	<string name="feedback_issue">インシデントとして報告</string>
+	<string name="feedback_ok">あなたのメッセージが受信されました</string>
+	<string name="feedback_text">体験を分かち合う</string>
+	<string name="feedback_typepush">サポートからの応答</string>
+	<string name="gcm_send_message">トークンが回収されてサーバに送信されました</string>
+	<string name="get_play_services">Google Playサービスを取得</string>
+	<string name="hello_world">こんにちは</string>
+	<string name="home">VíaCelular体験をより良いものにするために携帯電話番号を照合する</string>
+	<string name="hours">時間</string>
+	<string name="i_read">続行を選択すると、利用規約に同意したことになります</string>
+	<string name="invite">招待</string>
+	<string name="landing_card_form_header">あなたの経験を強化</string><!-- after traslate -->
+	<string name="landing_card_form_text1">パーソナライズされた通知を取得し、あなたを入力してください </string><!-- after traslate -->
+	<string name="landing_card_form_text2"> [続行]をクリックします。</string><!-- after traslate -->
+	<string name="landing_card_error_header">おっと！</string><!-- after traslate -->
+	<string name="landing_card_error_retry">再び送ります</string><!-- after traslate -->
+	<string name="landing_card_error_text">あなたのデータは、再試行してください保存されません。</string><!-- after traslate -->
+	<string name="landing_card_loading_header">ただ瞬間...</string><!-- after traslate -->
+	<string name="landing_card_loading_text">私たちはあなたのデータを保持しています</string><!-- after traslate -->
+	<string name="landing_card_ok_header">すべてのアップ！</string><!-- after traslate -->
+	<string name="landing_card_ok_text">優れた体験を提供するために、あなたの顧客IDを保管してください</string><!-- after traslate -->
+	<string name="landing_contact">連絡先</string>
+	<string name="landing_dismiss">退けます</string><!-- after traslate -->
+	<string name="landing_example">サンプルメッセージ</string>
+	<string name="landing_suscribe">登録</string>
+	<string name="landing_suscribed">追加されました</string>
+	<string name="landing_unsuscribe">登録解除</string>
+	<string name="landing_title">支払期限切れ、プロモーション、<xliff:g example="Empresa" id="company">%s</xliff:g>のニュースに関する通知を受け取る</string>
+	<string name="login_begin">サインインして開始</string>
+	<string name="login">メールでサインイン</string>
+	<string name="logout">セッションを閉じる</string>
+	<string name="mail_android">\n* Android：</string>
+	<string name="mail_chooser">次の内容を含むメールを送信：</string>
+	<string name="mail_date">*日付：</string>
+	<string name="mail_device">\n*デバイス：</string>
+	<string name="mail_lang">\n*言語：</string>
+	<string name="mail_version">\n*バージョン：</string>
+	<string name="main_channel">このサービスではこのアクションを実行できません</string>
+	<string name="minutes">分</string>
+	<string name="month">月</string>
+	<string name="months">か月</string>
+	<string name="mute_notifications">通知をサイレントにする</string>
+	<string name="navigation_drawer_close">サイドメニューを閉じる</string>
+	<string name="navigation_drawer_open">サイドメニューを開く</string>
+	<string name="no_blocked">ブロックしている会社はありません</string>
+	<string name="no_subblocked">ブロックしている会社かサービスがあればここに表示されます。</string>
+	<string name="no_content">表示するコンテンツがありません</string>
+	<string name="no_country">お住まいの国を選択する必要があります</string>
+	<string name="no_internet">利用可能なインターネット接続がありません</string>
+	<string name="no_messages_card">メッセージはありません</string>
+	<string name="no_messages_text">あなたはここではまだ何も受領していません。受領時には通知いたします。</string>
+	<string name="no_notifications">通知はありません</string>
+	<string name="no_subnotifications">あなたは会社やサービスからのメッセージをまだ受け取っていません。</string>
+	<string name="no_play_services">そのGoogle Playサービスはお使いのデバイスには見つからず、それがないとVloomが正常に動作しません</string>
+	<string name="no_supported">このデバイスは、そのアプリケーションと互換性がありません</string>
+	<string name="not_available">申し訳ありませんが、将来のアップデート時までこの機能は利用できません</string>
+	<string name="notification">通知</string>
+	<string name="notification_new">新しい通知があります</string>
+	<string name="notification_view">通知を参照してください。</string><!-- after traslate -->
+	<string name="now">今すぐ</string>
+	<string name="ok">OK</string>
+	<string name="one_hour">1時間</string>
+	<string name="one_minute">1分</string>
+	<string name="password_blank">パスワードを入力する必要があります</string>
+	<string name="password_wrong">パスワードが一致しません</string>
+	<string name="password">パスワード</string>
+	<string name="phone_blank">電話番号を入力する必要があります</string>
+	<string name="phone_desc">認証コードを掲載したSMSをあなたの電話番号に送信します。Vloomを使用するには、あなたの電話番号を照合する必要があります。</string>
+	<string name="phone_example">例：</string>
+	<string name="phone_hint">電話番号を入力</string>
+	<string name="phone_invalid">電話番号は数字で入力してください</string>
+	<string name="phone_lenght">電話番号はお住まいの国の桁数に一致していなければなりません</string>
+	<string name="phone">電話</string>
+	<string name="please_retry">後でもう一度実行してください</string>
+	<string name="please_wait">しばらくお待ちください...</string>
+	<string name="progress_dialog">処理中...</string>
+	<string name="rate_dialog_title">Vloomに5つ星の評価を付けますか？</string>
+	<string name="rate_dialog_message">お待ちください。皆様のご意見は重要です。ありがとうございます！</string>
+	<string name="rate_dialog_ok">評価する</string>
+	<string name="rate_dialog_cancel">後で実行</string>
+	<string name="rate_dialog_no">いいえ、結構です</string>
+	<string name="reciveInfo">サービスに関する重要情報を取得する</string>
+	<string name="refresh_complete">登録情報が更新されました</string>
+	<string name="refresh_menu">更新</string>
+	<string name="register_begin">登録して開始</string>
+	<string name="register_dialog">登録中...</string>
+	<string name="register">メールを登録</string>
+	<string name="registering_message">トークンのインスタンスIDの生成中...</string>
+	<string name="reimport_sms">SMSメッセージを再インポート</string>
+	<string name="repassword_blank">パスワードをご確認ください</string>
+	<string name="repassword">パスワードを再入力</string>
+	<string name="report">報告する</string>
+	<string name="response_invalid">リクエストを処理できませんでした。もう一度やり直してください</string>
+	<string name="send_code">アクティベーションコードを掲載したSMSがその番号に送信されました</string>
+	<string name="send_mail_text">Vloom Android用：</string>
+	<string name="send_push_sms">テスト通知（SMS）を送信</string>
+	<string name="send_push">テスト通知を送信</string>
+	<string name="send_simil_sms">テストSMSを送信</string>
+	<string name="send_statistics">サービス向上にご協力ください</string>
+	<string name="sent_sms">アクティベーションコードを掲載したSMSが番号+000000000000に送信されました</string>
+	<string name="service_unavailable">サービスが一時的に利用不能になっています</string>
+	<string name="settings">構成</string>
+	<string name="share">共有</string>
+	<string name="silence_actived">サイレントモードが有効になっています</string>
+	<string name="silence_desactived">サイレントモードが無効になっています</string>
+	<string name="silence">サイレントにする</string>
+	<string name="sms_paid_continue">引き続きこれらのメッセージを受信しますか？</string>
+	<string name="sms_text_paid">有料SMS</string>
+	<string name="sms_text">SMS</string>
+	<string name="snack_blocked">1社をブロックしました</string>
+	<string name="snack_empty">通知を削除しました</string>
+	<string name="snack_msg_deleted">1件のメッセージを削除しました</string>
+	<string name="snack_msg_spam">1件のメッセージをスパムとしてマークしました</string>
+	<string name="snack_silence">通知をサイレントにしました</string>
+	<string name="snack_unsilence">通知を有効化しました</string>
+	<string name="snack_unblocked">1社のブロックを解除しました</string>
+	<string name="special_card_download">ダウンロード</string><!-- after traslate -->
+	<string name="special_card_find">ここで、有料の検索</string><!-- after traslate -->
+	<string name="special_card_invoce">請求書を見ます</string><!-- after traslate -->
+	<string name="special_card_maturity">前の満期</string><!-- after traslate -->
+	<string name="special_card_video">ビュートレーラー</string><!-- after traslate -->
+	<string name="special_card_view">今すぐ見ます</string><!-- after traslate -->
+	<string name="special_card_map">地図を表示</string><!-- after traslate -->
+	<string name="sub_mute_notifications">通知をサイレントにする</string>
+	<string name="sub_send_stadistics">使用統計情報を送信</string>
+	<string name="sub_sms_paid_text">このサービスではメッセージ1件ごとに課金されます。</string>
+	<string name="suggestions_atitle">提案</string><!-- after traslate -->
+	<string name="suggestions_subtitle">あなたが望むならいつでも解除することができますことを覚えておいて、あなたのサブスクリプションから関連情報を受け取ることになります。</string><!-- after traslate -->
+	<string name="suggestions_title">あなたの最初のサブスクリプション</string><!-- after traslate -->
+	<string name="thank_you">ありがとうございます！</string>
+	<string name="timer_count">そのSMSを受信されなかった場合には、0:00以内に電話でご連絡いたします。</string>
+	<string name="title_activity_card_view">メッセージ</string>
+	<string name="title_activity_code">あなたのコード</string>
+	<string name="title_activity_home">ようこそ</string>
+	<string name="title_activity_landing">会社概要</string>
+	<string name="title_activity_login">サインイン</string>
+	<string name="title_activity_phone">番号を照合</string>
+	<string name="title_activity_register">登録</string>
+	<string name="title_activity_splash">ようこそ</string>
+	<string name="title_activity_feedback">ご意見</string>
+	<string name="title_blocked">ブロック済み</string>
+	<string name="title_companies">ビジネス</string><!-- after traslate -->
+	<string name="title_companies_all">すべて</string><!-- after traslate -->
+	<string name="title_companies_subscriptions">サブスクリプション</string><!-- after traslate -->
+	<string name="title_feedback">お問い合わせ先</string>
+	<string name="title_help">ヘルプ</string>
+	<string name="title_notifications">通知</string>
+	<string name="title_services">サービス</string>
+	<string name="title_settings">設定</string>
+	<string name="title_terms">利用規約</string>
+	<string name="today">今日</string>
+	<string name="token_error_message">トークンの取得中にエラーが発生しました</string>
+	<string name="tomorrow">明日</string>
+	<string name="unauthorized">認められていません</string>
+	<string name="undo">元に戻す</string>
+	<string name="unsuscribe">キャンセル</string>
+	<string name="url">http://www.vloom.io/</string>
+	<string name="verify_dialog">確認しています...</string>
+	<string name="version_settins">Android v 用</string>
+	<string name="week">週</string>
+	<string name="weeks">週間</string>
+	<string name="welcome_notification">ようこそ</string>
+	<string name="welcome_text">会社やサービスからの連絡については、ここにその会社またはサービスからのメッセージが表示されます。</string>
+	<string name="welcome">料金の支払が遅れたり、医者への予約時間に遅れたり、郵便局で時間を無駄にしたりすることはもうありません。</string>
+	<string name="welcome1_sub">実用的かつシンプルな設計により、受信メッセージを整理</string>
+	<string name="welcome1">すべて整理</string>
+	<string name="welcome2_sub">受信したいもの、興味のあるものだけを管理</string>
+	<string name="welcome2">サイレントにする、空にする、またはブロックする</string>
+	<string name="welcome3_sub">料金が発生するメッセージを即座に特定</string>
+	<string name="welcome3">有料SMSは不要</string>
+	<string name="welcome4_sub">第三者アプリケーションで受信したものを自由に共有</string>
+	<string name="welcome4">簡単共有</string>
+	<string name="year">年</string>
+	<string name="years">年間</string>
+	<string name="yesterday">昨日</string>
+	<string name="you_have_text">メッセージの受領、共有、サイレント化が可能です。迷惑メッセージがあれば、その送信元会社をブロックして報告できます。ご報告内容は弊社の改善に活用させていただきます。</string>
+	<string name="you_have">あなたが管理します</string>
+	<string-array name="codes">
+		<item>+549</item>
+		<item>+569</item>
+		<item>+52</item>
+	</string-array>
+	<string-array name="countries">
+		<item>アルゼンチン</item>
+		<item>チリ</item>
+		<item>メキシコ</item>
+	</string-array>
+	<string-array name="formats">
+		<item>2611222333</item>
+		<item>3211112222</item>
+		<item>6641222333</item>
+	</string-array>
+	<string-array name="isoCodes">
+		<item>AR</item>
+		<item>CL</item>
+		<item>MX</item>
+	</string-array>
+	<string-array name="minLength">
+		<item>7</item>
+		<item>8</item>
+		<item>10</item>
+	</string-array>
+	<string-array name="maxLength">
+		<item>12</item>
+		<item>8</item>
+		<item>15</item>
+	</string-array>
+	<string-array name="optionsCard">
+		<item>共有</item>
+		<item>スパムとしてマーク</item>
+		<item>削除</item>
+	</string-array>
+	<string-array name="optionsChannel">
+		<item>サイレント</item>
+		<item>メッセージを空にする</item>
+		<item>登録解除</item><!-- after traslate -->
+	</string-array>
+</resources>

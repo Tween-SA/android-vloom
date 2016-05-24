@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Agregado para retroalimentar el toque del usuario -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_marginTop="10dp"
+	android:paddingBottom="8dp"
+	android:paddingTop="8dp"
+	android:id="@+id/rlItem">
+	<ImageView
+		android:id="@+id/rowIcon"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingLeft="16dp"
+		android:src="@drawable/ic_inbox_black_36dp" />
+	<!-- Ajuste por lineamiento de Material Design -->
+	<TextView
+		android:id="@+id/rowText"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@+id/rowIcon"
+		android:layout_centerVertical="true"
+		android:paddingLeft="10dp"
+		android:paddingBottom="10dp"
+		android:text="@string/title_notifications"
+		android:textColor="@color/black"
+		android:background="?android:attr/selectableItemBackground"
+		android:textAppearance="?android:attr/textAppearanceMedium" />
+	<View
+		android:id="@+id/div"
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:layout_below="@+id/rowIcon"
+		android:background="@color/light_gray"
+		android:layout_marginTop="20dp" />
+</RelativeLayout>

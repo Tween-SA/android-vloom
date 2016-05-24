@@ -1,0 +1,35 @@
+// prepend following prefix to the exported JAR filename
+apply plugin: "java"
+
+// append the version to the exported JAR filename
+// version = "1.0-FINAL"
+
+sourceCompatibility = 1.7
+
+//create a single (fat) Jar with all dependencies
+jar
+{
+	from
+	{
+		(configurations.runtime).collect {
+			it.isDirectory() ? it : zipTree(it)
+		}
+	}
+	manifest
+	{
+		attributes("Main-Class": "com.viacelular.android.publisher.Main")
+	}
+}
+
+repositories
+{
+	flatDir
+	{
+		dirs "libs"
+	}
+}
+
+dependencies
+{
+	compile fileTree(dir: "libs", include: ["*.jar"])
+}

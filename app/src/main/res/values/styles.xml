@@ -1,0 +1,29 @@
+<resources>
+	<!-- Base application theme. -->
+	<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+		<!-- Customize your theme here. -->
+	</style>
+	<style name="Login" parent="Theme.AppCompat.Light.NoActionBar">
+		<item name="colorPrimary">@color/action</item>
+		<item name="colorPrimaryDark">@color/dark_action</item>
+		<item name="colorAccent">@color/accent</item>
+		<item name="android:textColor">@color/text</item>
+	</style>
+	<style name="Theme.MyTheme" parent="Theme.AppCompat.Light.NoActionBar">
+		<!-- colorPrimary is used for the default action bar background -->
+		<item name="colorPrimary">@color/action</item>
+		<!-- colorPrimaryDark is used for the status bar -->
+		<item name="colorPrimaryDark">@color/dark_action</item>
+		<!-- colorAccent is used as the default value for colorControlActivated, which is used to tint widgets -->
+		<item name="colorAccent">@color/accent</item>
+		<!-- You can also set colorControlNormal, colorControlActivated colorControlHighlight, and colorSwitchThumbNormal. -->
+		<item name="android:textColor">@color/black</item>
+	</style>
+	<style name="Company" parent="Theme.MyTheme">
+		<!-- Se quita drawable inicial para los casos de companies sin logo -->
+		<item name="logo">@android:color/transparent</item>
+		<item name="displayOptions">useLogo|showHome</item>
+	</style>
+	<style name="Theme.MyTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+	<style name="Theme.MyTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+</resources>

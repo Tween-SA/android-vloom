@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Agregado para retroalimentar el toque del usuario -->
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:paddingTop="4dp"
+	android:paddingBottom="4dp"
+	android:layout_marginBottom="4dp"
+	android:layout_marginTop="4dp"
+	android:id="@+id/rlClient"
+	android:background="?android:attr/selectableItemBackground">
+	<!-- Modificación para aplicar redondeo de logos -->
+	<de.hdodenhof.circleimageview.CircleImageView
+		android:contentDescription="@string/app_name"
+		android:id="@+id/circleView"
+		android:layout_width="50dp"
+		android:layout_height="50dp"
+		android:layout_marginLeft="20dp"
+		android:src="@drawable/ic_launcher"
+		app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />
+	<TextView
+		android:id="@+id/rowText"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingLeft="10dp"
+		android:text="@string/app_name"
+		android:textColor="@color/black"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:layout_alignTop="@+id/circleView"
+		android:layout_toRightOf="@+id/circleView"
+		android:layout_toEndOf="@+id/circleView" />
+	<TextView
+		android:id="@+id/rowSubText"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingLeft="10dp"
+		android:layout_marginBottom="4dp"
+		android:text="@string/no_messages_card"
+		android:textColor="@color/gray"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:layout_below="@+id/rowText"
+		android:layout_alignLeft="@+id/rowText"
+		android:layout_alignStart="@+id/rowText" />
+	<TextView
+		android:id="@+id/rowTime"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingRight="10dp"
+		android:text="@string/today"
+		android:textColor="@color/gray"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:layout_alignTop="@+id/circleView"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true" />
+	<ImageView
+		android:contentDescription="@string/app_name"
+		android:id="@+id/imgCount"
+		android:src="@drawable/ic_block_black_24dp"
+		android:layout_width="20dp"
+		android:layout_height="20dp"
+		android:layout_marginLeft="20dp"
+		android:layout_marginTop="20dp"
+		android:layout_marginBottom="10dp"
+		android:layout_marginRight="10dp"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
+		android:visibility="gone" />
+	<ImageView
+		android:contentDescription="@string/app_name"
+		android:id="@+id/imgSilence"
+		android:src="@drawable/ic_notifications_off_black_24dp"
+		android:layout_width="20dp"
+		android:layout_height="20dp"
+		android:layout_marginLeft="20dp"
+		android:layout_marginTop="20dp"
+		android:layout_marginBottom="10dp"
+		android:layout_marginRight="30dp"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
+		android:visibility="gone" />
+	<ImageView
+		android:contentDescription="@string/app_name"
+		android:id="@+id/imgPrice"
+		android:src="@drawable/ic_sms_price_24dp"
+		android:layout_width="20dp"
+		android:layout_height="20dp"
+		android:layout_marginLeft="20dp"
+		android:layout_marginTop="20dp"
+		android:layout_marginBottom="10dp"
+		android:layout_marginRight="30dp"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
+		android:visibility="gone" />
+	<!-- Se agregan los iconos para destacar cuando la company está bloqueada y se hizo dismiss de la card para suscribir -->
+	<ImageView
+		android:contentDescription="@string/app_name"
+		android:id="@+id/imgBlock"
+		android:src="@drawable/ic_block_black_24dp"
+		android:layout_width="20dp"
+		android:layout_height="20dp"
+		android:layout_marginLeft="20dp"
+		android:layout_marginTop="20dp"
+		android:layout_marginBottom="10dp"
+		android:layout_marginRight="30dp"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
+		android:visibility="gone" />
+	<ImageView
+		android:contentDescription="@string/app_name"
+		android:id="@+id/imgBigSilence"
+		android:src="@drawable/ic_notifications_off_black_24dp"
+		android:layout_width="20dp"
+		android:layout_height="20dp"
+		android:layout_marginLeft="20dp"
+		android:layout_marginTop="20dp"
+		android:layout_marginBottom="10dp"
+		android:layout_marginRight="10dp"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
+		android:visibility="gone" />
+	<ImageView
+		android:contentDescription="@string/app_name"
+		android:id="@+id/imgBigPrice"
+		android:src="@drawable/ic_sms_price_24dp"
+		android:layout_width="20dp"
+		android:layout_height="20dp"
+		android:layout_marginLeft="20dp"
+		android:layout_marginTop="20dp"
+		android:layout_marginBottom="10dp"
+		android:layout_marginRight="10dp"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
+		android:visibility="gone" />
+	<ImageView
+		android:contentDescription="@string/app_name"
+		android:id="@+id/imgBigBlock"
+		android:src="@drawable/ic_block_black_24dp"
+		android:layout_width="20dp"
+		android:layout_height="20dp"
+		android:layout_marginLeft="20dp"
+		android:layout_marginTop="20dp"
+		android:layout_marginBottom="10dp"
+		android:layout_marginRight="10dp"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
+		android:visibility="gone" />
+	<!-- Ajuste para seguir lineamiento de Material Design -->
+	<View
+		android:id="@+id/dividerHome"
+		android:background="@color/light_gray"
+		android:layout_width="wrap_content"
+		android:layout_height="1dp"
+		android:layout_alignLeft="@+id/rowText"
+		android:layout_alignStart="@+id/rowText"
+		android:layout_below="@+id/rowSubText"
+		android:layout_alignRight="@+id/imgCount"
+		android:layout_alignEnd="@+id/imgCount"
+		android:layout_marginLeft="8dp"
+		android:layout_marginRight="8dp"
+		android:layout_marginTop="8dp" />
+</RelativeLayout>

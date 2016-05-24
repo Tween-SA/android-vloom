@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:paddingTop="24dp"
+	android:paddingLeft="24dp">
+	<TextView
+		android:id="@+id/txtTitle"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		tools:text="@string/rate_dialog_title"
+		android:textSize="22sp"
+		android:visibility="gone"
+		android:textColor="@color/action"
+		tools:visibility="visible"
+		android:paddingRight="24dp" />
+	<TextView
+		android:id="@+id/txtContent"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingTop="20dp"
+		android:paddingBottom="24dp"
+		tools:text="@string/rate_dialog_message"
+		android:textSize="18sp"
+		android:visibility="gone"
+		tools:visibility="visible"
+		android:layout_below="@+id/txtTitle"
+		android:paddingRight="24dp" />
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="52dp"
+		android:layout_below="@+id/txtContent"
+		android:paddingRight="8dp"
+		android:paddingBottom="8dp"
+		android:paddingTop="8dp">
+		<Button
+			android:id="@+id/btnCancel"
+			android:layout_width="wrap_content"
+			android:layout_height="36dp"
+			android:minWidth="64dp"
+			android:paddingRight="8dp"
+			android:paddingLeft="8dp"
+			android:layout_marginLeft="8dp"
+			android:layout_marginRight="8dp"
+			android:background="?android:attr/selectableItemBackground"
+			android:textAllCaps="true"
+			tools:text="@string/rate_dialog_cancel"
+			android:textSize="14sp"
+			android:layout_alignParentBottom="true"
+			android:textColor="@color/accent"
+			android:layout_toLeftOf="@+id/btnContinue"
+			android:layout_toStartOf="@+id/btnContinue"
+			android:onClick="confirm" />
+		<Button
+			android:id="@+id/btnContinue"
+			android:layout_width="wrap_content"
+			android:layout_height="36dp"
+			android:minWidth="64dp"
+			android:paddingRight="8dp"
+			android:paddingLeft="8dp"
+			android:layout_marginLeft="8dp"
+			android:layout_marginRight="8dp"
+			android:background="?android:attr/selectableItemBackground"
+			android:textAllCaps="true"
+			tools:text="@string/rate_dialog_ok"
+			android:textSize="14sp"
+			android:visibility="gone"
+			tools:visibility="visible"
+			android:textColor="@color/accent"
+			android:layout_alignParentBottom="true"
+			android:layout_alignParentRight="true"
+			android:layout_alignParentEnd="true"
+			android:onClick="cancel" />
+	</RelativeLayout>
+</RelativeLayout>
