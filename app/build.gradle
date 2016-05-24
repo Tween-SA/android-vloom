@@ -168,7 +168,6 @@ dependencies
 	compile "com.google.android.gms:play-services-identity:9.0.0"
 	compile "com.google.android.gms:play-services:9.0.0"
 	compile "com.newrelic.agent.android:android-agent:5.5.0"
-	compile "com.newrelic.agent.android:class-rewriter:5.5.0"
 	compile "com.nostra13.universalimageloader:universal-image-loader:1.9.5"
 	compile "com.ogaclejapan.smarttablayout:library:1.6.1@aar"
 	compile "com.readystatesoftware.systembartint:systembartint:1.0.4"
