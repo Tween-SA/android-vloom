@@ -277,7 +277,7 @@ public class RegistrationIntentService extends IntentService
 		try
 		{
 			// Add custom implementation, as needed.
-			UpdateUserAsyncTask task	= new UpdateUserAsyncTask(getApplicationContext(), Common.BOOL_YES, false);
+			UpdateUserAsyncTask task	= new UpdateUserAsyncTask(getApplicationContext(), Common.BOOL_YES, false, "", false);
 			task.setToken(token);
 			task.execute();
 		}

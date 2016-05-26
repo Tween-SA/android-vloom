@@ -143,7 +143,7 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 
 			result = ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
 
-			if(result.equals(ApiConnection.OK))
+			if(result.equals(ApiConnection.OK) && needRedirect)
 			{
 				JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_DATA);
 

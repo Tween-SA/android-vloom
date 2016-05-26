@@ -240,6 +240,7 @@ public abstract class UserHelper
 			realm.copyToRealmOrUpdate(user);
 			realm.commitTransaction();
 
+			debug(user);
 			//Agregado para revisar las suscripciones del usuario
 			if(checkSubscriptions && context != null)
 			{

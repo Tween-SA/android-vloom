@@ -181,7 +181,7 @@ public class Utils
 					if(logged && checked)
 					{
 						//Agregado para actualizar datos del usuario solamente cuando inicia la app
-						UpdateUserAsyncTask task	= new UpdateUserAsyncTask(activity, Common.BOOL_YES, false);
+						UpdateUserAsyncTask task	= new UpdateUserAsyncTask(activity, Common.BOOL_YES, false, "", false);
 						task.execute();
 						intent						= new Intent(activity, HomeActivity.class);
 						activity.startActivity(intent);

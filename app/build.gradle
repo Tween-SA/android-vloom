@@ -1,10 +1,12 @@
+import org.ajoberstar.gradle.git.tasks.GitClone
+
 apply plugin: "com.android.application"
 apply plugin: "newrelic"
 apply plugin: "realm-android"
 
 def argVersionCode	= 24;
 def argVersionName	= "1.2.4";
-/*def production		= false;
+def production		= false;
 
 if(production)
 {
@@ -50,7 +52,7 @@ if(production)
 		//findProject(":android-publisher").tasks.build.execute();
 		//tasks.publishAPKToGooglePlay.execute();
 	}
-}*/
+}
 
 android
 {
@@ -169,12 +171,10 @@ dependencies
 	compile "com.google.android.gms:play-services:9.0.0"
 	compile "com.newrelic.agent.android:android-agent:5.5.0"
 	compile "com.nostra13.universalimageloader:universal-image-loader:1.9.5"
-	compile "com.ogaclejapan.smarttablayout:library:1.6.1@aar"
 	compile "com.readystatesoftware.systembartint:systembartint:1.0.4"
 	compile "de.greenrobot:greendao:2.1.0"
 	compile "se.emilsjolander:stickylistheaders:2.7.0"
 	compile "de.hdodenhof:circleimageview:2.0.0"
 	compile "com.facebook.android:facebook-android-sdk:4.11.0"
-	compile "com.tonicartos:superslim:0.4.13"
 	compile "com.squareup.picasso:picasso:2.5.2"
 }

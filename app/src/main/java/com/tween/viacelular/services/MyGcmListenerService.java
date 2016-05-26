@@ -13,8 +13,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+
 import com.google.android.gms.gcm.GcmListenerService;
 import com.tween.viacelular.R;
+import com.tween.viacelular.activities.BlockedActivity;
 import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.asynctask.CompanyAsyncTask;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
@@ -25,6 +27,7 @@ import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+
 import io.realm.Realm;
 
 /**
@@ -303,7 +306,7 @@ public class MyGcmListenerService extends GcmListenerService
 			Realm realm			= Realm.getDefaultInstance();
 			Message message		= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
 			String companyIdApi	= "";
-			String contentText= "";
+			String contentText	= "";
 
 			if(message != null)
 			{
@@ -357,11 +360,10 @@ public class MyGcmListenerService extends GcmListenerService
 				silencedChannel	= clientP.getSilenced();
 				blocked			= clientP.getBlocked();
 				statusP			= clientP.getStatus();
-				follow			= clientP.getFollower();
 			}
 
-			//Agregado para restringir la recepción si el user no tiene la company añadida
-			if(blocked == Common.BOOL_NO && statusP != Suscription.STATUS_BLOCKED && follow == Common.BOOL_YES)
+			//Rollback solamente se restringe la recepción de push si el usuario expresamente puso que no, caso contrario la recibe y suscribe
+			if(blocked == Common.BOOL_NO && statusP != Suscription.STATUS_BLOCKED)
 			{
 				if(sound == PUSH_NORMAL)
 				{
@@ -376,7 +378,7 @@ public class MyGcmListenerService extends GcmListenerService
 					{
 						try
 						{
-							ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(context, false, "", message.getMsgId());
+							ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(context, false, "", msgId);
 							task.execute();
 						}
 						catch(Exception e)
@@ -403,7 +405,11 @@ public class MyGcmListenerService extends GcmListenerService
 						{
 							intent.putExtra(Common.KEY_ID, clientP.getCompanyId());
 							image = clientP.getImage();
-							//Se quita la funcionalidad de auto añadir company ya que se hace a nivel de api
+							//Rollback para autoañadir companies si no está añadida
+							if(clientP.getFollower() == Common.BOOL_NO && clientP.getBlocked() == Common.BOOL_NO)
+							{
+								BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, false, clientP.getCompanyId());
+							}
 						}
 						else
 						{

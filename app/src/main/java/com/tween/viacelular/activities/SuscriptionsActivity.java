@@ -19,16 +19,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.RecyclerAdapter;
 import com.tween.viacelular.adapters.RecyclerItemClickListener;
+import com.tween.viacelular.asynctask.UpdateUserAsyncTask;
 import com.tween.viacelular.fragments.SuscriptionsFragment;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
+
 import io.realm.Realm;
 
 /**
@@ -36,12 +40,12 @@ import io.realm.Realm;
  */
 public class SuscriptionsActivity extends AppCompatActivity
 {
-	public RecyclerView mRecyclerView;
-	public Intent intentRecive;
-	private Toolbar toolBar;
-	private Context context;
-	public RecyclerView.Adapter mAdapter						= null;
-	public WeakHashMap<View,Integer> mOriginalViewHeightPool	= new WeakHashMap<>();
+	public RecyclerView					mRecyclerView;
+	public Intent						intentRecive;
+	private Toolbar						toolBar;
+	private Context						context;
+	public RecyclerView.Adapter			mAdapter				= null;
+	public WeakHashMap<View,Integer>	mOriginalViewHeightPool	= new WeakHashMap<>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -55,6 +59,8 @@ public class SuscriptionsActivity extends AppCompatActivity
 			mRecyclerView.setHasFixedSize(true);
 			intentRecive				= getIntent();
 			setSupportActionBar(toolBar);
+			UpdateUserAsyncTask task	= new UpdateUserAsyncTask(getApplicationContext(), Common.BOOL_YES, false, "", true);
+			task.execute();
 			ViewPager viewPager			= (ViewPager) findViewById(R.id.viewPager);
 			PagerAdapter pagerAdapter	= new PagerAdapter(getSupportFragmentManager());
 			pagerAdapter.addFragment(SuscriptionsFragment.createInstance(1, SuscriptionsActivity.this), getString(R.string.title_companies_subscriptions));

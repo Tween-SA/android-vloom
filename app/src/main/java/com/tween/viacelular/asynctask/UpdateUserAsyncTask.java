@@ -22,12 +22,15 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 	private int				force			= 0;
 	private boolean			displayDialog	= true;
 	private String			token			= "";
+	private boolean			onlyGet			= false;
 
-	public UpdateUserAsyncTask(Context context, int force, boolean displayDialog)
+	public UpdateUserAsyncTask(final Context context, final int force, final boolean displayDialog, final String token, final boolean onlyGet)
 	{
 		this.context		= context;
 		this.force			= force;
 		this.displayDialog	= displayDialog;
+		this.token			= token;
+		this.onlyGet		= onlyGet;
 	}
 
 	protected void onPreExecute()
@@ -89,79 +92,83 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 					realm.commitTransaction();
 				}
 
-				if((StringUtils.isNotEmpty(preferences.getString(User.KEY_GCMID, "")) && (!preferences.getString(User.KEY_GCMID, "").equals(user.getGcmId())) || force == 1))
+				//Modificación para refrescar suscripciones del usuario
+				if(StringUtils.isIdMongo(user.getUserId()))
 				{
-					if(StringUtils.isIdMongo(user.getUserId()))
+					jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_GET,
+							preferences.getString(Common.KEY_TOKEN, ""), ""));
+					result		= ApiConnection.checkResponse(context, jsonResult);
+				}
+
+				if(result.equals(ApiConnection.OK))
+				{
+					JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_DATA);
+
+					if(jsonData != null)
 					{
-						jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_GET,
-														preferences.getString(Common.KEY_TOKEN, ""), ""));
-						result		= ApiConnection.checkResponse(context, jsonResult);
+						userParsed = UserHelper.parseJSON(jsonData, true, context);
 					}
+				}
 
-					if(result.equals(ApiConnection.OK))
+				if(!onlyGet)
+				{
+					if((StringUtils.isNotEmpty(preferences.getString(User.KEY_GCMID, "")) && (!preferences.getString(User.KEY_GCMID, "").equals(user.getGcmId())) || force == 1))
 					{
-						JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_DATA);
-
-						if(jsonData != null)
+						if(userParsed != null)
 						{
-							userParsed = UserHelper.parseJSON(jsonData, true, context);
-						}
-					}
+							//Modificación para quitar campos no relevantes y forzar el envio de gsmId
+							boolean modified = false;
 
-					if(userParsed != null)
-					{
-						//Modificación para quitar campos no relevantes y forzar el envio de gsmId
-						boolean modified = false;
-
-						if(StringUtils.isNotEmpty(user.getFirstName()))
-						{
-							if(!user.getFirstName().equals(userParsed.getFirstName()))
+							if(StringUtils.isNotEmpty(user.getFirstName()))
 							{
-								info.put(User.KEY_FIRSTNAME, user.getFirstName());
+								if(!user.getFirstName().equals(userParsed.getFirstName()))
+								{
+									info.put(User.KEY_FIRSTNAME, user.getFirstName());
+									modified = true;
+								}
+							}
+
+							if(StringUtils.isNotEmpty(user.getLastName()))
+							{
+								if(!user.getLastName().equals(userParsed.getLastName()))
+								{
+									info.put(User.KEY_LASTNAME, user.getLastName());
+									modified = true;
+								}
+							}
+
+							if(StringUtils.isNotEmpty(user.getEmail()))
+							{
+								//Modificación para enviar siempre el email de User para forzar el update con PUT/{userId}
+								info.put(User.KEY_EMAIL, user.getEmail());
 								modified = true;
 							}
-						}
 
-						if(StringUtils.isNotEmpty(user.getLastName()))
-						{
-							if(!user.getLastName().equals(userParsed.getLastName()))
+							if(StringUtils.isNotEmpty(user.getCountryCode()))
 							{
-								info.put(User.KEY_LASTNAME, user.getLastName());
+								if(!user.getCountryCode().equals(userParsed.getCountryCode()))
+								{
+									info.put(Land.KEY_API, user.getCountryCode());
+									modified = true;
+								}
+							}
+
+							//Agregado para forzar actualización de User si se dio de baja de redis por gcmId no válido
+							if(userParsed.getStatus() != user.getStatus())
+							{
 								modified = true;
 							}
-						}
 
-						if(StringUtils.isNotEmpty(user.getEmail()))
-						{
-							//Modificación para enviar siempre el email de User para forzar el update con PUT/{userId}
-							info.put(User.KEY_EMAIL, user.getEmail());
-							modified = true;
-						}
-
-						if(StringUtils.isNotEmpty(user.getCountryCode()))
-						{
-							if(!user.getCountryCode().equals(userParsed.getCountryCode()))
+							if(modified || force == 1)
 							{
-								info.put(Land.KEY_API, user.getCountryCode());
-								modified = true;
+								jsonSend.put(User.KEY_PHONE, ("+"+user.getPhone()).replace("++", "+"));
+								jsonSend.put(User.KEY_API, user.getUserId());
+								jsonSend.put(User.KEY_GCMID, preferences.getString(User.KEY_GCMID, user.getGcmId()));
+								jsonSend.put(Common.KEY_INFO, info);
+								jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_PUT,
+										preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+								result		= ApiConnection.checkResponse(context, jsonResult);
 							}
-						}
-
-						//Agregado para forzar actualización de User si se dio de baja de redis por gcmId no válido
-						if(userParsed.getStatus() != user.getStatus())
-						{
-							modified = true;
-						}
-
-						if(modified || force == 1)
-						{
-							jsonSend.put(User.KEY_PHONE, ("+"+user.getPhone()).replace("++", "+"));
-							jsonSend.put(User.KEY_API, user.getUserId());
-							jsonSend.put(User.KEY_GCMID, preferences.getString(User.KEY_GCMID, user.getGcmId()));
-							jsonSend.put(Common.KEY_INFO, info);
-							jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_PUT,
-															preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
-							result		= ApiConnection.checkResponse(context, jsonResult);
 						}
 					}
 				}

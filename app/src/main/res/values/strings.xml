@@ -41,6 +41,7 @@
 	<string name="feedback_typepush">Respuesta de soporte</string>
 	<string name="gcm_send_message">Token recuperado y enviado al servidor</string>
 	<string name="get_play_services">Obtén Google Play Services</string>
+	<string name="google_api_key" translatable="false">189459365557</string>
 	<string name="hello_world">Hola</string>
 	<string name="home">Verifica tu n° de celular para una mejor experiencia con VíaCelular</string>
 	<string name="hours">horas</string>
@@ -178,7 +179,7 @@
 	<string name="title_blocked">Bloqueadas</string>
 	<string name="title_companies">Empresas</string><!-- after traslate -->
 	<string name="title_companies_all">Todas</string><!-- after traslate -->
-	<string name="title_companies_subscriptions">Suscripciones</string><!-- after traslate -->
+	<string name="title_companies_subscriptions">Añadidas</string><!-- after traslate -->
 	<string name="title_feedback">Contáctanos</string>
 	<string name="title_help">Ayuda</string>
 	<string name="title_notifications">Notificaciones</string>
