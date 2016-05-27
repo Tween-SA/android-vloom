@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-
 import com.google.android.gms.gcm.GcmListenerService;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.BlockedActivity;
@@ -27,7 +26,6 @@ import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
-
 import io.realm.Realm;
 
 /**
@@ -81,11 +79,17 @@ public class MyGcmListenerService extends GcmListenerService
 				String subMsg					= data.getString(Message.KEY_SUBMSG, "");
 				String campaignId				= data.getString(Message.KEY_CAMPAIGNID, "");
 				String listId					= data.getString(Message.KEY_LISTID, "");
+				Long created					= data.getLong(Message.KEY_TIMESTAMP, System.currentTimeMillis());
 
 				if(Common.DEBUG)
 				{
 					System.out.println("Bundle: "+data.toString());
 					System.out.println("From: " + from);
+				}
+
+				if(created < System.currentTimeMillis())
+				{
+					created = System.currentTimeMillis();
 				}
 
 				if(StringUtils.isEmpty(msgId))
@@ -235,7 +239,7 @@ public class MyGcmListenerService extends GcmListenerService
 				message.setStatus(Message.STATUS_RECEIVE);
 				message.setCountryCode(countryCode);
 				message.setFlags(flags);
-				message.setCreated(System.currentTimeMillis());//Se modificó contemplando la fecha en la que se recibe la push
+				message.setCreated(created);//Se modificó para tomar el ts de la push siempre que no sea más viejo que el actual del device
 				message.setDeleted(Common.BOOL_NO);
 				message.setKind(kind);
 				message.setLink(link);

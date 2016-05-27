@@ -127,7 +127,7 @@ public class Utils
 			bundle.putString(Message.KEY_API, message.getMsgId());
 			bundle.putString(Common.KEY_TYPE, message.getType());
 			bundle.putString(Message.KEY_PLAYLOAD, message.getMsg());
-			bundle.putString(Message.KEY_CREATED, String.valueOf(message.getCreated()));
+			bundle.putString(Message.KEY_TIMESTAMP, String.valueOf(message.getCreated()));
 			bundle.putString(Message.KEY_CHANNEL, message.getChannel());
 			bundle.putString(Common.KEY_STATUS, String.valueOf(message.getStatus()));
 			bundle.putString(Company.KEY_API, message.getCompanyId());

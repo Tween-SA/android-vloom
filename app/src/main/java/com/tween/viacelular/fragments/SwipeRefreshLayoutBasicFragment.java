@@ -332,13 +332,13 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 					if(suscription.getSilenced() == Common.BOOL_YES)
 					{
-						//Agregado para capturar evento en Google Analytics
-						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Silenciar")
-																														.setLabel("AccionUser").build());
 						suscription.setSilenced(Common.BOOL_NO);
 					}
 					else
 					{
+						//Agregado para capturar evento en Google Analytics
+						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Silenciar")
+																														.setLabel("AccionUser").build());
 						suscription.setSilenced(Common.BOOL_YES);
 					}
 
