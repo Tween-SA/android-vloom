@@ -109,6 +109,15 @@
 			android:screenOrientation="portrait"
 			android:theme="@style/Theme.MyTheme"
 			android:windowSoftInputMode="adjustResize|stateHidden">
+			<!-- to identify this activity as "searchable" -->
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+
+			<meta-data
+				android:name="android.app.searchable"
+				android:resource="@xml/searchable" />
 		</activity>
 		<activity
 			android:name="com.tween.viacelular.activities.SuggestionsActivity"

@@ -79,17 +79,12 @@ public class MyGcmListenerService extends GcmListenerService
 				String subMsg					= data.getString(Message.KEY_SUBMSG, "");
 				String campaignId				= data.getString(Message.KEY_CAMPAIGNID, "");
 				String listId					= data.getString(Message.KEY_LISTID, "");
-				Long created					= data.getLong(Message.KEY_TIMESTAMP, System.currentTimeMillis());
+				String created					= data.getString(Message.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
 
 				if(Common.DEBUG)
 				{
 					System.out.println("Bundle: "+data.toString());
 					System.out.println("From: " + from);
-				}
-
-				if(created < System.currentTimeMillis())
-				{
-					created = System.currentTimeMillis();
 				}
 
 				if(StringUtils.isEmpty(msgId))
@@ -228,6 +223,13 @@ public class MyGcmListenerService extends GcmListenerService
 					linkThumb	= link;
 				}
 
+				Long time = Long.valueOf(created);
+
+				if(time < System.currentTimeMillis())
+				{
+					time = System.currentTimeMillis();
+				}
+
 				//TODO: Agregar autodetección de tipo de mensaje por extensión de url
 
 				//Creamos el objeto inicial en Realm
@@ -239,7 +241,7 @@ public class MyGcmListenerService extends GcmListenerService
 				message.setStatus(Message.STATUS_RECEIVE);
 				message.setCountryCode(countryCode);
 				message.setFlags(flags);
-				message.setCreated(created);//Se modificó para tomar el ts de la push siempre que no sea más viejo que el actual del device
+				message.setCreated(time);//Se modificó para tomar el ts de la push siempre que no sea más viejo que el actual del device
 				message.setDeleted(Common.BOOL_NO);
 				message.setKind(kind);
 				message.setLink(link);
@@ -272,7 +274,7 @@ public class MyGcmListenerService extends GcmListenerService
 				/**
 				 * In some cases it may be useful to show a notification indicating to the user that a message was received.
 				 */
-				sendNotification(msgId, preferences, sound, notificationId, countryCode);
+				sendNotification(msgId, preferences, sound, notificationId, countryCode, msg);
 			}
 		}
 		catch(Exception e)
@@ -294,12 +296,11 @@ public class MyGcmListenerService extends GcmListenerService
 	 * @param sound
 	 * @param from
 	 */
-	private void sendNotification(String msgId, SharedPreferences preferences, int sound, int from, String countryCode)
+	private void sendNotification(String msgId, SharedPreferences preferences, int sound, int from, String countryCode, String msg)
 	{
 		try
 		{
 			boolean silenced	= preferences.getBoolean(Suscription.KEY_SILENCED, false);
-			int follow			= Common.BOOL_NO;
 			int silencedChannel	= Common.BOOL_YES;
 			int blocked			= Common.BOOL_YES;
 			int statusP			= Suscription.STATUS_BLOCKED;
@@ -311,6 +312,7 @@ public class MyGcmListenerService extends GcmListenerService
 			Message message		= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
 			String companyIdApi	= "";
 			String contentText	= "";
+			boolean newClient	= false;
 
 			if(message != null)
 			{
@@ -321,6 +323,11 @@ public class MyGcmListenerService extends GcmListenerService
 			{
 				contentText		= context.getString(R.string.notification_new);
 				companyIdApi	= msgId;
+			}
+
+			if(StringUtils.isNotEmpty(msg))
+			{
+				contentText = msg;
 			}
 
 			//Modificación para contemplar companiesPhantom
@@ -336,11 +343,13 @@ public class MyGcmListenerService extends GcmListenerService
 
 			if(clientP == null && StringUtils.isIdMongo(companyIdApi))
 			{
+				newClient = true;
+
 				try
 				{
 					CompanyAsyncTask task	= new CompanyAsyncTask(context, false, companyIdApi, countryCode);
-					//TODO implementar callbacks para prevenir la suspención del UI por delay en la Asynctask
-					companyIdApi			= task.execute().get();
+					task.setFlag(Common.BOOL_YES);
+					task.execute();
 				}
 				catch(Exception e)
 				{
@@ -410,7 +419,7 @@ public class MyGcmListenerService extends GcmListenerService
 							intent.putExtra(Common.KEY_ID, clientP.getCompanyId());
 							image = clientP.getImage();
 							//Rollback para autoañadir companies si no está añadida
-							if(clientP.getFollower() == Common.BOOL_NO && clientP.getBlocked() == Common.BOOL_NO)
+							if(!newClient && clientP.getFollower() == Common.BOOL_NO && clientP.getBlocked() == Common.BOOL_NO)
 							{
 								BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, false, clientP.getCompanyId());
 							}

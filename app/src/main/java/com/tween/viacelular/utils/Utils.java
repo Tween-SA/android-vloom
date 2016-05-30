@@ -73,6 +73,8 @@ public class Utils
 
 					case 2:
 						//Se modifica para reemplazar la pantalla Bloquedas por la pantalla Empresas con tab
+						UpdateUserAsyncTask task	= new UpdateUserAsyncTask(context, Common.BOOL_YES, false, "", true);
+						task.execute();
 						intent = new Intent(context, SuscriptionsActivity.class);
 						intent.putExtra(Common.KEY_TITLE, context.getString(R.string.title_companies));
 						intent.putExtra(Common.KEY_SECTION, position);
@@ -124,7 +126,6 @@ public class Utils
 			push.setContext(context);
 			Bundle bundle				= new Bundle();
 			bundle.putInt(Common.KEY_SOUND, sound);
-			bundle.putString(Message.KEY_API, message.getMsgId());
 			bundle.putString(Common.KEY_TYPE, message.getType());
 			bundle.putString(Message.KEY_PLAYLOAD, message.getMsg());
 			bundle.putString(Message.KEY_TIMESTAMP, String.valueOf(message.getCreated()));

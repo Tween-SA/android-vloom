@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-
 import com.appboy.Appboy;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.BlockedAdapter;
@@ -31,7 +30,6 @@ import com.tween.viacelular.services.IncomingSmsService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;

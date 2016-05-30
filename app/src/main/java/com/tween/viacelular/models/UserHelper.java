@@ -2,15 +2,13 @@ package com.tween.viacelular.models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.tween.viacelular.activities.BlockedActivity;
+import android.os.Looper;
 import com.tween.viacelular.asynctask.CompanyAsyncTask;
 import com.tween.viacelular.data.Country;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import java.util.ArrayList;
-import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -261,54 +259,49 @@ public abstract class UserHelper
 			//Agregado para revisar las suscripciones del usuario
 			if(checkSubscriptions && context != null)
 			{
+				String ids2Add		= "";
+				String ids2Remove	= "";
+
 				if(subs != null)
 				{
 					if(Common.DEBUG)
 					{
-						System.out.println("El usuario tiene suscripciones: "+subs.toString());
+						System.out.println("El usuario tiene "+subs.length()+" suscripciones: "+subs.toString());
 					}
-
-					List<Suscription> blockedApp = new ArrayList<>();
 
 					if(subs.length() > 0)
 					{
 						for(int i = 0; i < subs.length(); i++)
 						{
 							String companyId = subs.getString(i);
+							System.out.println("Tratando con "+companyId+" - es valido: "+StringUtils.isIdMongo(companyId));
 
 							if(StringUtils.isIdMongo(companyId))
 							{
 								//Modificación para validar paso de contexto Realm
 								Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-								String companyIdApi		= "";
 
 								if(suscription == null)
 								{
+									System.out.println("no la tengo en la db");
 									final CompanyAsyncTask task	= new CompanyAsyncTask(context, false, companyId, jCountryCode);
-									//TODO implementar callbacks para prevenir la suspención del UI por delay en la Asynctask
-									companyIdApi				= task.execute().get();
+									task.setFlag(Common.BOOL_YES);
+									task.execute();
 								}
 								else
 								{
-									companyIdApi		= suscription.getCompanyId();
-								}
-
-								if(StringUtils.isNotEmpty(companyIdApi))
-								{
-									suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyIdApi).findFirst();
-
+									System.out.println("la tengo en la db");
 									//Modificación para contemplar casos en que el usuario quitó companies añadidas
 									if(suscription.getBlocked() == Common.BOOL_YES && suscription.getFollower() == Common.BOOL_NO)
 									{
-										BlockedActivity.modifySubscriptions(context, Common.BOOL_NO, false, suscription.getCompanyId());
-										blockedApp.add(suscription);
+										ids2Remove = ids2Remove+"'"+suscription.getCompanyId()+"',";
 									}
 									else
 									{
 										//Agregado para contemplar auto suscripción por lista o campaña mediante web
 										if(suscription.getBlocked() == Common.BOOL_NO && suscription.getFollower() == Common.BOOL_NO)
 										{
-											BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, false, suscription.getCompanyId());
+											ids2Add = ids2Add+"'"+suscription.getCompanyId()+"',";
 										}
 									}
 								}
@@ -316,9 +309,9 @@ public abstract class UserHelper
 						}
 					}
 
+					System.out.println("añadidas que no están en subs");
 					//Agregado para reportar companies que no habían sido reportadas
-					RealmResults<Suscription> added		= realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).findAll();
-					RealmResults<Suscription> locked	= realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_NO).equalTo(Suscription.KEY_BLOCKED, Common.BOOL_YES).findAll();
+					RealmResults<Suscription> added	= realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).findAll();
 
 					if(added.size() > subs.length())
 					{
@@ -326,22 +319,7 @@ public abstract class UserHelper
 						{
 							if(!subs.toString().contains(suscription.getCompanyId()))
 							{
-								BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, false, suscription.getCompanyId());
-							}
-						}
-					}
-
-					if(locked.size() > blockedApp.size())
-					{
-						for(Suscription suscription : locked)
-						{
-							for(Suscription sucription2Block : blockedApp)
-							{
-								if(!sucription2Block.getCompanyId().equals(suscription.getCompanyId()))
-								{
-									BlockedActivity.modifySubscriptions(context, Common.BOOL_NO, false, suscription.getCompanyId());
-									break;
-								}
+								ids2Add = ids2Add+"'"+suscription.getCompanyId()+"',";
 							}
 						}
 					}
@@ -364,27 +342,37 @@ public abstract class UserHelper
 							if(StringUtils.isIdMongo(companyId))
 							{
 								Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-								String companyIdApi		= "";
 
 								if(suscription == null)
 								{
 									final CompanyAsyncTask task	= new CompanyAsyncTask(context, false, companyId, jCountryCode);
-									//TODO implementar callbacks para prevenir la suspención del UI por delay en la Asynctask
-									companyIdApi				= task.execute().get();
+									task.setFlag(Common.BOOL_NO);
+									task.execute();
 								}
 								else
 								{
-									companyIdApi		= suscription.getCompanyId();
-								}
-
-								if(StringUtils.isNotEmpty(companyIdApi))
-								{
-									suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyIdApi).findFirst();
-									BlockedActivity.modifySubscriptions(context, Common.BOOL_NO, false, suscription.getCompanyId());
+									ids2Remove = ids2Remove+"'"+suscription.getCompanyId()+"',";
 								}
 							}
 						}
 					}
+				}
+
+				//Procesar actualización de subscriptions
+				if(StringUtils.isNotEmpty(ids2Add))
+				{
+					ids2Add = ids2Add.substring(0, ids2Add.length() - 1);
+				}
+
+				if(StringUtils.isNotEmpty(ids2Remove))
+				{
+					ids2Remove = ids2Remove.substring(0, ids2Remove.length() - 1);
+				}
+
+				if(StringUtils.isNotEmpty(ids2Add) || StringUtils.isNotEmpty(ids2Remove))
+				{
+					UpdateSubscriptions task = new UpdateSubscriptions(ids2Add, ids2Remove);
+					task.start();
 				}
 			}
 
@@ -436,6 +424,74 @@ public abstract class UserHelper
 		else
 		{
 			System.out.println("\nUser: null");
+		}
+	}
+
+	public static class UpdateSubscriptions extends Thread
+	{
+		private String	added;
+		private String	removed;
+
+		public UpdateSubscriptions(String added, String removed)
+		{
+			this.added		= added;
+			this.removed	= removed;
+		}
+
+		public void start()
+		{
+			try
+			{
+				if(Looper.myLooper() == null)
+				{
+					Looper.prepare();
+				}
+
+				Realm realm	= Realm.getDefaultInstance();
+				realm.executeTransaction(new Realm.Transaction()
+				{
+					@Override
+					public void execute(Realm bgRealm)
+					{
+						RealmResults<Suscription> results = bgRealm.where(Suscription.class).findAll();
+
+						for(int i = results.size() -1; i >=0; i--)
+						{
+							if(added.contains(results.get(i).getCompanyId()))
+							{
+								if(results.get(i).getFollower() == Common.BOOL_NO)
+								{
+									results.get(i).setFollower(Common.BOOL_YES);
+									results.get(i).setBlocked(Common.BOOL_NO);
+									results.get(i).setGray(Common.BOOL_NO);
+									results.get(i).setDataSent(Common.BOOL_NO);
+									results.get(i).setIdentificationValue("");
+								}
+							}
+
+							if(removed.contains(results.get(i).getCompanyId()))
+							{
+								if(results.get(i).getFollower() == Common.BOOL_YES)
+								{
+									results.get(i).setFollower(Common.BOOL_NO);
+									results.get(i).setBlocked(Common.BOOL_YES);
+									results.get(i).setDataSent(Common.BOOL_NO);
+									results.get(i).setIdentificationValue("");
+								}
+							}
+						}
+					}
+				});
+			}
+			catch(Exception e)
+			{
+				System.out.println("UpdateSuscriptionsAsyncTask:UpdateCompany:start - Exception: " + e);
+
+				if(Common.DEBUG)
+				{
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 }

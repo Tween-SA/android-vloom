@@ -147,7 +147,7 @@ public abstract class SuscriptionHelper
 				{
 					for(int i = 0; i < jsonArray.length(); i++)
 					{
-						parseEntity(jsonArray.getJSONObject(i), "", "", context, update);
+						parseEntity(jsonArray.getJSONObject(i), "", "", context, update, 2);
 					}
 				}
 				else
@@ -204,7 +204,7 @@ public abstract class SuscriptionHelper
 	 * @param update
 	 * @return Suscription
 	 */
-	public static Suscription parseEntity(JSONObject jsonObject, String companyId, String countryCode, Context context, boolean update)
+	public static Suscription parseEntity(JSONObject jsonObject, String companyId, String countryCode, Context context, boolean update, int flag)
 	{
 		Suscription company	= null;
 
@@ -238,6 +238,21 @@ public abstract class SuscriptionHelper
 			Integer jFollower			= Common.BOOL_NO;
 			Integer jGray				= Common.BOOL_NO;
 			Realm realm					= Realm.getDefaultInstance();
+
+			//Agregado para preañadir company nueva sin tener que esperar el get de la task
+			if(flag == Common.BOOL_YES)
+			{
+				jFollower	= Common.BOOL_YES;
+				jBlocked	= Common.BOOL_NO;
+			}
+			else
+			{
+				if(flag == Common.BOOL_NO)
+				{
+					jFollower	= Common.BOOL_NO;
+					jBlocked	= Common.BOOL_YES;
+				}
+			}
 
 			if(jsonObject != null)
 			{

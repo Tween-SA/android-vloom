@@ -1,11 +1,17 @@
 package com.tween.viacelular.fragments;
 
 import android.annotation.TargetApi;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,7 +30,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 /**
  * Created by davidfigueroa on 13/1/16.
  */
-public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItemClickListener, StickyListHeadersListView.OnHeaderClickListener,
+public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItemClickListener, StickyListHeadersListView.OnHeaderClickListener, SearchView.OnQueryTextListener,
 																StickyListHeadersListView.OnStickyHeaderOffsetChangedListener, StickyListHeadersListView.OnStickyHeaderChangedListener
 {
 	private static final String		ARG_SECTION_NUMBER	= "section_number";
@@ -157,6 +163,63 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 		{
 			header.setAlpha(1 - (offset / (float) header.getMeasuredHeight()));
+		}
+	}
+
+	//Continue feature
+
+	@Override
+	public boolean onQueryTextChange(String query) {
+		final List<ExampleModel> filteredModelList = filter(mModels, query);
+		mAdapter.animateTo(filteredModelList);
+		mRecyclerView.scrollToPosition(0);
+		return true;
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(String query) {
+		return false;
+	}
+
+	private List<ExampleModel> filter(List<ExampleModel> models, String query) {
+		query = query.toLowerCase();
+
+		final List<ExampleModel> filteredModelList = new ArrayList<>();
+		for (ExampleModel model : models) {
+			final String text = model.getText().toLowerCase();
+			if (text.contains(query)) {
+				filteredModelList.add(model);
+			}
+		}
+		return filteredModelList;
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		MenuInflater inflater = getMenuInflater();
+		// Inflate menu to add items to action bar if it is present.
+		inflater.inflate(R.menu.menu_subscriptions, menu);
+		// Associate searchable configuration with the SearchView
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		SearchView searchView = (SearchView) menu.findItem(R.id.menuSearch).getActionView();
+		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+		return true;
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent)
+	{
+		handleIntent(intent);
+	}
+
+	private void handleIntent(Intent intent)
+	{
+		if(Intent.ACTION_SEARCH.equals(intent.getAction()))
+		{
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			//use the query to search
+			System.out.println("Buscaste: "+query);
 		}
 	}
 

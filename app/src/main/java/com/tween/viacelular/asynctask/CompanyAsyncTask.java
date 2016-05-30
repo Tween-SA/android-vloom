@@ -20,6 +20,7 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 	private boolean			displayDialog	= true;
 	private String			companyId		= "";
 	private String			countryCode		= "";
+	private int				flag			= 2;
 
 	public CompanyAsyncTask(Context context, boolean displayDialog, String companyId, String countryCode)
 	{
@@ -64,13 +65,12 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 	@Override
 	protected String doInBackground(Void... params)
 	{
-		String result		= "";
-		Realm realm			= null;
-		Suscription company	= null;
+		String result = "";
 
 		try
 		{
-			realm							= Realm.getDefaultInstance();
+			Suscription company				= null;
+			Realm realm						= Realm.getDefaultInstance();
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			JSONObject jsonResult			= null;
 			jsonResult						= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES + "/" + companyId, context, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
@@ -78,11 +78,11 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(result.equals(ApiConnection.OK))
 			{
-				company = SuscriptionHelper.parseEntity(jsonResult.getJSONObject(Common.KEY_DATA), companyId, countryCode, context, false);
+				company = SuscriptionHelper.parseEntity(jsonResult.getJSONObject(Common.KEY_DATA), companyId, countryCode, context, false, getFlag());
 			}
 			else
 			{
-				company = SuscriptionHelper.parseEntity(null, companyId, countryCode, context, false);
+				company = SuscriptionHelper.parseEntity(null, companyId, countryCode, context, false, getFlag());
 			}
 
 			companyId = company.getCompanyId();
@@ -133,5 +133,15 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 		}
 
 		super.onPostExecute(company);
+	}
+
+	public int getFlag()
+	{
+		return flag;
+	}
+
+	public void setFlag(final int flag)
+	{
+		this.flag = flag;
 	}
 }
