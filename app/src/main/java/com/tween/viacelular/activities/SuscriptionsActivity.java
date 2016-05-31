@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import com.tween.viacelular.R;
@@ -62,6 +64,19 @@ public class SuscriptionsActivity extends AppCompatActivity
 			TabLayout tabLayout			= (TabLayout) findViewById(R.id.tabLayout);
 			tabLayout.setupWithViewPager(viewPager);
 			context						= getApplicationContext();
+			FloatingActionButton fab	= (FloatingActionButton) findViewById(R.id.fab);
+			final Activity activity		= this;
+			fab.setOnClickListener(new View.OnClickListener()
+			{
+				@Override
+				public void onClick(View view)
+				{
+					Intent intent = new Intent(activity, SearchActivity.class);
+					intent.putExtra(Common.KEY_SECTION, "companies");
+					activity.startActivity(intent);
+					activity.finish();
+				}
+			});
 			updateMenu();
 		}
 		catch(Exception e)
@@ -73,6 +88,12 @@ public class SuscriptionsActivity extends AppCompatActivity
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		return true;
 	}
 
 	@Override

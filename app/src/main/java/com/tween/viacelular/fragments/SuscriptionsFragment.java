@@ -1,17 +1,11 @@
 package com.tween.viacelular.fragments;
 
 import android.annotation.TargetApi;
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,12 +24,14 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 /**
  * Created by davidfigueroa on 13/1/16.
  */
-public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItemClickListener, StickyListHeadersListView.OnHeaderClickListener, SearchView.OnQueryTextListener,
+public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItemClickListener, StickyListHeadersListView.OnHeaderClickListener,
 																StickyListHeadersListView.OnStickyHeaderOffsetChangedListener, StickyListHeadersListView.OnStickyHeaderChangedListener
 {
-	private static final String		ARG_SECTION_NUMBER	= "section_number";
-	private SuscriptionsActivity	activityContext;
-	private int						section;
+	private static final String			ARG_SECTION_NUMBER	= "section_number";
+	private SuscriptionsActivity		activityContext;
+	private int							section;
+	private SuscriptionsAdapter			adapter				= null;
+	private StickyListHeadersListView	stickyList;
 
 	public SuscriptionsFragment()
 	{
@@ -63,13 +59,13 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		{
 			if(Utils.checkSesion(activityContext, Common.ANOTHER_SCREEN))
 			{
-				realm										= Realm.getDefaultInstance();
-				final StickyListHeadersListView stickyList	= (StickyListHeadersListView) view.findViewById(R.id.list);
-				SuscriptionsAdapter adapter					= null;
-				RealmResults<Suscription> allCompanies		= realm.where(Suscription.class).findAllSorted(Common.KEY_NAME);
-				RealmResults<Suscription> suscriptions		= realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).findAllSorted(Common.KEY_NAME);
-				List<String> listSuscriptions				= new ArrayList<>();
-				List<String> listAll						= new ArrayList<>();
+				realm									= Realm.getDefaultInstance();
+				stickyList								= (StickyListHeadersListView) view.findViewById(R.id.list);
+				RealmResults<Suscription> allCompanies	= realm.where(Suscription.class).findAllSorted(Common.KEY_NAME);
+				RealmResults<Suscription> suscriptions	= realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).findAllSorted(Common.KEY_NAME);
+				List<String> listSuscriptions			= new ArrayList<>();
+				List<String> listAll					= new ArrayList<>();
+				section									= getArguments().getInt(ARG_SECTION_NUMBER);
 
 				if(suscriptions != null)
 				{
@@ -97,7 +93,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 					}
 				}
 
-				if(getArguments().getInt(ARG_SECTION_NUMBER) == 1)
+				if(section == 1)
 				{
 					adapter = new SuscriptionsAdapter(listSuscriptions, activityContext);
 				}
@@ -111,6 +107,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 				stickyList.setOnStickyHeaderChangedListener(this);
 				stickyList.setOnStickyHeaderOffsetChangedListener(this);
 				stickyList.setAreHeadersSticky(true);
+
 				//Se quitó el seteo en true de las propiedades FastScrollAlwaysVisible, FastScrollEnabled, DrawingListUnderStickyHeader para mejorar performance y quitar el restaltado
 				stickyList.setAdapter(adapter);
 
@@ -130,6 +127,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		catch(Exception e)
 		{
 			System.out.println("SuscriptionsFragment:onResume - Exception: " + e);
+
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
@@ -160,66 +158,21 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void onStickyHeaderOffsetChanged(final StickyListHeadersListView l, final View header, final int offset)
 	{
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+		try
 		{
-			header.setAlpha(1 - (offset / (float) header.getMeasuredHeight()));
-		}
-	}
-
-	//Continue feature
-
-	@Override
-	public boolean onQueryTextChange(String query) {
-		final List<ExampleModel> filteredModelList = filter(mModels, query);
-		mAdapter.animateTo(filteredModelList);
-		mRecyclerView.scrollToPosition(0);
-		return true;
-	}
-
-	@Override
-	public boolean onQueryTextSubmit(String query) {
-		return false;
-	}
-
-	private List<ExampleModel> filter(List<ExampleModel> models, String query) {
-		query = query.toLowerCase();
-
-		final List<ExampleModel> filteredModelList = new ArrayList<>();
-		for (ExampleModel model : models) {
-			final String text = model.getText().toLowerCase();
-			if (text.contains(query)) {
-				filteredModelList.add(model);
+			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			{
+				header.setAlpha(1 - (offset / (float) header.getMeasuredHeight()));
 			}
 		}
-		return filteredModelList;
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		MenuInflater inflater = getMenuInflater();
-		// Inflate menu to add items to action bar if it is present.
-		inflater.inflate(R.menu.menu_subscriptions, menu);
-		// Associate searchable configuration with the SearchView
-		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		SearchView searchView = (SearchView) menu.findItem(R.id.menuSearch).getActionView();
-		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-		return true;
-	}
-
-	@Override
-	protected void onNewIntent(Intent intent)
-	{
-		handleIntent(intent);
-	}
-
-	private void handleIntent(Intent intent)
-	{
-		if(Intent.ACTION_SEARCH.equals(intent.getAction()))
+		catch(Exception e)
 		{
-			String query = intent.getStringExtra(SearchManager.QUERY);
-			//use the query to search
-			System.out.println("Buscaste: "+query);
+			System.out.println("SuscriptionsFragment:onStickyHeaderOffsetChanged - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 

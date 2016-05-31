@@ -337,6 +337,7 @@ public class SettingsActivity extends AppCompatActivity
 			Message message = new Message();
 			message.setCompanyId("5669786d1b5c469e378a4c15");
 			message.setCountryCode(preferences.getString(Country.KEY_API, ""));
+			message.setCreated(System.currentTimeMillis());
 			Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), MyGcmListenerService.PUSH_NORMAL, message);
 		}
 		catch(Exception e)
@@ -357,6 +358,7 @@ public class SettingsActivity extends AppCompatActivity
 		{
 			Message message = new Message();
 			message.setCompanyId("5699028c7669284157dc9153");
+			message.setCreated(System.currentTimeMillis());
 			Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), MyGcmListenerService.PUSH_WITHOUT_SOUND, message);
 		}
 		catch(Exception e)
@@ -401,6 +403,7 @@ public class SettingsActivity extends AppCompatActivity
 						Message message = new Message();
 						message.setCompanyId("561fa82c34dea37a1dc73905");
 						message.setKind(which);
+						message.setCreated(System.currentTimeMillis());
 
 						switch(which)
 						{

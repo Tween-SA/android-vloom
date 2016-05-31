@@ -223,11 +223,16 @@ public class MyGcmListenerService extends GcmListenerService
 					linkThumb	= link;
 				}
 
-				Long time = Long.valueOf(created);
+				Long time = System.currentTimeMillis();
 
-				if(time < System.currentTimeMillis())
+				if(StringUtils.isLong(created))
 				{
-					time = System.currentTimeMillis();
+					time = Long.valueOf(created);
+
+					if(time < System.currentTimeMillis())
+					{
+						time = System.currentTimeMillis();
+					}
 				}
 
 				//TODO: Agregar autodetección de tipo de mensaje por extensión de url

@@ -274,7 +274,6 @@ public abstract class UserHelper
 						for(int i = 0; i < subs.length(); i++)
 						{
 							String companyId = subs.getString(i);
-							System.out.println("Tratando con "+companyId+" - es valido: "+StringUtils.isIdMongo(companyId));
 
 							if(StringUtils.isIdMongo(companyId))
 							{
@@ -283,14 +282,12 @@ public abstract class UserHelper
 
 								if(suscription == null)
 								{
-									System.out.println("no la tengo en la db");
 									final CompanyAsyncTask task	= new CompanyAsyncTask(context, false, companyId, jCountryCode);
 									task.setFlag(Common.BOOL_YES);
 									task.execute();
 								}
 								else
 								{
-									System.out.println("la tengo en la db");
 									//Modificación para contemplar casos en que el usuario quitó companies añadidas
 									if(suscription.getBlocked() == Common.BOOL_YES && suscription.getFollower() == Common.BOOL_NO)
 									{
@@ -309,7 +306,6 @@ public abstract class UserHelper
 						}
 					}
 
-					System.out.println("añadidas que no están en subs");
 					//Agregado para reportar companies que no habían sido reportadas
 					RealmResults<Suscription> added	= realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).findAll();
 
@@ -325,7 +321,6 @@ public abstract class UserHelper
 					}
 				}
 
-				System.out.println("termina de ver subs, empieza con las quitadas");
 				if(blocked != null)
 				{
 					if(Common.DEBUG)

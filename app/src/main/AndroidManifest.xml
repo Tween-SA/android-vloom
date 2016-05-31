@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.tween.viacelular" xmlns:android="http://schemas.android.com/apk/res/android">
 	<!-- Permissions, Ordanamiento de permisos y agregado del permiso para enviar sms -->
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.READ_CONTACTS" />
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.READ_PROFILE" />
-	<uses-permission android:name="android.permission.READ_SMS" />
-	<uses-permission android:name="android.permission.RECEIVE_SMS" />
-	<uses-permission android:name="android.permission.SEND_SMS" />
-	<uses-permission android:name="android.permission.USE_CREDENTIALS" />
-	<uses-permission android:name="android.permission.WAKE_LOCK" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-	<permission android:name="com.tween.viacelular.permission.C2D_MESSAGE"
-		android:protectionLevel="signature" />
-	<uses-permission android:name="com.tween.viacelular.permission.C2D_MESSAGE" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+	<uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.READ_CONTACTS"/>
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.READ_PROFILE"/>
+	<uses-permission android:name="android.permission.READ_SMS"/>
+	<uses-permission android:name="android.permission.RECEIVE_SMS"/>
+	<uses-permission android:name="android.permission.SEND_SMS"/>
+	<uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+	<uses-permission android:name="android.permission.WAKE_LOCK"/>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+	<permission android:name="com.tween.viacelular.permission.C2D_MESSAGE" android:protectionLevel="signature"/>
+	<uses-permission android:name="com.tween.viacelular.permission.C2D_MESSAGE"/>
 	<application
 		android:name="android.support.multidex.MultiDexApplication"
 		android:allowBackup="true"
@@ -33,18 +32,18 @@
 			android:theme="@style/Login"
 			android:windowSoftInputMode="adjustResize|stateHidden">
 			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
+				<action android:name="android.intent.action.MAIN"/>
+				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 			<intent-filter>
-				<action android:name="android.intent.action.VIEW" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
+				<action android:name="android.intent.action.VIEW"/>
+				<category android:name="android.intent.category.DEFAULT"/>
+				<category android:name="android.intent.category.BROWSABLE"/>
 				<!-- Accepts URIs that begin with "http://*.viacelular.com/” -->
 				<data
 					android:host="*.vloom.io"
 					android:pathPrefix="/"
-					android:scheme="http" />
+					android:scheme="http"/>
 				<!-- note that the leading "/" is required for pathPrefix.  Accepts URIs that begin with "example://gizmos” <data android:scheme="example" android:host="gizmos" /> -->
 			</intent-filter>
 		</activity>
@@ -97,7 +96,7 @@
 			android:windowSoftInputMode="adjustResize|stateHidden">
 		</activity>
 		<activity
-			android:name=".activities.ProfileActivity"
+			android:name="com.tween.viacelular.activities.ProfileActivity"
 			android:label="@string/settings"
 			android:screenOrientation="portrait"
 			android:theme="@style/Company"
@@ -109,15 +108,6 @@
 			android:screenOrientation="portrait"
 			android:theme="@style/Theme.MyTheme"
 			android:windowSoftInputMode="adjustResize|stateHidden">
-			<!-- to identify this activity as "searchable" -->
-			<intent-filter>
-				<action android:name="android.intent.action.SEARCH" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-
-			<meta-data
-				android:name="android.app.searchable"
-				android:resource="@xml/searchable" />
 		</activity>
 		<activity
 			android:name="com.tween.viacelular.activities.SuggestionsActivity"
@@ -128,8 +118,22 @@
 		<activity
 			android:name="com.facebook.FacebookActivity"
 			android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-			android:theme="@android:style/Theme.Translucent.NoTitleBar"
-			android:label="@string/app_name" />
+			android:label="@string/app_name"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+		<activity
+			android:name=".activities.SearchActivity"
+			android:label="@string/title_companies"
+			android:screenOrientation="portrait"
+			android:theme="@style/Theme.MyTheme"
+			android:windowSoftInputMode="adjustResize|stateHidden"
+			android:launchMode="singleTop">
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+			</intent-filter>
+			<meta-data
+				android:name="android.app.searchable"
+				android:resource="@xml/searchable" />
+		</activity>
 		<!-- Other things -->
 		<meta-data
 			android:name="com.google.android.gms.version"
@@ -141,7 +145,8 @@
 			android:name="com.facebook.sdk.ApplicationId"
 			android:value="542017085935970" />
 		<!-- Receivers & Listeners -->
-		<receiver android:name="com.tween.viacelular.services.IncomingSmsService"
+		<receiver
+			android:name=".services.IncomingSmsService"
 			android:enabled="true">
 			<intent-filter>
 				<action android:name="android.provider.Telephony.SMS_RECEIVED" />
@@ -149,8 +154,8 @@
 		</receiver>
 		<receiver
 			android:name="com.google.android.gms.gcm.GcmReceiver"
-			android:exported="true"
 			android:enabled="true"
+			android:exported="true"
 			android:permission="com.google.android.c2dm.permission.SEND">
 			<intent-filter>
 				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -167,8 +172,8 @@
 		</receiver>
 		<receiver
 			android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
-			android:exported="true"
 			android:enabled="true"
+			android:exported="true"
 			android:permission="android.permission.INSTALL_PACKAGES">
 			<intent-filter>
 				<action android:name="com.android.vending.INSTALL_REFERRER" />
@@ -177,24 +182,24 @@
 		<!-- Services -->
 		<service
 			android:name="com.tween.viacelular.services.MyGcmListenerService"
-			android:exported="false"
-			android:enabled="true">
+			android:enabled="true"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
 			</intent-filter>
 		</service>
 		<service
 			android:name="com.tween.viacelular.services.MyInstanceIDListenerService"
-			android:exported="false"
-			android:enabled="true">
+			android:enabled="true"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="com.google.android.gms.iid.InstanceID" />
 			</intent-filter>
 		</service>
 		<service
 			android:name="com.tween.viacelular.services.RegistrationIntentService"
-			android:exported="false"
-			android:enabled="true">
+			android:enabled="true"
+			android:exported="false">
 		</service>
 		<service
 			android:name="com.google.android.gms.analytics.AnalyticsService"
