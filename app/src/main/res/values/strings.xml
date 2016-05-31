@@ -294,5 +294,4 @@
 		<item>Vaciar mensajes</item>
 		<item>Quitar</item><!-- after traslate -->
 	</string-array>
-	<string name="title_activity_main">MainActivity</string>
 </resources>
