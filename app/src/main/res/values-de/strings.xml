@@ -127,6 +127,7 @@
 	<string name="repassword">Passwort wiederholen</string>
 	<string name="report">Melden</string>
 	<string name="response_invalid">Deine Anfrage konnte nicht bearbeitet werden, bitte versuche es noch einmal</string>
+	<string name="seach">Suche</string><!-- after traslate -->
 	<string name="send_code">Wir schicken eine SMS mit einem Freischaltcode an diese Nummer</string>
 	<string name="send_mail_text">mit Vloom Android:</string>
 	<string name="send_push_sms">Sende Testbenachrichtigung (SMS)</string>

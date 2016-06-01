@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -64,19 +63,6 @@ public class SuscriptionsActivity extends AppCompatActivity
 			TabLayout tabLayout			= (TabLayout) findViewById(R.id.tabLayout);
 			tabLayout.setupWithViewPager(viewPager);
 			context						= getApplicationContext();
-			FloatingActionButton fab	= (FloatingActionButton) findViewById(R.id.fab);
-			final Activity activity		= this;
-			fab.setOnClickListener(new View.OnClickListener()
-			{
-				@Override
-				public void onClick(View view)
-				{
-					Intent intent = new Intent(activity, SearchActivity.class);
-					intent.putExtra(Common.KEY_SECTION, "companies");
-					activity.startActivity(intent);
-					activity.finish();
-				}
-			});
 			updateMenu();
 		}
 		catch(Exception e)

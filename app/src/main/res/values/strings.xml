@@ -7,9 +7,7 @@
 	<string name="agree">Aceptar</string>
 	<string name="app">Aplicación</string>
 	<string name="bad_request">Solicitud Incorrecta</string>
-	<string name="block_service_text">No recibirás más notificaciones, ni información de este
-		servicio.
-	</string>
+	<string name="block_service_text">No recibirás más notificaciones, ni información de este servicio.</string>
 	<string name="block_service">Bloquear servicio</string>
 	<string name="block">Bloquear</string>
 	<string name="btn_continue">Continuar</string>
@@ -50,30 +48,22 @@
 	<string name="i_read">Al pulsar Continuar aceptas los Términos y Condiciones</string>
 	<string name="invite">Invitación</string>
 	<string name="landing_card_form_header">Mejora tu experiencia</string><!-- after traslate -->
-	<string name="landing_card_form_text1">Recibe notificaciones personalizadas, ingresa tu
-	</string><!-- after traslate -->
+	<string name="landing_card_form_text1">Recibe notificaciones personalizadas, ingresa tu</string><!-- after traslate -->
 	<string name="landing_card_form_text2">y haz clic en continuar.</string><!-- after traslate -->
 	<string name="landing_card_error_header">Oops!</string><!-- after traslate -->
 	<string name="landing_card_error_retry">Enviar nuevamente</string><!-- after traslate -->
-	<string name="landing_card_error_text">Tus datos no se guardaron, por favor intenta
-		nuevamente.
-	</string><!-- after traslate -->
+	<string name="landing_card_error_text">Tus datos no se guardaron, por favor intenta nuevamente.</string><!-- after traslate -->
 	<string name="landing_card_loading_header">Solo un momento...</string><!-- after traslate -->
-	<string name="landing_card_loading_text">Estamos guardando tus datos
-	</string><!-- after traslate -->
+	<string name="landing_card_loading_text">Estamos guardando tus datos</string><!-- after traslate -->
 	<string name="landing_card_ok_header">¡Todo en marcha!</string><!-- after traslate -->
-	<string name="landing_card_ok_text">Guardamos tu identificación de cliente para ofrecerte una
-		mejor experiencia
-	</string><!-- after traslate -->
+	<string name="landing_card_ok_text">Guardamos tu identificación de cliente para ofrecerte una mejor experiencia</string><!-- after traslate -->
 	<string name="landing_contact">Contacto</string>
 	<string name="landing_dismiss">Ignorar</string><!-- after traslate -->
 	<string name="landing_example">Mensajes de ejemplo</string>
 	<string name="landing_suscribe">Añadir</string>
 	<string name="landing_suscribed">Añadida</string>
 	<string name="landing_unsuscribe">Quitar</string>
-	<string name="landing_title">Recibe notificaciones de vencimiento, promociones y novedades de
-		<xliff:g example="Empresa" id="company">%s</xliff:g>
-	</string>
+	<string name="landing_title">Recibe notificaciones de vencimiento, promociones y novedades de<xliff:g example="Empresa" id="company">%s</xliff:g></string>
 	<string name="login_begin">Inicia sesión para empezar</string>
 	<string name="login">Iniciar sesión con tu e-mail</string>
 	<string name="logout">Cerrar Sesión</string>
@@ -91,26 +81,17 @@
 	<string name="navigation_drawer_close">Cierra el menú lateral</string>
 	<string name="navigation_drawer_open">Abre el menú lateral</string>
 	<string name="no_blocked">No hay empresas bloqueadas</string>
-	<string name="no_subblocked">Cuando existan empresas o servicios bloqueados podrás verlos
-		aquí.
-	</string>
+	<string name="no_subblocked">Cuando existan empresas o servicios bloqueados podrás verlos aquí.</string>
 	<string name="no_content">Sin contenido</string>
 	<string name="no_country">Debes seleccionar tu país</string>
 	<string name="no_internet">No dispones de conexión a internet</string>
 	<string name="no_messages_card">Sin mensajes</string>
-	<string name="no_messages_text">Aún no has recibido nada por aquí, te avisaremos cuando esto
-		suceda.
-	</string>
+	<string name="no_messages_text">Aún no has recibido nada por aquí, te avisaremos cuando esto suceda.</string>
 	<string name="no_notifications">Sin notificaciones</string>
-	<string name="no_subnotifications">Aún no has recibido ningún mensaje de empresas o servicios.
-	</string>
-	<string name="no_play_services">Vloom no se ejecutará correctamente sin los servicios de Google
-		Play faltantes en su dispositivo
-	</string>
+	<string name="no_subnotifications">Aún no has recibido ningún mensaje de empresas o servicios.</string>
+	<string name="no_play_services">Vloom no se ejecutará correctamente sin los servicios de Google Play faltantes en su dispositivo</string>
 	<string name="no_supported">Este dispositivo no es compatible con la aplicación</string>
-	<string name="not_available">Lo sentimos, esta función estará disponible en una futura
-		actualización
-	</string>
+	<string name="not_available">Lo sentimos, esta función estará disponible en una futura actualización</string>
 	<string name="notification">Notificación</string>
 	<string name="notification_new">Tienes una nueva notificación</string>
 	<string name="notification_view">Ver notificaciones</string><!-- after traslate -->
@@ -122,23 +103,17 @@
 	<string name="password_wrong">Las contraseñas no coinciden</string>
 	<string name="password">Contraseña</string>
 	<string name="phone_blank">Debes ingresar tu número de teléfono</string>
-	<string name="phone_desc">Enviaremos un SMS con el código de verificación a tu número. Para usar
-		Vloom tienes que verificar tu número de teléfono.
-	</string>
+	<string name="phone_desc">Enviaremos un SMS con el código de verificación a tu número. Para usar Vloom tienes que verificar tu número de teléfono.</string>
 	<string name="phone_example">Por ejemplo:</string>
 	<string name="phone_hint">Coloque su teléfono</string>
 	<string name="phone_invalid">Tu número de teléfono debe ser númerico</string>
-	<string name="phone_lenght">Tu número de teléfono debe respetar la cantidad de dígitos según tu
-		país
-	</string>
+	<string name="phone_lenght">Tu número de teléfono debe respetar la cantidad de dígitos según tu país</string>
 	<string name="phone">Teléfono</string>
 	<string name="please_retry">Por favor reintenta más tarde</string>
 	<string name="please_wait">Por favor aguarde...</string>
 	<string name="progress_dialog">Procesando...</string>
 	<string name="rate_dialog_title">¿Calificar con 5 estrellas a Vloom?</string>
-	<string name="rate_dialog_message">Será sólo un minuto. Tu opinión es importante para nosotros
-		¡Gracias!
-	</string>
+	<string name="rate_dialog_message">Será sólo un minuto. Tu opinión es importante para nosotros ¡Gracias!</string>
 	<string name="rate_dialog_ok">Calificar</string>
 	<string name="rate_dialog_cancel">Más tarde</string>
 	<string name="rate_dialog_no">No, gracias</string>
@@ -154,14 +129,14 @@
 	<string name="repassword">Repetir contraseña</string>
 	<string name="report">Denunciar</string>
 	<string name="response_invalid">Tu solicitud no pudo ser procesada, intenta nuevamente</string>
+	<string name="seach">Buscar</string><!-- after traslate -->
 	<string name="send_code">Enviamos un SMS con el código de activación al número</string>
 	<string name="send_mail_text">con Vloom Android:\n</string>
 	<string name="send_push_sms">Enviar notificación de prueba (SMS)</string>
 	<string name="send_push">Enviar notificación de prueba</string>
 	<string name="send_simil_sms">Enviar SMS de prueba</string>
 	<string name="send_statistics">Ayuda a mejorar</string>
-	<string name="sent_sms">Enviamos un SMS con el código de activación al número +000000000000
-	</string>
+	<string name="sent_sms">Enviamos un SMS con el código de activación al número +000000000000</string>
 	<string name="service_unavailable">Servicio Temporalmente No Disponible</string>
 	<string name="settings">Configuración</string>
 	<string name="share">Compartir</string>
@@ -189,9 +164,7 @@
 	<string name="sub_send_stadistics">Envíe estadísticas de uso</string>
 	<string name="sub_sms_paid_text">Este servicio posee costos por mensaje</string>
 	<string name="suggestions_atitle">Sugerencias</string><!-- after traslate -->
-	<string name="suggestions_subtitle">Recibirás información relevante de tus suscripciones,
-		recuerda que puedes quitar esta empresa en cualquier momento si lo deseas.
-	</string><!-- after traslate -->
+	<string name="suggestions_subtitle">Recibirás información relevante de tus suscripciones, recuerda que puedes quitar esta empresa en cualquier momento si lo deseas.</string><!-- after traslate -->
 	<string name="suggestions_title">Tus primeras suscripciones</string><!-- after traslate -->
 	<string name="thank_you">Gracias!</string>
 	<string name="timer_count">Si no recibiste el sms, te llamaremos en 0:00</string>
@@ -226,33 +199,20 @@
 	<string name="week">semana</string>
 	<string name="weeks">semanas</string>
 	<string name="welcome_notification">Te damos la bienvenida</string>
-	<string name="welcome_text">Aquí aparecerán los mensajes de tus empresas y servicios cuando
-		ellas se quieran comunicar contigo.
-	</string>
-	<string name="welcome">Olvidate de pagar tarde\ntus servicios, llegar\ntarde a tu médico
-		y\nperder tiempo en el\nservicio postal
-	</string>
-	<string name="welcome1_sub">Ordenamos los mensajes que recibes\ncon un diseño práctico y
-		sencillo
-	</string>
+	<string name="welcome_text">Aquí aparecerán los mensajes de tus empresas y servicios cuando ellas se quieran comunicar contigo.</string>
+	<string name="welcome">Olvidate de pagar tarde\ntus servicios, llegar\ntarde a tu médico y\nperder tiempo en el\nservicio postal</string>
+	<string name="welcome1_sub">Ordenamos los mensajes que recibes\ncon un diseño práctico y sencillo</string>
 	<string name="welcome1">Todo organizado</string>
-	<string name="welcome2_sub">Maneja a tu manera lo que quieres\nrecibir, solo lo que te
-		interesa
-	</string>
+	<string name="welcome2_sub">Maneja a tu manera lo que quieres\nrecibir, solo lo que te interesa</string>
 	<string name="welcome2">Silencia, Vacía o Bloquea</string>
-	<string name="welcome3_sub">Identifica rápidamente los mensajes\nque tienen costos para ti
-	</string>
+	<string name="welcome3_sub">Identifica rápidamente los mensajes\nque tienen costos para ti</string>
 	<string name="welcome3">Sin SMS con costos</string>
-	<string name="welcome4_sub">Sienteté libre para compartir lo que recibes\nen aplicaciones de
-		terceros
-	</string>
+	<string name="welcome4_sub">Sienteté libre para compartir lo que recibes\nen aplicaciones de terceros</string>
 	<string name="welcome4">Comparte fácil</string>
 	<string name="year">año</string>
 	<string name="years">años</string>
 	<string name="yesterday">Ayer</string>
-	<string name="you_have_text">Podrás recibir, compartir o silenciar los mensajes, si te molestan
-		puedes bloquear la empresa, también denunciarla para ayudarnos a mejorar.
-	</string>
+	<string name="you_have_text">Podrás recibir, compartir o silenciar los mensajes, si te molestan puedes bloquear la empresa, también denunciarla para ayudarnos a mejorar.</string>
 	<string name="you_have">Tu tienes el control</string>
 	<string-array name="codes">
 		<item>+549</item>

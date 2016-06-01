@@ -2,19 +2,57 @@
 <RelativeLayout
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	xmlns:android="http://schemas.android.com/apk/res/android">
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+	<android.support.design.widget.FloatingActionButton
+		android:id="@+id/fab"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:backgroundTint="@color/action"
+		app:borderWidth="0dp"
+		app:elevation="4dp"
+		app:fabSize="mini"
+		android:layout_marginTop="8dp"
+		android:layout_marginLeft="10dp"
+		android:visibility="visible"
+		android:clickable="true"
+		android:src="@drawable/ic_search_white_36dp" />
+	<android.support.design.widget.TextInputLayout
+		android:layout_width="220dp"
+		android:layout_height="wrap_content"
+		android:id="@+id/inputFilter"
+		android:layout_marginTop="8dp"
+		android:layout_toRightOf="@+id/fab"
+		android:visibility="gone">
+		<EditText
+			android:id="@+id/editFilter"
+			android:layout_width="220dp"
+			android:layout_height="wrap_content"
+			android:hint="@string/seach"
+			android:textColorHint="@color/gray"
+			android:imeActionId="@+id/search"
+			android:imeActionLabel="@string/seach"
+			android:imeOptions="actionUnspecified"
+			android:inputType="textFilter"
+			android:maxLines="1"
+			android:singleLine="true" />
+	</android.support.design.widget.TextInputLayout>
 	<se.emilsjolander.stickylistheaders.StickyListHeadersListView
 		android:id="@+id/list"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:clipToPadding="false"
 		android:drawSelectorOnTop="true"
-		android:padding="16dp"
+		android:paddingTop="4dp"
+		android:paddingRight="16dp"
+		android:paddingLeft="16dp"
+		android:paddingBottom="16dp"
 		android:scrollbarStyle="outsideOverlay"
 		android:fastScrollEnabled="true"
 		android:overScrollMode="never"
 		android:layout_marginBottom="40dp"
 		android:dividerHeight="0dp"
+		android:layout_below="@+id/fab"
 		android:background="@android:color/transparent" />
 	<TextView
 		android:layout_width="match_parent"

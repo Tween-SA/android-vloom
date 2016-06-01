@@ -120,20 +120,6 @@
 			android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
 			android:label="@string/app_name"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-		<activity
-			android:name=".activities.SearchActivity"
-			android:label="@string/title_companies"
-			android:screenOrientation="portrait"
-			android:theme="@style/Theme.MyTheme"
-			android:windowSoftInputMode="adjustResize|stateHidden"
-			android:launchMode="singleTop">
-			<intent-filter>
-				<action android:name="android.intent.action.SEARCH" />
-			</intent-filter>
-			<meta-data
-				android:name="android.app.searchable"
-				android:resource="@xml/searchable" />
-		</activity>
 		<!-- Other things -->
 		<meta-data
 			android:name="com.google.android.gms.version"

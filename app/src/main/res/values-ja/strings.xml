@@ -127,6 +127,7 @@
 	<string name="repassword">パスワードを再入力</string>
 	<string name="report">報告する</string>
 	<string name="response_invalid">リクエストを処理できませんでした。もう一度やり直してください</string>
+	<string name="seach">検索</string><!-- after traslate -->
 	<string name="send_code">アクティベーションコードを掲載したSMSがその番号に送信されました</string>
 	<string name="send_mail_text">Vloom Android用：</string>
 	<string name="send_push_sms">テスト通知（SMS）を送信</string>
