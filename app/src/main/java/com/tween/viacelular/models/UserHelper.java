@@ -325,7 +325,7 @@ public abstract class UserHelper
 				{
 					if(Common.DEBUG)
 					{
-						System.out.println("El usuario tiene quitadas: " + blocked.toString());
+						System.out.println("El usuario tiene "+blocked.length()+" empresas quitadas: " + blocked.toString());
 					}
 
 					if(blocked.length() > 0)

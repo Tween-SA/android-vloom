@@ -69,14 +69,14 @@ public class IncomingSmsService extends BroadcastReceiver
 							address	= currentMessage.getDisplayOriginatingAddress().replace("+", "");
 							message	= currentMessage.getDisplayMessageBody();
 
-							if(currentMessage.getTimestampMillis() < System.currentTimeMillis())
+							/*if(currentMessage.getTimestampMillis() < System.currentTimeMillis())
 							{
 								date = String.valueOf(currentMessage.getTimestampMillis());
 							}
 							else
-							{
+							{*/
 								date = String.valueOf(System.currentTimeMillis());
-							}
+							//}
 
 							if(Common.DEBUG)
 							{

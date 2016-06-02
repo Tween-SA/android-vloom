@@ -43,6 +43,7 @@ import com.tween.viacelular.asynctask.SendIdentificationKeyAsyncTask;
 import com.tween.viacelular.data.ApiConnection;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.utils.Common;
@@ -251,7 +252,7 @@ public class CardViewActivity extends AppCompatActivity
 					else
 					{
 						//Validar con PO para ver si cuando no hay texto no mostramos nada en vez del placeholder siguiente
-						txtSubSuscribe.setText(getString(R.string.landing_title, suscription.getName()));
+						txtSubSuscribe.setText(getString(R.string.landing_title, " "+suscription.getName()));
 					}
 
 					if(notifications != null)
@@ -342,6 +343,7 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			if(menu != null)
 			{
+				Migration.getDB(CardViewActivity.this);
 				Realm realm	= Realm.getDefaultInstance();
 				suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 

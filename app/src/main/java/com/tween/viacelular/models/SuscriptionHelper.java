@@ -101,7 +101,8 @@ public abstract class SuscriptionHelper
 		{
 			Migration.getDB(context);
 			Realm realm							= Realm.getDefaultInstance();
-			RealmResults<Message> realmResults	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).notEqualTo(Common.KEY_STATUS, Message.STATUS_SPAM).findAll();
+			RealmResults<Message> realmResults	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).notEqualTo(Common.KEY_STATUS, Message.STATUS_SPAM)
+													.findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 			realmResults.distinct(Suscription.KEY_API);
 
 			//Agregado para corregir que las companies se orden por creación de último mensaje

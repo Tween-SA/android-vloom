@@ -513,6 +513,8 @@ public class MyGcmListenerService extends GcmListenerService
 						}
 					}
 				}
+
+				//Reload Home if it's running
 			}
 			else
 			{

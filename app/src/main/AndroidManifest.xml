@@ -107,7 +107,7 @@
 			android:label="@string/title_companies"
 			android:screenOrientation="portrait"
 			android:theme="@style/Theme.MyTheme"
-			android:windowSoftInputMode="adjustResize|stateHidden">
+			android:windowSoftInputMode="adjustPan|stateHidden">
 		</activity>
 		<activity
 			android:name="com.tween.viacelular.activities.SuggestionsActivity"

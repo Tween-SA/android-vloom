@@ -12,12 +12,10 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.SuscriptionsActivity;
 import com.tween.viacelular.adapters.SuscriptionsAdapter;
@@ -25,10 +23,8 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -75,7 +71,6 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		{
 			if(Utils.checkSesion(activityContext, Common.ANOTHER_SCREEN))
 			{
-				disableFilter();
 				stickyList	= (StickyListHeadersListView) view.findViewById(R.id.list);
 				inputFilter	= (TextInputLayout) view.findViewById(R.id.inputFilter);
 				editFilter	= (EditText) view.findViewById(R.id.editFilter);
@@ -115,18 +110,14 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 					@Override
 					public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent)
 					{
-						System.out.println("onEditorAction: "+id);
-						if(id == R.id.search || id == EditorInfo.IME_NULL)
-						{
-							//Ejecutar consulta filtrada
-							populateList();
-							return true;
-						}
-
-						return false;
+						//Ejecutar consulta filtrada
+						populateList();
+						hideSoftKeyboard();
+						return true;
 					}
 				});
 
+				disableFilter();
 				populateList();
 			}
 		}
@@ -154,10 +145,17 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 			if(section == 1)
 			{
 				//Tab Añadidas
-				if(StringUtils.isNotEmpty(editFilter.getText().toString()))
+				if(editFilter != null)
 				{
-					suscriptions = realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).contains(Common.KEY_NAME, editFilter.getText().toString(), Case.INSENSITIVE)
-									.findAllSorted(Common.KEY_NAME);
+					if(StringUtils.isNotEmpty(editFilter.getText().toString()))
+					{
+						suscriptions = realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).contains(Common.KEY_NAME, editFilter.getText().toString(), Case.INSENSITIVE)
+								.findAllSorted(Common.KEY_NAME);
+					}
+					else
+					{
+						suscriptions = realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).findAllSorted(Common.KEY_NAME);
+					}
 				}
 				else
 				{
@@ -167,9 +165,16 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 			else
 			{
 				//Tab Todas
-				if(StringUtils.isNotEmpty(editFilter.getText().toString()))
+				if(editFilter != null)
 				{
-					suscriptions = realm.where(Suscription.class).contains(Common.KEY_NAME, editFilter.getText().toString(), Case.INSENSITIVE).findAllSorted(Common.KEY_NAME);
+					if(StringUtils.isNotEmpty(editFilter.getText().toString()))
+					{
+						suscriptions = realm.where(Suscription.class).contains(Common.KEY_NAME, editFilter.getText().toString(), Case.INSENSITIVE).findAllSorted(Common.KEY_NAME);
+					}
+					else
+					{
+						suscriptions = realm.where(Suscription.class).findAllSorted(Common.KEY_NAME);
+					}
 				}
 				else
 				{
@@ -263,6 +268,9 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 			if(inputFilter != null)
 			{
 				inputFilter.setVisibility(TextInputLayout.VISIBLE);
+				editFilter.requestFocus();
+				inputFilter.requestFocus();
+				showSoftKeyboard();
 			}
 		}
 		catch(Exception e)
@@ -299,11 +307,14 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 
 				if(editFilter != null)
 				{
-					editFilter.setText("");
+					if(StringUtils.isNotEmpty(editFilter.getText().toString()))
+					{
+						editFilter.setText("");
+						populateList();
+					}
 				}
 			}
 
-			populateList();
 			hideSoftKeyboard();
 		}
 		catch(Exception e)
@@ -353,6 +364,35 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 			{
 				InputMethodManager inputMethodManager = (InputMethodManager) activityContext.getSystemService(Context.INPUT_METHOD_SERVICE);
 				inputMethodManager.hideSoftInputFromWindow(activityContext.getCurrentFocus().getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("FeedbackActivity:hideSoftKeyboard - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Agregado para mostrar el teclado
+	 */
+	private void showSoftKeyboard()
+	{
+		try
+		{
+			activityContext.getWindow().setSoftInputMode(originalSoftInputMode);
+
+			// Hide keyboard when paused.
+			View currentFocusView = activityContext.getCurrentFocus();
+
+			if(currentFocusView != null)
+			{
+				InputMethodManager inputMethodManager = (InputMethodManager) activityContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+				inputMethodManager.showSoftInput(activityContext.getCurrentFocus(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
 			}
 		}
 		catch(Exception e)

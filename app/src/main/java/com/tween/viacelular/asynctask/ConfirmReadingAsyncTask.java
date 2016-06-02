@@ -133,7 +133,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 							{
 								JSONObject jsonObject = new JSONObject();
 								jsonObject.put(Common.KEY_ID, notification.getMsgId());
-								jsonObject.put(Common.KEY_STATUS, notification.getStatus());
+								jsonObject.put(Common.KEY_STATUS, Message.STATUS_READ);
 
 								//Agregado para incluir campos de campaña y lista si están
 								if(StringUtils.isNotEmpty(notification.getCampaignId()))
