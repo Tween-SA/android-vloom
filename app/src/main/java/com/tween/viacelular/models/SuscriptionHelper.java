@@ -100,8 +100,8 @@ public abstract class SuscriptionHelper
 		try
 		{
 			Migration.getDB(context);
-			Realm realm							= Realm.getDefaultInstance();
-			RealmResults<Message> realmResults	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).notEqualTo(Common.KEY_STATUS, Message.STATUS_SPAM)
+			Realm realm							= Realm.getDefaultInstance();//No mostrar mensajes personales
+			RealmResults<Message> realmResults	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
 													.findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 			realmResults.distinct(Suscription.KEY_API);
 
@@ -865,7 +865,7 @@ public abstract class SuscriptionHelper
 		{
 			Realm realm				= Realm.getDefaultInstance();
 			Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			RealmResults<Message> messages	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).notEqualTo(Common.KEY_STATUS, Message.STATUS_SPAM)
+			RealmResults<Message> messages	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
 					.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAll();
 
 			if(messages.size() > 0)

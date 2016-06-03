@@ -183,7 +183,7 @@ public class CardViewActivity extends AppCompatActivity
 						//Agregado para corregir ARN por phantomCompany
 						if(StringUtils.isNotEmpty(companyId))
 						{
-							notifications	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).notEqualTo(Common.KEY_STATUS, Message.STATUS_SPAM)
+							notifications	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
 												.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 						}
 

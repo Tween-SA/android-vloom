@@ -67,6 +67,8 @@ public class Message extends RealmObject
 	@Ignore
 	public static final int STATUS_SPAM				= 5;
 	@Ignore
+	public static final int STATUS_PERSONAL			= 6;
+	@Ignore
 	public static final String FLAGS_PUSH			= "1";
 	@Ignore
 	public static final String FLAGS_SMS			= "2";

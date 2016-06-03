@@ -190,7 +190,11 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 				{
 					for(Suscription suscription: suscriptions)
 					{
-						listSuscriptions.add(suscription.getCompanyId());
+						//Agregado para evitar mostrar phantoms companies
+						if(StringUtils.isIdMongo(suscription.getCompanyId()))
+						{
+							listSuscriptions.add(suscription.getCompanyId());
+						}
 					}
 				}
 			}

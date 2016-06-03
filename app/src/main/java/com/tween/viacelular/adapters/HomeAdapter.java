@@ -114,7 +114,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 
 				if(item != null)
 				{
-					RealmResults<Message> countNotif = realm.where(Message.class).notEqualTo(Common.KEY_STATUS, Message.STATUS_SPAM).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES)
+					RealmResults<Message> countNotif = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
 														.equalTo(Suscription.KEY_API, item.getCompanyId()).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 
 					if(countNotif.size() > 0)

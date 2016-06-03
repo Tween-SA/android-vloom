@@ -97,7 +97,7 @@ public class IncomingSmsService extends BroadcastReceiver
 							{
 								if(notifications.size() == 0)
 								{
-									if(	StringUtils.isCompanyNumber(address) || message.contains(Message.SMS_CODE) || message.contains(Message.SMS_CODE_ES) || message.contains(Message.SMS_CODE_NEW) ||
+									if(	StringUtils.isPhoneNumber(address) || message.contains(Message.SMS_CODE) || message.contains(Message.SMS_CODE_ES) || message.contains(Message.SMS_CODE_NEW) ||
 										message.contains(Message.SMS_CODE_ES_NEW))
 									{
 										notification = new Message();
@@ -238,6 +238,13 @@ public class IncomingSmsService extends BroadcastReceiver
 										notification.setPhone(preferences.getString(User.KEY_PHONE, ""));
 										notification.setCompanyId(companyId);
 										notification.setFlags(Message.FLAGS_SMS);
+										//Agregado para contemplar números largos
+										notification.setKind(Message.KIND_TEXT);
+
+										if(!StringUtils.isCompanyNumber(address))
+										{
+											notification.setStatus(Message.STATUS_PERSONAL);
+										}
 
 										realm.beginTransaction();
 										realm.copyToRealmOrUpdate(notification);

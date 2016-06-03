@@ -210,7 +210,7 @@ public class BlockedActivity extends AppCompatActivity
 			{
 				//Modificación para leer mensajes desde Realm
 				RealmResults<Message> messages = realm.where(Message.class).equalTo(Common.KEY_TYPE, Message.TYPE_SMS).equalTo(Suscription.KEY_API, companyId)
-													.findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
+													.lessThan(Common.KEY_STATUS, Message.STATUS_SPAM).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 
 				if(messages.size() > 0)
 				{

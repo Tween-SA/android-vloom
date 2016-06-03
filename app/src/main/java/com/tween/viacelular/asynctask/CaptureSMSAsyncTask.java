@@ -200,7 +200,8 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 								}
 							}
 
-							if(StringUtils.isCompanyNumber(address))
+							//Se incorpora lectura de sms personales
+							if(StringUtils.isPhoneNumber(address))
 							{
 								RealmResults<Message> notifications = null;
 
@@ -338,17 +339,25 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 											}
 										}
 
-										notification.setChannel(address);
-
-										if(read == 1)
+										//Si el mensaje es personal el status es 6 - Personal
+										if(StringUtils.isCompanyNumber(address))
 										{
-											notification.setStatus(Message.STATUS_READ);
+											if(read == 1)
+											{
+												notification.setStatus(Message.STATUS_READ);
+											}
+											else
+											{
+												notification.setStatus(Message.STATUS_RECEIVE);
+											}
 										}
 										else
 										{
-											notification.setStatus(Message.STATUS_RECEIVE);
+											notification.setStatus(Message.STATUS_PERSONAL);
 										}
 
+										notification.setKind(Message.KIND_TEXT);
+										notification.setChannel(address);
 										notification.setCountryCode(country);
 										notification.setFlags(Message.FLAGS_SMS);
 										notification.setPhone(preferences.getString(User.KEY_PHONE, ""));
