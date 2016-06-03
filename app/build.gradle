@@ -4,8 +4,8 @@ apply plugin: "com.android.application"
 apply plugin: "newrelic"
 apply plugin: "realm-android"
 
-def argVersionCode	= 24;
-def argVersionName	= "1.2.4";
+def argVersionCode	= 25;
+def argVersionName	= "1.2.5";
 def production		= false;
 
 if(production)
