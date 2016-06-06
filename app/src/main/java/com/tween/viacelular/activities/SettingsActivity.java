@@ -298,7 +298,7 @@ public class SettingsActivity extends AppCompatActivity
 		try
 		{
 			//Envía email con interacción del usuario y la db adjuntada
-			Utils.sendMail(SettingsActivity.this, true);
+			Utils.sendMail(SettingsActivity.this, false);
 		}
 		catch(Exception e)
 		{

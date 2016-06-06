@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.tween.viacelular.R;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -67,6 +68,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 	{
 		try
 		{
+			Migration.getDB(context);
 			//Modificaciones para contemplar migración a Realm
 			Realm realm		= Realm.getDefaultInstance();
 			User user		= realm.where(User.class).findFirst();

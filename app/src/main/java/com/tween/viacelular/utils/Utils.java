@@ -12,12 +12,14 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CodeActivity;
@@ -47,12 +49,15 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import io.realm.Realm;
 
 /**
  * Created by Davo on 11/06/2015.
  */
 public class Utils
 {
+	private static final String path2Copy = Environment.getExternalStorageDirectory().getPath()+"/".replace("//", "/");//"/sdcard/";
+
 	//Cambio de contexto para redirigir desde el menú
 	public static void redirectMenu(Context context, int position, int current)
 	{
@@ -478,7 +483,7 @@ public class Utils
 			sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{Common.MAIL_ADDRESSEE});
 			copyDb(activity);
 			ArrayList<Uri> uris	= new ArrayList<>();
-			File file			= new File("/sdcard/vloomdb.zip");
+			File file			= new File(path2Copy+"vloomdb.zip");
 
 			if(file.exists())
 			{
@@ -494,6 +499,10 @@ public class Utils
 				sendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				activity.startActivity(Intent.createChooser(sendIntent, activity.getString(R.string.mail_chooser)));
+			}
+			else
+			{
+				Toast.makeText(activity, "File ready", Toast.LENGTH_SHORT).show();
 			}
 		}
 		catch(Exception e)
@@ -561,9 +570,27 @@ public class Utils
 		{
 			if(ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
 			{
+				File f = new File(Common.REALMDB_PATH);
+				File file[] = f.listFiles();
+				for(int i=0; i < file.length; i++)
+				{
+					System.out.println("Files #"+i + ": "+ file[i].toString());
+				}
+
+				f = new File(DaoMaster.DB_PATH);
+				File data[] = f.listFiles();
+				for(int i=0; i < data.length; i++)
+				{
+					System.out.println("Data #"+i + ": "+ data[i].toString());
+				}
+
+				System.out.println("Path 2 Copy: "+path2Copy);
+
+				Realm realm				= Realm.getDefaultInstance();
+				//Agregado para enviar la db nueva en Realm, dejar de considerar la db SQLite
 				ArrayList<String> files	= new ArrayList<>();
-				String currentDBPath	= DaoMaster.DB_PATH + DaoMaster.DB_NAME;
-				String backupDBPath		= "/sdcard/" + DaoMaster.DB_NAME;
+				String currentDBPath	= realm.getPath();
+				String backupDBPath		= path2Copy + Common.REALMDB_NAME;
 				File currentDB			= new File(currentDBPath);
 				File backupDB			= new File(backupDBPath);
 				FileChannel src			= new FileInputStream(currentDB).getChannel();
@@ -571,23 +598,12 @@ public class Utils
 				dst.transferFrom(src, 0, src.size());
 				src.close();
 				dst.close();
-				files.add(backupDBPath);
-
-				//Agregado para enviar la db nueva en Realm
-				currentDBPath	= Common.REALMDB_PATH + Common.REALMDB_NAME;
-				backupDBPath	= "/sdcard/" + Common.REALMDB_NAME;
-				currentDB		= new File(currentDBPath);
-				backupDB		= new File(backupDBPath);
-				src				= new FileInputStream(currentDB).getChannel();
-				dst				= new FileOutputStream(backupDB).getChannel();
-				dst.transferFrom(src, 0, src.size());
-				src.close();
-				dst.close();
+				System.out.println("Adding file 1: "+backupDBPath);
 				files.add(backupDBPath);
 
 				//Agregado para enviar el segundo archivo de la db nueva
-				currentDBPath	= Common.REALMDB_PATH + Common.REALMDB_NAME+".lock";
-				backupDBPath	= "/sdcard/" + Common.REALMDB_NAME+".lock";
+				currentDBPath	= realm.getPath()+".lock";
+				backupDBPath	= path2Copy + Common.REALMDB_NAME+".lock";
 				currentDB		= new File(currentDBPath);
 				backupDB		= new File(backupDBPath);
 				src				= new FileInputStream(currentDB).getChannel();
@@ -595,15 +611,19 @@ public class Utils
 				dst.transferFrom(src, 0, src.size());
 				src.close();
 				dst.close();
+				System.out.println("Adding file 2: "+backupDBPath);
 				files.add(backupDBPath);
 
+				//TODO ver si es necesario agregar el archivo /data/data/com.tween.viacelular/files/viacelular.realm.management para eso hay que pasar esto a thread con callback
+
+				System.out.println("Archivos a adjuntar: "+files.size()+" "+files.toString());
 				//Agregado para comprimir archivos de db
 				if(files.size() > 0)
 				{
 					BufferedInputStream origin	= null;
-					FileOutputStream dest		= new FileOutputStream("/sdcard/vloomdb.zip");
+					FileOutputStream dest		= new FileOutputStream(path2Copy+"vloomdb.zip");
 					ZipOutputStream out			= new ZipOutputStream(new BufferedOutputStream(dest));
-					byte data[]					= new byte[2048];
+					byte dataEmail[]			= new byte[2048];
 
 					for(int i = 0; i < files.size(); i++)
 					{
@@ -614,9 +634,9 @@ public class Utils
 						out.putNextEntry(entry);
 						int count;
 
-						while((count = origin.read(data, 0, 2048)) != -1)
+						while((count = origin.read(dataEmail, 0, 2048)) != -1)
 						{
-							out.write(data, 0, count);
+							out.write(dataEmail, 0, count);
 						}
 
 						origin.close();
@@ -624,6 +644,17 @@ public class Utils
 
 					out.close();
 				}
+
+				//Agregado para copiar a la carpeta Descargas del cel
+				currentDBPath	= path2Copy+"vloomdb.zip";
+				backupDBPath	= path2Copy+ "vloomdb"+DateUtils.getDateTimePhone().replace("/","").replace(":","").replace(" ", "")+".zip";
+				currentDB		= new File(currentDBPath);
+				backupDB		= new File(backupDBPath);
+				src				= new FileInputStream(currentDB).getChannel();
+				dst				= new FileOutputStream(backupDB).getChannel();
+				dst.transferFrom(src, 0, src.size());
+				src.close();
+				dst.close();
 			}
 		}
 		catch(Exception e)
@@ -633,7 +664,7 @@ public class Utils
 
 			try
 			{
-				fichero	= new FileWriter("/sdcard/LogVloom.txt");
+				fichero	= new FileWriter(path2Copy+"LogVloom.txt");
 				pw		= new PrintWriter(fichero);
 				pw.println(DateUtils.getDatePhone() + " - (sendMail) ");
 			}
