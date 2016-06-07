@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
@@ -53,11 +54,20 @@ public class IncomingSmsService extends BroadcastReceiver
 					//Mejora en la performance
 					for(Object singlePdusObj : pdusObj)
 					{
-						SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) singlePdusObj, "3gpp");
+						SmsMessage currentMessage = null;
 
-						if(currentMessage == null)
+						if(Common.API_LEVEL >= Build.VERSION_CODES.M)
 						{
-							currentMessage = SmsMessage.createFromPdu((byte[]) singlePdusObj, "3gpp2");
+							currentMessage = SmsMessage.createFromPdu((byte[]) singlePdusObj, "3gpp");
+
+							if(currentMessage == null)
+							{
+								currentMessage = SmsMessage.createFromPdu((byte[]) singlePdusObj, "3gpp2");
+							}
+						}
+						else
+						{
+							currentMessage = SmsMessage.createFromPdu((byte[]) singlePdusObj);
 						}
 
 						String address	= "";
@@ -69,14 +79,14 @@ public class IncomingSmsService extends BroadcastReceiver
 							address	= currentMessage.getDisplayOriginatingAddress().replace("+", "");
 							message	= currentMessage.getDisplayMessageBody();
 
-							/*if(currentMessage.getTimestampMillis() < System.currentTimeMillis())
+							if(currentMessage.getTimestampMillis() < System.currentTimeMillis())
 							{
 								date = String.valueOf(currentMessage.getTimestampMillis());
 							}
 							else
-							{*/
+							{
 								date = String.valueOf(System.currentTimeMillis());
-							//}
+							}
 
 							if(Common.DEBUG)
 							{
@@ -103,7 +113,7 @@ public class IncomingSmsService extends BroadcastReceiver
 										notification = new Message();
 										notification.setType(Message.TYPE_SMS);
 										notification.setMsg(message);
-										notification.setCreated(Long.valueOf(date));
+										notification.setCreated(System.currentTimeMillis());
 										notification.setChannel(address);
 										notification.setStatus(Message.STATUS_RECEIVE);
 
@@ -251,7 +261,10 @@ public class IncomingSmsService extends BroadcastReceiver
 										realm.commitTransaction();
 
 										//Agregado para mostrar notificación sin sonido
-										Utils.showPush(context, preferences.getString(User.KEY_PHONE, ""), Common.BOOL_YES, notification);
+										if(notification.getStatus() != Message.STATUS_PERSONAL || StringUtils.isNotEmpty(code))
+										{
+											Utils.showPush(context, preferences.getString(User.KEY_PHONE, ""), Common.BOOL_YES, notification);
+										}
 									}
 								}
 							}

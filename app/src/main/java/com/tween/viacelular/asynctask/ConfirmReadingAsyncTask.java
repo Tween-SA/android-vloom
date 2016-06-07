@@ -121,6 +121,10 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 				if(suscription != null)
 				{
+					//Agregado para actualizar el status en thread aparte
+					UpdateMessages task = new UpdateMessages(suscription.getCompanyId());
+					task.start();
+
 					RealmResults<Message> notifications = realm.where(Message.class).equalTo(Message.KEY_DELETED, Common.BOOL_NO).equalTo(Common.KEY_STATUS, Message.STATUS_RECEIVE)
 															.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 
@@ -149,10 +153,6 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 								jsonArray.put(jsonObject);
 							}
 						}
-
-						//Agregado para actualizar el status en thread aparte
-						UpdateMessages task = new UpdateMessages(suscription.getCompanyId());
-						task.start();
 
 						if(jsonArray.length() > 0)
 						{
