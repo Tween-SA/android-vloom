@@ -241,8 +241,14 @@ public class CardViewActivity extends AppCompatActivity
 
 				if(suscription != null)
 				{
-					ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, "");
-					task.execute();
+					RealmResults<Message> unread = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
+														.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAll();
+
+					if(unread.size() > 0)
+					{
+						ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, "", Message.STATUS_READ);
+						task.execute();
+					}
 
 					//Validaciones para mostrar o no campos según disponibilidad de datos
 					if(StringUtils.isNotEmpty(suscription.getAbout()))
@@ -563,7 +569,7 @@ public class CardViewActivity extends AppCompatActivity
 					realm.beginTransaction();
 					notification.setStatus(Message.STATUS_SPAM);
 					realm.commitTransaction();
-					ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId());
+					ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_SPAM);
 					task.execute();
 
 					snackBar						= Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
@@ -576,7 +582,7 @@ public class CardViewActivity extends AppCompatActivity
 							notification.setStatus(Message.STATUS_READ);
 							realm.commitTransaction();
 							refresh(false);
-							ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId());
+							ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_READ);
 							task.execute();
 						}
 					});

@@ -15,7 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
 
 /**
  * Created by david.figueroa on 17/6/15.
@@ -27,13 +26,15 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 	private boolean			displayDialog	= false;
 	private String			companyId		= "";
 	private String			msgId			= "";
+	private int				status			= Message.STATUS_RECEIVE;
 
-	public ConfirmReadingAsyncTask(Context context, boolean displayDialog, String companyId, String msgId)
+	public ConfirmReadingAsyncTask(Context context, boolean displayDialog, String companyId, String msgId, int status)
 	{
 		this.context		= context;
 		this.displayDialog	= displayDialog;
 		this.companyId		= companyId;
 		this.msgId			= msgId;
+		this.status			= status;
 	}
 
 	protected void onPreExecute()
@@ -83,13 +84,20 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(StringUtils.isIdMongo(msgId))
 			{
+				//Modificación para reportar por más de que por algo no se encuentré en la db
+				jsonSend.put(Common.KEY_STATUS, status);
+
+				//Reportar coordenadas
+				if(status == Message.STATUS_RECEIVE)
+				{
+					//TODO reload coordinates with api
+				}
+
 				//Aquí entra cuando se recibe una push para acusar el recibo con estado 3 y para marcar como spam enviando el estado 5
 				Message notification = realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
 
 				if(notification != null)
 				{
-					jsonSend.put(Common.KEY_STATUS, notification.getStatus());
-
 					//Agregado para incluir campos de campaña y lista si están
 					if(StringUtils.isNotEmpty(notification.getCampaignId()))
 					{
@@ -100,14 +108,14 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 					{
 						jsonSend.put(Message.KEY_LISTID, notification.getListId());
 					}
+				}
 
-					//Agregado para contemplar mensajes dentro de listas
-					if(StringUtils.isIdMongo(notification.getMsgId().replace("-", "")))
-					{
-						JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES + "/" + notification.getMsgId(), context, ApiConnection.METHOD_PUT,
-								preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
-						result					= ApiConnection.checkResponse(context.getApplicationContext(), jsonResult);
-					}
+				//Agregado para contemplar mensajes dentro de listas
+				if(StringUtils.isIdMongo(msgId.replace("-", "")))
+				{
+					JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES + "/" + msgId, context, ApiConnection.METHOD_PUT,
+																preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+					result					= ApiConnection.checkResponse(context.getApplicationContext(), jsonResult);
 				}
 			}
 			else
@@ -122,14 +130,14 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 				if(suscription != null)
 				{
 					//Agregado para actualizar el status en thread aparte
-					UpdateMessages task = new UpdateMessages(suscription.getCompanyId());
-					task.start();
-
-					RealmResults<Message> notifications = realm.where(Message.class).equalTo(Message.KEY_DELETED, Common.BOOL_NO).equalTo(Common.KEY_STATUS, Message.STATUS_RECEIVE)
-															.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
+					RealmResults<Message> notifications = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
+															.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAll();
 
 					if(notifications.size() > 0)
 					{
+						UpdateMessages task = new UpdateMessages(suscription.getCompanyId());
+						task.start();
+
 						for(Message notification : notifications)
 						{
 							//Agregado para confirmar lectura de varios mensajes contra la api, mejora para evitar enviar confirmación de objecto local que no está en mongo
@@ -233,8 +241,8 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 					@Override
 					public void execute(Realm bgRealm)
 					{
-						RealmResults<Message> messages = bgRealm.where(Message.class).equalTo(Message.KEY_DELETED, Common.BOOL_NO).equalTo(Common.KEY_STATUS, Message.STATUS_RECEIVE)
-															.equalTo(Suscription.KEY_API, id).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
+						RealmResults<Message> messages = bgRealm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
+															.equalTo(Suscription.KEY_API, id).findAll();
 
 						for(int i = messages.size() -1; i >=0; i--)
 						{

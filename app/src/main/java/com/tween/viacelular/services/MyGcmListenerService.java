@@ -13,6 +13,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.BlockedActivity;
@@ -396,7 +398,7 @@ public class MyGcmListenerService extends GcmListenerService
 					{
 						try
 						{
-							ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(context, false, "", msgId);
+							ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(context, false, "", msgId, Message.STATUS_RECEIVE);
 							task.execute();
 						}
 						catch(Exception e)
@@ -520,10 +522,17 @@ public class MyGcmListenerService extends GcmListenerService
 			{
 				if(sound == PUSH_NORMAL && message != null)
 				{
+					String id = message.getMsgId();
 					//Agregado para no mostrar mensajes descartados por bloqueo
 					realm.beginTransaction();
-					message.deleteFromRealm();
+					message.setStatus(Message.STATUS_SPAM);
 					realm.commitTransaction();
+
+					//Agregado para notificar como spam al ser descartado
+					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
+						.setLabel("Accion_user").build());
+					ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(getApplicationContext(), false, "", id, Message.STATUS_SPAM);
+					task.execute();
 				}
 			}
 		}
