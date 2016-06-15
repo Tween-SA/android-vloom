@@ -393,19 +393,6 @@ public class MyGcmListenerService extends GcmListenerService
 						realm.copyToRealmOrUpdate(message);
 						realm.commitTransaction();
 					}
-
-					if(StringUtils.isIdMongo(msgId))
-					{
-						try
-						{
-							ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(context, false, "", msgId, Message.STATUS_RECEIVE);
-							task.execute();
-						}
-						catch(Exception e)
-						{
-							System.out.println("MyGcmListenerService:sendNotification:ConfirmReading - Exception: " + e);
-						}
-					}
 				}
 				else
 				{
@@ -516,6 +503,19 @@ public class MyGcmListenerService extends GcmListenerService
 					}
 				}
 
+				//Primero mostramos la notificación y después confirmamos lectura y reportamos posición
+				if(StringUtils.isIdMongo(msgId) && sound == PUSH_NORMAL)
+				{
+					try
+					{
+						ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(context, false, "", msgId, Message.STATUS_RECEIVE);
+						task.execute();
+					}
+					catch(Exception e)
+					{
+						System.out.println("MyGcmListenerService:sendNotification:ConfirmReading - Exception: " + e);
+					}
+				}
 				//Reload Home if it's running
 			}
 			else
