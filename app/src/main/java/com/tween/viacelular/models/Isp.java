@@ -34,6 +34,8 @@ public class Isp extends RealmObject
 	private String	countryNet;
 	@Index
 	private String	countrySim;
+	@Index
+	private Long	updated;
 
 	@Ignore
 	public static final String KEY_COUNTRY		= "country";
@@ -60,13 +62,7 @@ public class Isp extends RealmObject
 	@Ignore
 	public static final String KEY_QUERY		= "query";
 	@Ignore
-	public static final String KEY_OPERATORNET	= "operatorNetwork";
-	@Ignore
-	public static final String KEY_OPERATORSIM	= "operatorSim";
-	@Ignore
-	public static final String KEY_COUNTRYNET	= "countryNetwork";
-	@Ignore
-	public static final String KEY_COUNTRYSIM	= "countrySim";
+	public static final String KEY_UPDATED		= "updated";
 
 	public Isp()
 	{
@@ -74,7 +70,7 @@ public class Isp extends RealmObject
 
 	public Isp(	final String query, final String as, final String status, final String country, final String countryCode, final String region, final String regionName, final String city,
 				final String zip, final String lat, final String lon, final String timezone, final String isp, final String org, final String operatorNet, final String operatorSim,
-				final String countryNet, final String countrySim)
+				final String countryNet, final String countrySim, final Long updated)
 	{
 		this.query			= query;
 		this.as				= as;
@@ -94,6 +90,7 @@ public class Isp extends RealmObject
 		this.operatorSim	= operatorSim;
 		this.countryNet		= countryNet;
 		this.countrySim		= countrySim;
+		this.updated		= updated;
 	}
 
 	public String getQuery()
@@ -274,5 +271,15 @@ public class Isp extends RealmObject
 	public void setCountrySim(final String countrySim)
 	{
 		this.countrySim = countrySim;
+	}
+
+	public Long getUpdated()
+	{
+		return updated;
+	}
+
+	public void setUpdated(final Long updated)
+	{
+		this.updated = updated;
 	}
 }

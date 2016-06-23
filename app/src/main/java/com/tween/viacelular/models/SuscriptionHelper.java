@@ -113,7 +113,25 @@ public abstract class SuscriptionHelper
 			{
 				for(Message message: messages)
 				{
-					companies.add(realm.where(Suscription.class).equalTo(Suscription.KEY_API, message.getCompanyId()).findFirst());
+					if(StringUtils.isIdMongo(message.getCompanyId()))
+					{
+						companies.add(realm.where(Suscription.class).equalTo(Suscription.KEY_API, message.getCompanyId()).findFirst());
+					}
+					else
+					{
+						if(StringUtils.isCompanyNumber(message.getChannel()))
+						{
+							Suscription company = realm.where(Suscription.class).equalTo(Suscription.KEY_API, message.getCompanyId()).findFirst();
+
+							if(company != null)
+							{
+								if(company.getName().equals(message.getChannel()))
+								{
+									companies.add(company);
+								}
+							}
+						}
+					}
 				}
 			}
 		}

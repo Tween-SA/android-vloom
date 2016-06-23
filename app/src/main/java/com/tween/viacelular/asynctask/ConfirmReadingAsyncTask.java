@@ -4,15 +4,20 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Looper;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -58,6 +63,22 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 					.progress(true, 0)
 					.show();
 			}
+
+			//Reportar coordenadas
+			if(StringUtils.isIdMongo(msgId) && status == Message.STATUS_RECEIVE)
+			{
+				Realm realm	= Realm.getDefaultInstance();
+				Isp isp		= realm.where(Isp.class).findFirst();
+
+				if(isp != null)
+				{
+					if(DateUtils.needUpdate(isp.getUpdated()))
+					{
+						GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(context, false, true);
+						geoTask.execute();
+					}
+				}
+			}
 		}
 		catch(Exception e)
 		{
@@ -90,7 +111,18 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 				//Reportar coordenadas
 				if(status == Message.STATUS_RECEIVE)
 				{
-					//TODO reload coordinates with api
+					Isp isp	= realm.where(Isp.class).findFirst();
+
+					if(isp != null)
+					{
+						if(StringUtils.isLong(isp.getLat()) && StringUtils.isLong(isp.getLon()))
+						{
+							JSONObject geoJSON = new JSONObject();
+							geoJSON.put("latitude", Long.valueOf(isp.getLat()));
+							geoJSON.put("longitude", Long.valueOf(isp.getLon()));
+							jsonSend.put("geographic", geoJSON);
+						}
+					}
 				}
 
 				//Aquí entra cuando se recibe una push para acusar el recibo con estado 3 y para marcar como spam enviando el estado 5

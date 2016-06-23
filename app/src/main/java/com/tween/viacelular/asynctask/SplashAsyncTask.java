@@ -4,21 +4,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.data.ApiConnection;
-import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Isp;
-import com.tween.viacelular.models.IspHelper;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-import org.json.JSONObject;
+
 import de.greenrobot.dao.query.QueryBuilder;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -142,18 +143,6 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 				}
 
 				realm.commitTransaction();
-
-				JSONObject jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.IP_API, activity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
-				result					= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
-
-				if(result.equals(ApiConnection.OK))
-				{
-					IspHelper.parseJSON(jsonResult.getJSONObject(Common.KEY_DATA), activity.getApplicationContext());
-				}
-				else
-				{
-					IspHelper.parseJSON(null, activity.getApplicationContext());
-				}
 			}
 			else
 			{
@@ -191,10 +180,22 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 				}
 			}
 
-			if(!splashed)
+			//Agregado para actualizar coordenadas
+			Realm realm	= Realm.getDefaultInstance();
+			Isp isp		= realm.where(Isp.class).findFirst();
+
+			if(isp != null)
 			{
-				CountryAsyncTask task = new CountryAsyncTask(activity, false);
-				task.execute();
+				if(DateUtils.needUpdate(isp.getUpdated()))
+				{
+					GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(activity, false, true);
+					geoTask.execute();
+				}
+			}
+			else
+			{
+				GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(activity, false, false);
+				geoTask.execute();
 			}
 
 			Utils.checkSesion(activity, Common.SPLASH_SCREEN);

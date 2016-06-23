@@ -705,7 +705,7 @@ public class Utils
 			SharedPreferences preferences	= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			boolean splashed				= preferences.getBoolean(Common.KEY_PREF_SPLASHED, false);
 
-			if(version.equals("1.2.5"))
+			if(version.equals("1.2.6"))
 			{
 				boolean upgraded = preferences.getBoolean(Common.KEY_PREF_UPGRADED + version, false);
 

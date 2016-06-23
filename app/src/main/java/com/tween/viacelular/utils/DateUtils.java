@@ -14,18 +14,17 @@ import java.util.Locale;
  */
 public class DateUtils
 {
-	public static long oneDayTs	= (24 * 60 * 60 * 1000);
+	public static final long oneDayTs		= (24 * 60 * 60 * 1000);
+	public static final int SECOND_MILLIS	= 1000;
+	public static final int MINUTE_MILLIS	= 60 * SECOND_MILLIS;
+	public static final int HOUR_MILLIS		= 60 * MINUTE_MILLIS;
+	public static final int DAY_MILLIS		= 24 * HOUR_MILLIS;
 
 	public static String getTimeFromTs(long time, Context ctx)
 	{
 		//Agregado para prevenir excepciones
 		try
 		{
-			final int SECOND_MILLIS	= 1000;
-			final int MINUTE_MILLIS	= 60 * SECOND_MILLIS;
-			final int HOUR_MILLIS	= 60 * MINUTE_MILLIS;
-			final int DAY_MILLIS	= 24 * HOUR_MILLIS;
-
 			if(time < 1000000000000L)
 			{
 				//if timestamp given in seconds, convert to millis
@@ -184,6 +183,7 @@ public class DateUtils
 		catch(Exception e)
 		{
 			System.out.println("DateUtils:getDateTimePhone - Exception: " + e);
+
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
@@ -191,6 +191,30 @@ public class DateUtils
 		}
 
 		return "";
+	}
+
+	public static boolean needUpdate(Long date)
+	{
+		try
+		{
+			final long diff	= System.currentTimeMillis() - date;
+
+			if(diff > 90 * MINUTE_MILLIS)
+			{
+				return true;
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("DateUtils:needUpdate - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		return false;
 	}
 
 	/**

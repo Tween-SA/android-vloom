@@ -42,7 +42,7 @@ public abstract class IspHelper
 		}
 	}
 
-	public static void parseJSON(JSONObject json, Context context)
+	public static void parseJSON(JSONObject json, Context context, boolean update)
 	{
 		try
 		{
@@ -181,7 +181,9 @@ public abstract class IspHelper
 			}
 
 			//Obtenemos la operadora
-			TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+			TelephonyManager manager	= (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+			Isp isp						= null;
+
 			if(manager != null)
 			{
 				jOpNet	= manager.getNetworkOperatorName().toUpperCase();
@@ -197,8 +199,71 @@ public abstract class IspHelper
 				jOpSim	= "PERSONAL";
 			}
 
-			Isp isp		= new Isp(jQuery, jAs, jStatus, jCountry, jCountryCode, jRegion, jRegionName, jCity, jZip, jLat, jLon, jTimezone, jIsp, jOrg, jOpNet, jOpSim, jCoNet, jCoSim);
+			//Diferenciamos si actualizamos, insertamos o mantenemos
 			Realm realm	= Realm.getDefaultInstance();
+
+			if(update)
+			{
+				isp = realm.where(Isp.class).findFirst();
+
+				if(StringUtils.isNotEmpty(jAs) && !isp.getAs().equals(jAs))
+				{
+					isp.setAs(jAs);
+				}
+
+				if(StringUtils.isNotEmpty(jRegionName) && !isp.getRegionName().equals(jRegionName))
+				{
+					isp.setRegionName(jRegionName);
+				}
+
+				if(StringUtils.isNotEmpty(jRegion) && !isp.getRegion().equals(jRegion))
+				{
+					isp.setRegion(jRegion);
+				}
+
+				if(StringUtils.isNotEmpty(jCity) && !isp.getCity().equals(jCity))
+				{
+					isp.setCity(jCity);
+				}
+
+				if(StringUtils.isNotEmpty(jZip) && !isp.getZip().equals(jZip))
+				{
+					isp.setZip(jZip);
+				}
+
+				if(StringUtils.isNotEmpty(jLat) && !isp.getLat().equals(jLat))
+				{
+					isp.setLat(jLat);
+				}
+
+				if(StringUtils.isNotEmpty(jLon) && !isp.getLon().equals(jLon))
+				{
+					isp.setLon(jLon);
+				}
+
+				if(StringUtils.isNotEmpty(jTimezone) && !isp.getTimezone().equals(jTimezone))
+				{
+					isp.setTimezone(jTimezone);
+				}
+
+				if(StringUtils.isNotEmpty(jIsp) && !isp.getIsp().equals(jIsp))
+				{
+					isp.setIsp(jIsp);
+				}
+
+				if(StringUtils.isNotEmpty(jOrg) && !isp.getOrg().equals(jOrg))
+				{
+					isp.setOrg(jOrg);
+				}
+
+				isp.setUpdated(System.currentTimeMillis());
+			}
+			else
+			{
+				isp	= new Isp(	jQuery, jAs, jStatus, jCountry, jCountryCode, jRegion, jRegionName, jCity, jZip, jLat, jLon, jTimezone, jIsp, jOrg, jOpNet, jOpSim, jCoNet, jCoSim,
+								System.currentTimeMillis());
+			}
+
 			realm.beginTransaction();
 			realm.copyToRealmOrUpdate(isp);
 			realm.commitTransaction();

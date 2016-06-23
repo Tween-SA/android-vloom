@@ -10,18 +10,22 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.data.ApiConnection;
 import com.tween.viacelular.data.Country;
 import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -264,6 +268,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 										{
 											notification.setType(Message.TYPE_SMS);
 											int coincidenceNumber	= 0;
+											client					= null;
 
 											if(clients != null)
 											{
@@ -336,6 +341,13 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 												}
 
 												notification.setCompanyId(client.getCompanyId());
+											}
+
+											if(address.replace("+", "").equals("1018"))
+											{
+												System.out.println("after");
+												MessageHelper.debugMessage(notification);
+												SuscriptionHelper.debugSuscription(client);
 											}
 										}
 

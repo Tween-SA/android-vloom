@@ -9,7 +9,6 @@ import com.tween.viacelular.data.ApiConnection;
 import com.tween.viacelular.models.IspHelper;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.utils.Common;
-
 import org.json.JSONObject;
 
 /**
@@ -20,11 +19,13 @@ public class GetLocationByApiAsyncTask extends AsyncTask<Void, Void, String>
 	private MaterialDialog	progress;
 	private Context			context;
 	private boolean			displayDialog	= false;
+	private boolean			update			= false;
 
-	public GetLocationByApiAsyncTask(final Context context, final boolean displayDialog)
+	public GetLocationByApiAsyncTask(final Context context, final boolean displayDialog, final boolean update)
 	{
 		this.context		= context;
 		this.displayDialog	= displayDialog;
+		this.update			= update;
 	}
 
 	protected void onPreExecute()
@@ -76,11 +77,7 @@ public class GetLocationByApiAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(result.equals(ApiConnection.OK))
 			{
-				IspHelper.parseJSON(jsonResult.getJSONObject(Common.KEY_DATA), context);
-			}
-			else
-			{
-				IspHelper.parseJSON(null, context);
+				IspHelper.parseJSON(jsonResult.getJSONObject(Common.KEY_DATA), context, update);
 			}
 		}
 		catch(Exception e)
@@ -110,6 +107,12 @@ public class GetLocationByApiAsyncTask extends AsyncTask<Void, Void, String>
 						progress.cancel();
 					}
 				}
+			}
+
+			if(!update)
+			{
+				CountryAsyncTask task = new CountryAsyncTask(context, false);
+				task.execute();
 			}
 		}
 		catch(Exception e)
