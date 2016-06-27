@@ -7,17 +7,6 @@ def argVersionName = "1.2.6";
 
 android
 {
-	signingConfigs
-	{
-		release
-		{
-			storeFile file("../viacelular.jks")
-			storePassword "tween!23"
-			keyAlias "viacelular"
-			keyPassword "tween!23"
-		}
-	}
-
 	compileSdkVersion 24
 	buildToolsVersion "24.0.0"
 	defaultConfig
@@ -28,34 +17,7 @@ android
 		versionCode argVersionCode
 		versionName argVersionName
 		multiDexEnabled true
-		signingConfig signingConfigs.release
 	}
-
-	buildTypes
-	{
-		release
-		{
-			minifyEnabled false
-			proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-			debuggable false
-			jniDebuggable false
-			renderscriptDebuggable false
-			zipAlignEnabled true
-		}
-		debug
-		{
-			debuggable true
-			jniDebuggable false
-			renderscriptDebuggable false
-			minifyEnabled false
-			zipAlignEnabled true
-		}
-	}
-
-	productFlavors
-	{
-	}
-
 	compileOptions
 	{
 		sourceCompatibility JavaVersion.VERSION_1_7
@@ -122,7 +84,7 @@ dependencies
 	compile "com.google.android.gms:play-services-gcm:9.0.2"
 	compile "com.google.android.gms:play-services-identity:9.0.2"
 	compile "com.google.android.gms:play-services:9.0.2"
-	compile "com.newrelic.agent.android:android-agent:5.5.0"
+	compile "com.newrelic.agent.android:android-agent:5.6.1"
 	compile "com.nostra13.universalimageloader:universal-image-loader:1.9.5"
 	compile "com.readystatesoftware.systembartint:systembartint:1.0.4"
 	compile "de.greenrobot:greendao:2.1.0"
