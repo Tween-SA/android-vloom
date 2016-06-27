@@ -26,14 +26,16 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.newrelic.agent.android.NewRelic;
 import com.tween.viacelular.R;
+import com.tween.viacelular.asynctask.GetLocationByApiAsyncTask;
+import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.services.MyGcmListenerService;
 import com.tween.viacelular.services.RegistrationIntentService;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
-
 import io.realm.Realm;
 
 public class SplashActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
@@ -94,6 +96,23 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 			}
 
 			setContentView(R.layout.activity_splash);
+
+			//Agregado para actualizar coordenadas
+			Isp isp = realm.where(Isp.class).findFirst();
+
+			if(isp != null)
+			{
+				if(DateUtils.needUpdate(isp.getUpdated()))
+				{
+					GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(this, false, true);
+					geoTask.execute();
+				}
+			}
+			else
+			{
+				GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(this, false, false);
+				geoTask.execute();
+			}
 
 			//Agregado para solicitar permisos en Android 6.0
 			if(Common.API_LEVEL >= Build.VERSION_CODES.M)

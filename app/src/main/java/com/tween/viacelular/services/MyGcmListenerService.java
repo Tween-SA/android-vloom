@@ -72,8 +72,9 @@ public class MyGcmListenerService extends GcmListenerService
 				String countryCode				= data.getString(Country.KEY_API, "");
 				String flags					= data.getString(Message.KEY_FLAGS, "");
 				SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+				String sound					= data.getString(Common.KEY_SOUND, "0");
 				int notificationId				= preferences.getInt(Common.KEY_LAST_MSGID, 0);
-				int sound						= data.getInt(Common.KEY_SOUND, 0); //Agregado para silenciar la push de sms
+				int soundOn						= 0; //Agregado para silenciar la push de sms
 				//Agregado para contemplar campos nuevos de push
 				int kind						= data.getInt(Message.KEY_KIND, Message.KIND_TEXT);
 				String link						= data.getString(Message.KEY_LINK, "");
@@ -82,6 +83,12 @@ public class MyGcmListenerService extends GcmListenerService
 				String campaignId				= data.getString(Message.KEY_CAMPAIGNID, "");
 				String listId					= data.getString(Message.KEY_LISTID, "");
 				String created					= data.getString(Message.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+
+				//Agregado para contemplar campo sound de iOS
+				if(StringUtils.isNumber(sound))
+				{
+					soundOn = Integer.valueOf(sound);
+				}
 
 				if(Common.DEBUG)
 				{
@@ -259,7 +266,7 @@ public class MyGcmListenerService extends GcmListenerService
 				message.setCompanyId(companyId);
 				message.setPhone(phone);
 
-				if(sound == PUSH_NORMAL)
+				if(soundOn == PUSH_NORMAL)
 				{
 					Realm realm = Realm.getDefaultInstance();
 					realm.beginTransaction();
@@ -281,7 +288,7 @@ public class MyGcmListenerService extends GcmListenerService
 				/**
 				 * In some cases it may be useful to show a notification indicating to the user that a message was received.
 				 */
-				sendNotification(msgId, preferences, sound, notificationId, countryCode, msg);
+				sendNotification(msgId, preferences, soundOn, notificationId, countryCode, msg);
 			}
 		}
 		catch(Exception e)

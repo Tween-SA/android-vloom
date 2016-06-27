@@ -4,20 +4,18 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Looper;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.data.ApiConnection;
 import com.tween.viacelular.models.Isp;
+import com.tween.viacelular.models.IspHelper;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -65,7 +63,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 			}
 
 			//Reportar coordenadas
-			if(StringUtils.isIdMongo(msgId) && status == Message.STATUS_RECEIVE)
+			if(StringUtils.isIdMongo(msgId) && status < Message.STATUS_SPAM)
 			{
 				Realm realm	= Realm.getDefaultInstance();
 				Isp isp		= realm.where(Isp.class).findFirst();
@@ -109,20 +107,23 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 				jsonSend.put(Common.KEY_STATUS, status);
 
 				//Reportar coordenadas
-				if(status == Message.STATUS_RECEIVE)
+
+				if(status < Message.STATUS_SPAM)
 				{
 					Isp isp	= realm.where(Isp.class).findFirst();
 
 					if(isp != null)
 					{
-						if(StringUtils.isLong(isp.getLat()) && StringUtils.isLong(isp.getLon()))
+						if(StringUtils.isNotEmpty(isp.getLat()) && StringUtils.isNotEmpty(isp.getLon()))
 						{
 							JSONObject geoJSON = new JSONObject();
-							geoJSON.put("latitude", Long.valueOf(isp.getLat()));
-							geoJSON.put("longitude", Long.valueOf(isp.getLon()));
-							jsonSend.put("geographic", geoJSON);
+							geoJSON.put("latitude", isp.getLat());
+							geoJSON.put("longitude", isp.getLon());
+							jsonSend.put("geolocalization", geoJSON);
 						}
 					}
+
+					//TODO agregar integración para confirmación de visita
 				}
 
 				//Aquí entra cuando se recibe una push para acusar el recibo con estado 3 y para marcar como spam enviando el estado 5
