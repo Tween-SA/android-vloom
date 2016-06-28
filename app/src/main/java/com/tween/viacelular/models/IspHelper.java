@@ -201,6 +201,7 @@ public abstract class IspHelper
 
 			//Diferenciamos si actualizamos, insertamos o mantenemos
 			Realm realm	= Realm.getDefaultInstance();
+			realm.beginTransaction();
 
 			if(update)
 			{
@@ -264,7 +265,6 @@ public abstract class IspHelper
 								System.currentTimeMillis());
 			}
 
-			realm.beginTransaction();
 			realm.copyToRealmOrUpdate(isp);
 			realm.commitTransaction();
 		}

@@ -14,11 +14,15 @@ import java.util.Locale;
  */
 public class DateUtils
 {
-	public static final long oneDayTs		= (24 * 60 * 60 * 1000);
-	public static final int SECOND_MILLIS	= 1000;
-	public static final int MINUTE_MILLIS	= 60 * SECOND_MILLIS;
-	public static final int HOUR_MILLIS		= 60 * MINUTE_MILLIS;
-	public static final int DAY_MILLIS		= 24 * HOUR_MILLIS;
+	public static final long oneDayTs			= (24 * 60 * 60 * 1000);
+	public static final int SECOND_MILLIS		= 1000;
+	public static final int MINUTE_MILLIS		= 60 * SECOND_MILLIS;
+	public static final int HOUR_MILLIS			= 60 * MINUTE_MILLIS;
+	public static final int DAY_MILLIS			= 24 * HOUR_MILLIS;
+	public static final int LOW_FREQUENCY		= 90 * MINUTE_MILLIS;
+	public static final int MEAN_FREQUENCY		= 30 * MINUTE_MILLIS;
+	public static final int HIGH_FREQUENCY		= 10 * MINUTE_MILLIS;
+	public static final int VERYHIGH_FREQUENCY	= 5 * MINUTE_MILLIS;
 
 	public static String getTimeFromTs(long time, Context ctx)
 	{
@@ -193,13 +197,13 @@ public class DateUtils
 		return "";
 	}
 
-	public static boolean needUpdate(Long date)
+	public static boolean needUpdate(Long date, int frequency)
 	{
 		try
 		{
 			final long diff	= System.currentTimeMillis() - date;
 
-			if(diff > 90 * MINUTE_MILLIS)
+			if(diff > frequency)
 			{
 				return true;
 			}

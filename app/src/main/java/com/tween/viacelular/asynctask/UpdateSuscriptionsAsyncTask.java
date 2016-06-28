@@ -181,6 +181,10 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 							JSONObject jsonResult	= new JSONObject(ApiConnection.request(url, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString()));
 							result					= ApiConnection.checkResponse(context, jsonResult);
 							result					= ApiConnection.OK;
+							//Guardar la fecha de última actualización
+							SharedPreferences.Editor editor = preferences.edit();
+							editor.putLong(Common.KEY_PREF_TSSUBSCRIPTIONS, System.currentTimeMillis());
+							editor.apply();
 						}
 						else
 						{

@@ -14,6 +14,7 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.UpdateUserAsyncTask;
 import com.tween.viacelular.data.User;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 
 /**
@@ -276,10 +277,16 @@ public class RegistrationIntentService extends IntentService
 	{
 		try
 		{
-			// Add custom implementation, as needed.
-			UpdateUserAsyncTask task	= new UpdateUserAsyncTask(getApplicationContext(), Common.BOOL_YES, false, "", false);
-			task.setToken(token);
-			task.execute();
+			//Agregado para limitar frecuencia de actualización
+			SharedPreferences preferences	= getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			long tsUpated					= preferences.getLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
+
+			if(DateUtils.needUpdate(tsUpated, DateUtils.LOW_FREQUENCY))
+			{
+				UpdateUserAsyncTask task	= new UpdateUserAsyncTask(getApplicationContext(), Common.BOOL_YES, false, "", false);
+				task.setToken(token);
+				task.execute();
+			}
 		}
 		catch(Exception e)
 		{

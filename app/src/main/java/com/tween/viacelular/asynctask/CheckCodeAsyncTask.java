@@ -152,6 +152,8 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 								editor.putBoolean(Common.KEY_PREF_CALLME, false);
 								editor.putBoolean(Common.KEY_PREF_LOGGED, true);
 								editor.putBoolean(Common.KEY_PREF_CHECKED, true);
+								//Agregado para reducir frencuencia para actualizar usuario
+								editor.putLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
 								editor.apply();
 								result = ApiConnection.OK;
 							}

@@ -77,9 +77,17 @@ public class Utils
 					break;
 
 					case 2:
-						//Se modifica para reemplazar la pantalla Bloquedas por la pantalla Empresas con tab
-						UpdateUserAsyncTask task	= new UpdateUserAsyncTask(context, Common.BOOL_YES, false, "", true);
-						task.execute();
+						//Agregado para limitar frecuencia de actualización
+						SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+						long tsUpated					= preferences.getLong(Common.KEY_PREF_TSSUBSCRIPTIONS, System.currentTimeMillis());
+
+						if(DateUtils.needUpdate(tsUpated, DateUtils.HIGH_FREQUENCY))
+						{
+							//Se modifica para reemplazar la pantalla Bloquedas por la pantalla Empresas con tab
+							UpdateUserAsyncTask task	= new UpdateUserAsyncTask(context, Common.BOOL_YES, false, "", true);
+							task.execute();
+						}
+
 						intent = new Intent(context, SuscriptionsActivity.class);
 						intent.putExtra(Common.KEY_TITLE, context.getString(R.string.title_companies));
 						intent.putExtra(Common.KEY_SECTION, position);
@@ -186,13 +194,21 @@ public class Utils
 				case Common.SPLASH_SCREEN:
 					if(logged && checked)
 					{
-						//Agregado para actualizar datos del usuario solamente cuando inicia la app
-						UpdateUserAsyncTask task	= new UpdateUserAsyncTask(activity, Common.BOOL_YES, false, "", false);
-						task.execute();
-						intent						= new Intent(activity, HomeActivity.class);
+						//Agregado para limitar frecuencia de actualización
+						long tsUpated = preferences.getLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
+
+						if(DateUtils.needUpdate(tsUpated, DateUtils.LOW_FREQUENCY))
+						{
+							//Agregado para actualizar datos del usuario solamente cuando inicia la app
+							UpdateUserAsyncTask task = new UpdateUserAsyncTask(activity, Common.BOOL_YES, false, "", false);
+							task.execute();
+						}
+
+						intent	= new Intent(activity, HomeActivity.class);
+						intent.putExtra(Common.KEY_REFRESH, false);
 						activity.startActivity(intent);
 						activity.finish();
-						result						= false;
+						result	= false;
 					}
 					else
 					{
@@ -218,6 +234,7 @@ public class Utils
 					if(logged && checked)
 					{
 						intent	= new Intent(activity, HomeActivity.class);
+						intent.putExtra(Common.KEY_REFRESH, false);
 						activity.startActivity(intent);
 						activity.finish();
 						result	= false;
@@ -238,6 +255,7 @@ public class Utils
 					if(logged && checked)
 					{
 						intent	= new Intent(activity, HomeActivity.class);
+						intent.putExtra(Common.KEY_REFRESH, false);
 						activity.startActivity(intent);
 						activity.finish();
 						result	= false;

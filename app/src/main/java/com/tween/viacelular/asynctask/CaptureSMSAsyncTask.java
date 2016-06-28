@@ -20,8 +20,7 @@ import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
-import java.util.ArrayList;
-import java.util.List;
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -142,9 +141,6 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 				{
 					if(cursor.getCount() > 0)
 					{
-						RealmResults<Suscription> realmResults	= realm.where(Suscription.class).findAll();
-						List<Suscription> clients				= new ArrayList<>();
-						clients.addAll(realmResults);
 						cursor.moveToFirst();
 
 						do
@@ -242,22 +238,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 										if(body.contains(activity.getString(R.string.app_name)))
 										{
 											notification.setType(activity.getString(R.string.invite));
-
-											if(clients != null)
-											{
-												if(clients.size() > 0)
-												{
-													for(Suscription company : clients)
-													{
-														if(company.getCompanyId().equals(Suscription.COMPANY_ID_VC_MONGO))
-														{
-															client = company;
-															break;
-														}
-													}
-												}
-											}
-
+											//Optimización para evitar bucle por un registro
 											notification.setCompanyId(Suscription.COMPANY_ID_VC_MONGO);
 										}
 										else
@@ -265,60 +246,39 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 											notification.setType(Message.TYPE_SMS);
 											int coincidenceNumber	= 0;
 											client					= null;
-
-											if(clients != null)
+											//Re-estructuración para mejorar clasificación de sms
+											//1- buscamos company con el número del que vino el sms
+											RealmResults<Suscription> companiesWithNumber = realm.where(Suscription.class).contains(Suscription.KEY_NUMBERS, address, Case.INSENSITIVE).findAll();
+											System.out.println("Para el número: "+address+" se encontraron "+companiesWithNumber.size()+" coincidencias de companies");
+											//2- verificamos coincidencias (companies que compartan el número)
+											if(companiesWithNumber.size() > 1)
 											{
-												if(clients.size() > 0)
+												//Hay ocurrencias, revisaremos las keywords
+												for(Suscription company : companiesWithNumber)
 												{
-													for(Suscription company : clients)
+													//3- verificamos si el mensaje contiene el nombre de la company
+													if(body.toUpperCase().contains(company.getName().toUpperCase()))
 													{
-														//Primero si está en alguna company
-														if(SuscriptionHelper.hasNumber(company, address))
+														client = company;
+														break;
+													}
+													else
+													{
+														//4- verificamos si el mensaje contiene alguna de las keywords
+														if(StringUtils.containsKeywords(body, company.getKeywords()))
 														{
-															coincidenceNumber = coincidenceNumber + 1;
-
-															if(coincidenceNumber > 1)
-															{
-																//Segundo si hay concidencia de nombre en el mensaje
-																if(body.toUpperCase().contains(company.getName().toUpperCase()))
-																{
-																	client = company;
-																	break;
-																}
-																else
-																{
-																	//Tercero si hay concidencia de keywords
-																	if(StringUtils.containsKeywords(body, company.getKeywords()))
-																	{
-																		client = company;
-																		break;
-																	}
-																	else
-																	{
-																		//Cuarto me fijo en el registro anterior
-																		if(client != null)
-																		{
-																			//Quinto si hay concidencia de nombre en el mensaje con el registro anterior
-																			if(body.toUpperCase().contains(client.getName().toUpperCase()))
-																			{
-																				break;
-																			}
-																			else
-																			{
-																				//Sexto si hay concidencia de nombre en el mensaje con el registro anterior
-																				if(StringUtils.containsKeywords(body, client.getKeywords()))
-																				{
-																					break;
-																				}
-																			}
-																		}
-																	}
-																}
-															}
-
 															client = company;
+															break;
 														}
 													}
+												}
+											}
+											else
+											{
+												if(companiesWithNumber.size() == 1)
+												{
+													//Encontró una única company
+													client = companiesWithNumber.get(0);
 												}
 											}
 
@@ -330,12 +290,6 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 											{
 												//No existe este número corto en la db, generamos company fantasma
 												client	= SuscriptionHelper.createPhantom(address, activity, country);
-
-												if(clients != null)
-												{
-													clients.add(client);
-												}
-
 												notification.setCompanyId(client.getCompanyId());
 											}
 										}

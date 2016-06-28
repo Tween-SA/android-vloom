@@ -7,6 +7,7 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.TimestampComparator;
 import com.tween.viacelular.data.ApiConnection;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -53,16 +56,22 @@ public abstract class SuscriptionHelper
 				}
 			}
 
-			jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
-			result		= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
+			//Agregado para limitar frecuencia de actualización
+			long tsUpated = preferences.getLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
 
-			if(result.equals(ApiConnection.OK))
+			if(DateUtils.needUpdate(tsUpated, DateUtils.VERYHIGH_FREQUENCY))
 			{
-				parseList(jsonResult.getJSONArray(Common.KEY_DATA), activity.getApplicationContext(), true);
-			}
-			else
-			{
-				parseList(null, activity.getApplicationContext(), true);
+				jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
+				result		= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
+
+				if(result.equals(ApiConnection.OK))
+				{
+					parseList(jsonResult.getJSONArray(Common.KEY_DATA), activity.getApplicationContext(), true);
+				}
+				else
+				{
+					parseList(null, activity.getApplicationContext(), true);
+				}
 			}
 
 			companies = getList(activity);
@@ -976,9 +985,23 @@ public abstract class SuscriptionHelper
 	{
 		try
 		{
-			if(StringUtils.removeSpacesJSON(suscription.getFromNumbers()).replace("+", "").contains("\"" + number.replace("+", "") + "\""))
+			//Agregado para buscar Subscription en el momento
+			if(suscription != null)
 			{
-				return true;
+				if(StringUtils.removeSpacesJSON(suscription.getFromNumbers()).replace("+", "").contains("\"" + number.replace("+", "") + "\""))
+				{
+					return true;
+				}
+			}
+			else
+			{
+				Realm realm	= Realm.getDefaultInstance();
+				suscription	= realm.where(Suscription.class).contains(Suscription.KEY_NUMBERS, number, Case.INSENSITIVE).findFirst();
+
+				if(suscription != null)
+				{
+					return true;
+				}
 			}
 		}
 		catch(Exception e)

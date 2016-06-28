@@ -8,7 +8,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.data.ApiConnection;
 import com.tween.viacelular.models.Isp;
-import com.tween.viacelular.models.IspHelper;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
@@ -70,7 +69,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 				if(isp != null)
 				{
-					if(DateUtils.needUpdate(isp.getUpdated()))
+					if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.MEAN_FREQUENCY))
 					{
 						GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(context, false, true);
 						geoTask.execute();

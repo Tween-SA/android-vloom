@@ -102,7 +102,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 
 			if(isp != null)
 			{
-				if(DateUtils.needUpdate(isp.getUpdated()))
+				if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.HIGH_FREQUENCY))
 				{
 					GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(this, false, true);
 					geoTask.execute();

@@ -166,8 +166,12 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 								jsonSend.put(User.KEY_GCMID, preferences.getString(User.KEY_GCMID, user.getGcmId()));
 								jsonSend.put(Common.KEY_INFO, info);
 								jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_PUT,
-										preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+																preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
 								result		= ApiConnection.checkResponse(context, jsonResult);
+								//Guardar la fecha de última actualización
+								SharedPreferences.Editor editor = preferences.edit();
+								editor.putLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
+								editor.apply();
 							}
 						}
 					}
