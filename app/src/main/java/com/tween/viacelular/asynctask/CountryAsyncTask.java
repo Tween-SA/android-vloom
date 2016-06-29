@@ -123,6 +123,17 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 					LandHelper.parseArray(context);
 				}
 			}
+
+			if(displayDialog)
+			{
+				if(progress != null)
+				{
+					if(progress.isShowing())
+					{
+						progress.cancel();
+					}
+				}
+			}
 		}
 		catch(JSONException e)
 		{
@@ -144,34 +155,5 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 		}
 
 		return result;
-	}
-
-	@Override
-	protected void onPostExecute(String result)
-	{
-		try
-		{
-			if(displayDialog)
-			{
-				if(progress != null)
-				{
-					if(progress.isShowing())
-					{
-						progress.cancel();
-					}
-				}
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("CountryAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		super.onPostExecute(result);
 	}
 }

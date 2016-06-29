@@ -171,8 +171,8 @@ public class MyGcmListenerService extends GcmListenerService
 				}
 				else
 				{
-					if(	companyId.toLowerCase().equals(Suscription.COMPANY_ID_VC) || companyId.toLowerCase().equals(Suscription.COMPANY_ID_VC_LONG) ||
-						companyId.toLowerCase().equals(Suscription.COMPANY_ID_VC_MONGOOLD))
+					if(	companyId.equals(Suscription.COMPANY_ID_VC) || companyId.equals(Suscription.COMPANY_ID_VC_LONG) || companyId.equals(Suscription.COMPANY_ID_VC_MONGOOLD) ||
+						companyId.equals(Suscription.COMPANY_ID_WEBVC))
 					{
 						companyId = Suscription.COMPANY_ID_VC_MONGO;
 					}

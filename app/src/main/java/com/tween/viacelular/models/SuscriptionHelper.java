@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -57,7 +56,7 @@ public abstract class SuscriptionHelper
 			}
 
 			//Agregado para limitar frecuencia de actualización
-			long tsUpated = preferences.getLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
+			long tsUpated = preferences.getLong(Common.KEY_PREF_TSCOMPANIES, System.currentTimeMillis());
 
 			if(DateUtils.needUpdate(tsUpated, DateUtils.VERYHIGH_FREQUENCY))
 			{
@@ -72,6 +71,10 @@ public abstract class SuscriptionHelper
 				{
 					parseList(null, activity.getApplicationContext(), true);
 				}
+
+				SharedPreferences.Editor editor	= preferences.edit();
+				editor.putLong(Common.KEY_PREF_TSCOMPANIES, System.currentTimeMillis());
+				editor.apply();
 			}
 
 			companies = getList(activity);

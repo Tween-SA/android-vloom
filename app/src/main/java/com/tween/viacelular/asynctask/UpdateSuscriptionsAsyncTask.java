@@ -197,25 +197,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 					}
 				}
 			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("UpdateSuscriptionsAsyncTask:doInBackground - Exception: " + e);
 
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		return result;
-	}
-
-	@Override
-	protected void onPostExecute(String result)
-	{
-		try
-		{
 			if(result.equals(ApiConnection.OK))
 			{
 				if(needRedirect)
@@ -251,7 +233,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("UpdateSuscriptionsAsyncTask:onPostExecute - Exception: " + e);
+			System.out.println("UpdateSuscriptionsAsyncTask:doInBackground - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
@@ -259,7 +241,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 			}
 		}
 
-		super.onPostExecute(result);
+		return result;
 	}
 
 	private boolean modifySubscriptions(final String ids, final int flag)

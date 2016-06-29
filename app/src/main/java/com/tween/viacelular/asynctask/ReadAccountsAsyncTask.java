@@ -105,26 +105,6 @@ public class ReadAccountsAsyncTask extends AsyncTask<Void, Void, Boolean>
 				}
 			}
 
-			result = true;
-		}
-		catch(Exception e)
-		{
-			System.out.println("ReadAccountsAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		return result;
-	}
-
-	@Override
-	protected void onPostExecute(Boolean result)
-	{
-		try
-		{
 			if(displayDialog)
 			{
 				if(progress != null)
@@ -146,6 +126,6 @@ public class ReadAccountsAsyncTask extends AsyncTask<Void, Void, Boolean>
 			}
 		}
 
-		super.onPostExecute(result);
+		return result;
 	}
 }

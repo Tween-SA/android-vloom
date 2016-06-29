@@ -315,6 +315,9 @@ public class SettingsActivity extends AppCompatActivity
 	{
 		try
 		{
+			SharedPreferences.Editor editor	= preferences.edit();
+			editor.putBoolean(Common.KEY_PREF_CAPTURED, false);
+			editor.apply();
 			final CaptureSMSAsyncTask task = new CaptureSMSAsyncTask(SettingsActivity.this, false);
 			task.execute();
 		}

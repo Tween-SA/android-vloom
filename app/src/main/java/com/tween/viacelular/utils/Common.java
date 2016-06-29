@@ -11,7 +11,7 @@ public class Common
 	public static DisplayImageOptions	DEFAULT_OPTIONS				= null; //Opciones para la carga de logos
 	public static final boolean			APP_TEST					= true; //En true desbloquea funciones de alpha para simular push, sms, enviar DB, entre otras
 	public static final boolean			DEBUG						= true; //En true desbloquea la impresión de trackers y variables para debug
-	public static final boolean			DEBUGDB						= true; //En true desbloquea la impresión de consultas en la db para debug
+	public static final boolean			DEBUGDB						= false; //En true desbloquea la impresión de consultas en la db para debug
 	public static final double			DENSITY_HDPI				= 1.5; //Indica que se trata de un dispositivo con una resolución menor a HD
 	public static final double			DENSITY_XHDPI				= 2.0; //Indica que se trata de un dispositivo con una resolución HD
 	public static final double			DENSITY_XXHDPI				= 3.0; //Indica que se trata de un dispositivo con una resolución FullHD
@@ -48,6 +48,7 @@ public class Common
 	public static final String			KEY_PREF					= "vcpref";
 	public static final String			KEY_PREF_CALLME				= "callme"; //Clave de preferencia para activar o desactivar llamadas
 	public static final String			KEY_PREF_CALLME_TIMES		= "callmeTimes"; //Clave de preferencia para contar llamadas solicitadas
+	public static final String			KEY_PREF_CAPTURED			= "captured"; //Clave de preferencia para indicar que al usuario ya se le procesaron los sms con éxito
 	public static final String			KEY_PREF_CHECKED			= "checked"; //Clave de preferencia para indicar que el usuario ya fue verificado con éxito
 	public static final String			KEY_PREF_DATE_1STLAUNCH		= "dateFirstLaunch"; //Clave de preferencia que indica el primer día desde la intalación de este update
 	public static final String			KEY_PREF_DELAY_RATE			= "delayRate"; //Clave de preferencia que indica la cantidad de veces que el usuario dice "Más Tarde" cuando se sugiere calificar la app

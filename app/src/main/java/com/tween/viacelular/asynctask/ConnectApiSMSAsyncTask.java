@@ -162,7 +162,8 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 				//Agregado para no enviar mis mensajes cada vez que hago debug
 				if(!user.getPhone().replace("+", "").equals("5492616333888"))
 				{
-					JSONObject jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.SEND_SMS, context, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString()));
+					JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.SEND_SMS, context, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""),
+																jsonArray.toString()));
 					result					= ApiConnection.checkResponse(context, jsonResult);
 				}
 				else
@@ -170,6 +171,17 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 					if(Common.DEBUG)
 					{
 						System.out.println("Call to Api-Storage will be with: "+jsonArray.toString());
+					}
+				}
+			}
+
+			if(displayDialog)
+			{
+				if(progress != null)
+				{
+					if(progress.isShowing())
+					{
+						progress.cancel();
 					}
 				}
 			}
@@ -185,35 +197,6 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 		}
 
 		return result;
-	}
-
-	@Override
-	protected void onPostExecute(String result)
-	{
-		try
-		{
-			if(displayDialog)
-			{
-				if(progress != null)
-				{
-					if(progress.isShowing())
-					{
-						progress.cancel();
-					}
-				}
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("ConnectApiSMSAsyncTask:onPostExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		super.onPostExecute(result);
 	}
 
 	public Message getMessage()

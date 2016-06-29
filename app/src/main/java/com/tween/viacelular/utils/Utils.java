@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
@@ -520,7 +521,8 @@ public class Utils
 			}
 			else
 			{
-				Toast.makeText(activity, "File ready", Toast.LENGTH_SHORT).show();
+				Toast.makeText(activity, "File is ready", Toast.LENGTH_SHORT).show();
+				System.out.println("File is ready");
 			}
 		}
 		catch(Exception e)
@@ -582,11 +584,24 @@ public class Utils
 		return body;
 	}
 
-	public static void copyDb(Activity activity)
+	public static class PrepareDB extends Thread
 	{
-		try
+		private Activity activity;
+
+		public PrepareDB(final Activity activity)
 		{
-			if(ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+			this.activity = activity;
+		}
+
+		public void start()
+		{
+			//Agregado para evitar excepciones Runtime
+			if(Looper.myLooper() == null)
+			{
+				Looper.prepare();
+			}
+
+			try
 			{
 				File f = new File(Common.REALMDB_PATH);
 				File file[] = f.listFiles();
@@ -673,6 +688,35 @@ public class Utils
 				dst.transferFrom(src, 0, src.size());
 				src.close();
 				dst.close();
+			}
+			catch(Exception e)
+			{
+				FileWriter fichero	= null;
+				PrintWriter pw		= null;
+
+				try
+				{
+					fichero	= new FileWriter(path2Copy+"LogVloom.txt");
+					pw		= new PrintWriter(fichero);
+					pw.println(DateUtils.getDatePhone() + " - (thread) ");
+				}
+				catch(Exception d)
+				{
+					e.printStackTrace();
+					d.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public static void copyDb(Activity activity)
+	{
+		try
+		{
+			if(ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+			{
+				PrepareDB task = new PrepareDB(activity);
+				task.start();
 			}
 		}
 		catch(Exception e)

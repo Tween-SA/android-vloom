@@ -94,8 +94,11 @@ public class CodeActivity extends AppCompatActivity
 				}
 				else
 				{
-					final CaptureSMSAsyncTask task = new CaptureSMSAsyncTask(CodeActivity.this, false);
-					task.execute();
+					if(!preferences.getBoolean(Common.KEY_PREF_CAPTURED, false))
+					{
+						final CaptureSMSAsyncTask task = new CaptureSMSAsyncTask(CodeActivity.this, false);
+						task.execute();
+					}
 				}
 
 				//Modificación para que el contador sea por 2 minutos, y que a los 3 minutos se aparezca el botón para pasar sin validar

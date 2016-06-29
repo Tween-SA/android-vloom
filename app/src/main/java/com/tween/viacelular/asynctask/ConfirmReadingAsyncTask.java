@@ -204,26 +204,6 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 				}
 			}
 
-			result = ApiConnection.OK;
-		}
-		catch(Exception e)
-		{
-			System.out.println("ConfirmReadingAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		return result;
-	}
-
-	@Override
-	protected void onPostExecute(String result)
-	{
-		try
-		{
 			if(displayDialog)
 			{
 				if(progress != null)
@@ -237,7 +217,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("ConfirmReadingAsyncTask:onPostExecute - Exception: " + e);
+			System.out.println("ConfirmReadingAsyncTask:doInBackground - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
@@ -245,7 +225,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 			}
 		}
 
-		super.onPostExecute(result);
+		return result;
 	}
 
 	public class UpdateMessages extends Thread

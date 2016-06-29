@@ -86,6 +86,17 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 			}
 
 			companyId = company.getCompanyId();
+
+			if(displayDialog)
+			{
+				if(progress != null)
+				{
+					if(progress.isShowing())
+					{
+						progress.cancel();
+					}
+				}
+			}
 		}
 		catch(JSONException e)
 		{
@@ -105,34 +116,6 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 		}
 
 		return companyId;
-	}
-
-	@Override
-	protected void onPostExecute(String company)
-	{
-		try
-		{
-			if(displayDialog)
-			{
-				if(progress != null)
-				{
-					if(progress.isShowing())
-					{
-						progress.cancel();
-					}
-				}
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("CompanyAsyncTask:onPostExecute - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		super.onPostExecute(company);
 	}
 
 	public int getFlag()

@@ -177,6 +177,17 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 					}
 				}
 			}
+
+			if(displayDialog)
+			{
+				if(progress != null)
+				{
+					if(progress.isShowing())
+					{
+						progress.cancel();
+					}
+				}
+			}
 		}
 		catch(JSONException e)
 		{
@@ -198,35 +209,6 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 		}
 
 		return result;
-	}
-
-	@Override
-	protected void onPostExecute(String result)
-	{
-		try
-		{
-			if(displayDialog)
-			{
-				if(progress != null)
-				{
-					if(progress.isShowing())
-					{
-						progress.cancel();
-					}
-				}
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("UpdateUserAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		super.onPostExecute(result);
 	}
 	
 	public String getToken()
