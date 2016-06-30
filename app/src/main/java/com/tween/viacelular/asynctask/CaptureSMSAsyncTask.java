@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.data.ApiConnection;
@@ -20,7 +21,7 @@ import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
-import io.realm.Case;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -193,61 +194,13 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 									}
 									else
 									{
-										int coincidenceNumber	= 0;
-										client					= null;
 										//Re-estructuración para mejorar clasificación de sms
-										//1- buscamos company con el número del que vino el sms
-										RealmResults<Suscription> companiesWithNumber = realm.where(Suscription.class).contains(Suscription.KEY_NUMBERS, address, Case.INSENSITIVE).findAll();
-										//2- verificamos coincidencias (companies que compartan el número)
-										if(companiesWithNumber.size() > 1)
-										{
-											//Hay ocurrencias, revisaremos las keywords
-											for(Suscription company : companiesWithNumber)
-											{
-												//3- verificamos si el mensaje contiene el nombre de la company
-												if(body.toUpperCase().contains(company.getName().toUpperCase()))
-												{
-													client = company;
-													break;
-												}
-												else
-												{
-													//4- verificamos si el mensaje contiene alguna de las keywords
-													if(StringUtils.containsKeywords(body, company.getKeywords()))
-													{
-														client = company;
-														break;
-													}
-												}
-											}
-										}
-										else
-										{
-											if(companiesWithNumber.size() == 1)
-											{
-												//Encontró una única company
-												client = companiesWithNumber.get(0);
-											}
-										}
+										client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(address, body, activity, country)).findFirst();
 
 										if(client != null)
 										{
 											notification.setCompanyId(client.getCompanyId());
 										}
-										else
-										{
-											client = realm.where(Suscription.class).equalTo(Common.KEY_NAME, address, Case.INSENSITIVE).findFirst();
-
-											if(client == null)
-											{
-												//No existe este número corto en la db, generamos company fantasma
-												client	= SuscriptionHelper.createPhantom(address, activity, country);
-											}
-
-											notification.setCompanyId(client.getCompanyId());
-										}
-
-										System.out.println("Para: "+address+" hay "+companiesWithNumber.size()+" coincidencias y se asigno: "+client.getName());
 									}
 
 									//Si el mensaje es personal el status es 6 - Personal

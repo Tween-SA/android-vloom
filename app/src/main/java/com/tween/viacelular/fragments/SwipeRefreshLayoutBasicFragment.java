@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -28,15 +29,17 @@ import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
 import com.tween.viacelular.adapters.IconOptionAdapter;
-import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -522,40 +525,50 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		@Override
 		protected List<String> doInBackground(Void... params)
 		{
-			List<Suscription> companyList	= new ArrayList<>();
-			List<String> idsList			= new ArrayList<>();
+			List<String> idsList				= new ArrayList<>();
+			List<Suscription> companyList		= new ArrayList<>();
+			List<Suscription> companyPhantom	= new ArrayList<>();
 
 			try
 			{
-				if(ApiConnection.checkInternet(homeActivity))
-				{
-					Realm realm	= Realm.getDefaultInstance();
-					idsList.clear();
-					idsList		= SuscriptionHelper.updateCompanies(homeActivity);
+				Realm realm	= Realm.getDefaultInstance();
+				idsList.clear();
+				idsList		= SuscriptionHelper.updateCompanies(homeActivity);//TODO TEST
 
-					if(idsList.size() > 0)
+				if(idsList.size() > 0)
+				{
+					for(String id : idsList)
 					{
-						for(String id : idsList)
+						Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, id).findFirst();
+						companyList.add(suscription);
+
+						if(!StringUtils.isIdMongo(suscription.getCompanyId()))
 						{
-							companyList.add(realm.where(Suscription.class).equalTo(Suscription.KEY_API, id).findFirst());
+							companyPhantom.add(suscription);
 						}
 					}
+				}
 
-					if(companyList.size() > 0)
+				if(companyPhantom.size() > 0)
+				{
+					for(Suscription phantom : companyPhantom)
 					{
-						for(Suscription existingCompany : companyList)
-						{
-							if(!StringUtils.isIdMongo(existingCompany.getCompanyId()))
-							{
-								RealmResults<Suscription> clients = SuscriptionHelper.getCompanyByNumber(existingCompany.getName());
+						String companyId				= "";
+						RealmResults<Message> messages	= realm.where(Message.class).equalTo(Suscription.KEY_API, phantom.getCompanyId()).findAll();
 
-								if(clients.size() > 0)
+						if(messages.size() > 0)
+						{
+							Suscription client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(address, message, context, country))
+													.findFirst();
+
+							if(client != null)
+							{
+								companyId = client.getCompanyId();
+
+								if(!companyId.equals(phantom.getCompanyId()))
 								{
-									for(Suscription companyFounded : clients)
-									{
-										//Actualizar los mensajes
-										MessageHelper.groupMessages(existingCompany.getCompanyId(), companyFounded.getCompanyId());
-									}
+									//Actualizar los mensajes
+									MessageHelper.groupMessages(phantom.getCompanyId(), companyId);
 								}
 							}
 						}

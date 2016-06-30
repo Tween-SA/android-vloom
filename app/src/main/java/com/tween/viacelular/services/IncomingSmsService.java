@@ -12,11 +12,12 @@ import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.text.format.DateFormat;
+import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.CheckCodeAsyncTask;
 import com.tween.viacelular.asynctask.ConnectApiSMSAsyncTask;
 import com.tween.viacelular.data.Company;
 import com.tween.viacelular.data.Country;
-import com.tween.viacelular.data.User;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
@@ -42,6 +43,7 @@ public class IncomingSmsService extends BroadcastReceiver
 		{
 			final Bundle bundle				= intent.getExtras();
 			SharedPreferences preferences	= context.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			SharedPreferences.Editor editor	= preferences.edit();
 			String code						= "";
 			Message notification			= null;
 
@@ -118,7 +120,6 @@ public class IncomingSmsService extends BroadcastReceiver
 										notification.setStatus(Message.STATUS_RECEIVE);
 
 										//Modificación para contemplar cambio en tratamiento de números cortos
-										SharedPreferences.Editor editor	= preferences.edit();
 										editor.putInt(Common.KEY_LAST_MSGID, preferences.getInt(Common.KEY_LAST_MSGID, 1) + 1);
 										editor.apply();
 										notification.setMsgId(String.valueOf(preferences.getInt(Common.KEY_LAST_MSGID, 1)));
@@ -165,80 +166,33 @@ public class IncomingSmsService extends BroadcastReceiver
 										}
 										else
 										{
-											RealmResults<Suscription> companies	= SuscriptionHelper.getCompanyByNumber(address);
-											Suscription phantomCompany			= realm.where(Suscription.class).equalTo(Common.KEY_NAME, address).findFirst();
-
-											if(companies != null)
+											if(message.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || message.toUpperCase().contains("VIACELULAR"))
 											{
-												if(companies.size() > 1)
-												{
-													for(Suscription company: companies)
-													{
-														client = company;
-
-														if(message.toUpperCase().contains(company.getName().toUpperCase()))
-														{
-															coincidenceKeyword = true;
-															break;
-														}
-														else
-														{
-															if(StringUtils.containsKeywords(message, company.getKeywords()))
-															{
-																coincidenceKeyword = true;
-																break;
-															}
-														}
-													}
-
-													if(!coincidenceKeyword)
-													{
-														//Buscamos si ya existe la company fantasma
-														if(phantomCompany != null)
-														{
-															client		= phantomCompany;
-															companyId	= client.getCompanyId();
-														}
-														else
-														{
-															client		= SuscriptionHelper.createPhantom(address, context, preferences.getString(Country.KEY_API, ""));
-															companyId	= client.getCompanyId();
-														}
-													}
-												}
-												else
-												{
-													if(companies.size() == 1)
-													{
-														client		= companies.get(0);
-														companyId	= client.getCompanyId();
-													}
-													else
-													{
-														if(phantomCompany != null)
-														{
-															client		= phantomCompany;
-															companyId	= client.getCompanyId();
-														}
-														else
-														{
-															client		= SuscriptionHelper.createPhantom(address, context, preferences.getString(Country.KEY_API, ""));
-															companyId	= client.getCompanyId();
-														}
-													}
-												}
+												//Optimización para evitar bucle por un registro
+												companyId = Company.COMPANY_ID_VC_MONGO;
 											}
 											else
 											{
-												if(phantomCompany != null)
+												User user		= realm.where(User.class).findFirst();
+												String country	= preferences.getString(Country.KEY_API, "");
+
+												if(user != null)
 												{
-													client		= phantomCompany;
-													companyId	= client.getCompanyId();
+													if(StringUtils.isNotEmpty(user.getCountryCode()))
+													{
+														country	= user.getCountryCode();
+														editor.putString(Country.KEY_API, country);
+														editor.apply();
+													}
 												}
-												else
+
+												//Re-estructuración para mejorar clasificación de sms
+												client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(address, message, context, country))
+															.findFirst();
+
+												if(client != null)
 												{
-													client		= SuscriptionHelper.createPhantom(address, context, preferences.getString(Country.KEY_API, ""));
-													companyId	= client.getCompanyId();
+													companyId = client.getCompanyId();
 												}
 											}
 										}

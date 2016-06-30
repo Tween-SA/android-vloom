@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.TimestampComparator;
 import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.data.Company;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
@@ -25,6 +26,95 @@ import io.realm.Sort;
  */
 public abstract class SuscriptionHelper
 {
+	public static String classifySubscription(String addressee, String message, Context context, String country)
+	{
+		String companyId = "";
+
+		try
+		{
+			Realm realm	= Realm.getDefaultInstance();
+			int count	= 0;
+
+			//Revisamos si el sms tiene las keywords de Vloom
+			if(message.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || message.toUpperCase().contains("VIACELULAR"))
+			{
+				companyId	= Company.COMPANY_ID_VC_MONGO;
+				count		= 1;
+			}
+			else
+			{
+				//Buscamos companies con el número del que vino el sms
+				RealmResults<Suscription> companiesWithNumber = realm.where(Suscription.class).contains(Suscription.KEY_NUMBERS, addressee, Case.INSENSITIVE).findAll();
+				//Verificamos coincidencias (companies que compartan el número)
+				count = companiesWithNumber.size();
+
+				if(companiesWithNumber.size() > 1)
+				{
+					//Hay ocurrencias, revisaremos las keywords
+					for(Suscription company : companiesWithNumber)
+					{
+						//Verificamos si el mensaje contiene el nombre de la company
+						if(message.toUpperCase().contains(company.getName().toUpperCase()))
+						{
+							companyId = company.getCompanyId();
+							break;
+						}
+						else
+						{
+							//Verificamos si el mensaje contiene alguna de las keywords
+							if(StringUtils.containsKeywords(message, company.getKeywords()))
+							{
+								companyId = company.getCompanyId();
+								break;
+							}
+						}
+					}
+				}
+				else
+				{
+					//Coincidencia única se asocia directamente
+					if(companiesWithNumber.size() == 1)
+					{
+						//Encontró una única company
+						companyId = companiesWithNumber.get(0).getCompanyId();
+					}
+					else
+					{
+						//Buscamos si ya existia la company phantom para ese número
+						Suscription client = realm.where(Suscription.class).equalTo(Common.KEY_NAME, addressee, Case.INSENSITIVE).findFirst();
+
+						if(client != null)
+						{
+							//Existe se asocia
+							companyId = client.getCompanyId();
+						}
+						else
+						{
+							//No existe este número corto en la db, generamos company fantasma
+							client		= SuscriptionHelper.createPhantom(addressee, context, country);
+							companyId	= client.getCompanyId();
+						}
+					}
+				}
+			}
+
+			//TODO DEBUG ONLY
+			Suscription name = realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+			System.out.println("Para: "+addressee+" hay "+count+" coincidencias y se asigno: "+name.getName());
+		}
+		catch(Exception e)
+		{
+			System.out.println("SuscriptionHelper:classifySubscription - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		return companyId;
+	}
+
 	/**
 	 * Agregado para actualizar companies mediante pull update. Debe ser llamado desde una Asynctask únicamente
 	 * @param activity
@@ -58,9 +148,10 @@ public abstract class SuscriptionHelper
 			//Agregado para limitar frecuencia de actualización
 			long tsUpated = preferences.getLong(Common.KEY_PREF_TSCOMPANIES, System.currentTimeMillis());
 
-			if(DateUtils.needUpdate(tsUpated, DateUtils.VERYHIGH_FREQUENCY))
+			if(DateUtils.needUpdate(tsUpated, DateUtils.VERYHIGH_FREQUENCY) && ApiConnection.checkInternet(activity))
 			{
-				jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
+				jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET,
+												preferences.getString(Common.KEY_TOKEN, ""), ""));
 				result		= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
 
 				if(result.equals(ApiConnection.OK))
@@ -81,7 +172,7 @@ public abstract class SuscriptionHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("CompanyDao:updateCompanies - Exception: " + e);
+			System.out.println("SuscriptionHelper:updateCompanies - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
@@ -185,12 +276,14 @@ public abstract class SuscriptionHelper
 				{
 					if(!update)
 					{
-						Suscription vc = new Suscription(	Suscription.COMPANY_ID_VC_MONGO, context.getString(R.string.app_name), Land.DEFAULT_VALUE, "2", context.getString(R.string.app),
-															Suscription.TYPE_FREE_REGISTERED, Suscription.ICON_APP, Common.COLOR_ACTION, "[\"from\":\""+Suscription.DEFAULT_SENDER+"\", \"type\":\"free\"]",
-															context.getString(R.string.app_name) + ",", "", context.getString(R.string.url), "2614239139",
-															"[{“title”:”Favorite Road Trips”,”msg”:”Tu credit con Banco Falabella cumple 180 días de mora el 02-12-2015…”,”created”:”1450370433000”}]",
+						Suscription vc = new Suscription(	Suscription.COMPANY_ID_VC_MONGO, context.getString(R.string.app_name), Land.DEFAULT_VALUE, "2",context.getString(R.string.app),
+															Suscription.TYPE_FREE_REGISTERED, Suscription.ICON_APP, Common.COLOR_ACTION,
+															"[\"from\":\""+Suscription.DEFAULT_SENDER+"\", \"type\":\"free\"]", context.getString(R.string.app_name) + ",", "",
+															context.getString(R.string.url), "2614239139",
+															"[{“title”:”Favorite Road Trips”,”msg”:”Tu credit con Falabella cumple 180 días de mora el 02-12-2015…”,”created”:”1450370433000”}]",
 															"", Common.BOOL_NO, "", "Recibe notificaciones de vencimiento, promociones y novedades de "+context.getString(R.string.app_name),
-															Suscription.STATUS_ACTIVE, Common.BOOL_NO, Common.BOOL_NO, Common.MAIL_TWEEN, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_NO);
+															Suscription.STATUS_ACTIVE, Common.BOOL_NO, Common.BOOL_NO, Common.MAIL_TWEEN, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_YES,
+															Common.BOOL_NO);
 
 						realm.beginTransaction();
 						realm.copyToRealmOrUpdate(vc);
@@ -205,7 +298,7 @@ public abstract class SuscriptionHelper
 					Suscription vc = new Suscription(	Suscription.COMPANY_ID_VC_MONGO, context.getString(R.string.app_name), Land.DEFAULT_VALUE, "2", context.getString(R.string.app),
 							Suscription.TYPE_FREE_REGISTERED, Suscription.ICON_APP, Common.COLOR_ACTION, "[\"from\":\""+Suscription.DEFAULT_SENDER+"\", \"type\":\"free\"]",
 							context.getString(R.string.app_name) + ",", "", context.getString(R.string.url), "2614239139",
-							"[{“title”:”Favorite Road Trips”,”msg”:”Tu credit con Banco Falabella cumple 180 días de mora el 02-12-2015…”,”created”:”1450370433000”}]",
+							"[{“title”:”Favorite Road Trips”,”msg”:”Tu credit con Falabella cumple 180 días de mora el 02-12-2015…”,”created”:”1450370433000”}]",
 							"", Common.BOOL_NO, "", "Recibe notificaciones de vencimiento, promociones y novedades de "+context.getString(R.string.app_name),
 							Suscription.STATUS_ACTIVE, Common.BOOL_NO, Common.BOOL_NO, Common.MAIL_TWEEN, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_NO);
 
