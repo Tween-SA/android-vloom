@@ -81,7 +81,7 @@ dependencies
 	compile "com.appboy:android-sdk-ui:1.13.4"
 	compile "com.google.android.gms:play-services-ads:9.2.0"
 	compile "com.google.android.gms:play-services-analytics:9.2.0"
-	compile "com.google.android.gms:play-services-gcm:9.2.0"
+	compile "com.google.android.gms:play-services-gcm:8.4.0"
 	compile "com.google.android.gms:play-services-identity:9.2.0"
 	compile "com.google.android.gms:play-services:9.2.0"
 	compile "com.newrelic.agent.android:android-agent:5.6.1"

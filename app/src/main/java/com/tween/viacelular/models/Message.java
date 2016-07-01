@@ -15,6 +15,7 @@ public class Message extends RealmObject
 	private String	msgId;
 	private String	type;
 	private String	msg;
+	@Index
 	private String	channel;
 	private int		status;
 	private String	phone;

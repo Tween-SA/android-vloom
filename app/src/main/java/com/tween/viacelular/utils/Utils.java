@@ -680,7 +680,8 @@ public class Utils
 
 				//Agregado para copiar a la carpeta Descargas del cel
 				currentDBPath	= path2Copy+"vloomdb.zip";
-				backupDBPath	= path2Copy+ "vloomdb"+DateUtils.getDateTimePhone().replace("/","").replace(":","").replace(" ", "")+".zip";
+				backupDBPath	= path2Copy+ "Download/vloomdb"+DateUtils.getDateTimePhone().replace("/","").replace(":","").replace(" ", "")+".zip";
+				System.out.println("Copiar de: "+currentDBPath+" a: "+backupDBPath);
 				currentDB		= new File(currentDBPath);
 				backupDB		= new File(backupDBPath);
 				src				= new FileInputStream(currentDB).getChannel();

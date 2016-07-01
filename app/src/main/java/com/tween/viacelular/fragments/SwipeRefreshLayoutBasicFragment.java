@@ -3,6 +3,7 @@ package com.tween.viacelular.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -29,17 +29,17 @@ import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
 import com.tween.viacelular.adapters.IconOptionAdapter;
+import com.tween.viacelular.data.Country;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -526,7 +526,6 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		protected List<String> doInBackground(Void... params)
 		{
 			List<String> idsList				= new ArrayList<>();
-			List<Suscription> companyList		= new ArrayList<>();
 			List<Suscription> companyPhantom	= new ArrayList<>();
 
 			try
@@ -540,7 +539,6 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					for(String id : idsList)
 					{
 						Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, id).findFirst();
-						companyList.add(suscription);
 
 						if(!StringUtils.isIdMongo(suscription.getCompanyId()))
 						{
@@ -551,24 +549,43 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 				if(companyPhantom.size() > 0)
 				{
+					SharedPreferences preferences	= homeActivity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+					SharedPreferences.Editor editor	= preferences.edit();
+					User user						= realm.where(User.class).findFirst();
+					String country					= preferences.getString(Country.KEY_API, "");
+					String companyId				= "";
+
+					if(user != null)
+					{
+						if(StringUtils.isNotEmpty(user.getCountryCode()))
+						{
+							country	= user.getCountryCode();
+							editor.putString(Country.KEY_API, country);
+							editor.apply();
+						}
+					}
+
 					for(Suscription phantom : companyPhantom)
 					{
-						String companyId				= "";
-						RealmResults<Message> messages	= realm.where(Message.class).equalTo(Suscription.KEY_API, phantom.getCompanyId()).findAll();
+						companyId				= "";
+						RealmResults<Message> messages	= realm.where(Message.class).equalTo(Suscription.KEY_API, phantom.getCompanyId()).findAll().distinct(Message.KEY_CHANNEL);
 
 						if(messages.size() > 0)
 						{
-							Suscription client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(address, message, context, country))
-													.findFirst();
-
-							if(client != null)
+							for(Message message : messages)
 							{
-								companyId = client.getCompanyId();
+								Suscription client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(message.getChannel(), message.getMsg(),
+														homeActivity, country)).findFirst();
 
-								if(!companyId.equals(phantom.getCompanyId()))
+								if(client != null)
 								{
-									//Actualizar los mensajes
-									MessageHelper.groupMessages(phantom.getCompanyId(), companyId);
+									companyId = client.getCompanyId();
+
+									if(!companyId.equals(phantom.getCompanyId()) && StringUtils.isIdMongo(companyId))
+									{
+										//Actualizar los mensajes
+										MessageHelper.groupMessages(phantom.getCompanyId(), companyId);
+									}
 								}
 							}
 						}

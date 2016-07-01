@@ -69,6 +69,25 @@ public abstract class SuscriptionHelper
 							}
 						}
 					}
+
+					//No hubo coincidencia, se genera company fantasma
+					if(StringUtils.isEmpty(companyId))
+					{
+						//Buscamos si ya existia la company phantom para ese número
+						Suscription client = realm.where(Suscription.class).equalTo(Common.KEY_NAME, addressee, Case.INSENSITIVE).findFirst();
+
+						if(client != null)
+						{
+							//Existe se asocia
+							companyId = client.getCompanyId();
+						}
+						else
+						{
+							//No existe este número corto en la db, generamos company fantasma
+							client		= createPhantom(addressee, context, country);
+							companyId	= client.getCompanyId();
+						}
+					}
 				}
 				else
 				{
@@ -91,7 +110,7 @@ public abstract class SuscriptionHelper
 						else
 						{
 							//No existe este número corto en la db, generamos company fantasma
-							client		= SuscriptionHelper.createPhantom(addressee, context, country);
+							client		= createPhantom(addressee, context, country);
 							companyId	= client.getCompanyId();
 						}
 					}
@@ -100,7 +119,12 @@ public abstract class SuscriptionHelper
 
 			//TODO DEBUG ONLY
 			Suscription name = realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			System.out.println("Para: "+addressee+" hay "+count+" coincidencias y se asigno: "+name.getName());
+			String display = "";
+			if(name != null)
+			{
+				display = name.getName();
+			}
+			System.out.println("Para: "+addressee+" hay "+count+" coincidencias y se asigno: "+display);
 		}
 		catch(Exception e)
 		{
