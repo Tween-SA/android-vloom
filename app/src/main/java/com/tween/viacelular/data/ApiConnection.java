@@ -134,7 +134,7 @@ public class ApiConnection
 			{
 				if(Common.DEBUG)
 				{
-					System.out.println("Url: " + urlStr + " Method: " + method + " Authorization: " + authorization + " Lang: " + Locale.getDefault().getLanguage());
+					System.out.println("Url: " + urlStr + " Method: " + method + " Authorization: " + authorization + " Lang: " + Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
 					System.out.println("Body: " + jsonParams);
 				}
 
@@ -146,7 +146,7 @@ public class ApiConnection
 				httpConnection.setRequestMethod(method);
 				httpConnection.setRequestProperty("Accept", "application/json");
 				httpConnection.setRequestProperty("Content-type", "application/json");
-				httpConnection.setRequestProperty("Accept-Language", Locale.getDefault().getLanguage());
+				httpConnection.setRequestProperty("Accept-Language", Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
 
 				if(StringUtils.isEmpty(authorization))
 				{

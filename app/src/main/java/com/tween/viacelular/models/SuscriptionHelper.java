@@ -144,7 +144,7 @@ public abstract class SuscriptionHelper
 	 * @param activity
 	 * @return
 	 */
-	public static List<String> updateCompanies(Activity activity)
+	public static List<String> updateCompanies(Activity activity, boolean forceByUser)
 	{
 		List<Suscription> companies	= new ArrayList<>();
 		List<String> list			= new ArrayList<>();
@@ -169,10 +169,8 @@ public abstract class SuscriptionHelper
 				}
 			}
 
-			//Agregado para limitar frecuencia de actualización
-			long tsUpated = preferences.getLong(Common.KEY_PREF_TSCOMPANIES, System.currentTimeMillis());
-
-			if(DateUtils.needUpdate(tsUpated, DateUtils.VERYHIGH_FREQUENCY) && ApiConnection.checkInternet(activity))
+			//Si el usuario hizo pull update o apreto en la opción de actualizar del menú en el home se hace directamente
+			if(forceByUser && ApiConnection.checkInternet(activity))
 			{
 				jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET,
 												preferences.getString(Common.KEY_TOKEN, ""), ""));
@@ -191,6 +189,31 @@ public abstract class SuscriptionHelper
 				editor.putLong(Common.KEY_PREF_TSCOMPANIES, System.currentTimeMillis());
 				editor.apply();
 			}
+			else
+			{
+				//Agregado para limitar frecuencia de actualización
+				long tsUpated = preferences.getLong(Common.KEY_PREF_TSCOMPANIES, System.currentTimeMillis());
+
+				if(DateUtils.needUpdate(tsUpated, DateUtils.VERYHIGH_FREQUENCY) && ApiConnection.checkInternet(activity))
+				{
+					jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET,
+							preferences.getString(Common.KEY_TOKEN, ""), ""));
+					result		= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
+
+					if(result.equals(ApiConnection.OK))
+					{
+						parseList(jsonResult.getJSONArray(Common.KEY_DATA), activity.getApplicationContext(), true);
+					}
+					else
+					{
+						parseList(null, activity.getApplicationContext(), true);
+					}
+
+					SharedPreferences.Editor editor	= preferences.edit();
+					editor.putLong(Common.KEY_PREF_TSCOMPANIES, System.currentTimeMillis());
+					editor.apply();
+				}
+			}
 
 			companies = getList(activity);
 		}
@@ -208,7 +231,10 @@ public abstract class SuscriptionHelper
 		{
 			for(Suscription suscription : companies)
 			{
-				list.add(suscription.getCompanyId());
+				if(suscription != null)
+				{
+					list.add(suscription.getCompanyId());
+				}
 			}
 		}
 

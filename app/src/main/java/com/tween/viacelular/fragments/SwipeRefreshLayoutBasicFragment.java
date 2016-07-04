@@ -243,7 +243,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 				if(bringOut)
 				{
-					new RefreshCompanyTask(homeActivity).execute();
+					new RefreshCompanyTask(homeActivity, showDialog).execute();
 				}
 				else
 				{
@@ -515,11 +515,13 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 	public class RefreshCompanyTask extends AsyncTask<Void, Void, List<String>>
 	{
-		Activity homeActivity;
+		Activity	homeActivity;
+		boolean		forceByUser;
 
-		public RefreshCompanyTask(Activity homeActivity)
+		public RefreshCompanyTask(Activity homeActivity, boolean forceByUser)
 		{
-			this.homeActivity = homeActivity;
+			this.homeActivity	= homeActivity;
+			this.forceByUser	= forceByUser;
 		}
 
 		@Override
@@ -532,7 +534,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			{
 				Realm realm	= Realm.getDefaultInstance();
 				idsList.clear();
-				idsList		= SuscriptionHelper.updateCompanies(homeActivity);//TODO TEST
+				idsList		= SuscriptionHelper.updateCompanies(homeActivity, forceByUser);
 
 				if(idsList.size() > 0)
 				{

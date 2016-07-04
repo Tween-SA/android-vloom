@@ -78,8 +78,8 @@ public class IncomingSmsService extends BroadcastReceiver
 
 						if(currentMessage != null)
 						{
-							address	= currentMessage.getDisplayOriginatingAddress().replace("+", "");
-							message	= currentMessage.getDisplayMessageBody();
+							address	= currentMessage.getDisplayOriginatingAddress().replace("+", "");//Quitar carácteres que puedan romper el sms al procesarlo
+							message	= currentMessage.getDisplayMessageBody().replace("\\t", " ").replace("\\n", " ").replace("\\r", " ").replace("\\u000A", " ").trim();
 
 							if(currentMessage.getTimestampMillis() < System.currentTimeMillis())
 							{
@@ -217,7 +217,7 @@ public class IncomingSmsService extends BroadcastReceiver
 										//Agregado para mostrar notificación sin sonido
 										if(notification.getStatus() != Message.STATUS_PERSONAL || StringUtils.isNotEmpty(code))
 										{
-											Utils.showPush(context, preferences.getString(User.KEY_PHONE, ""), Common.BOOL_YES, notification);
+											Utils.showPush(context, preferences.getString(User.KEY_PHONE, ""), String.valueOf(Common.BOOL_YES), notification);
 										}
 									}
 								}

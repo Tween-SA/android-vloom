@@ -232,6 +232,10 @@ public abstract class UserHelper
 					jCountryCode = user.getCountryCode();
 				}
 
+				jEmail		= user.getEmail();
+				jFirstName	= user.getFirstName();
+				jLastName	= user.getLastName();
+
 				if(user.getUserId().equals("1"))
 				{
 					realm.beginTransaction();
@@ -366,8 +370,7 @@ public abstract class UserHelper
 
 				if(StringUtils.isNotEmpty(ids2Add) || StringUtils.isNotEmpty(ids2Remove))
 				{
-					UpdateSubscriptions task = new UpdateSubscriptions(ids2Add, ids2Remove);
-					task.start();
+					new UpdateSubscriptions(ids2Add, ids2Remove).start();
 				}
 			}
 

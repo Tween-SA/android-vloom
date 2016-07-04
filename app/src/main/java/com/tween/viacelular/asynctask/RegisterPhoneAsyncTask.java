@@ -19,6 +19,7 @@ import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.Locale;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -124,6 +125,7 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 
 			//Agregado para enviar Sistema Operativo
 			info.put("os", "android");
+			info.put("countryLanguage", Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
 
 			//TODO Probablemente en algún momento sea necesario agregar la info del device del usuario
 			jsonSend.put(User.KEY_PHONE, phone);

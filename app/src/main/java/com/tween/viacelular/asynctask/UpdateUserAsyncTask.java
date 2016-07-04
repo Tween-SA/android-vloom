@@ -13,6 +13,7 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.Locale;
 import io.realm.Realm;
 
 public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
@@ -164,6 +165,8 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 								jsonSend.put(User.KEY_PHONE, ("+"+user.getPhone()).replace("++", "+"));
 								jsonSend.put(User.KEY_API, user.getUserId());
 								jsonSend.put(User.KEY_GCMID, preferences.getString(User.KEY_GCMID, user.getGcmId()));
+								info.put("os", "android");
+								info.put("countryLanguage", Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
 								jsonSend.put(Common.KEY_INFO, info);
 								jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_PUT,
 																preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));

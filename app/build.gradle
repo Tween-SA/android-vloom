@@ -2,8 +2,8 @@ apply plugin: "com.android.application"
 apply plugin: "newrelic"
 apply plugin: "realm-android"
 
-def argVersionCode = 26;
-def argVersionName = "1.2.6";
+def argVersionCode = 27;
+def argVersionName = "1.2.7";
 
 android
 {

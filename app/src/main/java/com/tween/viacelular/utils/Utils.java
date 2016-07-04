@@ -132,14 +132,14 @@ public class Utils
 	 * @param sound
 	 * @param message
 	 */
-	public static void showPush(Context context, String from, int sound, Message message)
+	public static void showPush(Context context, String from, String sound, Message message)
 	{
 		try
 		{
 			MyGcmListenerService push	= new MyGcmListenerService();
 			push.setContext(context);
 			Bundle bundle				= new Bundle();
-			bundle.putInt(Common.KEY_SOUND, sound);
+			bundle.putString(Common.KEY_SOUND, sound);
 			bundle.putString(Common.KEY_TYPE, message.getType());
 			bundle.putString(Message.KEY_PLAYLOAD, message.getMsg());
 			bundle.putString(Message.KEY_TIMESTAMP, String.valueOf(message.getCreated()));
@@ -768,7 +768,7 @@ public class Utils
 			SharedPreferences preferences	= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			boolean splashed				= preferences.getBoolean(Common.KEY_PREF_SPLASHED, false);
 
-			if(version.equals("1.2.6"))
+			if(version.equals("1.2.7"))
 			{
 				boolean upgraded = preferences.getBoolean(Common.KEY_PREF_UPGRADED + version, false);
 
