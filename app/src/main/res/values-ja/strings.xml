@@ -191,6 +191,7 @@
 	<string name="unauthorized">認められていません</string>
 	<string name="undo">元に戻す</string>
 	<string name="unsuscribe">キャンセル</string>
+	<string name="upgrade_text">私たちはあなたの情報を更新します</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">確認しています...</string>
 	<string name="version_settins">Android v 用</string>

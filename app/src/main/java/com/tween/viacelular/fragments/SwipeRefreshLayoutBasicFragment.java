@@ -407,13 +407,13 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 						snackBarText = context.getString(R.string.snack_blocked);
 					}
 
-					BlockedActivity.modifySubscriptions(context, Utils.reverseBool(client.getFollower()), false, company.getCompanyId());
+					BlockedActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(client.getFollower()), false, company.getCompanyId(), true);
 					snackBar = Snackbar.make(clayout, snackBarText, Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
 						@Override
 						public void onClick(View v)
 						{
-							BlockedActivity.modifySubscriptions(context, Utils.reverseBool(company.getFollower()), false, companyId);
+							BlockedActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(company.getFollower()), false, companyId, true);
 							refresh(false, false);
 						}
 					});

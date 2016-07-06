@@ -235,7 +235,7 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 				if(isWasValidated())
 				{
 					//Modificación para autosuscribir companies que tengan mensajes
-					BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, true, "");
+					BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, true, "", false);
 				}
 			}
 			else

@@ -192,6 +192,7 @@
 	<string name="tomorrow">Tomorrow</string>
 	<string name="unauthorized">Not authorized</string>
 	<string name="undo">UNDO</string>
+	<string name="upgrade_text">We are updating your information</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">Verifying ...</string>
 	<string name="version_settins">for Android v</string>

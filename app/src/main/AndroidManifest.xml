@@ -169,7 +169,7 @@
 		<service
 			android:name="com.tween.viacelular.services.MyGcmListenerService"
 			android:enabled="true"
-			android:exported="false">
+			android:exported="true">
 			<intent-filter>
 				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
 			</intent-filter>
@@ -177,7 +177,7 @@
 		<service
 			android:name="com.tween.viacelular.services.MyInstanceIDListenerService"
 			android:enabled="true"
-			android:exported="false">
+			android:exported="true">
 			<intent-filter>
 				<action android:name="com.google.android.gms.iid.InstanceID" />
 			</intent-filter>
@@ -185,7 +185,7 @@
 		<service
 			android:name="com.tween.viacelular.services.RegistrationIntentService"
 			android:enabled="true"
-			android:exported="false">
+			android:exported="true">
 		</service>
 		<service
 			android:name="com.google.android.gms.analytics.AnalyticsService"

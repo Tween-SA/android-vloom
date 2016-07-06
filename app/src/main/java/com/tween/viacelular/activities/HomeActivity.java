@@ -1,5 +1,6 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import com.appboy.Appboy;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.RecyclerAdapter;
 import com.tween.viacelular.adapters.RecyclerItemClickListener;
+import com.tween.viacelular.asynctask.UpdateUserAsyncTask;
 import com.tween.viacelular.fragments.SwipeRefreshLayoutBasicFragment;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.AppRater;
@@ -48,10 +50,10 @@ public class HomeActivity extends AppCompatActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		Realm realm = null;
-
 		try
 		{
+			Realm realm = Realm.getDefaultInstance();
+
 			//Agregado para efecto de transición entre pantallas
 			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
 			{
@@ -78,6 +80,11 @@ public class HomeActivity extends AppCompatActivity
 
 			if(Utils.checkSesion(this, Common.ANOTHER_SCREEN))
 			{
+				if(realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).count() == 0)
+				{
+					new UpdateUserAsyncTask(HomeActivity.this, Common.BOOL_YES, false, "", true, false).execute();
+				}
+
 				//Se quitó la configuración de ImageLoader para llamarse antes de ejectuarse
 				final Intent intentRecive	= getIntent();
 
@@ -139,15 +146,15 @@ public class HomeActivity extends AppCompatActivity
 
 				if(StringUtils.isNotEmpty(companyId) && block == Common.BOOL_YES)
 				{
-					realm							= Realm.getDefaultInstance();
 					final Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 					final String companyId			= suscription.getCompanyId();
+					final Activity activity			= HomeActivity.this;
 					Snackbar snackBar				= Snackbar.make(clayout, getString(R.string.snack_blocked), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
 						@Override
 						public void onClick(View v)
 						{
-							BlockedActivity.modifySubscriptions(getApplicationContext(), Common.BOOL_YES, false, companyId);
+							BlockedActivity.modifySubscriptions(activity, Common.BOOL_YES, false, companyId, true);
 							fragment.refresh(false, false);
 						}
 					});

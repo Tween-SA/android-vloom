@@ -193,6 +193,7 @@
 	<string name="unauthorized">No autorizado</string>
 	<string name="undo">DESHACER</string>
 	<string name="unsuscribe">BAJA</string>
+	<string name="upgrade_text">Estamos actualizando tu información</string><!-- after traslate -->
 	<string name="url">http://www.vloom.com/</string>
 	<string name="verify_dialog">Verificando...</string>
 	<string name="version_settins">para Android v</string>

@@ -181,10 +181,6 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 							JSONObject jsonResult	= new JSONObject(ApiConnection.request(url, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString()));
 							result					= ApiConnection.checkResponse(context, jsonResult);
 							result					= ApiConnection.OK;
-							//Guardar la fecha de última actualización
-							SharedPreferences.Editor editor = preferences.edit();
-							editor.putLong(Common.KEY_PREF_TSSUBSCRIPTIONS, System.currentTimeMillis());
-							editor.apply();
 						}
 						else
 						{
@@ -195,8 +191,34 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 							}
 						}
 					}
+
+					//Guardar la fecha de última actualización
+					SharedPreferences.Editor editor = preferences.edit();
+					editor.putLong(Common.KEY_PREF_TSSUBSCRIPTIONS, System.currentTimeMillis());
+					editor.apply();
 				}
 			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("UpdateSuscriptionsAsyncTask:doInBackground - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+
+	@Override
+	protected void onPostExecute(String result)
+	{
+		try
+		{
+			//Agregado para refrescar las suscripciones locales
+			new UpdateUserAsyncTask(context, Common.BOOL_NO, false, "", true, false).execute();
 
 			if(result.equals(ApiConnection.OK))
 			{
@@ -212,19 +234,19 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 						activity.finish();
 					}
 				}
+			}
 
-				if(displayDialog)
+			if(displayDialog)
+			{
+				if(progress != null)
 				{
-					if(progress != null)
+					if(progress.isShowing())
 					{
-						if(progress.isShowing())
+						if(task != null)
 						{
-							if(task != null)
+							if(!task.isAlive())
 							{
-								if(!task.isAlive())
-								{
-									progress.cancel();
-								}
+								progress.cancel();
 							}
 						}
 					}
@@ -233,15 +255,13 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("UpdateSuscriptionsAsyncTask:doInBackground - Exception: " + e);
+			System.out.println("UpdateSuscriptionsAsyncTask:onPostExecute - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
 			}
 		}
-
-		return result;
 	}
 
 	private boolean modifySubscriptions(final String ids, final int flag)

@@ -116,15 +116,6 @@ public abstract class SuscriptionHelper
 					}
 				}
 			}
-
-			//TODO DEBUG ONLY
-			Suscription name = realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			String display = "";
-			if(name != null)
-			{
-				display = name.getName();
-			}
-			System.out.println("Para: "+addressee+" hay "+count+" coincidencias y se asigno: "+display);
 		}
 		catch(Exception e)
 		{

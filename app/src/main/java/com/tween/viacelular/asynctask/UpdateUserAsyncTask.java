@@ -20,18 +20,20 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;
 	private Context			context;
-	private int				force			= 0;
+	private int				force			= Common.BOOL_NO;
 	private boolean			displayDialog	= true;
 	private String			token			= "";
-	private boolean			onlyGet			= false;
+	private boolean			useGet			= false;
+	private boolean			usePut			= false;
 
-	public UpdateUserAsyncTask(final Context context, final int force, final boolean displayDialog, final String token, final boolean onlyGet)
+	public UpdateUserAsyncTask(final Context context, final int force, final boolean displayDialog, final String token, final boolean useGet, final boolean usePut)
 	{
 		this.context		= context;
 		this.force			= force;
 		this.displayDialog	= displayDialog;
 		this.token			= token;
-		this.onlyGet		= onlyGet;
+		this.useGet			= useGet;
+		this.usePut			= usePut;
 	}
 
 	protected void onPreExecute()
@@ -86,32 +88,40 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 			if(user != null)
 			{
 				//Agregado para reemplazar el gcmId con el nuevo token
-				if(StringUtils.isNotEmpty(getToken()))
+				if(StringUtils.isNotEmpty(token))
 				{
 					realm.beginTransaction();
-					user.setGcmId(getToken());
+					user.setGcmId(token);
 					realm.commitTransaction();
 				}
 
-				//Modificación para refrescar suscripciones del usuario
-				if(StringUtils.isIdMongo(user.getUserId()))
+				//Modificación para solamente actualizar en api datos sin hacer el GET
+				if(useGet)
 				{
-					jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_GET,
-							preferences.getString(Common.KEY_TOKEN, ""), ""));
-					result		= ApiConnection.checkResponse(context, jsonResult);
-				}
-
-				if(result.equals(ApiConnection.OK))
-				{
-					JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_DATA);
-
-					if(jsonData != null)
+					//Modificación para refrescar suscripciones del usuario
+					if(StringUtils.isIdMongo(user.getUserId()))
 					{
-						userParsed = UserHelper.parseJSON(jsonData, true, context);
+						jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_GET,
+														preferences.getString(Common.KEY_TOKEN, ""), ""));
+						result		= ApiConnection.checkResponse(context, jsonResult);
+					}
+
+					if(result.equals(ApiConnection.OK))
+					{
+						JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_DATA);
+
+						if(jsonData != null)
+						{
+							userParsed = UserHelper.parseJSON(jsonData, true, context);
+						}
 					}
 				}
+				else
+				{
+					userParsed = user;
+				}
 
-				if(!onlyGet)
+				if(usePut)
 				{
 					if((StringUtils.isNotEmpty(preferences.getString(User.KEY_GCMID, "")) && (!preferences.getString(User.KEY_GCMID, "").equals(user.getGcmId())) || force == 1))
 					{
@@ -212,15 +222,5 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 		}
 
 		return result;
-	}
-	
-	public String getToken()
-	{
-		return token;
-	}
-	
-	public void setToken(final String token)
-	{
-		this.token = token;
 	}
 }

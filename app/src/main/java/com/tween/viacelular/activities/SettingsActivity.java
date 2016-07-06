@@ -162,7 +162,8 @@ public class SettingsActivity extends AppCompatActivity
 				}
 
 				//Agregado para visualizar la versión actual de la app con link a play store
-				String version = getString(R.string.app_name)+ " "+getString(R.string.version_settins)+getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
+				String version = getString(R.string.app_name)+ " "+getString(R.string.version_settins)
+									+getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
 
 				if(btnPlayStore != null && StringUtils.isNotEmpty(version))
 				{

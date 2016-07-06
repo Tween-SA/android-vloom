@@ -191,6 +191,7 @@
 	<string name="unauthorized">권한 없음</string>
 	<string name="undo">실행 취소</string>
 	<string name="unsuscribe">취소하기</string>
+	<string name="upgrade_text">우리는 귀하의 정보를 업데이트</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">확인 중...</string>
 	<string name="version_settins">안드로이드 v용</string>

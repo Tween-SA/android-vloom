@@ -201,9 +201,16 @@ public class DateUtils
 	{
 		try
 		{
-			final long diff	= System.currentTimeMillis() - date;
+			if(date != null)
+			{
+				final long diff	= System.currentTimeMillis() - date;
 
-			if(diff > frequency)
+				if(diff > frequency)
+				{
+					return true;
+				}
+			}
+			else
 			{
 				return true;
 			}

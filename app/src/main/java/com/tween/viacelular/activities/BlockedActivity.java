@@ -145,7 +145,7 @@ public class BlockedActivity extends AppCompatActivity
 				if(client != null)
 				{
 					//Se quitó momentaneamente la llamda a la api hasta que esté disponible
-					modifySubscriptions(getApplicationContext(), Common.BOOL_YES, false, client.getCompanyId());
+					modifySubscriptions(this, Common.BOOL_YES, false, client.getCompanyId(), true);
 					refresh();
 
 					Snackbar snackBar = Snackbar.make(Clayout, getString(R.string.snack_unblocked), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
@@ -156,7 +156,7 @@ public class BlockedActivity extends AppCompatActivity
 							try
 							{
 								//Se quitó momentaneamente la llamda a la api hasta que esté disponible
-								modifySubscriptions(getApplicationContext(), Common.BOOL_NO, false, client.getCompanyId());
+								modifySubscriptions(getApplicationContext(), Common.BOOL_NO, false, client.getCompanyId(), true);
 								refresh();
 							}
 							catch(Exception e)
@@ -186,7 +186,7 @@ public class BlockedActivity extends AppCompatActivity
 		}
 	}
 
-	public static void modifySubscriptions(Context context, int flag, boolean goToHome, String companyId)
+	public static void modifySubscriptions(Context context, int flag, boolean goToHome, String companyId, boolean blockUI)
 	{
 		//Unificación de comportamiento en Asynctask para funcionalidad de Bloquear, Desuscribir y viceversa
 		try
@@ -203,8 +203,7 @@ public class BlockedActivity extends AppCompatActivity
 				}
 			}
 
-			final UpdateSuscriptionsAsyncTask task	= new UpdateSuscriptionsAsyncTask(context, false, flag, goToHome, companyId);
-			task.execute();
+			new UpdateSuscriptionsAsyncTask(context, blockUI, flag, goToHome, companyId).execute();
 
 			if(sendSMS)
 			{

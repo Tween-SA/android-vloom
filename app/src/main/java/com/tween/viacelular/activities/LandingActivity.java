@@ -577,7 +577,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 
 			if(suscription != null)
 			{
-				BlockedActivity.modifySubscriptions(context, Utils.reverseBool(suscription.getFollower()), false, companyId);
+				BlockedActivity.modifySubscriptions(LandingActivity.this, Utils.reverseBool(suscription.getFollower()), false, companyId, true);
 
 				//Agregado para redirigir a la pantallas cards para pedir la identificación del cliente si es necesario
 				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()) && Utils.reverseBool(suscription.getFollower()) == Common.BOOL_YES)

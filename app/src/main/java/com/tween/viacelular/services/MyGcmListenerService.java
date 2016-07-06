@@ -422,7 +422,7 @@ public class MyGcmListenerService extends GcmListenerService
 							//Rollback para autoañadir companies si no está añadida
 							if(!newClient && clientP.getFollower() == Common.BOOL_NO && clientP.getBlocked() == Common.BOOL_NO)
 							{
-								BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, false, clientP.getCompanyId());
+								BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, false, clientP.getCompanyId(), false);
 							}
 						}
 						else

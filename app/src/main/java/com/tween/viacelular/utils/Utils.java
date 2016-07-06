@@ -36,6 +36,7 @@ import com.tween.viacelular.data.Company;
 import com.tween.viacelular.data.DaoMaster;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.MyGcmListenerService;
 import java.io.BufferedInputStream;
@@ -78,15 +79,24 @@ public class Utils
 					break;
 
 					case 2:
-						//Agregado para limitar frecuencia de actualización
-						SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-						long tsUpated					= preferences.getLong(Common.KEY_PREF_TSSUBSCRIPTIONS, System.currentTimeMillis());
+						//Agregado para prevenir casos en que no se actualizaron las suscripciones
+						Realm realm = Realm.getDefaultInstance();
 
-						if(DateUtils.needUpdate(tsUpated, DateUtils.HIGH_FREQUENCY))
+						if(realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).count() == 0)
 						{
-							//Se modifica para reemplazar la pantalla Bloquedas por la pantalla Empresas con tab
-							UpdateUserAsyncTask task	= new UpdateUserAsyncTask(context, Common.BOOL_YES, false, "", true);
-							task.execute();
+							new UpdateUserAsyncTask(context, Common.BOOL_YES, false, "", true, false).execute();
+						}
+						else
+						{
+							//Agregado para limitar frecuencia de actualización
+							SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+							long tsUpated					= preferences.getLong(Common.KEY_PREF_TSSUBSCRIPTIONS, System.currentTimeMillis());
+
+							if(DateUtils.needUpdate(tsUpated, DateUtils.HIGH_FREQUENCY))
+							{
+								//Se modifica para reemplazar la pantalla Bloquedas por la pantalla Empresas con tab
+								new UpdateUserAsyncTask(context, Common.BOOL_YES, false, "", true, false).execute();
+							}
 						}
 
 						intent = new Intent(context, SuscriptionsActivity.class);
@@ -201,8 +211,7 @@ public class Utils
 						if(DateUtils.needUpdate(tsUpated, DateUtils.LOW_FREQUENCY))
 						{
 							//Agregado para actualizar datos del usuario solamente cuando inicia la app
-							UpdateUserAsyncTask task = new UpdateUserAsyncTask(activity, Common.BOOL_YES, false, "", false);
-							task.execute();
+							new UpdateUserAsyncTask(activity, Common.BOOL_YES, false, "", true, true).execute();
 						}
 
 						intent	= new Intent(activity, HomeActivity.class);
@@ -767,61 +776,42 @@ public class Utils
 			String version					= activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
 			SharedPreferences preferences	= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			boolean splashed				= preferences.getBoolean(Common.KEY_PREF_SPLASHED, false);
+			boolean upgraded				= preferences.getBoolean(Common.KEY_PREF_UPGRADED + version, false);
 
-			if(version.equals("1.2.7"))
+			//Se quitó if de más ya que siempre se realizará este checkeo de upgrade
+			if(!upgraded)
 			{
-				boolean upgraded = preferences.getBoolean(Common.KEY_PREF_UPGRADED + version, false);
-
-				if(!upgraded)
+				if(splashed)
 				{
-					if(splashed)
-					{
-						//Migración de db a Realm
-						final MigrationAsyncTask task = new MigrationAsyncTask(activity, false);
-						task.execute();
-					}
-					else
-					{
-						//Se movió la llamada de esta task acá para optimizar código
-						SharedPreferences.Editor editor = preferences.edit();
-						editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.2");
-						editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.3");
-						editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.4");
-						editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.5");
-						editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.6");
-						editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.7");
-						editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.8");
-						editor.putBoolean(Common.KEY_PREF_UPGRADED + version, true);
-						//Reiniciar la fecha para mostrar el popup tras cada update de la app
-						editor.putLong(Common.KEY_PREF_DATE_1STLAUNCH, System.currentTimeMillis());
-						int delayTimes = preferences.getInt(Common.KEY_PREF_DELAY_RATE, 0);
-
-						if(delayTimes == 0)
-						{
-							editor.putInt(Common.KEY_PREF_DELAY_RATE, 1);
-						}
-
-						editor.apply();
-						SplashAsyncTask task = new SplashAsyncTask(activity, false);
-						task.execute();
-					}
+					//Migración de db a Realm
+					final MigrationAsyncTask task = new MigrationAsyncTask(activity, true);
+					task.execute();
 				}
 				else
 				{
-					if(!splashed)
+					//Se movió la llamada de esta task acá para optimizar código
+					SharedPreferences.Editor editor = preferences.edit();
+					editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.2");
+					editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.3");
+					editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.4");
+					editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.5");
+					editor.putBoolean(Common.KEY_PREF_UPGRADED + version, true);
+					//Reiniciar la fecha para mostrar el popup tras cada update de la app
+					editor.putLong(Common.KEY_PREF_DATE_1STLAUNCH, System.currentTimeMillis());
+					int delayTimes = preferences.getInt(Common.KEY_PREF_DELAY_RATE, 0);
+
+					if(delayTimes == 0)
 					{
-						SplashAsyncTask task = new SplashAsyncTask(activity, false);
-						task.execute();
+						editor.putInt(Common.KEY_PREF_DELAY_RATE, 1);
 					}
-					else
-					{
-						Utils.checkSesion(activity, Common.SPLASH_SCREEN);
-					}
+
+					editor.apply();
+					SplashAsyncTask task = new SplashAsyncTask(activity, false);
+					task.execute();
 				}
 			}
 			else
 			{
-				//Agregado para respetar flujo normal cuando no es necesario un upgrade
 				if(!splashed)
 				{
 					SplashAsyncTask task = new SplashAsyncTask(activity, false);

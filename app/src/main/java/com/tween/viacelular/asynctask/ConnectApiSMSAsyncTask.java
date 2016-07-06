@@ -6,10 +6,9 @@ import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.data.ApiConnection;
-import com.tween.viacelular.data.Country;
 import com.tween.viacelular.models.Message;
-import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.Suscription;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -99,7 +98,6 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 					jsonObject.put(Message.KEY_CHANNEL, Utils.getChannelSMS(context));
 					jsonObject.put(Common.KEY_STATUS, message.getStatus());
 					jsonObject.put(Suscription.KEY_API, companyId);
-					jsonObject.put(Country.KEY_API, countryCode);
 					jsonObject.put(Message.KEY_CREATED, message.getCreated());
 					jsonObject.put(Message.KEY_DELETED, message.getDeleted());
 					jsonObject.put(Suscription.KEY_FROM, message.getChannel());
@@ -115,44 +113,45 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 				{
 					RealmResults<Message> messages	= realm.where(Message.class).equalTo(Common.KEY_TYPE, Message.TYPE_SMS).findAll();
 
-					if(messages != null)
+					if(Common.DEBUG)
 					{
-						if(messages.size() > 0)
+						System.out.println("Mensajes a capturar: "+messages.size());
+					}
+
+					if(messages.size() > 0)
+					{
+						//Armado de array en Json con los sms interpretados
+						for(int i = 0; i < messages.size(); i++)
 						{
-							//Armado de array en Json con los sms interpretados
-							for(int i = 0; i < messages.size(); i++)
+							if(i <= 300)
 							{
-								if(i <= 300)
+								String companyId = "";
+
+								if(StringUtils.isIdMongo(messages.get(i).getCompanyId()))
 								{
-									String companyId = "";
-
-									if(StringUtils.isIdMongo(messages.get(i).getCompanyId()))
-									{
-										companyId = messages.get(i).getCompanyId();
-									}
-
-									//Reestructuración de api
-									JSONObject jsonObject	= new JSONObject();
-									jsonObject.put(Common.KEY_TYPE, messages.get(i).getType());
-									jsonObject.put(Message.KEY_MSG, StringUtils.sanitizeText(messages.get(i).getMsg()));
-									jsonObject.put(Message.KEY_CHANNEL, Utils.getChannelSMS(context));
-									jsonObject.put(Common.KEY_STATUS, messages.get(i).getStatus());
-									jsonObject.put(Suscription.KEY_API, companyId);
-									jsonObject.put(Country.KEY_API, countryCode);
-									jsonObject.put(Message.KEY_CREATED, messages.get(i).getCreated());
-									jsonObject.put(Message.KEY_DELETED, messages.get(i).getDeleted());
-									jsonObject.put(Suscription.KEY_FROM, messages.get(i).getChannel());
-									jsonObject.put(Message.KEY_TTD, 0);
-									jsonObject.put(Message.KEY_FLAGS, Message.FLAGS_SMSCAP);
-									JSONArray phones		= new JSONArray();
-									phones.put(user.getPhone().replace("+", ""));
-									jsonObject.put("phones", phones);
-									jsonArray.put(jsonObject);
+									companyId = messages.get(i).getCompanyId();
 								}
-							}
 
-							send = true;
+								//Reestructuración de api
+								JSONObject jsonObject	= new JSONObject();
+								jsonObject.put(Common.KEY_TYPE, messages.get(i).getType());
+								jsonObject.put(Message.KEY_MSG, StringUtils.sanitizeText(messages.get(i).getMsg()));
+								jsonObject.put(Message.KEY_CHANNEL, Utils.getChannelSMS(context));
+								jsonObject.put(Common.KEY_STATUS, messages.get(i).getStatus());
+								jsonObject.put(Suscription.KEY_API, companyId);
+								jsonObject.put(Message.KEY_CREATED, messages.get(i).getCreated());
+								jsonObject.put(Message.KEY_DELETED, messages.get(i).getDeleted());
+								jsonObject.put(Suscription.KEY_FROM, messages.get(i).getChannel());
+								jsonObject.put(Message.KEY_TTD, 0);
+								jsonObject.put(Message.KEY_FLAGS, Message.FLAGS_SMSCAP);
+								JSONArray phones		= new JSONArray();
+								phones.put(user.getPhone().replace("+", ""));
+								jsonObject.put("phones", phones);
+								jsonArray.put(jsonObject);
+							}
 						}
+
+						send = true;
 					}
 				}
 			}

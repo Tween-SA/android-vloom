@@ -509,7 +509,7 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			BlockedActivity.modifySubscriptions(getApplicationContext(), Common.BOOL_NO, true, companyId);
+			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, true);
 			Utils.hideCard(cardPayout);
 			Utils.hideCard(cardSuscribe);
 
@@ -950,7 +950,7 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			BlockedActivity.modifySubscriptions(getApplicationContext(), Common.BOOL_YES, false, companyId);
+			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, true);
 			Utils.hideCard(cardPayout);
 			Utils.hideCard(cardSuscribe);
 			txtTitle.setTextColor(colorTitle);
@@ -1128,7 +1128,7 @@ public class CardViewActivity extends AppCompatActivity
 					//Agregado para capturar evento en Google Analytics
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("BloquearInCompany")
 																									.setLabel("AccionUser").build());
-					BlockedActivity.modifySubscriptions(getApplicationContext(), Common.BOOL_NO, true, companyId);
+					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, true);
 					Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
 					intent.putExtra(Common.KEY_ID, companyId);
 					intent.putExtra(Suscription.KEY_BLOCKED, Common.BOOL_YES);
@@ -1140,7 +1140,7 @@ public class CardViewActivity extends AppCompatActivity
 				//Al igual que Silenciar/Activar, esta es la opción para suscribir
 				if(item.toString().equals(getString(R.string.landing_suscribe)))
 				{
-					BlockedActivity.modifySubscriptions(getApplicationContext(), Common.BOOL_YES, false, companyId);
+					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, true);
 					txtTitle.setTextColor(colorTitle);
 					txtSubTitleCollapsed.setTextColor(colorSubTitle);
 					toolBar.setBackgroundColor(Color.parseColor(suscription.getColorHex()));
