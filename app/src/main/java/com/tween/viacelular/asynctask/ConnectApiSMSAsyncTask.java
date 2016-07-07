@@ -113,11 +113,6 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 				{
 					RealmResults<Message> messages	= realm.where(Message.class).equalTo(Common.KEY_TYPE, Message.TYPE_SMS).findAll();
 
-					if(Common.DEBUG)
-					{
-						System.out.println("Mensajes a capturar: "+messages.size());
-					}
-
 					if(messages.size() > 0)
 					{
 						//Armado de array en Json con los sms interpretados

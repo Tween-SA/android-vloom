@@ -1,7 +1,6 @@
 package com.tween.viacelular.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -39,7 +38,7 @@ public class SuscriptionsActivity extends AppCompatActivity
 	public RecyclerView					mRecyclerView;
 	public Intent						intentRecive;
 	private Toolbar						toolBar;
-	private Context						context;
+	private Activity					context;
 	public RecyclerView.Adapter			mAdapter				= null;
 	public WeakHashMap<View,Integer>	mOriginalViewHeightPool	= new WeakHashMap<>();
 
@@ -62,7 +61,7 @@ public class SuscriptionsActivity extends AppCompatActivity
 			viewPager.setAdapter(pagerAdapter);
 			TabLayout tabLayout			= (TabLayout) findViewById(R.id.tabLayout);
 			tabLayout.setupWithViewPager(viewPager);
-			context						= getApplicationContext();
+			context						= SuscriptionsActivity.this;
 			updateMenu();
 		}
 		catch(Exception e)

@@ -1,11 +1,15 @@
 package com.tween.viacelular.asynctask;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
+import com.tween.viacelular.activities.HomeActivity;
+import com.tween.viacelular.activities.SuscriptionsActivity;
 import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.data.Country;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.UserHelper;
@@ -40,6 +44,8 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 	{
 		try
 		{
+			System.out.println("pre UpdateUserTask");
+
 			if(displayDialog)
 			{
 				if(progress != null)
@@ -51,9 +57,9 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 				}
 
 				progress = new MaterialDialog.Builder(context)
-					.title(R.string.progress_dialog)
+					.title(R.string.landing_card_loading_header)
 					.cancelable(false)
-					.content(R.string.please_wait)
+					.content(R.string.upgrade_text)
 					.progress(true, 0)
 					.show();
 			}
@@ -79,11 +85,24 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 			//Modificaciones para contemplar migración a Realm
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			Realm realm						= Realm.getDefaultInstance();
-			User user						= realm.where(User.class).findFirst();
+			String userId					= preferences.getString(User.KEY_API, "");
+			User user						= realm.where(User.class).equalTo(User.KEY_API, userId).findFirst();
 			User userParsed					= null;
 			JSONObject jsonSend				= new JSONObject();
 			JSONObject jsonResult			= new JSONObject();
 			JSONObject info					= new JSONObject();
+			String gcmId					= preferences.getString(User.KEY_GCMID, token);
+			String country					= preferences.getString(Country.KEY_API, "");
+			String phone					= preferences.getString(User.KEY_PHONE, "");
+			String email					= "";
+			String firstName				= "";
+			String lastName					= "";
+			int status						= User.STATUS_UNVERIFIED;
+
+			if(user != null)
+			{
+				user = realm.where(User.class).findFirst();
+			}
 
 			if(user != null)
 			{
@@ -95,97 +114,106 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 					realm.commitTransaction();
 				}
 
-				//Modificación para solamente actualizar en api datos sin hacer el GET
-				if(useGet)
+				userId		= preferences.getString(User.KEY_API, user.getUserId());
+				gcmId		= preferences.getString(User.KEY_GCMID, user.getGcmId());
+				firstName	= user.getFirstName();
+				lastName	= user.getLastName();
+				status		= user.getStatus();
+				email		= user.getEmail();
+				country		= preferences.getString(Country.KEY_API, user.getCountryCode());
+				phone		= preferences.getString(User.KEY_PHONE, user.getPhone());
+			}
+
+			//Modificación para solamente actualizar en api datos sin hacer el GET
+			if(useGet)
+			{
+				//Modificación para refrescar suscripciones del usuario
+				if(StringUtils.isIdMongo(userId))
 				{
-					//Modificación para refrescar suscripciones del usuario
-					if(StringUtils.isIdMongo(user.getUserId()))
+					jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + userId, context, ApiConnection.METHOD_GET,
+													preferences.getString(Common.KEY_TOKEN, ""), ""));
+					result		= ApiConnection.checkResponse(context, jsonResult);
+				}
+
+				if(result.equals(ApiConnection.OK))
+				{
+					JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_DATA);
+
+					if(jsonData != null)
 					{
-						jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_GET,
-														preferences.getString(Common.KEY_TOKEN, ""), ""));
-						result		= ApiConnection.checkResponse(context, jsonResult);
+						userParsed = UserHelper.parseJSON(jsonData, true, context);
 					}
+				}
+			}
+			else
+			{
+				userParsed = user;
+			}
 
-					if(result.equals(ApiConnection.OK))
+			if(usePut)
+			{
+				if((StringUtils.isNotEmpty(preferences.getString(User.KEY_GCMID, "")) && (!preferences.getString(User.KEY_GCMID, "").equals(gcmId)) || force == 1))
+				{
+					if(userParsed != null)
 					{
-						JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_DATA);
+						//Modificación para quitar campos no relevantes y forzar el envio de gsmId
+						boolean modified = false;
 
-						if(jsonData != null)
+						if(StringUtils.isNotEmpty(firstName))
 						{
-							userParsed = UserHelper.parseJSON(jsonData, true, context);
+							if(!firstName.equals(userParsed.getFirstName()))
+							{
+								info.put(User.KEY_FIRSTNAME, firstName);
+								modified = true;
+							}
 						}
-					}
-				}
-				else
-				{
-					userParsed = user;
-				}
 
-				if(usePut)
-				{
-					if((StringUtils.isNotEmpty(preferences.getString(User.KEY_GCMID, "")) && (!preferences.getString(User.KEY_GCMID, "").equals(user.getGcmId())) || force == 1))
-					{
-						if(userParsed != null)
+						if(StringUtils.isNotEmpty(lastName))
 						{
-							//Modificación para quitar campos no relevantes y forzar el envio de gsmId
-							boolean modified = false;
-
-							if(StringUtils.isNotEmpty(user.getFirstName()))
+							if(!lastName.equals(userParsed.getLastName()))
 							{
-								if(!user.getFirstName().equals(userParsed.getFirstName()))
-								{
-									info.put(User.KEY_FIRSTNAME, user.getFirstName());
-									modified = true;
-								}
-							}
-
-							if(StringUtils.isNotEmpty(user.getLastName()))
-							{
-								if(!user.getLastName().equals(userParsed.getLastName()))
-								{
-									info.put(User.KEY_LASTNAME, user.getLastName());
-									modified = true;
-								}
-							}
-
-							if(StringUtils.isNotEmpty(user.getEmail()))
-							{
-								//Modificación para enviar siempre el email de User para forzar el update con PUT/{userId}
-								info.put(User.KEY_EMAIL, user.getEmail());
+								info.put(User.KEY_LASTNAME, lastName);
 								modified = true;
 							}
+						}
 
-							if(StringUtils.isNotEmpty(user.getCountryCode()))
-							{
-								if(!user.getCountryCode().equals(userParsed.getCountryCode()))
-								{
-									info.put(Land.KEY_API, user.getCountryCode());
-									modified = true;
-								}
-							}
+						if(StringUtils.isNotEmpty(email))
+						{
+							//Modificación para enviar siempre el email de User para forzar el update con PUT/{userId}
+							info.put(User.KEY_EMAIL, email);
+							modified = true;
+						}
 
-							//Agregado para forzar actualización de User si se dio de baja de redis por gcmId no válido
-							if(userParsed.getStatus() != user.getStatus())
+						if(StringUtils.isNotEmpty(country))
+						{
+							if(!country.equals(userParsed.getCountryCode()))
 							{
+								info.put(Land.KEY_API, country);
 								modified = true;
 							}
+						}
 
-							if(modified || force == 1)
-							{
-								jsonSend.put(User.KEY_PHONE, ("+"+user.getPhone()).replace("++", "+"));
-								jsonSend.put(User.KEY_API, user.getUserId());
-								jsonSend.put(User.KEY_GCMID, preferences.getString(User.KEY_GCMID, user.getGcmId()));
-								info.put("os", "android");
-								info.put("countryLanguage", Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
-								jsonSend.put(Common.KEY_INFO, info);
-								jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_PUT,
-																preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
-								result		= ApiConnection.checkResponse(context, jsonResult);
-								//Guardar la fecha de última actualización
-								SharedPreferences.Editor editor = preferences.edit();
-								editor.putLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
-								editor.apply();
-							}
+						//Agregado para forzar actualización de User si se dio de baja de redis por gcmId no válido
+						if(userParsed.getStatus() != status)
+						{
+							modified = true;
+						}
+
+						if(modified || force == 1)
+						{
+							jsonSend.put(User.KEY_PHONE, ("+"+phone).replace("++", "+"));
+							jsonSend.put(User.KEY_API, user.getUserId());
+							jsonSend.put(User.KEY_GCMID, preferences.getString(User.KEY_GCMID, user.getGcmId()));
+							info.put("os", "android");
+							info.put("countryLanguage", Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
+							jsonSend.put(Common.KEY_INFO, info);
+							jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_PUT,
+															preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+							result		= ApiConnection.checkResponse(context, jsonResult);
+							//Guardar la fecha de última actualización
+							SharedPreferences.Editor editor = preferences.edit();
+							editor.putLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
+							editor.apply();
 						}
 					}
 				}
@@ -199,6 +227,29 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 					{
 						progress.cancel();
 					}
+				}
+			}
+
+			System.out.println("do redirect");
+			if(!displayDialog && useGet && !usePut && StringUtils.isEmpty(token))
+			{
+				//Redirige a la pantalla home al terminar
+				Intent intent = new Intent(context, HomeActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				intent.putExtra(Common.KEY_REFRESH, false);
+				context.startActivity(intent);
+			}
+			else
+			{
+				if(displayDialog && useGet && !usePut && StringUtils.isEmpty(token))
+				{
+					//Redirige a la pantalla empresas al terminar
+					Intent intent = new Intent(context, SuscriptionsActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					intent.putExtra(Common.KEY_TITLE, context.getString(R.string.title_companies));
+					intent.putExtra(Common.KEY_SECTION, 2);
+					intent.putExtra(Common.KEY_REFRESH, false);
+					context.startActivity(intent);
 				}
 			}
 		}

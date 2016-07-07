@@ -1,5 +1,6 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -113,7 +114,7 @@ public class SettingsActivity extends AppCompatActivity
 
 				mDrawerToggle.syncState();
 				//Cambio de contexto para redirigir desde el menú
-				final Context context = getApplicationContext();
+				final Activity context = SettingsActivity.this;
 				mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(),
 					new RecyclerItemClickListener.OnItemClickListener()
 					{

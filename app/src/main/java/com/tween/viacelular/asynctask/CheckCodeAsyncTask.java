@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.activities.BlockedActivity;
 import com.tween.viacelular.data.ApiConnection;
 import com.tween.viacelular.models.ConnectedAccount;
 import com.tween.viacelular.models.User;
@@ -234,8 +233,11 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 				//Se movió la llamada a api choreo para ejectuarla antes de validar, agregado para evitar redirección si pasó sin validar
 				if(isWasValidated())
 				{
+					//Agregado para refrescar las suscripciones locales
+					new UpdateUserAsyncTask(context, Common.BOOL_NO, false, "", true, false).execute();
+
 					//Modificación para autosuscribir companies que tengan mensajes
-					BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, true, "", false);
+					//BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, true, "", false);
 				}
 			}
 			else

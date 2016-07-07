@@ -61,7 +61,7 @@ public class Utils
 	private static final String path2Copy = Environment.getExternalStorageDirectory().getPath()+"/".replace("//", "/");//"/sdcard/";
 
 	//Cambio de contexto para redirigir desde el menú
-	public static void redirectMenu(Context context, int position, int current)
+	public static void redirectMenu(Activity activity, int position, int current)
 	{
 		try
 		{
@@ -72,8 +72,8 @@ public class Utils
 				switch(position)
 				{
 					case 1:
-						intent = new Intent(context, HomeActivity.class);
-						intent.putExtra(Common.KEY_TITLE, context.getString(R.string.title_notifications));
+						intent = new Intent(activity, HomeActivity.class);
+						intent.putExtra(Common.KEY_TITLE, activity.getString(R.string.title_notifications));
 						intent.putExtra(Common.KEY_SECTION, position);
 						intent.putExtra(Common.KEY_REFRESH, false);
 					break;
@@ -84,35 +84,37 @@ public class Utils
 
 						if(realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).count() == 0)
 						{
-							new UpdateUserAsyncTask(context, Common.BOOL_YES, false, "", true, false).execute();
+							new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).execute();
 						}
 						else
 						{
 							//Agregado para limitar frecuencia de actualización
-							SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+							SharedPreferences preferences	= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 							long tsUpated					= preferences.getLong(Common.KEY_PREF_TSSUBSCRIPTIONS, System.currentTimeMillis());
 
 							if(DateUtils.needUpdate(tsUpated, DateUtils.HIGH_FREQUENCY))
 							{
 								//Se modifica para reemplazar la pantalla Bloquedas por la pantalla Empresas con tab
-								new UpdateUserAsyncTask(context, Common.BOOL_YES, false, "", true, false).execute();
+								new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).execute();
+							}
+							else
+							{
+								intent = new Intent(activity, SuscriptionsActivity.class);
+								intent.putExtra(Common.KEY_TITLE, activity.getString(R.string.title_companies));
+								intent.putExtra(Common.KEY_SECTION, position);
 							}
 						}
-
-						intent = new Intent(context, SuscriptionsActivity.class);
-						intent.putExtra(Common.KEY_TITLE, context.getString(R.string.title_companies));
-						intent.putExtra(Common.KEY_SECTION, position);
 					break;
 
 					case 3:
-						intent = new Intent(context, SettingsActivity.class);
-						intent.putExtra(Common.KEY_TITLE, context.getString(R.string.title_settings));
+						intent = new Intent(activity, SettingsActivity.class);
+						intent.putExtra(Common.KEY_TITLE, activity.getString(R.string.title_settings));
 						intent.putExtra(Common.KEY_SECTION, position);
 					break;
 
 					case 4:
-						intent = new Intent(context, FeedbackActivity.class);
-						intent.putExtra(Common.KEY_TITLE, context.getString(R.string.title_activity_feedback));
+						intent = new Intent(activity, FeedbackActivity.class);
+						intent.putExtra(Common.KEY_TITLE, activity.getString(R.string.title_activity_feedback));
 						intent.putExtra(Common.KEY_SECTION, position);
 					break;
 				}
@@ -120,7 +122,7 @@ public class Utils
 				if(position != current && intent != null)
 				{
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					context.startActivity(intent);
+					activity.startActivity(intent);
 				}
 			}
 		}

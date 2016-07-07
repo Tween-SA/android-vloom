@@ -30,7 +30,6 @@ import com.appboy.Appboy;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.RecyclerAdapter;
 import com.tween.viacelular.adapters.RecyclerItemClickListener;
-import com.tween.viacelular.asynctask.UpdateUserAsyncTask;
 import com.tween.viacelular.fragments.SwipeRefreshLayoutBasicFragment;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.AppRater;
@@ -80,11 +79,6 @@ public class HomeActivity extends AppCompatActivity
 
 			if(Utils.checkSesion(this, Common.ANOTHER_SCREEN))
 			{
-				if(realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).count() == 0)
-				{
-					new UpdateUserAsyncTask(HomeActivity.this, Common.BOOL_YES, false, "", true, false).execute();
-				}
-
 				//Se quitó la configuración de ImageLoader para llamarse antes de ejectuarse
 				final Intent intentRecive	= getIntent();
 
@@ -130,7 +124,7 @@ public class HomeActivity extends AppCompatActivity
 
 				mDrawerToggle.syncState();
 				//Cambio de contexto para redirigir desde el menú
-				final Context context = getApplicationContext();
+				final Activity context = HomeActivity.this;
 				mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(),
 					new RecyclerItemClickListener.OnItemClickListener()
 					{

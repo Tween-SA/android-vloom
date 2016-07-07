@@ -236,7 +236,7 @@ public abstract class UserHelper
 				jFirstName	= user.getFirstName();
 				jLastName	= user.getLastName();
 
-				if(user.getUserId().equals("1"))
+				if(user.getUserId().equals("1") && !checkSubscriptions)
 				{
 					realm.beginTransaction();
 					user.deleteFromRealm();

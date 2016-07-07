@@ -1,5 +1,6 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -87,7 +88,7 @@ public class BlockedActivity extends AppCompatActivity
 
 				mDrawerToggle.syncState();
 				//Cambio de contexto para redirigir desde el menú
-				final Context context = getApplicationContext();
+				final Activity context = BlockedActivity.this;
 				mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(),
 								new RecyclerItemClickListener.OnItemClickListener()
 								{
@@ -191,6 +192,7 @@ public class BlockedActivity extends AppCompatActivity
 		//Unificación de comportamiento en Asynctask para funcionalidad de Bloquear, Desuscribir y viceversa
 		try
 		{
+			System.out.println("BlockActivity:modifySubscriptions - flag: " + flag+" gotohome: "+goToHome+" companyId: "+companyId+" blockui: "+blockUI);
 			Realm realm				= Realm.getDefaultInstance();
 			Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			boolean sendSMS			= false;

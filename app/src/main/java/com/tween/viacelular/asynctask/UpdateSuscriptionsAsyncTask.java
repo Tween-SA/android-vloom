@@ -76,6 +76,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 					.content(R.string.landing_card_loading_text)
 					.progress(true, 0)
 					.show();
+				System.out.println("pre");
 			}
 		}
 		catch(Exception e)
@@ -96,6 +97,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 
 		try
 		{
+			System.out.println("do");
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			Realm realm						= Realm.getDefaultInstance();
 			User user						= realm.where(User.class).equalTo(User.KEY_API, preferences.getString(User.KEY_API, "")).findFirst();
@@ -217,25 +219,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 	{
 		try
 		{
-			//Agregado para refrescar las suscripciones locales
-			new UpdateUserAsyncTask(context, Common.BOOL_NO, false, "", true, false).execute();
-
-			if(result.equals(ApiConnection.OK))
-			{
-				if(needRedirect)
-				{
-					Intent intent = new Intent(context, HomeActivity.class);
-					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					intent.putExtra(Common.KEY_REFRESH, false);
-					context.startActivity(intent);
-
-					if(activity != null)
-					{
-						activity.finish();
-					}
-				}
-			}
-
+			System.out.println("post");
 			if(displayDialog)
 			{
 				if(progress != null)
@@ -249,6 +233,22 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 								progress.cancel();
 							}
 						}
+					}
+				}
+			}
+
+			if(result.equals(ApiConnection.OK))
+			{
+				if(needRedirect)
+				{
+					Intent intent = new Intent(context, HomeActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					intent.putExtra(Common.KEY_REFRESH, false);
+					context.startActivity(intent);
+
+					if(activity != null)
+					{
+						activity.finish();
 					}
 				}
 			}

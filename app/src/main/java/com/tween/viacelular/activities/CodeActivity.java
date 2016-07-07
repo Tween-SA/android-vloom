@@ -252,17 +252,17 @@ public class CodeActivity extends AppCompatActivity
 				editor.putBoolean(Common.KEY_PREF_LOGGED, true);
 				editor.putBoolean(Common.KEY_PREF_CHECKED, true);
 				editor.apply();
-
-				if(progress.isShowing())
-				{
-					progress.cancel();
-				}
-
-				Intent intent = new Intent(this, HomeActivity.class);
-				intent.putExtra(Common.KEY_REFRESH, false);
-				startActivity(intent);
-				finish();
 			}
+
+			if(progress.isShowing())
+			{
+				progress.cancel();
+			}
+
+			Intent intent = new Intent(this, HomeActivity.class);
+			intent.putExtra(Common.KEY_REFRESH, false);
+			startActivity(intent);
+			finish();
 		}
 		catch(Exception e)
 		{
