@@ -7,14 +7,15 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.activities.BlockedActivity;
 import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.models.ConnectedAccount;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.UserHelper;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.Locale;
 import io.realm.Realm;
 
 public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
@@ -108,6 +109,7 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 			//Agregado para enviar Sistema Operativo
 			JSONObject info	= new JSONObject();
 			info.put("os", "android");
+			info.put("countryLanguage", Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
 			jsonSend.put(Common.KEY_INFO, info);
 
 			//Agregado para evitar enviar el put si el usuario se valido antes de que llegue el SMS
@@ -152,6 +154,8 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 								editor.putBoolean(Common.KEY_PREF_CALLME, false);
 								editor.putBoolean(Common.KEY_PREF_LOGGED, true);
 								editor.putBoolean(Common.KEY_PREF_CHECKED, true);
+								//Agregado para reducir frencuencia para actualizar usuario
+								editor.putLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
 								editor.apply();
 								result = ApiConnection.OK;
 							}
@@ -164,6 +168,24 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 						{
 							result = context.getString(R.string.response_invalid);
 						}
+					}
+				}
+			}
+
+			//Agregado para prevenir pérdida de email
+			user = realm.where(User.class).findFirst();
+
+			if(user != null)
+			{
+				if(StringUtils.isEmpty(user.getEmail()))
+				{
+					ConnectedAccount connectedAccount = realm.where(ConnectedAccount.class).equalTo(Common.KEY_TYPE, ConnectedAccount.TYPE_GOOGLE).findFirst();
+
+					if(connectedAccount != null)
+					{
+						realm.beginTransaction();
+						user.setEmail(connectedAccount.getName());
+						realm.commitTransaction();
 					}
 				}
 			}
@@ -211,8 +233,11 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 				//Se movió la llamada a api choreo para ejectuarla antes de validar, agregado para evitar redirección si pasó sin validar
 				if(isWasValidated())
 				{
+					//Agregado para refrescar las suscripciones locales
+					new UpdateUserAsyncTask(context, Common.BOOL_NO, false, "", true, false).execute();
+
 					//Modificación para autosuscribir companies que tengan mensajes
-					BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, true, "");
+					//BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, true, "", false);
 				}
 			}
 			else

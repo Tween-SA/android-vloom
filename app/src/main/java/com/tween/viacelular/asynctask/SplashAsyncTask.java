@@ -7,9 +7,9 @@ import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.data.ApiConnection;
-import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.IspHelper;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;
@@ -148,11 +148,11 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 
 				if(result.equals(ApiConnection.OK))
 				{
-					IspHelper.parseJSON(jsonResult.getJSONObject(Common.KEY_DATA), activity.getApplicationContext());
+					IspHelper.parseJSON(jsonResult.getJSONObject(Common.KEY_DATA), activity.getApplicationContext(), splashed);
 				}
 				else
 				{
-					IspHelper.parseJSON(null, activity.getApplicationContext());
+					IspHelper.parseJSON(null, activity.getApplicationContext(), splashed);
 				}
 			}
 			else

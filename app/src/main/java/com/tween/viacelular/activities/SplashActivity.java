@@ -26,23 +26,26 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.newrelic.agent.android.NewRelic;
 import com.tween.viacelular.R;
+import com.tween.viacelular.asynctask.GetLocationByApiAsyncTask;
+import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.services.MyGcmListenerService;
 import com.tween.viacelular.services.RegistrationIntentService;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
-
 import io.realm.Realm;
 
 public class SplashActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
 {
 	private BroadcastReceiver		mRegistrationBroadcastReceiver;
 	//Ordanamiento de permisos y agregado del permiso para enviar sms
-	private String[]				permissionsNeed = {	Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.BROADCAST_SMS, Manifest.permission.GET_ACCOUNTS,
-														Manifest.permission.INTERNET, Manifest.permission.READ_CONTACTS, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_SMS,
-														Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS, Manifest.permission.WAKE_LOCK,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+	private String[]				permissionsNeed = {	Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.BROADCAST_SMS,
+														Manifest.permission.GET_ACCOUNTS, Manifest.permission.INTERNET, Manifest.permission.READ_CONTACTS,
+														Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS,
+														Manifest.permission.RECEIVE_SMS, Manifest.permission.WAKE_LOCK,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 	public static GoogleAnalytics	analytics;
 	public static Tracker			tracker;
 
@@ -93,6 +96,23 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 			}
 
 			setContentView(R.layout.activity_splash);
+
+			//Agregado para actualizar coordenadas
+			Isp isp = realm.where(Isp.class).findFirst();
+
+			if(isp != null)
+			{
+				if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.HIGH_FREQUENCY))
+				{
+					GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(this, false, true);
+					geoTask.execute();
+				}
+			}
+			else
+			{
+				GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(this, false, false);
+				geoTask.execute();
+			}
 
 			//Agregado para solicitar permisos en Android 6.0
 			if(Common.API_LEVEL >= Build.VERSION_CODES.M)

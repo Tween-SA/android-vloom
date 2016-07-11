@@ -127,6 +127,7 @@
 	<string name="repassword">パスワードを再入力</string>
 	<string name="report">報告する</string>
 	<string name="response_invalid">リクエストを処理できませんでした。もう一度やり直してください</string>
+	<string name="seach">検索</string><!-- after traslate -->
 	<string name="send_code">アクティベーションコードを掲載したSMSがその番号に送信されました</string>
 	<string name="send_mail_text">Vloom Android用：</string>
 	<string name="send_push_sms">テスト通知（SMS）を送信</string>
@@ -190,6 +191,7 @@
 	<string name="unauthorized">認められていません</string>
 	<string name="undo">元に戻す</string>
 	<string name="unsuscribe">キャンセル</string>
+	<string name="upgrade_text">私たちはあなたの情報を更新します</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">確認しています...</string>
 	<string name="version_settins">Android v 用</string>

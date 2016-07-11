@@ -400,4 +400,72 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 
 		return null;
 	}
+
+	//Agregados para implementar funcionalidad de búsqueda
+	public void animateTo(List<Suscription> models)
+	{
+		applyAndAnimateRemovals(models);
+		applyAndAnimateAdditions(models);
+		applyAndAnimateMovedItems(models);
+	}
+
+	private void applyAndAnimateRemovals(List<Suscription> newModels)
+	{
+		for(int i = suscriptions.size() - 1; i >= 0; i--)
+		{
+			final Suscription model = suscriptions.get(i);
+
+			if(!newModels.contains(model))
+			{
+				removeItem(i);
+			}
+		}
+	}
+
+	private void applyAndAnimateAdditions(List<Suscription> newModels)
+	{
+		for(int i = 0, count = newModels.size(); i < count; i++)
+		{
+			final Suscription model = newModels.get(i);
+
+			if(!suscriptions.contains(model))
+			{
+				addItem(i, model);
+			}
+		}
+	}
+
+	private void applyAndAnimateMovedItems(List<Suscription> newModels)
+	{
+		for(int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--)
+		{
+			final Suscription model = newModels.get(toPosition);
+			final int fromPosition = suscriptions.indexOf(model);
+
+			if(fromPosition >= 0 && fromPosition != toPosition)
+			{
+				moveItem(fromPosition, toPosition);
+			}
+		}
+	}
+
+	public Suscription removeItem(int position)
+	{
+		final Suscription model = suscriptions.remove(position);
+		//notifyItemRemoved(position);
+		return model;
+	}
+
+	public void addItem(int position, Suscription model)
+	{
+		suscriptions.add(position, model);
+		//notifyItemInserted(position);
+	}
+
+	public void moveItem(int fromPosition, int toPosition)
+	{
+		final Suscription model = suscriptions.remove(fromPosition);
+		suscriptions.add(toPosition, model);
+		//notifyItemMoved(fromPosition, toPosition);
+	}
 }

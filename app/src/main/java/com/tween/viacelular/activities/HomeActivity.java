@@ -1,5 +1,6 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,10 +49,10 @@ public class HomeActivity extends AppCompatActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		Realm realm = null;
-
 		try
 		{
+			Realm realm = Realm.getDefaultInstance();
+
 			//Agregado para efecto de transición entre pantallas
 			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
 			{
@@ -123,7 +124,7 @@ public class HomeActivity extends AppCompatActivity
 
 				mDrawerToggle.syncState();
 				//Cambio de contexto para redirigir desde el menú
-				final Context context = getApplicationContext();
+				final Activity context = HomeActivity.this;
 				mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(),
 					new RecyclerItemClickListener.OnItemClickListener()
 					{
@@ -139,15 +140,15 @@ public class HomeActivity extends AppCompatActivity
 
 				if(StringUtils.isNotEmpty(companyId) && block == Common.BOOL_YES)
 				{
-					realm							= Realm.getDefaultInstance();
 					final Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 					final String companyId			= suscription.getCompanyId();
+					final Activity activity			= HomeActivity.this;
 					Snackbar snackBar				= Snackbar.make(clayout, getString(R.string.snack_blocked), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
 						@Override
 						public void onClick(View v)
 						{
-							BlockedActivity.modifySubscriptions(getApplicationContext(), Common.BOOL_YES, false, companyId);
+							BlockedActivity.modifySubscriptions(activity, Common.BOOL_YES, false, companyId, true);
 							fragment.refresh(false, false);
 						}
 					});

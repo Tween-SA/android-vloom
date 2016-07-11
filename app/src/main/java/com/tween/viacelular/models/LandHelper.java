@@ -1,6 +1,6 @@
 package com.tween.viacelular.models;
 
-import android.app.Activity;
+import android.content.Context;
 import com.tween.viacelular.R;
 import com.tween.viacelular.utils.Common;
 import org.json.JSONArray;
@@ -120,14 +120,14 @@ public abstract class LandHelper
 		}
 	}
 
-	public static void parseArray(Activity activity)
+	public static void parseArray(Context context)
 	{
-		String[] arrayCountries	= activity.getResources().getStringArray(R.array.countries);
-		String[] arrayCodes		= activity.getResources().getStringArray(R.array.codes);
-		String[] arrayIsoCodes	= activity.getResources().getStringArray(R.array.isoCodes);
-		String[] formats		= activity.getResources().getStringArray(R.array.formats);
-		String[] minLength		= activity.getResources().getStringArray(R.array.minLength);
-		String[] maxLength		= activity.getResources().getStringArray(R.array.maxLength);
+		String[] arrayCountries	= context.getResources().getStringArray(R.array.countries);
+		String[] arrayCodes		= context.getResources().getStringArray(R.array.codes);
+		String[] arrayIsoCodes	= context.getResources().getStringArray(R.array.isoCodes);
+		String[] formats		= context.getResources().getStringArray(R.array.formats);
+		String[] minLength		= context.getResources().getStringArray(R.array.minLength);
+		String[] maxLength		= context.getResources().getStringArray(R.array.maxLength);
 		Realm realm				= Realm.getDefaultInstance();
 
 		for(int i = 0; i < arrayCountries.length; i++)

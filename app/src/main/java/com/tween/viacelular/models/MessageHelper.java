@@ -18,22 +18,29 @@ public abstract class MessageHelper
 	 */
 	public static void debugMessage(Message message)
 	{
-		System.out.println("\nMessage - msgId: " + message.getMsgId());
-		System.out.println("Message - type: " + message.getType());
-		System.out.println("Message - msg: " + message.getMsg());
-		System.out.println("Message - channel: " + message.getChannel());
-		System.out.println("Message - status: " + message.getStatus());
-		System.out.println("Message - phone: " + message.getPhone());
-		System.out.println("Message - countryCode: " + message.getCountryCode());
-		System.out.println("Message - flags: " + message.getFlags());
-		System.out.println("Message - created: " + message.getCreated());
-		System.out.println("Message - deleted: " + message.getDeleted());
-		System.out.println("Message - kind: " + message.getKind());
-		System.out.println("Message - link: " + message.getLink());
-		System.out.println("Message - linkThumbnail: " + message.getLinkThumbnail());
-		System.out.println("Message - subMsg: " + message.getSubMsg());
-		System.out.println("Message - campaignId: " + message.getCampaignId());
-		System.out.println("Message - listId: " + message.getListId());
+		if(message != null)
+		{
+			System.out.println("\nMessage - msgId: " + message.getMsgId());
+			System.out.println("Message - type: " + message.getType());
+			System.out.println("Message - msg: " + message.getMsg());
+			System.out.println("Message - channel: " + message.getChannel());
+			System.out.println("Message - status: " + message.getStatus());
+			System.out.println("Message - phone: " + message.getPhone());
+			System.out.println("Message - countryCode: " + message.getCountryCode());
+			System.out.println("Message - flags: " + message.getFlags());
+			System.out.println("Message - created: " + message.getCreated());
+			System.out.println("Message - deleted: " + message.getDeleted());
+			System.out.println("Message - kind: " + message.getKind());
+			System.out.println("Message - link: " + message.getLink());
+			System.out.println("Message - linkThumbnail: " + message.getLinkThumbnail());
+			System.out.println("Message - subMsg: " + message.getSubMsg());
+			System.out.println("Message - campaignId: " + message.getCampaignId());
+			System.out.println("Message - listId: " + message.getListId());
+		}
+		else
+		{
+			System.out.println("\nMessage - is null");
+		}
 	}
 
 	/**

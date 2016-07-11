@@ -253,7 +253,7 @@ public class ProfileActivity extends AppCompatActivity
 				client	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			}
 
-			BlockedActivity.modifySubscriptions(getApplicationContext(), Common.BOOL_NO, false, companyId);
+			BlockedActivity.modifySubscriptions(ProfileActivity.this, Common.BOOL_NO, false, companyId, true);
 			Intent intent = new Intent(getApplicationContext(), LandingActivity.class);
 			intent.putExtra(Common.KEY_ID, client.getCompanyId());
 			startActivity(intent);
@@ -301,7 +301,7 @@ public class ProfileActivity extends AppCompatActivity
 			}
 
 			//Se centralizó el comportamiento
-			BlockedActivity.modifySubscriptions(getApplicationContext(), Common.BOOL_NO, false, companyId);
+			BlockedActivity.modifySubscriptions(ProfileActivity.this, Common.BOOL_NO, false, companyId, true);
 			Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
 			intent.putExtra(Common.KEY_REFRESH, false);
 			intent.putExtra(Common.KEY_ID, companyId);

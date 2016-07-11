@@ -5,19 +5,17 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:paddingTop="4dp"
-	android:paddingBottom="4dp"
-	android:layout_marginBottom="4dp"
-	android:layout_marginTop="4dp"
 	android:id="@+id/rlClient"
-	android:background="?android:attr/selectableItemBackground">
+	android:background="?android:attr/selectableItemBackground"
+	android:paddingTop="8dp">
 	<!-- Modificación para aplicar redondeo de logos -->
 	<de.hdodenhof.circleimageview.CircleImageView
 		android:contentDescription="@string/app_name"
 		android:id="@+id/circleView"
-		android:layout_width="50dp"
-		android:layout_height="50dp"
-		android:layout_marginLeft="20dp"
+		android:layout_width="48dp"
+		android:layout_height="48dp"
+		android:layout_marginLeft="16dp"
+		android:paddingBottom="8dp"
 		android:src="@drawable/ic_launcher"
 		app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />
 	<TextView

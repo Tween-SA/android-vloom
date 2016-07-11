@@ -1,6 +1,5 @@
 package com.tween.viacelular.asynctask;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -20,12 +19,12 @@ import io.realm.RealmResults;
 public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;
-	private Activity		activity;
+	private Context			context;
 	private boolean			displayDialog	= false;
 
-	public CountryAsyncTask(Activity activity, boolean displayDialog)
+	public CountryAsyncTask(Context context, boolean displayDialog)
 	{
-		this.activity		= activity;
+		this.context		= context;
 		this.displayDialog	= displayDialog;
 	}
 
@@ -44,7 +43,7 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 					}
 				}
 
-				progress = new MaterialDialog.Builder(activity)
+				progress = new MaterialDialog.Builder(context)
 					.title(R.string.progress_dialog)
 					.cancelable(false)
 					.content(R.string.please_wait)
@@ -76,9 +75,9 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 			realm.beginTransaction();
 			countries.deleteAllFromRealm();
 			realm.commitTransaction();
-			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			JSONObject jsonResult			= new JSONObject(ApiConnection.request(ApiConnection.COUNTRIES, activity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
-			result							= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
+			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			JSONObject jsonResult			= new JSONObject(ApiConnection.request(ApiConnection.COUNTRIES, context, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
+			result							= ApiConnection.checkResponse(context, jsonResult);
 			boolean parseLocal				= true;
 			JSONObject jsonData				= null;
 			JSONArray arrayKey				= null;
@@ -110,7 +109,7 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 			//Modificación para contemplar caso backup en el que no esté disponible la api aún
 			if(parseLocal)
 			{
-				String json = ApiConnection.loadJSONFromAsset(activity, "GETcountries.json");
+				String json = ApiConnection.loadJSONFromAsset(context, "GETcountries.json");
 
 				if(StringUtils.isNotEmpty(json))
 				{
@@ -121,7 +120,18 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 				}
 				else
 				{
-					LandHelper.parseArray(activity);
+					LandHelper.parseArray(context);
+				}
+			}
+
+			if(displayDialog)
+			{
+				if(progress != null)
+				{
+					if(progress.isShowing())
+					{
+						progress.cancel();
+					}
 				}
 			}
 		}
@@ -145,34 +155,5 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 		}
 
 		return result;
-	}
-
-	@Override
-	protected void onPostExecute(String result)
-	{
-		try
-		{
-			if(displayDialog)
-			{
-				if(progress != null)
-				{
-					if(progress.isShowing())
-					{
-						progress.cancel();
-					}
-				}
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("CountryAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		super.onPostExecute(result);
 	}
 }

@@ -127,6 +127,7 @@
 	<string name="repassword">重复密码</string>
 	<string name="report">报告</string>
 	<string name="response_invalid">无法处理您的请求，请再试一次</string>
+	<string name="seach">搜索</string><!-- after traslate -->
 	<string name="send_code">我们已发送一条包含验证激活码的短信到该手机号码上。</string>
 	<string name="send_mail_text">利用 Vloom Android 版：</string>
 	<string name="send_push_sms">发送测试通知（短信）</string>
@@ -190,6 +191,7 @@
 	<string name="unauthorized">未经授权</string>
 	<string name="undo">撤销</string>
 	<string name="unsuscribe">取消</string>
+	<string name="upgrade_text">我们正在更新您的信息</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">正在验证……</string>
 	<string name="version_settins">适用于 Android v</string>

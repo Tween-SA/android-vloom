@@ -43,6 +43,7 @@ import com.tween.viacelular.asynctask.SendIdentificationKeyAsyncTask;
 import com.tween.viacelular.data.ApiConnection;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.utils.Common;
@@ -182,7 +183,7 @@ public class CardViewActivity extends AppCompatActivity
 						//Agregado para corregir ARN por phantomCompany
 						if(StringUtils.isNotEmpty(companyId))
 						{
-							notifications	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).notEqualTo(Common.KEY_STATUS, Message.STATUS_SPAM)
+							notifications	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
 												.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 						}
 
@@ -240,8 +241,14 @@ public class CardViewActivity extends AppCompatActivity
 
 				if(suscription != null)
 				{
-					ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, "");
-					task.execute();
+					RealmResults<Message> unread = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
+														.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAll();
+
+					if(unread.size() > 0)
+					{
+						ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, "", Message.STATUS_READ);
+						task.execute();
+					}
 
 					//Validaciones para mostrar o no campos según disponibilidad de datos
 					if(StringUtils.isNotEmpty(suscription.getAbout()))
@@ -251,7 +258,7 @@ public class CardViewActivity extends AppCompatActivity
 					else
 					{
 						//Validar con PO para ver si cuando no hay texto no mostramos nada en vez del placeholder siguiente
-						txtSubSuscribe.setText(getString(R.string.landing_title, suscription.getName()));
+						txtSubSuscribe.setText(getString(R.string.landing_title, " "+suscription.getName()));
 					}
 
 					if(notifications != null)
@@ -342,6 +349,7 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			if(menu != null)
 			{
+				Migration.getDB(CardViewActivity.this);
 				Realm realm	= Realm.getDefaultInstance();
 				suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 
@@ -501,7 +509,7 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			BlockedActivity.modifySubscriptions(getApplicationContext(), Common.BOOL_NO, true, companyId);
+			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, true);
 			Utils.hideCard(cardPayout);
 			Utils.hideCard(cardSuscribe);
 
@@ -561,7 +569,7 @@ public class CardViewActivity extends AppCompatActivity
 					realm.beginTransaction();
 					notification.setStatus(Message.STATUS_SPAM);
 					realm.commitTransaction();
-					ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId());
+					ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_SPAM);
 					task.execute();
 
 					snackBar						= Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
@@ -574,7 +582,7 @@ public class CardViewActivity extends AppCompatActivity
 							notification.setStatus(Message.STATUS_READ);
 							realm.commitTransaction();
 							refresh(false);
-							ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId());
+							ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_READ);
 							task.execute();
 						}
 					});
@@ -942,7 +950,7 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			BlockedActivity.modifySubscriptions(getApplicationContext(), Common.BOOL_YES, false, companyId);
+			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, true);
 			Utils.hideCard(cardPayout);
 			Utils.hideCard(cardSuscribe);
 			txtTitle.setTextColor(colorTitle);
@@ -1120,7 +1128,7 @@ public class CardViewActivity extends AppCompatActivity
 					//Agregado para capturar evento en Google Analytics
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("BloquearInCompany")
 																									.setLabel("AccionUser").build());
-					BlockedActivity.modifySubscriptions(getApplicationContext(), Common.BOOL_NO, true, companyId);
+					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, true);
 					Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
 					intent.putExtra(Common.KEY_ID, companyId);
 					intent.putExtra(Suscription.KEY_BLOCKED, Common.BOOL_YES);
@@ -1132,7 +1140,7 @@ public class CardViewActivity extends AppCompatActivity
 				//Al igual que Silenciar/Activar, esta es la opción para suscribir
 				if(item.toString().equals(getString(R.string.landing_suscribe)))
 				{
-					BlockedActivity.modifySubscriptions(getApplicationContext(), Common.BOOL_YES, false, companyId);
+					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, true);
 					txtTitle.setTextColor(colorTitle);
 					txtSubTitleCollapsed.setTextColor(colorSubTitle);
 					toolBar.setBackgroundColor(Color.parseColor(suscription.getColorHex()));

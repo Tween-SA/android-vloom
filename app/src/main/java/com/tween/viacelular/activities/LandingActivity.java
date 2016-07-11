@@ -547,7 +547,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 	}
 
-	public static void startAlphaAnimation (View v, long duration, int visibility)
+	public static void startAlphaAnimation(View v, long duration, int visibility)
 	{
 		try
 		{
@@ -571,13 +571,14 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	{
 		try
 		{
+			System.out.println("apreta boton");
 			//Agregado para verificar si la company ya estaba o no suscripta
 			Realm realm				= Realm.getDefaultInstance();
 			Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 
 			if(suscription != null)
 			{
-				BlockedActivity.modifySubscriptions(context, Utils.reverseBool(suscription.getFollower()), false, companyId);
+				BlockedActivity.modifySubscriptions(LandingActivity.this, Utils.reverseBool(suscription.getFollower()), false, companyId, true);
 
 				//Agregado para redirigir a la pantallas cards para pedir la identificación del cliente si es necesario
 				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()) && Utils.reverseBool(suscription.getFollower()) == Common.BOOL_YES)

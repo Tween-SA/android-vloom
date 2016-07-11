@@ -13,8 +13,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.tween.viacelular.R;
+import com.tween.viacelular.activities.BlockedActivity;
 import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.asynctask.CompanyAsyncTask;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
@@ -69,8 +72,9 @@ public class MyGcmListenerService extends GcmListenerService
 				String countryCode				= data.getString(Country.KEY_API, "");
 				String flags					= data.getString(Message.KEY_FLAGS, "");
 				SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+				String sound					= data.getString(Common.KEY_SOUND, "0");
 				int notificationId				= preferences.getInt(Common.KEY_LAST_MSGID, 0);
-				int sound						= data.getInt(Common.KEY_SOUND, 0); //Agregado para silenciar la push de sms
+				int soundOn						= 0; //Agregado para silenciar la push de sms
 				//Agregado para contemplar campos nuevos de push
 				int kind						= data.getInt(Message.KEY_KIND, Message.KIND_TEXT);
 				String link						= data.getString(Message.KEY_LINK, "");
@@ -78,6 +82,13 @@ public class MyGcmListenerService extends GcmListenerService
 				String subMsg					= data.getString(Message.KEY_SUBMSG, "");
 				String campaignId				= data.getString(Message.KEY_CAMPAIGNID, "");
 				String listId					= data.getString(Message.KEY_LISTID, "");
+				String created					= data.getString(Message.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+
+				//Agregado para contemplar campo sound de iOS
+				if(StringUtils.isNumber(sound))
+				{
+					soundOn = Integer.valueOf(sound);
+				}
 
 				if(Common.DEBUG)
 				{
@@ -160,8 +171,8 @@ public class MyGcmListenerService extends GcmListenerService
 				}
 				else
 				{
-					if(	companyId.toLowerCase().equals(Suscription.COMPANY_ID_VC) || companyId.toLowerCase().equals(Suscription.COMPANY_ID_VC_LONG) ||
-						companyId.toLowerCase().equals(Suscription.COMPANY_ID_VC_MONGOOLD))
+					if(	companyId.equals(Suscription.COMPANY_ID_VC) || companyId.equals(Suscription.COMPANY_ID_VC_LONG) || companyId.equals(Suscription.COMPANY_ID_VC_MONGOOLD) ||
+						companyId.equals(Suscription.COMPANY_ID_WEBVC))
 					{
 						companyId = Suscription.COMPANY_ID_VC_MONGO;
 					}
@@ -221,6 +232,18 @@ public class MyGcmListenerService extends GcmListenerService
 					linkThumb	= link;
 				}
 
+				Long time = System.currentTimeMillis();
+
+				if(StringUtils.isLong(created))
+				{
+					time = Long.valueOf(created);
+
+					if(time < System.currentTimeMillis())
+					{
+						time = System.currentTimeMillis();
+					}
+				}
+
 				//TODO: Agregar autodetección de tipo de mensaje por extensión de url
 
 				//Creamos el objeto inicial en Realm
@@ -232,7 +255,7 @@ public class MyGcmListenerService extends GcmListenerService
 				message.setStatus(Message.STATUS_RECEIVE);
 				message.setCountryCode(countryCode);
 				message.setFlags(flags);
-				message.setCreated(System.currentTimeMillis());//Se modificó contemplando la fecha en la que se recibe la push
+				message.setCreated(time);//Se modificó para tomar el ts de la push siempre que no sea más viejo que el actual del device
 				message.setDeleted(Common.BOOL_NO);
 				message.setKind(kind);
 				message.setLink(link);
@@ -243,7 +266,7 @@ public class MyGcmListenerService extends GcmListenerService
 				message.setCompanyId(companyId);
 				message.setPhone(phone);
 
-				if(sound == PUSH_NORMAL)
+				if(soundOn == PUSH_NORMAL)
 				{
 					Realm realm = Realm.getDefaultInstance();
 					realm.beginTransaction();
@@ -265,7 +288,7 @@ public class MyGcmListenerService extends GcmListenerService
 				/**
 				 * In some cases it may be useful to show a notification indicating to the user that a message was received.
 				 */
-				sendNotification(msgId, preferences, sound, notificationId, countryCode);
+				sendNotification(msgId, preferences, soundOn, notificationId, countryCode, msg);
 			}
 		}
 		catch(Exception e)
@@ -287,12 +310,11 @@ public class MyGcmListenerService extends GcmListenerService
 	 * @param sound
 	 * @param from
 	 */
-	private void sendNotification(String msgId, SharedPreferences preferences, int sound, int from, String countryCode)
+	private void sendNotification(String msgId, SharedPreferences preferences, int sound, int from, String countryCode, String msg)
 	{
 		try
 		{
 			boolean silenced	= preferences.getBoolean(Suscription.KEY_SILENCED, false);
-			int follow			= Common.BOOL_NO;
 			int silencedChannel	= Common.BOOL_YES;
 			int blocked			= Common.BOOL_YES;
 			int statusP			= Suscription.STATUS_BLOCKED;
@@ -303,7 +325,8 @@ public class MyGcmListenerService extends GcmListenerService
 			Realm realm			= Realm.getDefaultInstance();
 			Message message		= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
 			String companyIdApi	= "";
-			String contentText= "";
+			String contentText	= "";
+			boolean newClient	= false;
 
 			if(message != null)
 			{
@@ -314,6 +337,11 @@ public class MyGcmListenerService extends GcmListenerService
 			{
 				contentText		= context.getString(R.string.notification_new);
 				companyIdApi	= msgId;
+			}
+
+			if(StringUtils.isNotEmpty(msg))
+			{
+				contentText = msg;
 			}
 
 			//Modificación para contemplar companiesPhantom
@@ -329,11 +357,13 @@ public class MyGcmListenerService extends GcmListenerService
 
 			if(clientP == null && StringUtils.isIdMongo(companyIdApi))
 			{
+				newClient = true;
+
 				try
 				{
 					CompanyAsyncTask task	= new CompanyAsyncTask(context, false, companyIdApi, countryCode);
-					//TODO implementar callbacks para prevenir la suspención del UI por delay en la Asynctask
-					companyIdApi			= task.execute().get();
+					task.setFlag(Common.BOOL_YES);
+					task.execute();
 				}
 				catch(Exception e)
 				{
@@ -357,11 +387,10 @@ public class MyGcmListenerService extends GcmListenerService
 				silencedChannel	= clientP.getSilenced();
 				blocked			= clientP.getBlocked();
 				statusP			= clientP.getStatus();
-				follow			= clientP.getFollower();
 			}
 
-			//Agregado para restringir la recepción si el user no tiene la company añadida
-			if(blocked == Common.BOOL_NO && statusP != Suscription.STATUS_BLOCKED && follow == Common.BOOL_YES)
+			//Rollback solamente se restringe la recepción de push si el usuario expresamente puso que no, caso contrario la recibe y suscribe
+			if(blocked == Common.BOOL_NO && statusP != Suscription.STATUS_BLOCKED)
 			{
 				if(sound == PUSH_NORMAL)
 				{
@@ -370,19 +399,6 @@ public class MyGcmListenerService extends GcmListenerService
 						realm.beginTransaction();
 						realm.copyToRealmOrUpdate(message);
 						realm.commitTransaction();
-					}
-
-					if(StringUtils.isIdMongo(msgId))
-					{
-						try
-						{
-							ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(context, false, "", message.getMsgId());
-							task.execute();
-						}
-						catch(Exception e)
-						{
-							System.out.println("MyGcmListenerService:sendNotification:ConfirmReading - Exception: " + e);
-						}
 					}
 				}
 				else
@@ -403,7 +419,11 @@ public class MyGcmListenerService extends GcmListenerService
 						{
 							intent.putExtra(Common.KEY_ID, clientP.getCompanyId());
 							image = clientP.getImage();
-							//Se quita la funcionalidad de auto añadir company ya que se hace a nivel de api
+							//Rollback para autoañadir companies si no está añadida
+							if(!newClient && clientP.getFollower() == Common.BOOL_NO && clientP.getBlocked() == Common.BOOL_NO)
+							{
+								BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, false, clientP.getCompanyId(), false);
+							}
 						}
 						else
 						{
@@ -489,15 +509,37 @@ public class MyGcmListenerService extends GcmListenerService
 						}
 					}
 				}
+
+				//Primero mostramos la notificación y después confirmamos lectura y reportamos posición
+				if(StringUtils.isIdMongo(msgId) && sound == PUSH_NORMAL)
+				{
+					try
+					{
+						ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(context, false, "", msgId, Message.STATUS_RECEIVE);
+						task.execute();
+					}
+					catch(Exception e)
+					{
+						System.out.println("MyGcmListenerService:sendNotification:ConfirmReading - Exception: " + e);
+					}
+				}
+				//Reload Home if it's running
 			}
 			else
 			{
 				if(sound == PUSH_NORMAL && message != null)
 				{
+					String id = message.getMsgId();
 					//Agregado para no mostrar mensajes descartados por bloqueo
 					realm.beginTransaction();
-					message.deleteFromRealm();
+					message.setStatus(Message.STATUS_SPAM);
 					realm.commitTransaction();
+
+					//Agregado para notificar como spam al ser descartado
+					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
+						.setLabel("Accion_user").build());
+					ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(getApplicationContext(), false, "", id, Message.STATUS_SPAM);
+					task.execute();
 				}
 			}
 		}

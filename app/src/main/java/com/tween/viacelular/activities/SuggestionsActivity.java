@@ -83,7 +83,7 @@ public class SuggestionsActivity extends AppCompatActivity
 			//Agregado para auto-suscribir companies
 			if(firstTime)
 			{
-				BlockedActivity.modifySubscriptions(getApplicationContext(), Common.BOOL_YES, true, "");
+				BlockedActivity.modifySubscriptions(SuggestionsActivity.this, Common.BOOL_YES, true, "", true);
 			}
 		}
 		catch(Exception e)

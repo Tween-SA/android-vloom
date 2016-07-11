@@ -127,6 +127,7 @@
 	<string name="repassword">비밀번호 재입력</string>
 	<string name="report">보고하기</string>
 	<string name="response_invalid">귀하의 요청을 처리할 수​​ 없습니다. 다시 시도해 주십시오</string>
+	<string name="seach">수색</string><!-- after traslate -->
 	<string name="send_code">번호에 활성화 코드를 포함한 문자 메시지를  전송했습니다</string>
 	<string name="send_mail_text">Vloom 안드로이드와 함께:</string>
 	<string name="send_push_sms">시험 알림(SMS) 보내기</string>
@@ -190,6 +191,7 @@
 	<string name="unauthorized">권한 없음</string>
 	<string name="undo">실행 취소</string>
 	<string name="unsuscribe">취소하기</string>
+	<string name="upgrade_text">우리는 귀하의 정보를 업데이트</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">확인 중...</string>
 	<string name="version_settins">안드로이드 v용</string>

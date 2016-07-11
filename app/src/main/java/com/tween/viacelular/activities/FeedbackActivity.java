@@ -1,5 +1,6 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -102,7 +103,7 @@ public class FeedbackActivity extends AppCompatActivity
 				};
 
 				mDrawerToggle.syncState();
-				final Context context = getApplicationContext();
+				final Activity context = FeedbackActivity.this;
 				mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(),
 					new RecyclerItemClickListener.OnItemClickListener()
 					{

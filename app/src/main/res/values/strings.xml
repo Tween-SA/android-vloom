@@ -41,14 +41,15 @@
 	<string name="feedback_typepush">Respuesta de soporte</string>
 	<string name="gcm_send_message">Token recuperado y enviado al servidor</string>
 	<string name="get_play_services">Obtén Google Play Services</string>
+	<string name="google_api_key" translatable="false">189459365557</string>
 	<string name="hello_world">Hola</string>
 	<string name="home">Verifica tu n° de celular para una mejor experiencia con VíaCelular</string>
 	<string name="hours">horas</string>
 	<string name="i_read">Al pulsar Continuar aceptas los Términos y Condiciones</string>
 	<string name="invite">Invitación</string>
 	<string name="landing_card_form_header">Mejora tu experiencia</string><!-- after traslate -->
-	<string name="landing_card_form_text1">Recibe notificaciones personalizadas, ingresa tu </string><!-- after traslate -->
-	<string name="landing_card_form_text2"> y haz clic en continuar.</string><!-- after traslate -->
+	<string name="landing_card_form_text1">Recibe notificaciones personalizadas, ingresa tu</string><!-- after traslate -->
+	<string name="landing_card_form_text2">y haz clic en continuar.</string><!-- after traslate -->
 	<string name="landing_card_error_header">Oops!</string><!-- after traslate -->
 	<string name="landing_card_error_retry">Enviar nuevamente</string><!-- after traslate -->
 	<string name="landing_card_error_text">Tus datos no se guardaron, por favor intenta nuevamente.</string><!-- after traslate -->
@@ -62,16 +63,16 @@
 	<string name="landing_suscribe">Añadir</string>
 	<string name="landing_suscribed">Añadida</string>
 	<string name="landing_unsuscribe">Quitar</string>
-	<string name="landing_title">Recibe notificaciones de vencimiento, promociones y novedades de <xliff:g example="Empresa" id="company">%s</xliff:g></string>
+	<string name="landing_title">Recibe notificaciones de vencimiento, promociones y novedades de<xliff:g example="Empresa" id="company">%s</xliff:g></string>
 	<string name="login_begin">Inicia sesión para empezar</string>
 	<string name="login">Iniciar sesión con tu e-mail</string>
 	<string name="logout">Cerrar Sesión</string>
-	<string name="mail_android">\n* Android: </string>
+	<string name="mail_android">\n* Android:</string>
 	<string name="mail_chooser">Enviar correo con</string>
-	<string name="mail_date">* Fecha: </string>
-	<string name="mail_device">\n* Dispositivo: </string>
-	<string name="mail_lang">\n* Idioma: </string>
-	<string name="mail_version">\n* Versión: </string>
+	<string name="mail_date">* Fecha:</string>
+	<string name="mail_device">\n* Dispositivo:</string>
+	<string name="mail_lang">\n* Idioma:</string>
+	<string name="mail_version">\n* Versión:</string>
 	<string name="main_channel">No puedes realizar esta acción en este servicio</string>
 	<string name="minutes">minutos</string>
 	<string name="month">mes</string>
@@ -103,7 +104,7 @@
 	<string name="password">Contraseña</string>
 	<string name="phone_blank">Debes ingresar tu número de teléfono</string>
 	<string name="phone_desc">Enviaremos un SMS con el código de verificación a tu número. Para usar Vloom tienes que verificar tu número de teléfono.</string>
-	<string name="phone_example">Por ejemplo: </string>
+	<string name="phone_example">Por ejemplo:</string>
 	<string name="phone_hint">Coloque su teléfono</string>
 	<string name="phone_invalid">Tu número de teléfono debe ser númerico</string>
 	<string name="phone_lenght">Tu número de teléfono debe respetar la cantidad de dígitos según tu país</string>
@@ -128,6 +129,7 @@
 	<string name="repassword">Repetir contraseña</string>
 	<string name="report">Denunciar</string>
 	<string name="response_invalid">Tu solicitud no pudo ser procesada, intenta nuevamente</string>
+	<string name="seach">Buscar</string><!-- after traslate -->
 	<string name="send_code">Enviamos un SMS con el código de activación al número</string>
 	<string name="send_mail_text">con Vloom Android:\n</string>
 	<string name="send_push_sms">Enviar notificación de prueba (SMS)</string>
@@ -178,7 +180,7 @@
 	<string name="title_blocked">Bloqueadas</string>
 	<string name="title_companies">Empresas</string><!-- after traslate -->
 	<string name="title_companies_all">Todas</string><!-- after traslate -->
-	<string name="title_companies_subscriptions">Suscripciones</string><!-- after traslate -->
+	<string name="title_companies_subscriptions">Añadidas</string><!-- after traslate -->
 	<string name="title_feedback">Contáctanos</string>
 	<string name="title_help">Ayuda</string>
 	<string name="title_notifications">Notificaciones</string>
@@ -191,6 +193,7 @@
 	<string name="unauthorized">No autorizado</string>
 	<string name="undo">DESHACER</string>
 	<string name="unsuscribe">BAJA</string>
+	<string name="upgrade_text">Estamos actualizando tu información</string><!-- after traslate -->
 	<string name="url">http://www.vloom.com/</string>
 	<string name="verify_dialog">Verificando...</string>
 	<string name="version_settins">para Android v</string>

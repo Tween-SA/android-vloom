@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.tween.viacelular.R;
+import com.tween.viacelular.models.ConnectedAccount;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -67,6 +69,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 	{
 		try
 		{
+			Migration.getDB(context);
 			//Modificaciones para contemplar migración a Realm
 			Realm realm		= Realm.getDefaultInstance();
 			User user		= realm.where(User.class).findFirst();
@@ -89,6 +92,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 				if(StringUtils.isNotEmpty(user.getEmail()))
 				{
 					email = user.getEmail();
+				}
+				else
+				{
+					//Por si no trajo email
+					ConnectedAccount connectedAccount = realm.where(ConnectedAccount.class).equalTo(Common.KEY_TYPE, ConnectedAccount.TYPE_GOOGLE).findFirst();
+
+					if(connectedAccount != null)
+					{
+						email = connectedAccount.getName();
+					}
 				}
 
 				if(StringUtils.isNotEmpty(user.getPhone()))

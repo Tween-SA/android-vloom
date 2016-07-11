@@ -12,12 +12,15 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CodeActivity;
@@ -33,6 +36,7 @@ import com.tween.viacelular.data.Company;
 import com.tween.viacelular.data.DaoMaster;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.MyGcmListenerService;
 import java.io.BufferedInputStream;
@@ -47,14 +51,17 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import io.realm.Realm;
 
 /**
  * Created by Davo on 11/06/2015.
  */
 public class Utils
 {
+	private static final String path2Copy = Environment.getExternalStorageDirectory().getPath()+"/".replace("//", "/");//"/sdcard/";
+
 	//Cambio de contexto para redirigir desde el menú
-	public static void redirectMenu(Context context, int position, int current)
+	public static void redirectMenu(Activity activity, int position, int current)
 	{
 		try
 		{
@@ -65,28 +72,49 @@ public class Utils
 				switch(position)
 				{
 					case 1:
-						intent = new Intent(context, HomeActivity.class);
-						intent.putExtra(Common.KEY_TITLE, context.getString(R.string.title_notifications));
+						intent = new Intent(activity, HomeActivity.class);
+						intent.putExtra(Common.KEY_TITLE, activity.getString(R.string.title_notifications));
 						intent.putExtra(Common.KEY_SECTION, position);
 						intent.putExtra(Common.KEY_REFRESH, false);
 					break;
 
 					case 2:
-						//Se modifica para reemplazar la pantalla Bloquedas por la pantalla Empresas con tab
-						intent = new Intent(context, SuscriptionsActivity.class);
-						intent.putExtra(Common.KEY_TITLE, context.getString(R.string.title_companies));
-						intent.putExtra(Common.KEY_SECTION, position);
+						//Agregado para prevenir casos en que no se actualizaron las suscripciones
+						Realm realm = Realm.getDefaultInstance();
+
+						if(realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).count() == 0)
+						{
+							new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).execute();
+						}
+						else
+						{
+							//Agregado para limitar frecuencia de actualización
+							SharedPreferences preferences	= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+							long tsUpated					= preferences.getLong(Common.KEY_PREF_TSSUBSCRIPTIONS, System.currentTimeMillis());
+
+							if(DateUtils.needUpdate(tsUpated, DateUtils.HIGH_FREQUENCY))
+							{
+								//Se modifica para reemplazar la pantalla Bloquedas por la pantalla Empresas con tab
+								new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).execute();
+							}
+							else
+							{
+								intent = new Intent(activity, SuscriptionsActivity.class);
+								intent.putExtra(Common.KEY_TITLE, activity.getString(R.string.title_companies));
+								intent.putExtra(Common.KEY_SECTION, position);
+							}
+						}
 					break;
 
 					case 3:
-						intent = new Intent(context, SettingsActivity.class);
-						intent.putExtra(Common.KEY_TITLE, context.getString(R.string.title_settings));
+						intent = new Intent(activity, SettingsActivity.class);
+						intent.putExtra(Common.KEY_TITLE, activity.getString(R.string.title_settings));
 						intent.putExtra(Common.KEY_SECTION, position);
 					break;
 
 					case 4:
-						intent = new Intent(context, FeedbackActivity.class);
-						intent.putExtra(Common.KEY_TITLE, context.getString(R.string.title_activity_feedback));
+						intent = new Intent(activity, FeedbackActivity.class);
+						intent.putExtra(Common.KEY_TITLE, activity.getString(R.string.title_activity_feedback));
 						intent.putExtra(Common.KEY_SECTION, position);
 					break;
 				}
@@ -94,7 +122,7 @@ public class Utils
 				if(position != current && intent != null)
 				{
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					context.startActivity(intent);
+					activity.startActivity(intent);
 				}
 			}
 		}
@@ -116,18 +144,17 @@ public class Utils
 	 * @param sound
 	 * @param message
 	 */
-	public static void showPush(Context context, String from, int sound, Message message)
+	public static void showPush(Context context, String from, String sound, Message message)
 	{
 		try
 		{
 			MyGcmListenerService push	= new MyGcmListenerService();
 			push.setContext(context);
 			Bundle bundle				= new Bundle();
-			bundle.putInt(Common.KEY_SOUND, sound);
-			bundle.putString(Message.KEY_API, message.getMsgId());
+			bundle.putString(Common.KEY_SOUND, sound);
 			bundle.putString(Common.KEY_TYPE, message.getType());
 			bundle.putString(Message.KEY_PLAYLOAD, message.getMsg());
-			bundle.putString(Message.KEY_CREATED, String.valueOf(message.getCreated()));
+			bundle.putString(Message.KEY_TIMESTAMP, String.valueOf(message.getCreated()));
 			bundle.putString(Message.KEY_CHANNEL, message.getChannel());
 			bundle.putString(Common.KEY_STATUS, String.valueOf(message.getStatus()));
 			bundle.putString(Company.KEY_API, message.getCompanyId());
@@ -180,13 +207,20 @@ public class Utils
 				case Common.SPLASH_SCREEN:
 					if(logged && checked)
 					{
-						//Agregado para actualizar datos del usuario solamente cuando inicia la app
-						UpdateUserAsyncTask task	= new UpdateUserAsyncTask(activity, Common.BOOL_YES, false);
-						task.execute();
-						intent						= new Intent(activity, HomeActivity.class);
+						//Agregado para limitar frecuencia de actualización
+						long tsUpated = preferences.getLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
+
+						if(DateUtils.needUpdate(tsUpated, DateUtils.LOW_FREQUENCY))
+						{
+							//Agregado para actualizar datos del usuario solamente cuando inicia la app
+							new UpdateUserAsyncTask(activity, Common.BOOL_YES, false, "", true, true).execute();
+						}
+
+						intent	= new Intent(activity, HomeActivity.class);
+						intent.putExtra(Common.KEY_REFRESH, false);
 						activity.startActivity(intent);
 						activity.finish();
-						result						= false;
+						result	= false;
 					}
 					else
 					{
@@ -212,6 +246,7 @@ public class Utils
 					if(logged && checked)
 					{
 						intent	= new Intent(activity, HomeActivity.class);
+						intent.putExtra(Common.KEY_REFRESH, false);
 						activity.startActivity(intent);
 						activity.finish();
 						result	= false;
@@ -232,6 +267,7 @@ public class Utils
 					if(logged && checked)
 					{
 						intent	= new Intent(activity, HomeActivity.class);
+						intent.putExtra(Common.KEY_REFRESH, false);
 						activity.startActivity(intent);
 						activity.finish();
 						result	= false;
@@ -477,7 +513,7 @@ public class Utils
 			sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{Common.MAIL_ADDRESSEE});
 			copyDb(activity);
 			ArrayList<Uri> uris	= new ArrayList<>();
-			File file			= new File("/sdcard/vloomdb.zip");
+			File file			= new File(path2Copy+"vloomdb.zip");
 
 			if(file.exists())
 			{
@@ -493,6 +529,11 @@ public class Utils
 				sendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				activity.startActivity(Intent.createChooser(sendIntent, activity.getString(R.string.mail_chooser)));
+			}
+			else
+			{
+				Toast.makeText(activity, "File is ready", Toast.LENGTH_SHORT).show();
+				System.out.println("File is ready");
 			}
 		}
 		catch(Exception e)
@@ -554,15 +595,46 @@ public class Utils
 		return body;
 	}
 
-	public static void copyDb(Activity activity)
+	public static class PrepareDB extends Thread
 	{
-		try
+		private Activity activity;
+
+		public PrepareDB(final Activity activity)
 		{
-			if(ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+			this.activity = activity;
+		}
+
+		public void start()
+		{
+			//Agregado para evitar excepciones Runtime
+			if(Looper.myLooper() == null)
 			{
+				Looper.prepare();
+			}
+
+			try
+			{
+				File f = new File(Common.REALMDB_PATH);
+				File file[] = f.listFiles();
+				for(int i=0; i < file.length; i++)
+				{
+					System.out.println("Files #"+i + ": "+ file[i].toString());
+				}
+
+				f = new File(DaoMaster.DB_PATH);
+				File data[] = f.listFiles();
+				for(int i=0; i < data.length; i++)
+				{
+					System.out.println("Data #"+i + ": "+ data[i].toString());
+				}
+
+				System.out.println("Path 2 Copy: "+path2Copy);
+
+				Realm realm				= Realm.getDefaultInstance();
+				//Agregado para enviar la db nueva en Realm, dejar de considerar la db SQLite
 				ArrayList<String> files	= new ArrayList<>();
-				String currentDBPath	= DaoMaster.DB_PATH + DaoMaster.DB_NAME;
-				String backupDBPath		= "/sdcard/" + DaoMaster.DB_NAME;
+				String currentDBPath	= realm.getPath();
+				String backupDBPath		= path2Copy + Common.REALMDB_NAME;
 				File currentDB			= new File(currentDBPath);
 				File backupDB			= new File(backupDBPath);
 				FileChannel src			= new FileInputStream(currentDB).getChannel();
@@ -570,23 +642,12 @@ public class Utils
 				dst.transferFrom(src, 0, src.size());
 				src.close();
 				dst.close();
-				files.add(backupDBPath);
-
-				//Agregado para enviar la db nueva en Realm
-				currentDBPath	= Common.REALMDB_PATH + Common.REALMDB_NAME;
-				backupDBPath	= "/sdcard/" + Common.REALMDB_NAME;
-				currentDB		= new File(currentDBPath);
-				backupDB		= new File(backupDBPath);
-				src				= new FileInputStream(currentDB).getChannel();
-				dst				= new FileOutputStream(backupDB).getChannel();
-				dst.transferFrom(src, 0, src.size());
-				src.close();
-				dst.close();
+				System.out.println("Adding file 1: "+backupDBPath);
 				files.add(backupDBPath);
 
 				//Agregado para enviar el segundo archivo de la db nueva
-				currentDBPath	= Common.REALMDB_PATH + Common.REALMDB_NAME+".lock";
-				backupDBPath	= "/sdcard/" + Common.REALMDB_NAME+".lock";
+				currentDBPath	= realm.getPath()+".lock";
+				backupDBPath	= path2Copy + Common.REALMDB_NAME+".lock";
 				currentDB		= new File(currentDBPath);
 				backupDB		= new File(backupDBPath);
 				src				= new FileInputStream(currentDB).getChannel();
@@ -594,15 +655,19 @@ public class Utils
 				dst.transferFrom(src, 0, src.size());
 				src.close();
 				dst.close();
+				System.out.println("Adding file 2: "+backupDBPath);
 				files.add(backupDBPath);
 
+				//TODO ver si es necesario agregar el archivo /data/data/com.tween.viacelular/files/viacelular.realm.management para eso hay que pasar esto a thread con callback
+
+				System.out.println("Archivos a adjuntar: "+files.size()+" "+files.toString());
 				//Agregado para comprimir archivos de db
 				if(files.size() > 0)
 				{
 					BufferedInputStream origin	= null;
-					FileOutputStream dest		= new FileOutputStream("/sdcard/vloomdb.zip");
+					FileOutputStream dest		= new FileOutputStream(path2Copy+"vloomdb.zip");
 					ZipOutputStream out			= new ZipOutputStream(new BufferedOutputStream(dest));
-					byte data[]					= new byte[2048];
+					byte dataEmail[]			= new byte[2048];
 
 					for(int i = 0; i < files.size(); i++)
 					{
@@ -613,9 +678,9 @@ public class Utils
 						out.putNextEntry(entry);
 						int count;
 
-						while((count = origin.read(data, 0, 2048)) != -1)
+						while((count = origin.read(dataEmail, 0, 2048)) != -1)
 						{
-							out.write(data, 0, count);
+							out.write(dataEmail, 0, count);
 						}
 
 						origin.close();
@@ -623,6 +688,47 @@ public class Utils
 
 					out.close();
 				}
+
+				//Agregado para copiar a la carpeta Descargas del cel
+				currentDBPath	= path2Copy+"vloomdb.zip";
+				backupDBPath	= path2Copy+ "Download/vloomdb"+DateUtils.getDateTimePhone().replace("/","").replace(":","").replace(" ", "")+".zip";
+				System.out.println("Copiar de: "+currentDBPath+" a: "+backupDBPath);
+				currentDB		= new File(currentDBPath);
+				backupDB		= new File(backupDBPath);
+				src				= new FileInputStream(currentDB).getChannel();
+				dst				= new FileOutputStream(backupDB).getChannel();
+				dst.transferFrom(src, 0, src.size());
+				src.close();
+				dst.close();
+			}
+			catch(Exception e)
+			{
+				FileWriter fichero	= null;
+				PrintWriter pw		= null;
+
+				try
+				{
+					fichero	= new FileWriter(path2Copy+"LogVloom.txt");
+					pw		= new PrintWriter(fichero);
+					pw.println(DateUtils.getDatePhone() + " - (thread) ");
+				}
+				catch(Exception d)
+				{
+					e.printStackTrace();
+					d.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public static void copyDb(Activity activity)
+	{
+		try
+		{
+			if(ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+			{
+				PrepareDB task = new PrepareDB(activity);
+				task.start();
 			}
 		}
 		catch(Exception e)
@@ -632,7 +738,7 @@ public class Utils
 
 			try
 			{
-				fichero	= new FileWriter("/sdcard/LogVloom.txt");
+				fichero	= new FileWriter(path2Copy+"LogVloom.txt");
 				pw		= new PrintWriter(fichero);
 				pw.println(DateUtils.getDatePhone() + " - (sendMail) ");
 			}
@@ -672,61 +778,42 @@ public class Utils
 			String version					= activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
 			SharedPreferences preferences	= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			boolean splashed				= preferences.getBoolean(Common.KEY_PREF_SPLASHED, false);
+			boolean upgraded				= preferences.getBoolean(Common.KEY_PREF_UPGRADED + version, false);
 
-			if(version.equals("1.2.4"))
+			//Se quitó if de más ya que siempre se realizará este checkeo de upgrade
+			if(!upgraded)
 			{
-				boolean upgraded = preferences.getBoolean(Common.KEY_PREF_UPGRADED + version, false);
-
-				if(!upgraded)
+				if(splashed)
 				{
-					if(splashed)
-					{
-						//Migración de db a Realm
-						final MigrationAsyncTask task = new MigrationAsyncTask(activity, false);
-						task.execute();
-					}
-					else
-					{
-						//Se movió la llamada de esta task acá para optimizar código
-						SharedPreferences.Editor editor = preferences.edit();
-						editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.2");
-						editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.3");
-						editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.4");
-						editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.5");
-						editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.6");
-						editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.7");
-						editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.8");
-						editor.putBoolean(Common.KEY_PREF_UPGRADED + version, true);
-						//Reiniciar la fecha para mostrar el popup tras cada update de la app
-						editor.putLong(Common.KEY_PREF_DATE_1STLAUNCH, System.currentTimeMillis());
-						int delayTimes = preferences.getInt(Common.KEY_PREF_DELAY_RATE, 0);
-
-						if(delayTimes == 0)
-						{
-							editor.putInt(Common.KEY_PREF_DELAY_RATE, 1);
-						}
-
-						editor.apply();
-						SplashAsyncTask task = new SplashAsyncTask(activity, false);
-						task.execute();
-					}
+					//Migración de db a Realm
+					final MigrationAsyncTask task = new MigrationAsyncTask(activity, true);
+					task.execute();
 				}
 				else
 				{
-					if(!splashed)
+					//Se movió la llamada de esta task acá para optimizar código
+					SharedPreferences.Editor editor = preferences.edit();
+					editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.2");
+					editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.3");
+					editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.4");
+					editor.remove(Common.KEY_PREF_UPGRADED + "1.0.6.5");
+					editor.putBoolean(Common.KEY_PREF_UPGRADED + version, true);
+					//Reiniciar la fecha para mostrar el popup tras cada update de la app
+					editor.putLong(Common.KEY_PREF_DATE_1STLAUNCH, System.currentTimeMillis());
+					int delayTimes = preferences.getInt(Common.KEY_PREF_DELAY_RATE, 0);
+
+					if(delayTimes == 0)
 					{
-						SplashAsyncTask task = new SplashAsyncTask(activity, false);
-						task.execute();
+						editor.putInt(Common.KEY_PREF_DELAY_RATE, 1);
 					}
-					else
-					{
-						Utils.checkSesion(activity, Common.SPLASH_SCREEN);
-					}
+
+					editor.apply();
+					SplashAsyncTask task = new SplashAsyncTask(activity, false);
+					task.execute();
 				}
 			}
 			else
 			{
-				//Agregado para respetar flujo normal cuando no es necesario un upgrade
 				if(!splashed)
 				{
 					SplashAsyncTask task = new SplashAsyncTask(activity, false);
