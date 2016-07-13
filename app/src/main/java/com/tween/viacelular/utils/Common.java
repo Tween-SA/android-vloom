@@ -33,7 +33,6 @@ public class Common
 	public static final String			COLOR_BLOCKED				= "#212121"; //Color de company bloqueada en String
 	public static final String			GCM_DEFAULTSENDERID			= "189459365557"; //Referencia al proyecto en la Google Developers Console
 	public static final String			HASH_GOOGLEANALYTICS		= "UA-15307457-3"; //Referencia a la cuenta de Google Analytics
-	public static final String			HASH_MIXPANEL				= "988db77ec9dc6c3f912a7eae6aeed3ab"; //Referencia a la cuenta de Mix Panel
 	public static final String			HASH_NEWRELIC				= "AA5368393ae01f29d6d74776d5558f53066a8f187c"; //Referencia a la cuenta de NewRelic
 	public static final String			KEY_CODE					= "code";
 	public static final String			KEY_DATA					= "data";
@@ -52,6 +51,7 @@ public class Common
 	public static final String			KEY_PREF_CHECKED			= "checked"; //Clave de preferencia para indicar que el usuario ya fue verificado con éxito
 	public static final String			KEY_PREF_DATE_1STLAUNCH		= "dateFirstLaunch"; //Clave de preferencia que indica el primer día desde la intalación de este update
 	public static final String			KEY_PREF_DELAY_RATE			= "delayRate"; //Clave de preferencia que indica la cantidad de veces que el usuario dice "Más Tarde" cuando se sugiere calificar la app
+	public static final String			KEY_PREF_FREEPASS			= "freePassOn"; //Clave de preferencia para indicar que el usuario se registró y espera el código de verificación
 	public static final String			KEY_PREF_LOGGED				= "logged"; //Clave de preferencia para indicar que el usuario se registró y espera el código de verificación
 	public static final String			KEY_PREF_NO_RATE			= "iWontRate"; //Clave de prefencia que indica si el usuario oprimió en "No, gracias" cuando se le sugirió calificar la app
 	public static final String			KEY_PREF_SPLASHED			= "splashed"; //Clave de preferencia para indicar que ya se efectuó el splash de la primera vez

@@ -18,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-import com.appboy.Appboy;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.BlockedAdapter;
 import com.tween.viacelular.adapters.RecyclerAdapter;
@@ -355,31 +354,6 @@ public class BlockedActivity extends AppCompatActivity
 			{
 				e.printStackTrace();
 			}
-		}
-	}
-
-	protected void onPause()
-	{
-		super.onPause();
-	}
-
-	public void onStart()
-	{
-		super.onStart();
-
-		if(!Common.DEBUG)
-		{
-			Appboy.getInstance(BlockedActivity.this).openSession(BlockedActivity.this);
-		}
-	}
-
-	public void onStop()
-	{
-		super.onStop();
-
-		if(!Common.DEBUG)
-		{
-			Appboy.getInstance(BlockedActivity.this).closeSession(BlockedActivity.this);
 		}
 	}
 }

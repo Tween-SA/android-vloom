@@ -26,7 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
-import com.appboy.Appboy;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.RecyclerAdapter;
 import com.tween.viacelular.adapters.RecyclerItemClickListener;
@@ -252,11 +251,6 @@ public class HomeActivity extends AppCompatActivity
 		}
 	}
 
-	protected void onPause()
-	{
-		super.onPause();
-	}
-
 	@Override
 	public void onBackPressed()
 	{
@@ -282,50 +276,6 @@ public class HomeActivity extends AppCompatActivity
 		catch(Exception e)
 		{
 			System.out.println("HomeActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStart()
-	{
-		super.onStart();
-
-		try
-		{
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(HomeActivity.this).openSession(HomeActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("HomeActivity:onStart - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStop()
-	{
-		super.onStop();
-
-		try
-		{
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(HomeActivity.this).closeSession(HomeActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("HomeActivity:onStop - Exception: " + e);
 
 			if(Common.DEBUG)
 			{

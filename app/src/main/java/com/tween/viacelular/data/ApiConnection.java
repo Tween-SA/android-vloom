@@ -76,6 +76,7 @@ public class ApiConnection
 		catch(Exception e)
 		{
 			System.out.println("ApiConnection:checkInternet - Exception: " + e);
+
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
@@ -106,6 +107,7 @@ public class ApiConnection
 		catch(Exception e)
 		{
 			System.out.println("ApiConnection:loadJSONFromAsset - Exception: " + e);
+
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
@@ -181,6 +183,7 @@ public class ApiConnection
 					catch(Exception e)
 					{
 						System.out.println("ApiConnection:request:getResponseCode() - Exception: " + e);
+
 						if(Common.DEBUG)
 						{
 							e.printStackTrace();
@@ -217,8 +220,8 @@ public class ApiConnection
 				if(Common.DEBUG)
 				{
 					System.out.println("Original Result: " + result);
-					System.out.println("Original !ifJson: " + (!result.startsWith("{") && !result.endsWith("}") && !result.startsWith("[") && !result.endsWith("]")));
-					System.out.println("Original isHTML: " + (result.contains("Service Temporarily Unavailable") || result.contains("html") || result.contains("HTML")));
+					System.out.println(	"Original !ifJson: " + (!result.startsWith("{") && !result.endsWith("}") && !result.startsWith("[") && !result.endsWith("]"))+
+										" isHTML: " +(result.contains("Service Temporarily Unavailable") || result.contains("html") || result.contains("HTML")));
 				}
 			}
 			catch(Exception e)

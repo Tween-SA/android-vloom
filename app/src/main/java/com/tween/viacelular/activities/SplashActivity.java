@@ -18,7 +18,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.appboy.Appboy;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
@@ -318,50 +317,6 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 		catch(Exception e)
 		{
 			System.out.println("SplashActivity:onPause - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStart()
-	{
-		super.onStart();
-
-		try
-		{
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(SplashActivity.this).openSession(SplashActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("SplashActivity:onStart - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStop()
-	{
-		super.onStop();
-
-		try
-		{
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(SplashActivity.this).closeSession(SplashActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("SplashActivity:onStop - Exception: " + e);
 
 			if(Common.DEBUG)
 			{

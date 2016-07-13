@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CodeActivity;
-import com.tween.viacelular.activities.FeedbackActivity;
 import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.activities.PhoneActivity;
 import com.tween.viacelular.activities.SettingsActivity;
@@ -111,12 +110,6 @@ public class Utils
 						intent.putExtra(Common.KEY_TITLE, activity.getString(R.string.title_settings));
 						intent.putExtra(Common.KEY_SECTION, position);
 					break;
-
-					case 4:
-						intent = new Intent(activity, FeedbackActivity.class);
-						intent.putExtra(Common.KEY_TITLE, activity.getString(R.string.title_activity_feedback));
-						intent.putExtra(Common.KEY_SECTION, position);
-					break;
 				}
 
 				if(position != current && intent != null)
@@ -200,6 +193,7 @@ public class Utils
 			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			boolean logged					= preferences.getBoolean(Common.KEY_PREF_LOGGED, false);
 			boolean checked					= preferences.getBoolean(Common.KEY_PREF_CHECKED, false);
+			boolean freePassOn				= preferences.getBoolean(Common.KEY_PREF_FREEPASS, false);
 			Intent intent					= null;
 
 			switch(pantalla)
@@ -285,22 +279,25 @@ public class Utils
 				break;
 
 				default:
-					if(!logged && !checked)
+					if(!freePassOn)
 					{
-						//Modificaciones para contemplar migración a Realm
-						intent	= new Intent(activity, PhoneActivity.class);
-						activity.startActivity(intent);
-						activity.finish();
-						result	= false;
-					}
-					else
-					{
-						if(logged && !checked)
+						if(!logged && !checked)
 						{
-							intent	= new Intent(activity, CodeActivity.class);
+							//Modificaciones para contemplar migración a Realm
+							intent	= new Intent(activity, PhoneActivity.class);
 							activity.startActivity(intent);
 							activity.finish();
 							result	= false;
+						}
+						else
+						{
+							if(logged && !checked)
+							{
+								intent	= new Intent(activity, CodeActivity.class);
+								activity.startActivity(intent);
+								activity.finish();
+								result	= false;
+							}
 						}
 					}
 				break;
@@ -321,8 +318,7 @@ public class Utils
 
 	public static String[] getMenu(Context context)
 	{
-		return new String[]{	context.getString(R.string.title_notifications), context.getString(R.string.title_companies), context.getString(R.string.title_settings),
-								context.getString(R.string.title_feedback)};
+		return new String[]{context.getString(R.string.title_notifications), context.getString(R.string.title_companies), context.getString(R.string.title_settings)};
 	}
 
 	public static boolean isLightColor(String colorHex)
@@ -495,6 +491,30 @@ public class Utils
 		catch(Exception e)
 		{
 			System.out.println("Utils:goTo - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void sendContactMail(Activity activity)
+	{
+		try
+		{
+			Intent sendIntent	= new Intent(Intent.ACTION_SEND);
+			sendIntent.setType("*/*");
+			sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+			sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{Common.MAIL_TWEEN});
+			sendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			sendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			activity.startActivity(Intent.createChooser(sendIntent, activity.getString(R.string.mail_chooser)));
+		}
+		catch(Exception e)
+		{
+			System.out.println("Utils:sendContactMail - Exception: " + e);
 
 			if(Common.DEBUG)
 			{

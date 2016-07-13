@@ -78,7 +78,6 @@ dependencies
 	compile "com.android.support:multidex:1.0.1"
 	compile "com.android.support:recyclerview-v7:24.0.0"
 	compile "com.android.support:support-v13:24.0.0"
-	compile "com.appboy:android-sdk-ui:1.13.4"
 	compile "com.google.android.gms:play-services-ads:9.2.0"
 	compile "com.google.android.gms:play-services-analytics:9.2.0"
 	compile "com.google.android.gms:play-services-gcm:8.4.0"

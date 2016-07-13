@@ -32,7 +32,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.appboy.Appboy;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.squareup.picasso.Picasso;
@@ -1250,55 +1249,6 @@ public class CardViewActivity extends AppCompatActivity
 		catch(Exception e)
 		{
 			System.out.println("CardViewActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	protected void onPause()
-	{
-		super.onPause();
-	}
-
-	public void onStart()
-	{
-		super.onStart();
-
-		try
-		{
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(CardViewActivity.this).openSession(CardViewActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("CardViewActivity:onStart - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStop()
-	{
-		super.onStop();
-
-		try
-		{
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(CardViewActivity.this).closeSession(CardViewActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("CardViewActivity:onStop - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
