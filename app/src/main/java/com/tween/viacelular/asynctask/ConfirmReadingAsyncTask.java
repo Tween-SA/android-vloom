@@ -118,6 +118,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 							JSONObject geoJSON = new JSONObject();
 							geoJSON.put("latitude", isp.getLat());
 							geoJSON.put("longitude", isp.getLon());
+							geoJSON.put("source", "");
 							jsonSend.put("geolocalization", geoJSON);
 						}
 					}
