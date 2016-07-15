@@ -472,10 +472,11 @@ public class Utils
 
 				if(action == 1)
 				{
-					//Envía hacia algún cliente de email la casilla recibida en extraText
-					intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+					//Envía hacia algún cliente de email la casilla recibida en extraText, se corrige para enviar la dirección al Para:
+					intent = new Intent(Intent.ACTION_SEND);
 					intent.setType("text/plain");
-					intent.putExtra(Intent.EXTRA_EMAIL, extraText);
+					intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+					intent.putExtra(Intent.EXTRA_EMAIL, new String[]{extraText});
 					activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.mail_chooser)));
 				}
 				else
@@ -504,12 +505,9 @@ public class Utils
 		try
 		{
 			Intent sendIntent	= new Intent(Intent.ACTION_SEND);
-			sendIntent.setType("*/*");
+			sendIntent.setType("text/plain");
 			sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 			sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{Common.MAIL_TWEEN});
-			sendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			sendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-			sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			activity.startActivity(Intent.createChooser(sendIntent, activity.getString(R.string.mail_chooser)));
 		}
 		catch(Exception e)
