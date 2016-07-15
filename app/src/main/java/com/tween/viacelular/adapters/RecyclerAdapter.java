@@ -24,7 +24,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 	public static final int		HOME_SELECTED			= 1;
 	public static final int		SUSCRIPTION_SELECTED	= 2;
 	public static final int		SETTINGS_SELECTED		= 3;
-	private int					mIcons[]				= {R.drawable.ic_inbox_black_24dp, R.drawable.ic_inbox_black_24dp, 0};//Quitamos la pantalla Feedback
+	private int					mIcons[]				= {R.drawable.notificaciones, R.drawable.empresas, 0};//Quitamos la pantalla Feedback
 	private String				mNavTitles[];
 	private String				name;
 	private int					profile;

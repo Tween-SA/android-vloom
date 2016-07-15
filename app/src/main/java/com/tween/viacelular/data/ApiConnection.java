@@ -65,8 +65,6 @@ public class ApiConnection
 
 					if(networkInfo != null)
 					{
-						System.out.println("Red: "+networkInfo.getTypeName()+" - "+networkInfo.toString());
-						//Emulador: [type: MOBILE[UMTS], state: CONNECTED/CONNECTED, reason: connected, extra: epc.tmobile.com, roaming: false, failover: false, isAvailable: true, isConnectedToProvisioningNetwork: false]
 						if(networkInfo.isConnected())
 						{
 							result = true;
@@ -86,6 +84,40 @@ public class ApiConnection
 		}
 
 		return result;
+	}
+
+	public static String getNetwork(Context context)
+	{
+		String network = "";
+
+		try
+		{
+			if(context != null)
+			{
+				ConnectivityManager connectivityManager	= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+				if(connectivityManager != null)
+				{
+					NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+					if(networkInfo != null)
+					{
+						network = networkInfo.getTypeName();
+					}
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("ApiConnection:getNetwork - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		return network;
 	}
 
 	/**
