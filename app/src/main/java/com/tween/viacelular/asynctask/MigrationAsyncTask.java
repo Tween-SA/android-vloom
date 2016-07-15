@@ -197,9 +197,16 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 						{
 							for(Message message : allMessages)
 							{
-								Suscription suscription = realm.where(Suscription.class)
+								String companyId		= Suscription.COMPANY_ID_VC_MONGO;
+								Suscription suscription	= realm.where(Suscription.class)
 															.equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(message.getChannel(), message.getMsg(), activity, countryCode))
 															.findFirst();
+
+								if(suscription != null)
+								{
+									companyId = suscription.getCompanyId();
+								}
+
 								realm.beginTransaction();
 								com.tween.viacelular.models.Message messageRealm = new com.tween.viacelular.models.Message();
 								messageRealm.setChannel(message.getChannel());
@@ -215,7 +222,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 								messageRealm.setStatus(message.getStatus());
 								messageRealm.setSubMsg("");
 								messageRealm.setType(message.getType());
-								messageRealm.setCompanyId(suscription.getCompanyId());
+								messageRealm.setCompanyId(companyId);
 
 								if(StringUtils.isNotEmpty(message.getPhone()))
 								{

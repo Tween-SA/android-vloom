@@ -679,7 +679,7 @@ public class CardViewActivity extends AppCompatActivity
 										}
 										else
 										{
-											if(suscription.getFollower() == Common.BOOL_NO && suscription.getGray() == Common.BOOL_NO)
+											if(suscription.getFollower() == Common.BOOL_NO && suscription.getGray() == Common.BOOL_NO && suscription.getBlocked() == Common.BOOL_YES)
 											{
 												idViewFather = cardSuscribe.getId();
 											}
@@ -687,7 +687,7 @@ public class CardViewActivity extends AppCompatActivity
 									}
 									else
 									{
-										if(suscription.getFollower() == Common.BOOL_NO && suscription.getGray() == Common.BOOL_NO)
+										if(suscription.getFollower() == Common.BOOL_NO && suscription.getGray() == Common.BOOL_NO && suscription.getBlocked() == Common.BOOL_YES)
 										{
 											idViewFather = cardSuscribe.getId();
 										}

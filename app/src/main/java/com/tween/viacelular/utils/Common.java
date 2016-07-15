@@ -10,8 +10,8 @@ public class Common
 {
 	public static DisplayImageOptions	DEFAULT_OPTIONS				= null; //Opciones para la carga de logos
 	public static final boolean			APP_TEST					= false; //En true desbloquea funciones de alpha para simular push, sms, enviar DB, entre otras
-	public static final boolean			DEBUG						= true; //En true desbloquea la impresión de trackers y variables para debug
-	public static final boolean			DEBUGDB						= true; //En true desbloquea la impresión de consultas en la db para debug
+	public static final boolean			DEBUG						= false; //En true desbloquea la impresión de trackers y variables para debug
+	public static final boolean			DEBUGDB						= false; //En true desbloquea la impresión de consultas en la db para debug
 	public static final double			DENSITY_HDPI				= 1.5; //Indica que se trata de un dispositivo con una resolución menor a HD
 	public static final double			DENSITY_XHDPI				= 2.0; //Indica que se trata de un dispositivo con una resolución HD
 	public static final double			DENSITY_XXHDPI				= 3.0; //Indica que se trata de un dispositivo con una resolución FullHD

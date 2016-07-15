@@ -110,7 +110,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 
 			if(clients.size() > 0)
 			{
-				final Suscription item	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, clients.get(position).getCompanyId()).findFirst();
+				Suscription suscription = null;
+
+				if(clients.get(position) != null)
+				{
+					suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, clients.get(position).getCompanyId()).findFirst();
+				}
+
+				final Suscription item = suscription;
 
 				if(item != null)
 				{
