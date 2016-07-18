@@ -70,7 +70,7 @@ public class Common
 	public static final String			KEY_TOKEN					= "token";
 	public static final String			KEY_TYPE					= "type";
 	public static final String			MAIL_ADDRESSEE				= "david.figueroa@tween.com.ar";
-	public static final String			MAIL_TWEEN					= "soporte@vloom.com";
+	public static final String			MAIL_TWEEN					= "soporte@vloom.io";
 	public static final String			REALMDB_NAME				= "viacelular.realm";
 	public static final String			REALMDB_PATH				= "/data/data/com.tween.viacelular/files/";
 	public static final String			VALUE_FEEDBACKAPPBOY		= "Feedback reply from vloom";
