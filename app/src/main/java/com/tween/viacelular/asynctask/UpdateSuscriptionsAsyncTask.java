@@ -247,6 +247,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 					if(StringUtils.isEmpty(companyId))
 					{
 						intent.putExtra(Common.KEY_REFRESH, true);
+						intent.putExtra(Common.KEY_PREF_WELCOME, true);
 					}
 					else
 					{

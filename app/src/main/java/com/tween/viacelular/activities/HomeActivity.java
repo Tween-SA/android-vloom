@@ -42,6 +42,7 @@ public class HomeActivity extends AppCompatActivity
 	private String							companyId	= "";
 	private int								block		= Common.BOOL_NO;
 	private boolean							refresh		= true;
+	private boolean							firstTime	= true;
 	private SwipeRefreshLayoutBasicFragment	fragment;
 	private DrawerLayout					drawer;
 
@@ -86,6 +87,7 @@ public class HomeActivity extends AppCompatActivity
 					companyId	= intentRecive.getStringExtra(Common.KEY_ID);
 					block		= intentRecive.getIntExtra(Suscription.KEY_BLOCKED, Common.BOOL_NO);
 					refresh		= intentRecive.getBooleanExtra(Common.KEY_REFRESH, false);
+					firstTime	= intentRecive.getBooleanExtra(Common.KEY_PREF_WELCOME, false);
 				}
 
 				Toolbar toolbar					= (Toolbar) findViewById(R.id.toolBar);
@@ -192,7 +194,8 @@ public class HomeActivity extends AppCompatActivity
 				{
 					if(refresh)
 					{
-						fragment.refresh(true, false);
+						//Modificación para que mostrar dialogo la primera vez que se entra
+						fragment.refresh(true, firstTime);
 					}
 					else
 					{
