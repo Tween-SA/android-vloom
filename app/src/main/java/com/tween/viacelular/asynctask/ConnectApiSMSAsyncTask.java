@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 {
@@ -111,7 +112,8 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 				}
 				else
 				{
-					RealmResults<Message> messages	= realm.where(Message.class).equalTo(Common.KEY_TYPE, Message.TYPE_SMS).findAll();
+					//Mejora para enviar siempre los últimos mensajes
+					RealmResults<Message> messages	= realm.where(Message.class).equalTo(Common.KEY_TYPE, Message.TYPE_SMS).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 
 					if(messages.size() > 0)
 					{
@@ -153,20 +155,9 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(send)
 			{
-				//Agregado para no enviar mis mensajes cada vez que hago debug
-				if(!user.getPhone().replace("+", "").equals("5492616333888"))
-				{
-					JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.SEND_SMS, context, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""),
-																jsonArray.toString()));
-					result					= ApiConnection.checkResponse(context, jsonResult);
-				}
-				else
-				{
-					if(Common.DEBUG)
-					{
-						System.out.println("Call to Api-Storage will be with: "+jsonArray.toString());
-					}
-				}
+				JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.SEND_SMS, context, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""),
+															jsonArray.toString()));
+				result					= ApiConnection.checkResponse(context, jsonResult);
 			}
 
 			if(displayDialog)

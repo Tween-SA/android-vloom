@@ -17,9 +17,7 @@
 #}
 -dontwarn com.amazon.device.messaging.**
 -dontwarn bo.app.**
--dontwarn com.appboy.ui.**
 -keep class bo.app.** { *; }
--keep class com.appboy.** { *; }
 -dontwarn com.google.android.gms.**
 #Agregado para implementación de Realm
 -keep class io.realm.annotations.RealmModule

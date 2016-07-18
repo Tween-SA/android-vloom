@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.tween.viacelular.R;
@@ -23,8 +24,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 	public static final int		HOME_SELECTED			= 1;
 	public static final int		SUSCRIPTION_SELECTED	= 2;
 	public static final int		SETTINGS_SELECTED		= 3;
-	public static final int		FEEDBACK_SELECTED		= 4;
-	private int					mIcons[]				= {R.drawable.ic_inbox_black_24dp, 0, 0, 0};//Agregamos la pantalla Feedback
+	private int					mIcons[]				= {R.drawable.notificaciones, R.drawable.empresas, 0};//Quitamos la pantalla Feedback
 	private String				mNavTitles[];
 	private String				name;
 	private int					profile;
@@ -35,13 +35,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
 	public static class ViewHolder extends RecyclerView.ViewHolder
 	{
-		public int			HolderId;
-		public TextView		textView;
-		public ImageView	imageView;
-		public ImageView	profile;
-		public View			div;
-		public TextView		Name;
-		public TextView		email;
+		public int				HolderId;
+		public TextView			textView;
+		public ImageView		imageView;
+		public ImageView		profile;
+		public View				div;
+		public TextView			Name;
+		public TextView			email;
+		public RelativeLayout	rlItem;
 
 		public ViewHolder(View itemView, int ViewType)
 		{
@@ -52,6 +53,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 				textView	= (TextView) itemView.findViewById(R.id.rowText);
 				imageView	= (ImageView) itemView.findViewById(R.id.rowIcon);
 				div			= itemView.findViewById(R.id.div);
+				rlItem		= (RelativeLayout) itemView.findViewById(R.id.rlItem);
 				HolderId	= 1;
 				textView.setClickable(true);
 			}
@@ -179,7 +181,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 					holder.imageView.setVisibility(android.widget.ImageView.GONE);
 				}
 
-				if(position != 1)
+				if(position != 2)
 				{
 					holder.div.setVisibility(android.view.View.GONE);
 				}

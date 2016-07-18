@@ -26,7 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
-import com.appboy.Appboy;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.RecyclerAdapter;
 import com.tween.viacelular.adapters.RecyclerItemClickListener;
@@ -43,6 +42,7 @@ public class HomeActivity extends AppCompatActivity
 	private String							companyId	= "";
 	private int								block		= Common.BOOL_NO;
 	private boolean							refresh		= true;
+	private boolean							firstTime	= true;
 	private SwipeRefreshLayoutBasicFragment	fragment;
 	private DrawerLayout					drawer;
 
@@ -87,6 +87,7 @@ public class HomeActivity extends AppCompatActivity
 					companyId	= intentRecive.getStringExtra(Common.KEY_ID);
 					block		= intentRecive.getIntExtra(Suscription.KEY_BLOCKED, Common.BOOL_NO);
 					refresh		= intentRecive.getBooleanExtra(Common.KEY_REFRESH, false);
+					firstTime	= intentRecive.getBooleanExtra(Common.KEY_PREF_WELCOME, false);
 				}
 
 				Toolbar toolbar					= (Toolbar) findViewById(R.id.toolBar);
@@ -193,7 +194,8 @@ public class HomeActivity extends AppCompatActivity
 				{
 					if(refresh)
 					{
-						fragment.refresh(true, false);
+						//Modificación para que mostrar dialogo la primera vez que se entra
+						fragment.refresh(true, firstTime);
 					}
 					else
 					{
@@ -252,11 +254,6 @@ public class HomeActivity extends AppCompatActivity
 		}
 	}
 
-	protected void onPause()
-	{
-		super.onPause();
-	}
-
 	@Override
 	public void onBackPressed()
 	{
@@ -282,50 +279,6 @@ public class HomeActivity extends AppCompatActivity
 		catch(Exception e)
 		{
 			System.out.println("HomeActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStart()
-	{
-		super.onStart();
-
-		try
-		{
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(HomeActivity.this).openSession(HomeActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("HomeActivity:onStart - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStop()
-	{
-		super.onStop();
-
-		try
-		{
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(HomeActivity.this).closeSession(HomeActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("HomeActivity:onStop - Exception: " + e);
 
 			if(Common.DEBUG)
 			{

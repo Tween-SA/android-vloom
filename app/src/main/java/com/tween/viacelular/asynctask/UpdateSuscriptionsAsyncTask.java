@@ -243,7 +243,17 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 				{
 					Intent intent = new Intent(context, HomeActivity.class);
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					intent.putExtra(Common.KEY_REFRESH, false);
+
+					if(StringUtils.isEmpty(companyId))
+					{
+						intent.putExtra(Common.KEY_REFRESH, true);
+						intent.putExtra(Common.KEY_PREF_WELCOME, true);
+					}
+					else
+					{
+						intent.putExtra(Common.KEY_REFRESH, false);
+					}
+
 					context.startActivity(intent);
 
 					if(activity != null)

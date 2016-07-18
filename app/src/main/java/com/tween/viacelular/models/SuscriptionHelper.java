@@ -36,7 +36,8 @@ public abstract class SuscriptionHelper
 			int count	= 0;
 
 			//Revisamos si el sms tiene las keywords de Vloom
-			if(message.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || message.toUpperCase().contains("VIACELULAR"))
+			if(	message.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || message.toUpperCase().contains("VIACELULAR") ||
+				addressee.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || addressee.toUpperCase().contains("VIACELULAR"))
 			{
 				companyId	= Company.COMPANY_ID_VC_MONGO;
 				count		= 1;

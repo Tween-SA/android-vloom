@@ -65,6 +65,8 @@ public class ApiConnection
 
 					if(networkInfo != null)
 					{
+						System.out.println("Red: "+networkInfo.getTypeName()+" - "+networkInfo.toString());
+						//Emulador: [type: MOBILE[UMTS], state: CONNECTED/CONNECTED, reason: connected, extra: epc.tmobile.com, roaming: false, failover: false, isAvailable: true, isConnectedToProvisioningNetwork: false]
 						if(networkInfo.isConnected())
 						{
 							result = true;
@@ -76,6 +78,7 @@ public class ApiConnection
 		catch(Exception e)
 		{
 			System.out.println("ApiConnection:checkInternet - Exception: " + e);
+
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
@@ -83,6 +86,40 @@ public class ApiConnection
 		}
 
 		return result;
+	}
+
+	public static String getNetwork(Context context)
+	{
+		String network = "";
+
+		try
+		{
+			if(context != null)
+			{
+				ConnectivityManager connectivityManager	= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+				if(connectivityManager != null)
+				{
+					NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+					if(networkInfo != null)
+					{
+						network = networkInfo.getTypeName();
+					}
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("ApiConnection:getNetwork - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		return network;
 	}
 
 	/**
@@ -106,6 +143,7 @@ public class ApiConnection
 		catch(Exception e)
 		{
 			System.out.println("ApiConnection:loadJSONFromAsset - Exception: " + e);
+
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
@@ -181,6 +219,7 @@ public class ApiConnection
 					catch(Exception e)
 					{
 						System.out.println("ApiConnection:request:getResponseCode() - Exception: " + e);
+
 						if(Common.DEBUG)
 						{
 							e.printStackTrace();
@@ -217,8 +256,8 @@ public class ApiConnection
 				if(Common.DEBUG)
 				{
 					System.out.println("Original Result: " + result);
-					System.out.println("Original !ifJson: " + (!result.startsWith("{") && !result.endsWith("}") && !result.startsWith("[") && !result.endsWith("]")));
-					System.out.println("Original isHTML: " + (result.contains("Service Temporarily Unavailable") || result.contains("html") || result.contains("HTML")));
+					System.out.println(	"Original !ifJson: " + (!result.startsWith("{") && !result.endsWith("}") && !result.startsWith("[") && !result.endsWith("]"))+
+										" isHTML: " +(result.contains("Service Temporarily Unavailable") || result.contains("html") || result.contains("HTML")));
 				}
 			}
 			catch(Exception e)

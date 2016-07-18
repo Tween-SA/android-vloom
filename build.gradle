@@ -22,9 +22,5 @@ allprojects
 	{
 		jcenter()
 		mavenCentral()
-		maven
-		{
-			url "http://appboy.github.io/appboy-android-sdk/sdk"
-		}
 	}
 }

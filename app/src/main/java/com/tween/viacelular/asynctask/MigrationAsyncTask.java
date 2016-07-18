@@ -9,7 +9,6 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.activities.BlockedActivity;
 import com.tween.viacelular.data.Company;
 import com.tween.viacelular.data.CompanyDao;
-import com.tween.viacelular.data.Country;
 import com.tween.viacelular.data.CountryDao;
 import com.tween.viacelular.data.DaoMaster;
 import com.tween.viacelular.data.DaoSession;
@@ -19,7 +18,6 @@ import com.tween.viacelular.data.Message;
 import com.tween.viacelular.data.MessageDao;
 import com.tween.viacelular.data.User;
 import com.tween.viacelular.data.UserDao;
-import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
@@ -199,9 +197,16 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 						{
 							for(Message message : allMessages)
 							{
-								Suscription suscription = realm.where(Suscription.class)
+								String companyId		= Suscription.COMPANY_ID_VC_MONGO;
+								Suscription suscription	= realm.where(Suscription.class)
 															.equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(message.getChannel(), message.getMsg(), activity, countryCode))
 															.findFirst();
+
+								if(suscription != null)
+								{
+									companyId = suscription.getCompanyId();
+								}
+
 								realm.beginTransaction();
 								com.tween.viacelular.models.Message messageRealm = new com.tween.viacelular.models.Message();
 								messageRealm.setChannel(message.getChannel());
@@ -217,7 +222,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 								messageRealm.setStatus(message.getStatus());
 								messageRealm.setSubMsg("");
 								messageRealm.setType(message.getType());
-								messageRealm.setCompanyId(suscription.getCompanyId());
+								messageRealm.setCompanyId(companyId);
 
 								if(StringUtils.isNotEmpty(message.getPhone()))
 								{
@@ -244,22 +249,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 					}
 				}
 
-				//Agregado para migrar a Realm los países
-				if(countryDao != null)
-				{
-					List<Country> countries = countryDao.queryBuilder().orderAsc(CountryDao.Properties.name).listLazyUncached();
-
-					if(countries.size() > 0)
-					{
-						for(Country country: countries)
-						{
-							Land land = new Land(country.getCode(), country.getName(), country.getIsoCode(), country.getFormat(), country.getMinLength(), country.getMaxLength());
-							realm.beginTransaction();
-							realm.copyToRealmOrUpdate(land);
-							realm.commitTransaction();
-						}
-					}
-				}
+				//No se migran los países para optimizar proceso
 			}
 		}
 		catch(Exception e)

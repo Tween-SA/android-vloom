@@ -22,8 +22,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.appboy.Appboy;
-import com.appboy.AppboyUser;
 import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.CaptureSMSAsyncTask;
 import com.tween.viacelular.asynctask.CheckCodeAsyncTask;
@@ -251,6 +249,7 @@ public class CodeActivity extends AppCompatActivity
 				editor.putBoolean(Common.KEY_PREF_CALLME, false);
 				editor.putBoolean(Common.KEY_PREF_LOGGED, true);
 				editor.putBoolean(Common.KEY_PREF_CHECKED, true);
+				editor.putBoolean(Common.KEY_PREF_FREEPASS, true);
 				editor.apply();
 			}
 
@@ -374,69 +373,6 @@ public class CodeActivity extends AppCompatActivity
 		catch(Exception e)
 		{
 			System.out.println("CodeActivity:logout - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStart()
-	{
-		super.onStart();
-
-		try
-		{
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(CodeActivity.this).openSession(CodeActivity.this);
-				//Agregado para enviar info de usuario a Appboy que se utiliza en campañas y ads
-				AppboyUser appboyUser	= Appboy.getInstance(CodeActivity.this).getCurrentUser();
-
-				if(appboyUser != null)
-				{
-					//Modificación para contemplar migración a Realm
-					Realm realm	= Realm.getDefaultInstance();
-					User user	= realm.where(User.class).findFirst();
-
-					if(user != null)
-					{
-						appboyUser.setCountry(user.getCountryCode());
-						appboyUser.setEmail(user.getEmail());
-						appboyUser.setPhoneNumber(user.getPhone());
-						appboyUser.setFirstName(user.getFirstName());
-						appboyUser.setLastName(user.getLastName());
-						appboyUser.setCustomUserAttribute(Common.KEY_ID, user.getUserId());
-					}
-				}
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("CodeActivity:onStart - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStop()
-	{
-		super.onStop();
-
-		try
-		{
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(CodeActivity.this).closeSession(CodeActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("CodeActivity:onStop - Exception: " + e);
 
 			if(Common.DEBUG)
 			{

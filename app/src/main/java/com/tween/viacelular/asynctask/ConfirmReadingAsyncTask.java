@@ -118,6 +118,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 							JSONObject geoJSON = new JSONObject();
 							geoJSON.put("latitude", isp.getLat());
 							geoJSON.put("longitude", isp.getLon());
+							geoJSON.put("source", ApiConnection.getNetwork(context));
 							jsonSend.put("geolocalization", geoJSON);
 						}
 					}
@@ -147,7 +148,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 				{
 					JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES + "/" + msgId, context, ApiConnection.METHOD_PUT,
 																preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
-					result					= ApiConnection.checkResponse(context.getApplicationContext(), jsonResult);
+					result					= ApiConnection.checkResponse(context, jsonResult);
 				}
 			}
 			else

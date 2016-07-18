@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
-import com.appboy.Appboy;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -162,9 +161,6 @@ public class RegistrationIntentService extends IntentService
 				preferences.putString(User.KEY_GCMID, token);
 				sharedPreferences.edit().apply();
 				preferences.apply();
-
-				//Agregado para registrar push en Appboy
-				Appboy.getInstance(this).registerAppboyPushMessages(token);
 
 				//Agregado para refrescar push en db y api
 				Realm realm	= Realm.getDefaultInstance();

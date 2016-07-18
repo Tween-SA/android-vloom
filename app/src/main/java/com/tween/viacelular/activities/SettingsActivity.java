@@ -25,7 +25,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.appboy.Appboy;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.RecyclerAdapter;
 import com.tween.viacelular.adapters.RecyclerItemClickListener;
@@ -592,6 +591,24 @@ public class SettingsActivity extends AppCompatActivity
 			timer = null;
 		}
 	}
+
+	public void goContact(View view)
+	{
+		try
+		{
+			//Envía email con interacción del usuario y la db adjuntada
+			Utils.sendContactMail(SettingsActivity.this);
+		}
+		catch(Exception e)
+		{
+			System.out.println("SettingsActivity:goContact - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -618,59 +635,6 @@ public class SettingsActivity extends AppCompatActivity
 		catch(Exception e)
 		{
 			System.out.println("SettingsActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	protected void onResume()
-	{
-		super.onResume();
-	}
-
-	protected void onPause()
-	{
-		super.onPause();
-	}
-
-	public void onStart()
-	{
-		super.onStart();
-		try
-		{
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(SettingsActivity.this).openSession(SettingsActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("SettingsActivity:onStart - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStop()
-	{
-		super.onStop();
-
-		try
-		{
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(SettingsActivity.this).closeSession(SettingsActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("SettingsActivity:onStop - Exception: " + e);
 
 			if(Common.DEBUG)
 			{

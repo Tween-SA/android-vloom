@@ -9,8 +9,8 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 public class Common
 {
 	public static DisplayImageOptions	DEFAULT_OPTIONS				= null; //Opciones para la carga de logos
-	public static final boolean			APP_TEST					= true; //En true desbloquea funciones de alpha para simular push, sms, enviar DB, entre otras
-	public static final boolean			DEBUG						= true; //En true desbloquea la impresión de trackers y variables para debug
+	public static final boolean			APP_TEST					= false; //En true desbloquea funciones de alpha para simular push, sms, enviar DB, entre otras
+	public static final boolean			DEBUG						= false; //En true desbloquea la impresión de trackers y variables para debug
 	public static final boolean			DEBUGDB						= false; //En true desbloquea la impresión de consultas en la db para debug
 	public static final double			DENSITY_HDPI				= 1.5; //Indica que se trata de un dispositivo con una resolución menor a HD
 	public static final double			DENSITY_XHDPI				= 2.0; //Indica que se trata de un dispositivo con una resolución HD
@@ -33,7 +33,6 @@ public class Common
 	public static final String			COLOR_BLOCKED				= "#212121"; //Color de company bloqueada en String
 	public static final String			GCM_DEFAULTSENDERID			= "189459365557"; //Referencia al proyecto en la Google Developers Console
 	public static final String			HASH_GOOGLEANALYTICS		= "UA-15307457-3"; //Referencia a la cuenta de Google Analytics
-	public static final String			HASH_MIXPANEL				= "988db77ec9dc6c3f912a7eae6aeed3ab"; //Referencia a la cuenta de Mix Panel
 	public static final String			HASH_NEWRELIC				= "AA5368393ae01f29d6d74776d5558f53066a8f187c"; //Referencia a la cuenta de NewRelic
 	public static final String			KEY_CODE					= "code";
 	public static final String			KEY_DATA					= "data";
@@ -52,6 +51,7 @@ public class Common
 	public static final String			KEY_PREF_CHECKED			= "checked"; //Clave de preferencia para indicar que el usuario ya fue verificado con éxito
 	public static final String			KEY_PREF_DATE_1STLAUNCH		= "dateFirstLaunch"; //Clave de preferencia que indica el primer día desde la intalación de este update
 	public static final String			KEY_PREF_DELAY_RATE			= "delayRate"; //Clave de preferencia que indica la cantidad de veces que el usuario dice "Más Tarde" cuando se sugiere calificar la app
+	public static final String			KEY_PREF_FREEPASS			= "freePassOn"; //Clave de preferencia para indicar que el usuario se registró y espera el código de verificación
 	public static final String			KEY_PREF_LOGGED				= "logged"; //Clave de preferencia para indicar que el usuario se registró y espera el código de verificación
 	public static final String			KEY_PREF_NO_RATE			= "iWontRate"; //Clave de prefencia que indica si el usuario oprimió en "No, gracias" cuando se le sugirió calificar la app
 	public static final String			KEY_PREF_SPLASHED			= "splashed"; //Clave de preferencia para indicar que ya se efectuó el splash de la primera vez
@@ -70,7 +70,7 @@ public class Common
 	public static final String			KEY_TOKEN					= "token";
 	public static final String			KEY_TYPE					= "type";
 	public static final String			MAIL_ADDRESSEE				= "david.figueroa@tween.com.ar";
-	public static final String			MAIL_TWEEN					= "soporte@vloom.com";
+	public static final String			MAIL_TWEEN					= "soporte@vloom.io";
 	public static final String			REALMDB_NAME				= "viacelular.realm";
 	public static final String			REALMDB_PATH				= "/data/data/com.tween.viacelular/files/";
 	public static final String			VALUE_FEEDBACKAPPBOY		= "Feedback reply from vloom";
