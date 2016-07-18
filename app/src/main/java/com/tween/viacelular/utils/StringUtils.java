@@ -54,9 +54,11 @@ public class StringUtils
 	public static boolean isCompanyNumber(String number)
 	{
 		number = number.replace("+", "");
-		if(!number.equals("Restringido") && !number.equals("Privado"))
+
+		if(isPhoneNumber(number))
 		{
 			boolean isNumber = isNumber(number);
+
 			if(isNumber && number.length() <= 7)
 			{
 				return true;
@@ -71,6 +73,12 @@ public class StringUtils
 		{
 			return false;
 		}
+	}
+
+	public static boolean isPhoneNumber(String number)
+	{
+		number = number.replace("+", "");
+		return !number.equals("Restringido") && !number.equals("Privado");
 	}
 
 	/**

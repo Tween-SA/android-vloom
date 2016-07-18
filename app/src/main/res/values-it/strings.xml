@@ -127,6 +127,7 @@
 	<string name="repassword">Ripeti la password</string>
 	<string name="report">Denuncia</string>
 	<string name="response_invalid">La tua richiesta non può essere elaborata, riprova</string>
+	<string name="seach">Ricerca</string><!-- after traslate -->
 	<string name="send_code">Abbiamo inviato un SMS con il codice di attivazione al numero</string>
 	<string name="send_mail_text">con Vloom Android:</string>
 	<string name="send_push_sms">Invia notifica di prova (SMS)</string>
@@ -190,6 +191,7 @@
 	<string name="unauthorized">Non autorizzato</string>
 	<string name="undo">ANNULLA</string>
 	<string name="unsuscribe">DISISCRIVERSI</string>
+	<string name="upgrade_text">Stiamo aggiornando le informazioni</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">Verifica in corso...</string>
 	<string name="version_settins">per Android v</string>

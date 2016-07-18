@@ -21,7 +21,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.appboy.Appboy;
 import com.facebook.FacebookSdk;
 import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.RegisterPhoneAsyncTask;
@@ -345,52 +344,6 @@ public class PhoneActivity extends AppCompatActivity
 		catch(Exception e)
 		{
 			System.out.println("PhoneActivity:selectCountry - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStart()
-	{
-		//Agregado para evitar excepciones
-		try
-		{
-			super.onStart();
-
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(PhoneActivity.this).openSession(PhoneActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("PhoneActivity:onStart - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStop()
-	{
-		//Agregado para evitar excepciones
-		try
-		{
-			super.onStop();
-
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(PhoneActivity.this).closeSession(PhoneActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("PhoneActivity:onStop - Exception: " + e);
 
 			if(Common.DEBUG)
 			{

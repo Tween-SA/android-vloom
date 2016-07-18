@@ -76,6 +76,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 					.content(R.string.landing_card_loading_text)
 					.progress(true, 0)
 					.show();
+				System.out.println("pre");
 			}
 		}
 		catch(Exception e)
@@ -96,6 +97,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 
 		try
 		{
+			System.out.println("do");
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			Realm realm						= Realm.getDefaultInstance();
 			User user						= realm.where(User.class).equalTo(User.KEY_API, preferences.getString(User.KEY_API, "")).findFirst();
@@ -191,6 +193,11 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 							}
 						}
 					}
+
+					//Guardar la fecha de última actualización
+					SharedPreferences.Editor editor = preferences.edit();
+					editor.putLong(Common.KEY_PREF_TSSUBSCRIPTIONS, System.currentTimeMillis());
+					editor.apply();
 				}
 			}
 		}
@@ -212,35 +219,46 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 	{
 		try
 		{
+			System.out.println("post");
+			if(displayDialog)
+			{
+				if(progress != null)
+				{
+					if(progress.isShowing())
+					{
+						if(task != null)
+						{
+							if(!task.isAlive())
+							{
+								progress.cancel();
+							}
+						}
+					}
+				}
+			}
+
 			if(result.equals(ApiConnection.OK))
 			{
 				if(needRedirect)
 				{
 					Intent intent = new Intent(context, HomeActivity.class);
 					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					intent.putExtra(Common.KEY_REFRESH, false);
+
+					if(StringUtils.isEmpty(companyId))
+					{
+						intent.putExtra(Common.KEY_REFRESH, true);
+						intent.putExtra(Common.KEY_PREF_WELCOME, true);
+					}
+					else
+					{
+						intent.putExtra(Common.KEY_REFRESH, false);
+					}
+
 					context.startActivity(intent);
 
 					if(activity != null)
 					{
 						activity.finish();
-					}
-				}
-
-				if(displayDialog)
-				{
-					if(progress != null)
-					{
-						if(progress.isShowing())
-						{
-							if(task != null)
-							{
-								if(!task.isAlive())
-								{
-									progress.cancel();
-								}
-							}
-						}
 					}
 				}
 			}
@@ -254,8 +272,6 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 				e.printStackTrace();
 			}
 		}
-
-		super.onPostExecute(result);
 	}
 
 	private boolean modifySubscriptions(final String ids, final int flag)

@@ -6,15 +6,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
-import com.appboy.Appboy;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.UpdateUserAsyncTask;
-import com.tween.viacelular.data.User;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import io.realm.Realm;
 
 /**
  * Created by david.figueroa on 16/6/15.
@@ -162,8 +162,17 @@ public class RegistrationIntentService extends IntentService
 				sharedPreferences.edit().apply();
 				preferences.apply();
 
-				//Agregado para registrar push en Appboy
-				Appboy.getInstance(this).registerAppboyPushMessages(token);
+				//Agregado para refrescar push en db y api
+				Realm realm	= Realm.getDefaultInstance();
+				User user	= realm.where(User.class).findFirst();
+
+				if(user != null)
+				{
+					if(!user.getGcmId().equals(token))
+					{
+						new UpdateUserAsyncTask(getApplicationContext(), Common.BOOL_YES, false, token, false, true).execute();
+					}
+				}
 			}
 		}
 		catch(Exception e)
@@ -276,10 +285,8 @@ public class RegistrationIntentService extends IntentService
 	{
 		try
 		{
-			// Add custom implementation, as needed.
-			UpdateUserAsyncTask task	= new UpdateUserAsyncTask(getApplicationContext(), Common.BOOL_YES, false);
-			task.setToken(token);
-			task.execute();
+			//Se envía siempre que se actualice el gcmId ya que en xmpp no podemos saber cuando un gcmId es inválido
+			new UpdateUserAsyncTask(getApplicationContext(), Common.BOOL_YES, false, token, false, true).execute();
 		}
 		catch(Exception e)
 		{
@@ -311,6 +318,7 @@ public class RegistrationIntentService extends IntentService
 		catch(Exception e)
 		{
 			System.out.println("RegistrationIntentService:subscribeTopics - Exception: " + e);
+
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();

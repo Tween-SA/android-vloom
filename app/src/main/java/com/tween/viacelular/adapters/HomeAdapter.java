@@ -110,11 +110,18 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 
 			if(clients.size() > 0)
 			{
-				final Suscription item	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, clients.get(position).getCompanyId()).findFirst();
+				Suscription suscription = null;
+
+				if(clients.get(position) != null)
+				{
+					suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, clients.get(position).getCompanyId()).findFirst();
+				}
+
+				final Suscription item = suscription;
 
 				if(item != null)
 				{
-					RealmResults<Message> countNotif = realm.where(Message.class).notEqualTo(Common.KEY_STATUS, Message.STATUS_SPAM).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES)
+					RealmResults<Message> countNotif = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
 														.equalTo(Suscription.KEY_API, item.getCompanyId()).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 
 					if(countNotif.size() > 0)

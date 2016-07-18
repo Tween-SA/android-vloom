@@ -102,25 +102,7 @@ public class SendIdentificationKeyAsyncTask extends AsyncTask<Void, Void, String
 					realm.commitTransaction();
 				}
 			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("SendIdentificationKeyAsyncTask:doInBackground - Exception: " + e);
 
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		return result;
-	}
-
-	@Override
-	protected void onPostExecute(String result)
-	{
-		try
-		{
 			if(displayDialog)
 			{
 				if(progress != null)
@@ -134,7 +116,7 @@ public class SendIdentificationKeyAsyncTask extends AsyncTask<Void, Void, String
 		}
 		catch(Exception e)
 		{
-			System.out.println("SendIdentificationKeyAsyncTask:onPostExecute - Exception: " + e);
+			System.out.println("SendIdentificationKeyAsyncTask:doInBackground - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
@@ -142,6 +124,6 @@ public class SendIdentificationKeyAsyncTask extends AsyncTask<Void, Void, String
 			}
 		}
 
-		super.onPostExecute(result);
+		return result;
 	}
 }

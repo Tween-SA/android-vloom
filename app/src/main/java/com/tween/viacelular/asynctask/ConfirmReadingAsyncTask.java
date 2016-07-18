@@ -7,15 +7,16 @@ import android.os.Looper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
 
 /**
  * Created by david.figueroa on 17/6/15.
@@ -27,13 +28,15 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 	private boolean			displayDialog	= false;
 	private String			companyId		= "";
 	private String			msgId			= "";
+	private int				status			= Message.STATUS_RECEIVE;
 
-	public ConfirmReadingAsyncTask(Context context, boolean displayDialog, String companyId, String msgId)
+	public ConfirmReadingAsyncTask(Context context, boolean displayDialog, String companyId, String msgId, int status)
 	{
 		this.context		= context;
 		this.displayDialog	= displayDialog;
 		this.companyId		= companyId;
 		this.msgId			= msgId;
+		this.status			= status;
 	}
 
 	protected void onPreExecute()
@@ -56,6 +59,22 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 					.content(R.string.please_wait)
 					.progress(true, 0)
 					.show();
+			}
+
+			//Reportar coordenadas
+			if(StringUtils.isIdMongo(msgId) && status < Message.STATUS_SPAM)
+			{
+				Realm realm	= Realm.getDefaultInstance();
+				Isp isp		= realm.where(Isp.class).findFirst();
+
+				if(isp != null)
+				{
+					if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.MEAN_FREQUENCY))
+					{
+						GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(context, false, true);
+						geoTask.execute();
+					}
+				}
 			}
 		}
 		catch(Exception e)
@@ -83,13 +102,35 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(StringUtils.isIdMongo(msgId))
 			{
+				//Modificación para reportar por más de que por algo no se encuentré en la db
+				jsonSend.put(Common.KEY_STATUS, status);
+
+				//Reportar coordenadas
+
+				if(status < Message.STATUS_SPAM)
+				{
+					Isp isp	= realm.where(Isp.class).findFirst();
+
+					if(isp != null)
+					{
+						if(StringUtils.isNotEmpty(isp.getLat()) && StringUtils.isNotEmpty(isp.getLon()))
+						{
+							JSONObject geoJSON = new JSONObject();
+							geoJSON.put("latitude", isp.getLat());
+							geoJSON.put("longitude", isp.getLon());
+							geoJSON.put("source", ApiConnection.getNetwork(context));
+							jsonSend.put("geolocalization", geoJSON);
+						}
+					}
+
+					//TODO agregar integración para confirmación de visita
+				}
+
 				//Aquí entra cuando se recibe una push para acusar el recibo con estado 3 y para marcar como spam enviando el estado 5
 				Message notification = realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
 
 				if(notification != null)
 				{
-					jsonSend.put(Common.KEY_STATUS, notification.getStatus());
-
 					//Agregado para incluir campos de campaña y lista si están
 					if(StringUtils.isNotEmpty(notification.getCampaignId()))
 					{
@@ -100,14 +141,14 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 					{
 						jsonSend.put(Message.KEY_LISTID, notification.getListId());
 					}
+				}
 
-					//Agregado para contemplar mensajes dentro de listas
-					if(StringUtils.isIdMongo(notification.getMsgId().replace("-", "")))
-					{
-						JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES + "/" + notification.getMsgId(), context, ApiConnection.METHOD_PUT,
-								preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
-						result					= ApiConnection.checkResponse(context.getApplicationContext(), jsonResult);
-					}
+				//Agregado para contemplar mensajes dentro de listas
+				if(StringUtils.isIdMongo(msgId.replace("-", "")))
+				{
+					JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES + "/" + msgId, context, ApiConnection.METHOD_PUT,
+																preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+					result					= ApiConnection.checkResponse(context, jsonResult);
 				}
 			}
 			else
@@ -121,11 +162,15 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 				if(suscription != null)
 				{
-					RealmResults<Message> notifications = realm.where(Message.class).equalTo(Message.KEY_DELETED, Common.BOOL_NO).equalTo(Common.KEY_STATUS, Message.STATUS_RECEIVE)
-															.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
+					//Agregado para actualizar el status en thread aparte
+					RealmResults<Message> notifications = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
+															.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAll();
 
 					if(notifications.size() > 0)
 					{
+						UpdateMessages task = new UpdateMessages(suscription.getCompanyId());
+						task.start();
+
 						for(Message notification : notifications)
 						{
 							//Agregado para confirmar lectura de varios mensajes contra la api, mejora para evitar enviar confirmación de objecto local que no está en mongo
@@ -133,7 +178,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 							{
 								JSONObject jsonObject = new JSONObject();
 								jsonObject.put(Common.KEY_ID, notification.getMsgId());
-								jsonObject.put(Common.KEY_STATUS, notification.getStatus());
+								jsonObject.put(Common.KEY_STATUS, Message.STATUS_READ);
 
 								//Agregado para incluir campos de campaña y lista si están
 								if(StringUtils.isNotEmpty(notification.getCampaignId()))
@@ -150,10 +195,6 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 							}
 						}
 
-						//Agregado para actualizar el status en thread aparte
-						UpdateMessages task = new UpdateMessages(suscription.getCompanyId());
-						task.start();
-
 						if(jsonArray.length() > 0)
 						{
 							JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""),
@@ -164,26 +205,6 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 				}
 			}
 
-			result = ApiConnection.OK;
-		}
-		catch(Exception e)
-		{
-			System.out.println("ConfirmReadingAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		return result;
-	}
-
-	@Override
-	protected void onPostExecute(String result)
-	{
-		try
-		{
 			if(displayDialog)
 			{
 				if(progress != null)
@@ -197,7 +218,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("ConfirmReadingAsyncTask:onPostExecute - Exception: " + e);
+			System.out.println("ConfirmReadingAsyncTask:doInBackground - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
@@ -205,7 +226,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 			}
 		}
 
-		super.onPostExecute(result);
+		return result;
 	}
 
 	public class UpdateMessages extends Thread
@@ -233,8 +254,8 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 					@Override
 					public void execute(Realm bgRealm)
 					{
-						RealmResults<Message> messages = bgRealm.where(Message.class).equalTo(Message.KEY_DELETED, Common.BOOL_NO).equalTo(Common.KEY_STATUS, Message.STATUS_RECEIVE)
-															.equalTo(Suscription.KEY_API, id).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
+						RealmResults<Message> messages = bgRealm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
+															.equalTo(Suscription.KEY_API, id).findAll();
 
 						for(int i = messages.size() -1; i >=0; i--)
 						{

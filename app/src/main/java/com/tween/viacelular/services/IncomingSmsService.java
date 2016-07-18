@@ -7,15 +7,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.text.format.DateFormat;
+import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.CheckCodeAsyncTask;
 import com.tween.viacelular.asynctask.ConnectApiSMSAsyncTask;
 import com.tween.viacelular.data.Company;
 import com.tween.viacelular.data.Country;
-import com.tween.viacelular.data.User;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
@@ -41,6 +43,7 @@ public class IncomingSmsService extends BroadcastReceiver
 		{
 			final Bundle bundle				= intent.getExtras();
 			SharedPreferences preferences	= context.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			SharedPreferences.Editor editor	= preferences.edit();
 			String code						= "";
 			Message notification			= null;
 
@@ -53,11 +56,20 @@ public class IncomingSmsService extends BroadcastReceiver
 					//Mejora en la performance
 					for(Object singlePdusObj : pdusObj)
 					{
-						SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) singlePdusObj, "3gpp");
+						SmsMessage currentMessage = null;
 
-						if(currentMessage == null)
+						if(Common.API_LEVEL >= Build.VERSION_CODES.M)
 						{
-							currentMessage = SmsMessage.createFromPdu((byte[]) singlePdusObj, "3gpp2");
+							currentMessage = SmsMessage.createFromPdu((byte[]) singlePdusObj, "3gpp");
+
+							if(currentMessage == null)
+							{
+								currentMessage = SmsMessage.createFromPdu((byte[]) singlePdusObj, "3gpp2");
+							}
+						}
+						else
+						{
+							currentMessage = SmsMessage.createFromPdu((byte[]) singlePdusObj);
 						}
 
 						String address	= "";
@@ -66,8 +78,8 @@ public class IncomingSmsService extends BroadcastReceiver
 
 						if(currentMessage != null)
 						{
-							address	= currentMessage.getDisplayOriginatingAddress().replace("+", "");
-							message	= currentMessage.getDisplayMessageBody();
+							address	= currentMessage.getDisplayOriginatingAddress().replace("+", "");//Quitar carácteres que puedan romper el sms al procesarlo
+							message	= currentMessage.getDisplayMessageBody().replace("\\t", " ").replace("\\n", " ").replace("\\r", " ").replace("\\u000A", " ").trim();
 
 							if(currentMessage.getTimestampMillis() < System.currentTimeMillis())
 							{
@@ -97,18 +109,17 @@ public class IncomingSmsService extends BroadcastReceiver
 							{
 								if(notifications.size() == 0)
 								{
-									if(	StringUtils.isCompanyNumber(address) || message.contains(Message.SMS_CODE) || message.contains(Message.SMS_CODE_ES) || message.contains(Message.SMS_CODE_NEW) ||
+									if(	StringUtils.isPhoneNumber(address) || message.contains(Message.SMS_CODE) || message.contains(Message.SMS_CODE_ES) || message.contains(Message.SMS_CODE_NEW) ||
 										message.contains(Message.SMS_CODE_ES_NEW))
 									{
 										notification = new Message();
 										notification.setType(Message.TYPE_SMS);
 										notification.setMsg(message);
-										notification.setCreated(Long.valueOf(date));
+										notification.setCreated(System.currentTimeMillis());
 										notification.setChannel(address);
 										notification.setStatus(Message.STATUS_RECEIVE);
 
 										//Modificación para contemplar cambio en tratamiento de números cortos
-										SharedPreferences.Editor editor	= preferences.edit();
 										editor.putInt(Common.KEY_LAST_MSGID, preferences.getInt(Common.KEY_LAST_MSGID, 1) + 1);
 										editor.apply();
 										notification.setMsgId(String.valueOf(preferences.getInt(Common.KEY_LAST_MSGID, 1)));
@@ -155,80 +166,33 @@ public class IncomingSmsService extends BroadcastReceiver
 										}
 										else
 										{
-											RealmResults<Suscription> companies	= SuscriptionHelper.getCompanyByNumber(address);
-											Suscription phantomCompany			= realm.where(Suscription.class).equalTo(Common.KEY_NAME, address).findFirst();
-
-											if(companies != null)
+											if(message.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || message.toUpperCase().contains("VIACELULAR"))
 											{
-												if(companies.size() > 1)
-												{
-													for(Suscription company: companies)
-													{
-														client = company;
-
-														if(message.toUpperCase().contains(company.getName().toUpperCase()))
-														{
-															coincidenceKeyword = true;
-															break;
-														}
-														else
-														{
-															if(StringUtils.containsKeywords(message, company.getKeywords()))
-															{
-																coincidenceKeyword = true;
-																break;
-															}
-														}
-													}
-
-													if(!coincidenceKeyword)
-													{
-														//Buscamos si ya existe la company fantasma
-														if(phantomCompany != null)
-														{
-															client		= phantomCompany;
-															companyId	= client.getCompanyId();
-														}
-														else
-														{
-															client		= SuscriptionHelper.createPhantom(address, context, preferences.getString(Country.KEY_API, ""));
-															companyId	= client.getCompanyId();
-														}
-													}
-												}
-												else
-												{
-													if(companies.size() == 1)
-													{
-														client		= companies.get(0);
-														companyId	= client.getCompanyId();
-													}
-													else
-													{
-														if(phantomCompany != null)
-														{
-															client		= phantomCompany;
-															companyId	= client.getCompanyId();
-														}
-														else
-														{
-															client		= SuscriptionHelper.createPhantom(address, context, preferences.getString(Country.KEY_API, ""));
-															companyId	= client.getCompanyId();
-														}
-													}
-												}
+												//Optimización para evitar bucle por un registro
+												companyId = Company.COMPANY_ID_VC_MONGO;
 											}
 											else
 											{
-												if(phantomCompany != null)
+												User user		= realm.where(User.class).findFirst();
+												String country	= preferences.getString(Country.KEY_API, "");
+
+												if(user != null)
 												{
-													client		= phantomCompany;
-													companyId	= client.getCompanyId();
+													if(StringUtils.isNotEmpty(user.getCountryCode()))
+													{
+														country	= user.getCountryCode();
+														editor.putString(Country.KEY_API, country);
+														editor.apply();
+													}
 												}
-												else
+
+												//Re-estructuración para mejorar clasificación de sms
+												client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(address, message, context, country))
+															.findFirst();
+
+												if(client != null)
 												{
-													client		= SuscriptionHelper.createPhantom(address, context, preferences.getString(Country.KEY_API, ""));
-													companyId	= client.getCompanyId();
+													companyId = client.getCompanyId();
 												}
 											}
 										}
@@ -238,13 +202,23 @@ public class IncomingSmsService extends BroadcastReceiver
 										notification.setPhone(preferences.getString(User.KEY_PHONE, ""));
 										notification.setCompanyId(companyId);
 										notification.setFlags(Message.FLAGS_SMS);
+										//Agregado para contemplar números largos
+										notification.setKind(Message.KIND_TEXT);
+
+										if(!StringUtils.isCompanyNumber(address))
+										{
+											notification.setStatus(Message.STATUS_PERSONAL);
+										}
 
 										realm.beginTransaction();
 										realm.copyToRealmOrUpdate(notification);
 										realm.commitTransaction();
 
 										//Agregado para mostrar notificación sin sonido
-										Utils.showPush(context, preferences.getString(User.KEY_PHONE, ""), Common.BOOL_YES, notification);
+										if(notification.getStatus() != Message.STATUS_PERSONAL || StringUtils.isNotEmpty(code))
+										{
+											Utils.showPush(context, preferences.getString(User.KEY_PHONE, ""), String.valueOf(Common.BOOL_YES), notification);
+										}
 									}
 								}
 							}

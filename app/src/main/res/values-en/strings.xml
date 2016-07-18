@@ -129,6 +129,7 @@
 	<string name="repassword">Repeat password</string>
 	<string name="report">Report</string>
 	<string name="response_invalid">Your request could not be processed, try again</string>
+	<string name="seach">Search</string><!-- after traslate -->
 	<string name="send_code">We\'ve sent an SMS with the activation code to the number</string>
 	<string name="send_mail_text">with Vloom Android:</string>
 	<string name="send_push_sms">Send test notification (SMS)</string>
@@ -191,6 +192,7 @@
 	<string name="tomorrow">Tomorrow</string>
 	<string name="unauthorized">Not authorized</string>
 	<string name="undo">UNDO</string>
+	<string name="upgrade_text">We are updating your information</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">Verifying ...</string>
 	<string name="version_settins">for Android v</string>

@@ -3,6 +3,7 @@ package com.tween.viacelular.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,10 +29,12 @@ import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
 import com.tween.viacelular.adapters.IconOptionAdapter;
-import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.data.Country;
+import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -240,7 +243,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 				if(bringOut)
 				{
-					new RefreshCompanyTask(homeActivity).execute();
+					new RefreshCompanyTask(homeActivity, showDialog).execute();
 				}
 				else
 				{
@@ -332,13 +335,13 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 					if(suscription.getSilenced() == Common.BOOL_YES)
 					{
-						//Agregado para capturar evento en Google Analytics
-						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Silenciar")
-																														.setLabel("AccionUser").build());
 						suscription.setSilenced(Common.BOOL_NO);
 					}
 					else
 					{
+						//Agregado para capturar evento en Google Analytics
+						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Silenciar")
+																														.setLabel("AccionUser").build());
 						suscription.setSilenced(Common.BOOL_YES);
 					}
 
@@ -404,13 +407,13 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 						snackBarText = context.getString(R.string.snack_blocked);
 					}
 
-					BlockedActivity.modifySubscriptions(context, Utils.reverseBool(client.getFollower()), false, company.getCompanyId());
+					BlockedActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(client.getFollower()), false, company.getCompanyId(), true);
 					snackBar = Snackbar.make(clayout, snackBarText, Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
 						@Override
 						public void onClick(View v)
 						{
-							BlockedActivity.modifySubscriptions(context, Utils.reverseBool(company.getFollower()), false, companyId);
+							BlockedActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(company.getFollower()), false, companyId, true);
 							refresh(false, false);
 						}
 					});
@@ -512,49 +515,78 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 	public class RefreshCompanyTask extends AsyncTask<Void, Void, List<String>>
 	{
-		Activity homeActivity;
+		Activity	homeActivity;
+		boolean		forceByUser;
 
-		public RefreshCompanyTask(Activity homeActivity)
+		public RefreshCompanyTask(Activity homeActivity, boolean forceByUser)
 		{
-			this.homeActivity = homeActivity;
+			this.homeActivity	= homeActivity;
+			this.forceByUser	= forceByUser;
 		}
 
 		@Override
 		protected List<String> doInBackground(Void... params)
 		{
-			List<Suscription> companyList	= new ArrayList<>();
-			List<String> idsList			= new ArrayList<>();
+			List<String> idsList				= new ArrayList<>();
+			List<Suscription> companyPhantom	= new ArrayList<>();
 
 			try
 			{
-				if(ApiConnection.checkInternet(homeActivity))
-				{
-					Realm realm	= Realm.getDefaultInstance();
-					idsList.clear();
-					idsList		= SuscriptionHelper.updateCompanies(homeActivity);
+				Realm realm	= Realm.getDefaultInstance();
+				idsList.clear();
+				idsList		= SuscriptionHelper.updateCompanies(homeActivity, forceByUser);
 
-					if(idsList.size() > 0)
+				if(idsList.size() > 0)
+				{
+					for(String id : idsList)
 					{
-						for(String id : idsList)
+						Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, id).findFirst();
+
+						if(!StringUtils.isIdMongo(suscription.getCompanyId()))
 						{
-							companyList.add(realm.where(Suscription.class).equalTo(Suscription.KEY_API, id).findFirst());
+							companyPhantom.add(suscription);
+						}
+					}
+				}
+
+				if(companyPhantom.size() > 0)
+				{
+					SharedPreferences preferences	= homeActivity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+					SharedPreferences.Editor editor	= preferences.edit();
+					User user						= realm.where(User.class).findFirst();
+					String country					= preferences.getString(Country.KEY_API, "");
+					String companyId				= "";
+
+					if(user != null)
+					{
+						if(StringUtils.isNotEmpty(user.getCountryCode()))
+						{
+							country	= user.getCountryCode();
+							editor.putString(Country.KEY_API, country);
+							editor.apply();
 						}
 					}
 
-					if(companyList.size() > 0)
+					for(Suscription phantom : companyPhantom)
 					{
-						for(Suscription existingCompany : companyList)
-						{
-							if(!StringUtils.isIdMongo(existingCompany.getCompanyId()))
-							{
-								RealmResults<Suscription> clients = SuscriptionHelper.getCompanyByNumber(existingCompany.getName());
+						companyId				= "";
+						RealmResults<Message> messages	= realm.where(Message.class).equalTo(Suscription.KEY_API, phantom.getCompanyId()).findAll().distinct(Message.KEY_CHANNEL);
 
-								if(clients.size() > 0)
+						if(messages.size() > 0)
+						{
+							for(Message message : messages)
+							{
+								Suscription client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(message.getChannel(), message.getMsg(),
+														homeActivity, country)).findFirst();
+
+								if(client != null)
 								{
-									for(Suscription companyFounded : clients)
+									companyId = client.getCompanyId();
+
+									if(!companyId.equals(phantom.getCompanyId()) && StringUtils.isIdMongo(companyId))
 									{
 										//Actualizar los mensajes
-										MessageHelper.groupMessages(existingCompany.getCompanyId(), companyFounded.getCompanyId());
+										MessageHelper.groupMessages(phantom.getCompanyId(), companyId);
 									}
 								}
 							}

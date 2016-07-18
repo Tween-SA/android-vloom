@@ -12,7 +12,8 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingLeft="16dp"
-		android:src="@drawable/ic_inbox_black_36dp" />
+		android:background="?android:attr/selectableItemBackground"
+		android:src="@drawable/notificaciones" />
 	<!-- Ajuste por lineamiento de Material Design -->
 	<TextView
 		android:id="@+id/rowText"

@@ -1,7 +1,6 @@
 package com.tween.viacelular.data;
 
 import android.app.Activity;
-import com.tween.viacelular.activities.BlockedActivity;
 import com.tween.viacelular.asynctask.CompanyAsyncTask;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
@@ -470,14 +469,8 @@ public class User
 										if(suscription == null)
 										{
 											final CompanyAsyncTask task	= new CompanyAsyncTask(activity, false, companyId, jCountryCode);
-											companyIdApi				= task.execute().get();
-										}
-
-										suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyIdApi).findFirst();
-
-										if(suscription.getFollower() == Common.BOOL_NO)
-										{
-											BlockedActivity.modifySubscriptions(activity, Common.BOOL_YES, false, suscription.getCompanyId());
+											task.setFlag(Common.BOOL_YES);
+											task.execute();
 										}
 									}
 								}

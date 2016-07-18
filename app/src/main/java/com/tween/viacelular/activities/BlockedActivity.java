@@ -1,5 +1,6 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,8 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-
-import com.appboy.Appboy;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.BlockedAdapter;
 import com.tween.viacelular.adapters.RecyclerAdapter;
@@ -31,7 +30,6 @@ import com.tween.viacelular.services.IncomingSmsService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -89,7 +87,7 @@ public class BlockedActivity extends AppCompatActivity
 
 				mDrawerToggle.syncState();
 				//Cambio de contexto para redirigir desde el menú
-				final Context context = getApplicationContext();
+				final Activity context = BlockedActivity.this;
 				mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(),
 								new RecyclerItemClickListener.OnItemClickListener()
 								{
@@ -147,7 +145,7 @@ public class BlockedActivity extends AppCompatActivity
 				if(client != null)
 				{
 					//Se quitó momentaneamente la llamda a la api hasta que esté disponible
-					modifySubscriptions(getApplicationContext(), Common.BOOL_YES, false, client.getCompanyId());
+					modifySubscriptions(this, Common.BOOL_YES, false, client.getCompanyId(), true);
 					refresh();
 
 					Snackbar snackBar = Snackbar.make(Clayout, getString(R.string.snack_unblocked), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
@@ -158,7 +156,7 @@ public class BlockedActivity extends AppCompatActivity
 							try
 							{
 								//Se quitó momentaneamente la llamda a la api hasta que esté disponible
-								modifySubscriptions(getApplicationContext(), Common.BOOL_NO, false, client.getCompanyId());
+								modifySubscriptions(getApplicationContext(), Common.BOOL_NO, false, client.getCompanyId(), true);
 								refresh();
 							}
 							catch(Exception e)
@@ -188,11 +186,12 @@ public class BlockedActivity extends AppCompatActivity
 		}
 	}
 
-	public static void modifySubscriptions(Context context, int flag, boolean goToHome, String companyId)
+	public static void modifySubscriptions(Context context, int flag, boolean goToHome, String companyId, boolean blockUI)
 	{
 		//Unificación de comportamiento en Asynctask para funcionalidad de Bloquear, Desuscribir y viceversa
 		try
 		{
+			System.out.println("BlockActivity:modifySubscriptions - flag: " + flag+" gotohome: "+goToHome+" companyId: "+companyId+" blockui: "+blockUI);
 			Realm realm				= Realm.getDefaultInstance();
 			Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			boolean sendSMS			= false;
@@ -205,14 +204,13 @@ public class BlockedActivity extends AppCompatActivity
 				}
 			}
 
-			final UpdateSuscriptionsAsyncTask task	= new UpdateSuscriptionsAsyncTask(context, false, flag, goToHome, companyId);
-			task.execute();
+			new UpdateSuscriptionsAsyncTask(context, blockUI, flag, goToHome, companyId).execute();
 
 			if(sendSMS)
 			{
 				//Modificación para leer mensajes desde Realm
 				RealmResults<Message> messages = realm.where(Message.class).equalTo(Common.KEY_TYPE, Message.TYPE_SMS).equalTo(Suscription.KEY_API, companyId)
-													.findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
+													.lessThan(Common.KEY_STATUS, Message.STATUS_SPAM).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 
 				if(messages.size() > 0)
 				{
@@ -356,31 +354,6 @@ public class BlockedActivity extends AppCompatActivity
 			{
 				e.printStackTrace();
 			}
-		}
-	}
-
-	protected void onPause()
-	{
-		super.onPause();
-	}
-
-	public void onStart()
-	{
-		super.onStart();
-
-		if(!Common.DEBUG)
-		{
-			Appboy.getInstance(BlockedActivity.this).openSession(BlockedActivity.this);
-		}
-	}
-
-	public void onStop()
-	{
-		super.onStop();
-
-		if(!Common.DEBUG)
-		{
-			Appboy.getInstance(BlockedActivity.this).closeSession(BlockedActivity.this);
 		}
 	}
 }

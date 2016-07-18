@@ -123,6 +123,17 @@ public class LogoAsyncTask extends AsyncTask<Void, Void, Bitmap>
 			{
 				result = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
 			}
+
+			if(displayDialog)
+			{
+				if(progress != null)
+				{
+					if(progress.isShowing())
+					{
+						progress.cancel();
+					}
+				}
+			}
 		}
 		catch(Exception e)
 		{
@@ -135,35 +146,5 @@ public class LogoAsyncTask extends AsyncTask<Void, Void, Bitmap>
 		}
 
 		return result;
-	}
-
-	@Override
-	protected void onPostExecute(Bitmap result)
-	{
-		try
-		{
-			if(displayDialog)
-			{
-				if(progress != null)
-				{
-					if(progress.isShowing())
-					{
-						progress.cancel();
-					}
-				}
-			}
-
-		}
-		catch(Exception e)
-		{
-			System.out.println("LogoAsyncTask:onPostExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		super.onPostExecute(result);
 	}
 }

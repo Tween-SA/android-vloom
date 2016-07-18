@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import com.appboy.Appboy;
 import com.tween.viacelular.R;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.Utils;
@@ -83,58 +82,12 @@ public class SuggestionsActivity extends AppCompatActivity
 			//Agregado para auto-suscribir companies
 			if(firstTime)
 			{
-				BlockedActivity.modifySubscriptions(getApplicationContext(), Common.BOOL_YES, true, "");
+				BlockedActivity.modifySubscriptions(SuggestionsActivity.this, Common.BOOL_YES, true, "", true);
 			}
 		}
 		catch(Exception e)
 		{
 			System.out.println("SuggestionsActivity:begin - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStart()
-	{
-		//Agregado para evitar excepciones
-		try
-		{
-			super.onStart();
-
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(SuggestionsActivity.this).openSession(SuggestionsActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("SuggestionsActivity:onStart - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStop()
-	{
-		//Agregado para evitar excepciones
-		try
-		{
-			super.onStop();
-
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(SuggestionsActivity.this).closeSession(SuggestionsActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("SuggestionsActivity:onStop - Exception: " + e);
 
 			if(Common.DEBUG)
 			{

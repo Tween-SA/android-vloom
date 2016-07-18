@@ -120,7 +120,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 	public CardAdapter(CardViewActivity activity, String companyId)
 	{
 		Realm realm = Realm.getDefaultInstance();
-		this.notificationList	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).notEqualTo(Common.KEY_STATUS, Message.STATUS_SPAM)
+		this.notificationList	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
 									.equalTo(Suscription.KEY_API, companyId).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 		this.activity			= activity;
 		this.suscription		= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();

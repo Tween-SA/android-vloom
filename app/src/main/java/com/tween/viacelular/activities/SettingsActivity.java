@@ -1,5 +1,6 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,7 +25,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.appboy.Appboy;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.RecyclerAdapter;
 import com.tween.viacelular.adapters.RecyclerItemClickListener;
@@ -113,7 +113,7 @@ public class SettingsActivity extends AppCompatActivity
 
 				mDrawerToggle.syncState();
 				//Cambio de contexto para redirigir desde el menú
-				final Context context = getApplicationContext();
+				final Activity context = SettingsActivity.this;
 				mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(),
 					new RecyclerItemClickListener.OnItemClickListener()
 					{
@@ -162,7 +162,8 @@ public class SettingsActivity extends AppCompatActivity
 				}
 
 				//Agregado para visualizar la versión actual de la app con link a play store
-				String version = getString(R.string.app_name)+ " "+getString(R.string.version_settins)+getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
+				String version = getString(R.string.app_name)+ " "+getString(R.string.version_settins)
+									+getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
 
 				if(btnPlayStore != null && StringUtils.isNotEmpty(version))
 				{
@@ -298,7 +299,7 @@ public class SettingsActivity extends AppCompatActivity
 		try
 		{
 			//Envía email con interacción del usuario y la db adjuntada
-			Utils.sendMail(SettingsActivity.this, true);
+			Utils.sendMail(SettingsActivity.this, false);
 		}
 		catch(Exception e)
 		{
@@ -315,6 +316,9 @@ public class SettingsActivity extends AppCompatActivity
 	{
 		try
 		{
+			SharedPreferences.Editor editor	= preferences.edit();
+			editor.putBoolean(Common.KEY_PREF_CAPTURED, false);
+			editor.apply();
 			final CaptureSMSAsyncTask task = new CaptureSMSAsyncTask(SettingsActivity.this, false);
 			task.execute();
 		}
@@ -337,7 +341,8 @@ public class SettingsActivity extends AppCompatActivity
 			Message message = new Message();
 			message.setCompanyId("5669786d1b5c469e378a4c15");
 			message.setCountryCode(preferences.getString(Country.KEY_API, ""));
-			Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), MyGcmListenerService.PUSH_NORMAL, message);
+			message.setCreated(System.currentTimeMillis());
+			Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), String.valueOf(MyGcmListenerService.PUSH_NORMAL), message);
 		}
 		catch(Exception e)
 		{
@@ -357,7 +362,8 @@ public class SettingsActivity extends AppCompatActivity
 		{
 			Message message = new Message();
 			message.setCompanyId("5699028c7669284157dc9153");
-			Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), MyGcmListenerService.PUSH_WITHOUT_SOUND, message);
+			message.setCreated(System.currentTimeMillis());
+			Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), String.valueOf(MyGcmListenerService.PUSH_WITHOUT_SOUND), message);
 		}
 		catch(Exception e)
 		{
@@ -401,6 +407,7 @@ public class SettingsActivity extends AppCompatActivity
 						Message message = new Message();
 						message.setCompanyId("561fa82c34dea37a1dc73905");
 						message.setKind(which);
+						message.setCreated(System.currentTimeMillis());
 
 						switch(which)
 						{
@@ -438,7 +445,7 @@ public class SettingsActivity extends AppCompatActivity
 							break;
 						}
 
-						Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), MyGcmListenerService.PUSH_NORMAL, message);
+						Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), String.valueOf(MyGcmListenerService.PUSH_NORMAL), message);
 					}
 				}).show();
 		}
@@ -584,6 +591,24 @@ public class SettingsActivity extends AppCompatActivity
 			timer = null;
 		}
 	}
+
+	public void goContact(View view)
+	{
+		try
+		{
+			//Envía email con interacción del usuario y la db adjuntada
+			Utils.sendContactMail(SettingsActivity.this);
+		}
+		catch(Exception e)
+		{
+			System.out.println("SettingsActivity:goContact - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -610,59 +635,6 @@ public class SettingsActivity extends AppCompatActivity
 		catch(Exception e)
 		{
 			System.out.println("SettingsActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	protected void onResume()
-	{
-		super.onResume();
-	}
-
-	protected void onPause()
-	{
-		super.onPause();
-	}
-
-	public void onStart()
-	{
-		super.onStart();
-		try
-		{
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(SettingsActivity.this).openSession(SettingsActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("SettingsActivity:onStart - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void onStop()
-	{
-		super.onStop();
-
-		try
-		{
-			if(!Common.DEBUG)
-			{
-				Appboy.getInstance(SettingsActivity.this).closeSession(SettingsActivity.this);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("SettingsActivity:onStop - Exception: " + e);
 
 			if(Common.DEBUG)
 			{

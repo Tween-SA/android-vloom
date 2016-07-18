@@ -118,6 +118,8 @@ public class Suscription extends RealmObject
 	@Ignore
 	public static final String COMPANY_ID_VC_MONGOOLD	= "561fa8d734dea37a1dc73908";
 	@Ignore
+	public static final String COMPANY_ID_WEBVC			= "55a53d38b62e923a18351a4d";
+	@Ignore
 	public static final String DEFAULT_SENDER			= "26100";
 	@Ignore
 	public static final String ICON_APP					= ApiConnection.CLOUDFRONT_S3+"vloom-ar/vloom-ar@3x.png";
