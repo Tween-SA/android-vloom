@@ -5,8 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.TimestampComparator;
-import com.tween.viacelular.data.ApiConnection;
-import com.tween.viacelular.data.Company;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
@@ -39,7 +38,7 @@ public abstract class SuscriptionHelper
 			if(	message.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || message.toUpperCase().contains("VIACELULAR") ||
 				addressee.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || addressee.toUpperCase().contains("VIACELULAR"))
 			{
-				companyId	= Company.COMPANY_ID_VC_MONGO;
+				companyId	= Suscription.COMPANY_ID_VC_MONGO;
 				count		= 1;
 			}
 			else
@@ -170,7 +169,7 @@ public abstract class SuscriptionHelper
 
 				if(result.equals(ApiConnection.OK))
 				{
-					parseList(jsonResult.getJSONArray(Common.KEY_DATA), activity.getApplicationContext(), true);
+					parseList(jsonResult.getJSONArray(Common.KEY_CONTENT), activity.getApplicationContext(), true);
 				}
 				else
 				{
@@ -194,7 +193,7 @@ public abstract class SuscriptionHelper
 
 					if(result.equals(ApiConnection.OK))
 					{
-						parseList(jsonResult.getJSONArray(Common.KEY_DATA), activity.getApplicationContext(), true);
+						parseList(jsonResult.getJSONArray(Common.KEY_CONTENT), activity.getApplicationContext(), true);
 					}
 					else
 					{

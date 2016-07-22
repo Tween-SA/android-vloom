@@ -5,8 +5,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.data.ApiConnection;
-import com.tween.viacelular.data.Company;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
@@ -86,9 +85,9 @@ public class SendIdentificationKeyAsyncTask extends AsyncTask<Void, Void, String
 					SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 					JSONArray jsonArray				= new JSONArray();
 					JSONObject jsonObject			= new JSONObject();
-					jsonObject.put(Company.KEY_API, suscription.getCompanyId());
-					jsonObject.put(Company.KEY_SUSCRIBE, Common.BOOL_YES);
-					jsonObject.put(Company.KEY_IDENTIFICATIONVALUE, identificationValue);
+					jsonObject.put(Suscription.KEY_API, suscription.getCompanyId());
+					jsonObject.put(Suscription.KEY_SUSCRIBE, Common.BOOL_YES);
+					jsonObject.put(Suscription.KEY_IDENTIFICATIONVALUE, identificationValue);
 					jsonArray.put(jsonObject);
 
 					JSONObject jsonResult	= new JSONObject(ApiConnection.request(url, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString()));

@@ -9,7 +9,7 @@ import android.os.Looper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.HomeActivity;
-import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;

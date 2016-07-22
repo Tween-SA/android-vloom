@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.LandHelper;
 import com.tween.viacelular.utils.Common;
@@ -84,7 +84,7 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(result.equals(ApiConnection.OK))
 			{
-				jsonData = jsonResult.getJSONObject(Common.KEY_DATA);
+				jsonData = jsonResult.getJSONObject(Common.KEY_CONTENT);
 
 				if(jsonData != null)
 				{

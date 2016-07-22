@@ -83,7 +83,6 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 				@Override
 				public void onReceive(Context context, Intent intent)
 				{
-
 				}
 			};
 

@@ -2,7 +2,7 @@ package com.tween.viacelular.utils;
 
 import android.annotation.SuppressLint;
 import android.util.Patterns;
-import com.tween.viacelular.data.Message;
+import com.tween.viacelular.models.Message;
 
 @SuppressLint("DefaultLocale")
 public class StringUtils

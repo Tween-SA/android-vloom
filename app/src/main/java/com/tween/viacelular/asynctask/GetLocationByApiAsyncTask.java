@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.IspHelper;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.utils.Common;
@@ -77,7 +77,7 @@ public class GetLocationByApiAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(result.equals(ApiConnection.OK))
 			{
-				IspHelper.parseJSON(jsonResult.getJSONObject(Common.KEY_DATA), context, update);
+				IspHelper.parseJSON(jsonResult.getJSONObject(Common.KEY_CONTENT), context, update);
 			}
 		}
 		catch(Exception e)

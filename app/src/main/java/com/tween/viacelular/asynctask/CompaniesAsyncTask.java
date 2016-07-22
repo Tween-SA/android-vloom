@@ -6,8 +6,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.data.ApiConnection;
-import com.tween.viacelular.data.Country;
+import com.tween.viacelular.models.Land;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
@@ -90,25 +90,25 @@ public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(StringUtils.isEmpty(country))
 			{
-				if(StringUtils.isNotEmpty(preferences.getString(Country.KEY_API, "")))
+				if(StringUtils.isNotEmpty(preferences.getString(Land.KEY_API, "")))
 				{
-					country = preferences.getString(Country.KEY_API, "");
+					country = preferences.getString(Land.KEY_API, "");
 				}
 				else
 				{
-					country = Country.DEFAULT_VALUE;
+					country = Land.DEFAULT_VALUE;
 				}
 			}
 
 			SharedPreferences.Editor editor	= preferences.edit();
-			editor.putString(Country.KEY_API, country);
+			editor.putString(Land.KEY_API, country);
 			editor.apply();
 			jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
 			result		= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
 
 			if(result.equals(ApiConnection.OK))
 			{
-				SuscriptionHelper.parseList(jsonResult.getJSONArray(Common.KEY_DATA), activity.getApplicationContext(), false);
+				SuscriptionHelper.parseList(jsonResult.getJSONArray(Common.KEY_CONTENT), activity.getApplicationContext(), false);
 			}
 			else
 			{

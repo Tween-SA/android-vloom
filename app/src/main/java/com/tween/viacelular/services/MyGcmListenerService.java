@@ -22,10 +22,10 @@ import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.asynctask.CompanyAsyncTask;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
 import com.tween.viacelular.asynctask.LogoAsyncTask;
-import com.tween.viacelular.data.Country;
-import com.tween.viacelular.data.User;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import io.realm.Realm;
@@ -69,7 +69,7 @@ public class MyGcmListenerService extends GcmListenerService
 				String channel					= data.getString(Message.KEY_CHANNEL, "");
 				String companyId				= data.getString(Suscription.KEY_API, "");
 				String phone					= data.getString(User.KEY_PHONE, "");
-				String countryCode				= data.getString(Country.KEY_API, "");
+				String countryCode				= data.getString(Land.KEY_API, "");
 				String flags					= data.getString(Message.KEY_FLAGS, "");
 				SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 				String sound					= data.getString(Common.KEY_SOUND, "0");
@@ -180,7 +180,7 @@ public class MyGcmListenerService extends GcmListenerService
 
 				if(StringUtils.isEmpty(countryCode))
 				{
-					countryCode = preferences.getString(Country.KEY_API, "");
+					countryCode = preferences.getString(Land.KEY_API, "");
 				}
 
 				if(StringUtils.isEmpty(phone))

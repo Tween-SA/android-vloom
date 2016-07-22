@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.IspHelper;
 import com.tween.viacelular.models.Land;
@@ -19,7 +19,6 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
 import org.json.JSONObject;
-import de.greenrobot.dao.query.QueryBuilder;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -87,17 +86,6 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 
 		try
 		{
-			if(Common.DEBUGDB)
-			{
-				QueryBuilder.LOG_SQL	= true;
-				QueryBuilder.LOG_VALUES	= true;
-			}
-			else
-			{
-				QueryBuilder.LOG_SQL	= false;
-				QueryBuilder.LOG_VALUES	= false;
-			}
-
 			if(!splashed)
 			{
 				//Modificaciones para contemplar migración a Realm
@@ -148,7 +136,7 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 
 				if(result.equals(ApiConnection.OK))
 				{
-					IspHelper.parseJSON(jsonResult.getJSONObject(Common.KEY_DATA), activity.getApplicationContext(), splashed);
+					IspHelper.parseJSON(jsonResult.getJSONObject(Common.KEY_CONTENT), activity.getApplicationContext(), splashed);
 				}
 				else
 				{

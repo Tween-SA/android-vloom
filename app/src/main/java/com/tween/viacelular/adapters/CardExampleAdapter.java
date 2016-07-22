@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.tween.viacelular.R;
-import com.tween.viacelular.data.Company;
-import com.tween.viacelular.data.Message;
+import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
@@ -42,7 +42,7 @@ public class CardExampleAdapter extends RecyclerView.Adapter<CardExampleAdapter.
 		}
 	}
 
-	public CardExampleAdapter(Activity activity, Company client)
+	public CardExampleAdapter(Activity activity, Suscription client)
 	{
 		this.activity			= activity;
 		this.notificationList	= new ArrayList<>();
@@ -61,7 +61,7 @@ public class CardExampleAdapter extends RecyclerView.Adapter<CardExampleAdapter.
 		}
 	}
 
-	public static List<Message> parseMsgExamples(Company client)
+	public static List<Message> parseMsgExamples(Suscription client)
 	{
 		List<Message> messages = new ArrayList<>();
 
@@ -122,13 +122,6 @@ public class CardExampleAdapter extends RecyclerView.Adapter<CardExampleAdapter.
 													created = json.getLong(Message.KEY_CREATED);
 												}
 											}
-										}
-
-										if(StringUtils.isNotEmpty(title) && StringUtils.isNotEmpty(msg))
-										{
-											Message message = new Message(	"", title, msg, "", Message.STATUS_RECEIVE, client.getCompanyId(), 0, "", client.getCountryCode(), "2", created,
-																			created, created, created, Common.BOOL_NO);
-											messages.add(message);
 										}
 									}
 								}

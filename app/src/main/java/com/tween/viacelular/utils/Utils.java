@@ -31,7 +31,6 @@ import com.tween.viacelular.activities.SuscriptionsActivity;
 import com.tween.viacelular.asynctask.MigrationAsyncTask;
 import com.tween.viacelular.asynctask.SplashAsyncTask;
 import com.tween.viacelular.asynctask.UpdateUserAsyncTask;
-import com.tween.viacelular.data.Company;
 import com.tween.viacelular.data.DaoMaster;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
@@ -150,7 +149,7 @@ public class Utils
 			bundle.putString(Message.KEY_TIMESTAMP, String.valueOf(message.getCreated()));
 			bundle.putString(Message.KEY_CHANNEL, message.getChannel());
 			bundle.putString(Common.KEY_STATUS, String.valueOf(message.getStatus()));
-			bundle.putString(Company.KEY_API, message.getCompanyId());
+			bundle.putString(Suscription.KEY_API, message.getCompanyId());
 			bundle.putString(User.KEY_PHONE, message.getPhone());
 			bundle.putString(Message.KEY_TTD, String.valueOf(0));
 			bundle.putString(Land.KEY_API, message.getCountryCode());
@@ -594,7 +593,7 @@ public class Utils
 		try
 		{
 			String version			= context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-			String db				= "SQLite: "+DaoMaster.SCHEMA_VERSION+" Realm: "+Common.REALMDB_VERSION;
+			String db				= "SQLite: "+ DaoMaster.SCHEMA_VERSION+" Realm: "+Common.REALMDB_VERSION;
 			String androidVersion	= Build.VERSION.RELEASE + " (" + android.os.Build.VERSION.SDK_INT + ")";
 			String device			= Build.MANUFACTURER + " " + Build.MODEL;
 			String lang				= Locale.getDefault().getDisplayLanguage() + " (" + Locale.getDefault().getLanguage() + ")";

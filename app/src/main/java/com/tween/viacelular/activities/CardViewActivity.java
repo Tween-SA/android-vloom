@@ -39,7 +39,7 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.CardAdapter;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
 import com.tween.viacelular.asynctask.SendIdentificationKeyAsyncTask;
-import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;

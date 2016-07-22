@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.utils.Common;
@@ -73,12 +73,13 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 			Realm realm						= Realm.getDefaultInstance();
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			JSONObject jsonResult			= null;
-			jsonResult						= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES + "/" + companyId, context, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
+			jsonResult						= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES + "/" + companyId, context, ApiConnection.METHOD_GET,
+												preferences.getString(Common.KEY_TOKEN, ""), ""));
 			result							= ApiConnection.checkResponse(context, jsonResult);
 
 			if(result.equals(ApiConnection.OK))
 			{
-				company = SuscriptionHelper.parseEntity(jsonResult.getJSONObject(Common.KEY_DATA), companyId, countryCode, context, false, getFlag());
+				company = SuscriptionHelper.parseEntity(jsonResult.getJSONObject(Common.KEY_CONTENT), companyId, countryCode, context, false, getFlag());
 			}
 			else
 			{
