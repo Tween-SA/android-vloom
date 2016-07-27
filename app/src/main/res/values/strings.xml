@@ -143,6 +143,9 @@
 	<string name="silence_actived">Silencio activado</string>
 	<string name="silence_desactived">Silencio desactivado</string>
 	<string name="silence">Silenciar</string>
+	<string name="social">Estamos recibiendo nuevo contenido para ti</string><!-- after traslate -->
+	<string name="social_high">Tweet destacado</string><!-- after traslate -->
+	<string name="social_date">Publicado el dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">¿Deseas seguir recibiendo estos mensajes?</string>
 	<string name="sms_text_paid">SMS Pago</string>
 	<string name="sms_text">SMS</string>

@@ -29,6 +29,7 @@ import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
 import com.tween.viacelular.adapters.IconOptionAdapter;
+import com.tween.viacelular.asynctask.GetTweetsAsyncTask;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
@@ -297,6 +298,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		{
 			if(!clicked)
 			{
+				new GetTweetsAsyncTask(getActivity(), true, companyId).execute();
 				Intent intent = new Intent(getActivity(), CardViewActivity.class);
 				intent.putExtra(Common.KEY_ID, companyId);
 				startActivity(intent);

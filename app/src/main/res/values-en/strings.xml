@@ -143,6 +143,9 @@
 	<string name="silence_actived">Silent mode activated</string>
 	<string name="silence_desactived">Silent mode disabled</string>
 	<string name="silence">Silence</string>
+	<string name="social">We are getting new content for you</string><!-- after traslate -->
+	<string name="social_high">Tweet Highlights</string><!-- after traslate -->
+	<string name="social_date">Published on dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">Would you like to continue receiving these messages?</string>
 	<string name="sms_text_paid">Paid SMS</string>
 	<string name="sms_text">SMS</string>

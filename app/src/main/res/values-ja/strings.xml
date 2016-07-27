@@ -141,6 +141,9 @@
 	<string name="silence_actived">サイレントモードが有効になっています</string>
 	<string name="silence_desactived">サイレントモードが無効になっています</string>
 	<string name="silence">サイレントにする</string>
+	<string name="social">私たちはあなたのための新しいコンテンツを取得しています</string><!-- after traslate -->
+	<string name="social_high">ツイートハイライト</string><!-- after traslate -->
+	<string name="social_date">上の公開 dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">引き続きこれらのメッセージを受信しますか？</string>
 	<string name="sms_text_paid">有料SMS</string>
 	<string name="sms_text">SMS</string>

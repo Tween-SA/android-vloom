@@ -141,6 +141,9 @@
 	<string name="silence_actived">Mode silencieux activé</string>
 	<string name="silence_desactived">Mode silencieux désactivé</string>
 	<string name="silence">Mettre en mode silencieux</string>
+	<string name="social">Nous obtenons un nouveau contenu pour vous</string><!-- after traslate -->
+	<string name="social_high">Tweet Faits saillants</string><!-- after traslate -->
+	<string name="social_date">Publié le dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">Souhaitez-vous continuer à recevoir ces messages ?</string>
 	<string name="sms_text_paid">SMS avec coût</string>
 	<string name="sms_text">SMS</string>

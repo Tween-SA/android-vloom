@@ -141,6 +141,9 @@
 	<string name="silence_actived">静默模式已启用</string>
 	<string name="silence_desactived">静默模式已禁用</string>
 	<string name="silence">静默</string>
+	<string name="social">我们正在为你的新内容</string><!-- after traslate -->
+	<string name="social_high">鸣叫亮点</string><!-- after traslate -->
+	<string name="social_date">发表于 dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">您想要继续接收这些消息？</string>
 	<string name="sms_text_paid">需付费短信</string>
 	<string name="sms_text">短信</string>

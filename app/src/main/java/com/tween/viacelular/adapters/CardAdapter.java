@@ -415,6 +415,12 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							}
 						});
 					}
+
+					if(item.getKind() == Message.KIND_TWITTER)
+					{
+						holder.socialAccount.setText(item.getSocialAccount());
+						holder.socialDate.setText(item.getSocialDate());
+					}
 				}
 			}
 		}

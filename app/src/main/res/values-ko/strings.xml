@@ -141,6 +141,9 @@
 	<string name="silence_actived">음소거 모드 활성화</string>
 	<string name="silence_desactived">음소거 모드 비활성화</string>
 	<string name="silence">음소거</string>
+	<string name="social">우리는 당신을 위해 새로운 콘텐츠를 얻고있다</string><!-- after traslate -->
+	<string name="social_high">트윗 하이라이트</string><!-- after traslate -->
+	<string name="social_date">에 게시 dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">이 메시지를 수신하시겠습니까?</string>
 	<string name="sms_text_paid">유료 SMS</string>
 	<string name="sms_text">SMS</string>

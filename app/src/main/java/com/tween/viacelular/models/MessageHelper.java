@@ -42,10 +42,6 @@ public abstract class MessageHelper
 		}
 	}
 
-	public static void convertTweenToMessage()
-	{
-	}
-
 	/**
 	 * Marca todos los mensajes de una Suscription como eliminados. (Vacía la Company)
 	 * @param companyId
