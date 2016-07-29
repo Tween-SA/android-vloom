@@ -408,12 +408,24 @@ public class CardViewActivity extends AppCompatActivity
 		return super.onPrepareOptionsMenu(menu);
 	}
 
-	public void showOptionsCard(final int position)
+	public void showOptionsCard(final int position, final String msgId)
 	{
 		try
 		{
+			int items = R.array.optionsCard;
+			Realm realm = Realm.getDefaultInstance();
+			Message message = realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+			if(message != null)
+			{
+				if(message.getKind() == Message.KIND_TWITTER)
+				{
+					//TODO replace new array
+				}
+			}
+
 			list = new MaterialDialog.Builder(this)
-					.items(R.array.optionsCard)
+					.items(items)
 					.itemsCallback(new MaterialDialog.ListCallback()
 					{
 						@Override

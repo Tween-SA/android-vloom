@@ -265,12 +265,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 						if(holder.ibOptions != null)
 						{
+							final String msgId = item.getMsgId();
 							holder.ibOptions.setOnClickListener(new View.OnClickListener()
 							{
 								@Override
 								public void onClick(View v)
 								{
-									activity.showOptionsCard(position);
+									activity.showOptionsCard(position, msgId);
 								}
 							});
 						}
