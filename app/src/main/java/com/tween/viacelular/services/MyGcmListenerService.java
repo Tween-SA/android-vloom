@@ -24,6 +24,7 @@ import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
 import com.tween.viacelular.asynctask.LogoAsyncTask;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
@@ -56,13 +57,15 @@ public class MyGcmListenerService extends GcmListenerService
 	{
 		try
 		{
+			if(context == null)
+			{
+				context = getApplicationContext();
+			}
+
+			Migration.getDB(context);
+
 			if(data != null)
 			{
-				if(context == null)
-				{
-					context = getApplicationContext();
-				}
-
 				String msgId					= data.getString(Message.KEY_API, "");
 				String msgType					= data.getString(Common.KEY_TYPE, "");
 				String msg						= data.getString(Message.KEY_PLAYLOAD, "");
@@ -523,6 +526,7 @@ public class MyGcmListenerService extends GcmListenerService
 						System.out.println("MyGcmListenerService:sendNotification:ConfirmReading - Exception: " + e);
 					}
 				}
+
 				//Reload Home if it's running
 			}
 			else

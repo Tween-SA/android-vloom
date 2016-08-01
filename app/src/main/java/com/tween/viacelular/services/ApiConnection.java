@@ -32,8 +32,8 @@ public class ApiConnection
 	public static final String METHOD_PUT			= "PUT";
 	public static final String TOKEN_AUTHORIZATION	= "Bearer d32f7a8d983b442f608bcdbef27e41c32bf0d9a8";
 	public static final String CLOUDFRONT_S3		= "https://d1ads2zadze8sp.cloudfront.net/"; //Recuerdo que apunta al s3 https://s3-sa-east-1.amazonaws.com/vc-img/Logos/
-	//public static final String SERVERP				= "https://api.vloom.io/v1/"; //New Production - master
-	public static final String SERVERP				= "https://dev.vloom.io/v1/"; //Testing - develop
+	public static final String SERVERP				= "https://api.vloom.io/v1/"; //New Production - master
+	//public static final String SERVERP				= "https://dev.vloom.io/v1/"; //Testing - develop
 	//public static final String SERVER				= "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
 	//public static final String SERVER				= "https://private-29fe84-davidfigueroa.apiary-mock.com/v1/"; //Development Apiary Private
 	public static final String IP_API				= "http://ip-api.com/json";

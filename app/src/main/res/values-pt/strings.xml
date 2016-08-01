@@ -251,6 +251,12 @@
 		<item>Marcar como spam</item>
 		<item>Remover</item>
 	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>Compartilhar</item>
+		<item>Marcar como spam</item>
+		<item>Remover</item>
+		<item>Eu não quero ver isso mais</item><!-- after traslate -->
+	</string-array>
 	<string-array name="optionsChannel">
 		<item>Silenciar</item>
 		<item>Esvaziar mensagens</item>

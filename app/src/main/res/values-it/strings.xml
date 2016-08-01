@@ -251,6 +251,12 @@
 		<item>Contrassegna come spam</item>
 		<item>Elimina</item>
 	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>Condividi</item>
+		<item>Contrassegna come spam</item>
+		<item>Elimina</item>
+		<item>Non voglio più vedere questo</item><!-- after traslate -->
+	</string-array>
 	<string-array name="optionsChannel">
 		<item>Silenzia</item>
 		<item>Elimina messaggi</item>

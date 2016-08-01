@@ -251,6 +251,12 @@
 		<item>Als Spam markieren</item>
 		<item>Löschen</item>
 	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>Teilen</item>
+		<item>Als Spam markieren</item>
+		<item>Löschen</item>
+		<item>Ich will das nicht mehr sehen</item><!-- after traslate -->
+	</string-array>
 	<string-array name="optionsChannel">
 		<item>Stumm schalten</item>
 		<item>Posteingang leeren</item>

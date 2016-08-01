@@ -37,6 +37,7 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
 import java.util.ArrayList;
@@ -298,10 +299,36 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		{
 			if(!clicked)
 			{
-				new GetTweetsAsyncTask(getActivity(), true, companyId).execute();
-				Intent intent = new Intent(getActivity(), CardViewActivity.class);
-				intent.putExtra(Common.KEY_ID, companyId);
-				startActivity(intent);
+				Realm realm				= Realm.getDefaultInstance();
+				Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+
+				if(suscription != null)
+				{
+					if(suscription.getLastSocialUpdated() != null)
+					{
+						//Solamente se pide una vez al día
+						if(DateUtils.needUpdate(suscription.getLastSocialUpdated(), DateUtils.DAY_MILLIS))
+						{
+							new GetTweetsAsyncTask(getActivity(), true, companyId).execute();
+						}
+						else
+						{
+							Intent intent = new Intent(getActivity(), CardViewActivity.class);
+							intent.putExtra(Common.KEY_ID, companyId);
+							startActivity(intent);
+						}
+					}
+					else
+					{
+						new GetTweetsAsyncTask(getActivity(), true, companyId).execute();
+					}
+				}
+				else
+				{
+					Intent intent = new Intent(getActivity(), CardViewActivity.class);
+					intent.putExtra(Common.KEY_ID, companyId);
+					startActivity(intent);
+				}
 			}
 			else
 			{

@@ -39,6 +39,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 	public final static int			OPTION_SHARE	= 0;
 	public final static int			OPTION_BLOCK	= 1;
 	public final static int			OPTION_DELETE	= 2;
+	public final static int			OPTION_DISMISS	= 3;
 
 	public static class ViewHolder extends RecyclerView.ViewHolder
 	{

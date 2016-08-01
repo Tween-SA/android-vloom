@@ -120,7 +120,8 @@
 		<!-- Receivers & Listeners -->
 		<receiver
 			android:name=".services.IncomingSmsService"
-			android:enabled="true">
+			android:enabled="true"
+			android:exported="true">
 			<intent-filter>
 				<action android:name="android.provider.Telephony.SMS_RECEIVED" />
 			</intent-filter>
@@ -156,7 +157,7 @@
 		<service
 			android:name="com.tween.viacelular.services.MyGcmListenerService"
 			android:enabled="true"
-			android:exported="false">
+			android:exported="true">
 			<intent-filter>
 				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
 			</intent-filter>
@@ -164,7 +165,7 @@
 		<service
 			android:name="com.tween.viacelular.services.MyInstanceIDListenerService"
 			android:enabled="true"
-			android:exported="false">
+			android:exported="true">
 			<intent-filter>
 				<action android:name="com.google.android.gms.iid.InstanceID" />
 			</intent-filter>
@@ -172,16 +173,33 @@
 		<service
 			android:name="com.tween.viacelular.services.RegistrationIntentService"
 			android:enabled="true"
-			android:exported="false">
+			android:exported="true">
 		</service>
 		<service
 			android:name="com.google.android.gms.analytics.AnalyticsService"
 			android:enabled="true"
-			android:exported="false">
+			android:exported="true">
 		</service>
 		<service
 			android:name="com.google.android.gms.analytics.CampaignTrackingService"
+			android:enabled="true"
+			android:exported="true">
+		</service>
+		<service
+			android:name="com.tween.viacelular.services.MyFirebaseMessagingService"
+			android:exported="true"
 			android:enabled="true">
+			<intent-filter>
+				<action android:name="com.google.firebase.MESSAGING_EVENT" />
+			</intent-filter>
+		</service>
+		<service
+			android:name="com.tween.viacelular.services.MyFirebaseInstanceIdService"
+			android:enabled="true"
+			android:exported="true">
+			<intent-filter>
+				<action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+			</intent-filter>
 		</service>
 	</application>
 </manifest>

@@ -56,7 +56,7 @@ import io.realm.Realm;
  */
 public class Utils
 {
-	private static final String path2Copy = Environment.getExternalStorageDirectory().getPath()+"/".replace("//", "/");//"/sdcard/";
+	public static final String path2Copy = Environment.getExternalStorageDirectory().getPath()+"/".replace("//", "/");//"/sdcard/";
 
 	//Cambio de contexto para redirigir desde el menú
 	public static void redirectMenu(Activity activity, int position, int current)

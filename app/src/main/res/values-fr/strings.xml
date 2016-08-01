@@ -251,6 +251,12 @@
 		<item>Marquer comme spam</item>
 		<item>Éliminer</item>
 	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>Partager</item>
+		<item>Marquer comme spam</item>
+		<item>Éliminer</item>
+		<item>Je ne veux pas voir ça plus</item><!-- after traslate -->
+	</string-array>
 	<string-array name="optionsChannel">
 		<item>Mode silencieux</item>
 		<item>Vider les messages</item>

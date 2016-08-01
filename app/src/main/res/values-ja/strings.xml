@@ -251,6 +251,12 @@
 		<item>スパムとしてマーク</item>
 		<item>削除</item>
 	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>共有</item>
+		<item>スパムとしてマーク</item>
+		<item>削除</item>
+		<item>私はこれをもう見たくありません</item><!-- after traslate -->
+	</string-array>
 	<string-array name="optionsChannel">
 		<item>サイレント</item>
 		<item>メッセージを空にする</item>

@@ -251,6 +251,12 @@
 		<item>标记为垃圾</item>
 		<item>删除</item>
 	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>分享</item>
+		<item>标记为垃圾</item>
+		<item>删除</item>
+		<item>我不希望看到这个了</item><!-- after traslate -->
+	</string-array>
 	<string-array name="optionsChannel">
 		<item>静默</item>
 		<item>空消息</item>

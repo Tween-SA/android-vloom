@@ -197,6 +197,12 @@ public class DateUtils
 		return "";
 	}
 
+	/**
+	 * Calcula si es necesario actualizar un recurso dependiendo de la frecuencia asociada
+	 * @param date
+	 * @param frequency
+	 * @return
+	 */
 	public static boolean needUpdate(Long date, int frequency)
 	{
 		try

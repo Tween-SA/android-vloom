@@ -420,7 +420,7 @@ public class CardViewActivity extends AppCompatActivity
 			{
 				if(message.getKind() == Message.KIND_TWITTER)
 				{
-					//TODO replace new array
+					items = R.array.optionsCardSocial;
 				}
 			}
 
@@ -574,7 +574,8 @@ public class CardViewActivity extends AppCompatActivity
 				break;
 
 				case CardAdapter.OPTION_BLOCK:
-					//Agregado para capturar evento en Google Analytics
+				case CardAdapter.OPTION_DISMISS:
+					//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
 																									.setLabel("Accion_user").build());
 					realm.beginTransaction();

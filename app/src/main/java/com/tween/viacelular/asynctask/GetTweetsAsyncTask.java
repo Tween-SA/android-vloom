@@ -1,11 +1,12 @@
 package com.tween.viacelular.asynctask;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
+import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.data.User;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
@@ -13,14 +14,11 @@ import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
-
 import org.json.JSONObject;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
 import io.realm.Realm;
 
 /**
@@ -92,14 +90,11 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 			String dateText					= context.getString(R.string.social_date);
 			System.out.println("response: "+result+" to work: "+jsonResult.toString());
 
-			//Message message	= new Message(	"msgid", "type", msg, "channel", Message.STATUS_RECEIVE, "phone", "countryCode", Message.FLAGS_PUSH, System.currentTimeMillis(),
-			//		Common.BOOL_NO, Message.KIND_TWITTER, link, image, submsg, "", "", companyId);
-
 			if(result.equals(ApiConnection.OK))
 			{
 				if(!jsonResult.isNull(Common.KEY_CONTENT))
 				{
-					if(!jsonResult.getJSONObject(Common.KEY_CONTENT).isNull(Common.KEY_DATA))
+					if(!jsonResult.getJSONObject(Common.KEY_CONTENT).isNull(Common.KEY_DATA) && jsonResult.getJSONObject(Common.KEY_CONTENT).getBoolean("success"))
 					{
 						String date		= jsonResult.getJSONObject(Common.KEY_CONTENT).getJSONObject(Common.KEY_DATA).getString("date");
 						notificationId	= notificationId+1;
@@ -145,6 +140,7 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 						message.setSocialDate(dateText.replace("dd/mm/yyyy", sdf.format(date2)));
 						realm.beginTransaction();
 						realm.copyToRealmOrUpdate(message);
+						suscription.setLastSocialUpdated(System.currentTimeMillis());
 						realm.commitTransaction();
 						SharedPreferences.Editor editor = preferences.edit();
 						editor.putInt(Common.KEY_LAST_MSGID, notificationId);
@@ -163,6 +159,10 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 					}
 				}
 			}
+
+			Intent intent = new Intent(context, CardViewActivity.class);
+			intent.putExtra(Common.KEY_ID, companyId);
+			context.startActivity(intent);
 		}
 		catch(Exception e)
 		{

@@ -142,7 +142,7 @@ public class RegistrationIntentService extends IntentService
 			{
 				//Initially this call goes out to the network to retrieve the token, subsequent calls are local.
 				InstanceID instanceID	= InstanceID.getInstance(this);
-				String token			= instanceID.getToken(getString(R.string.google_app_id), GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+				String token			= instanceID.getToken("189459365557", GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
 				if(Common.DEBUG)
 				{

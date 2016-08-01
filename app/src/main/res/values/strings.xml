@@ -27,7 +27,6 @@
 	<string name="day">día</string>
 	<string name="days">días</string>
 	<string name="disagree">Cancelar</string>
-	<string name="google_app_id" translatable="false">189459365557</string>
 	<string name="email_blank">Debes ingresar un correo electrónico</string>
 	<string name="email_wrong">Formato de correo electrónico inválido</string>
 	<string name="email">Correo electrónico</string>
@@ -41,7 +40,6 @@
 	<string name="feedback_typepush">Respuesta de soporte</string>
 	<string name="gcm_send_message">Token recuperado y enviado al servidor</string>
 	<string name="get_play_services">Obtén Google Play Services</string>
-	<string name="google_api_key" translatable="false">189459365557</string>
 	<string name="hello_world">Hola</string>
 	<string name="home">Verifica tu n° de celular para una mejor experiencia con VíaCelular</string>
 	<string name="hours">horas</string>
@@ -252,6 +250,12 @@
 		<item>Compartir</item>
 		<item>Marcar como spam</item>
 		<item>Eliminar</item>
+	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>Compartir</item>
+		<item>Marcar como spam</item>
+		<item>Eliminar</item>
+		<item>No quiero ver más esto</item><!-- after traslate -->
 	</string-array>
 	<string-array name="optionsChannel">
 		<item>Silenciar</item>
