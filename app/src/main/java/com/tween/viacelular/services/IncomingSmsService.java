@@ -16,6 +16,7 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.CheckCodeAsyncTask;
 import com.tween.viacelular.asynctask.ConnectApiSMSAsyncTask;
 import com.tween.viacelular.models.Land;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
@@ -40,8 +41,9 @@ public class IncomingSmsService extends BroadcastReceiver
 
 		try
 		{
+			Migration.getDB(context, Common.REALMDB_VERSION);
 			final Bundle bundle				= intent.getExtras();
-			SharedPreferences preferences	= context.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			SharedPreferences.Editor editor	= preferences.edit();
 			String code						= "";
 			Message notification			= null;

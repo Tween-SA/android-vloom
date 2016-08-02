@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CodeActivity;
@@ -37,6 +38,7 @@ import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.MyGcmListenerService;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -49,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 import io.realm.Realm;
 
 /**
@@ -802,9 +805,23 @@ public class Utils
 			{
 				if(splashed)
 				{
-					//Migración de db a Realm
-					final MigrationAsyncTask task = new MigrationAsyncTask(activity, true);
-					task.execute();
+					//Si la versión es reciente no hace falta migración de db vieja
+					if(version.equals("1.2.9"))
+					{
+						SharedPreferences.Editor editor = preferences.edit();
+						editor.putBoolean(Common.KEY_PREF_UPGRADED + version, true);
+						editor.apply();
+						Intent intent = new Intent(activity, HomeActivity.class);
+						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						intent.putExtra(Common.KEY_REFRESH, true);
+						intent.putExtra(Common.KEY_PREF_WELCOME, true);
+						activity.startActivity(intent);
+					}
+					else
+					{
+						//Para apps viejas si es necesaria la migración
+						new MigrationAsyncTask(activity, true).execute();
+					}
 				}
 				else
 				{

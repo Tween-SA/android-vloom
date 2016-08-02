@@ -348,7 +348,7 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			if(menu != null)
 			{
-				Migration.getDB(CardViewActivity.this);
+				Migration.getDB(CardViewActivity.this, Common.REALMDB_VERSION);
 				Realm realm	= Realm.getDefaultInstance();
 				suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 

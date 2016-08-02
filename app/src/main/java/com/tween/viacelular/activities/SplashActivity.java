@@ -74,7 +74,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 			}
 
 			//Agregado para inicializar nueva base de datos Realm
-			Migration.getDB(this);
+			Migration.getDB(this, Common.REALMDB_VERSION-1);
 			Realm realm = Realm.getDefaultInstance();
 			realm.setAutoRefresh(true);
 

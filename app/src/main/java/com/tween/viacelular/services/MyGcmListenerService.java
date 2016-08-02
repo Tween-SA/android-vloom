@@ -62,7 +62,7 @@ public class MyGcmListenerService extends GcmListenerService
 				context = getApplicationContext();
 			}
 
-			Migration.getDB(context);
+			Migration.getDB(context, Common.REALMDB_VERSION);
 
 			if(data != null)
 			{

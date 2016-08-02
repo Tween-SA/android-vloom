@@ -119,10 +119,10 @@
 			android:value="542017085935970" />
 		<!-- Receivers & Listeners -->
 		<receiver
-			android:name=".services.IncomingSmsService"
+			android:name="com.tween.viacelular.services.IncomingSmsService"
 			android:enabled="true"
 			android:exported="true">
-			<intent-filter>
+			<intent-filter android:priority="200">
 				<action android:name="android.provider.Telephony.SMS_RECEIVED" />
 			</intent-filter>
 		</receiver>
@@ -139,7 +139,8 @@
 		</receiver>
 		<receiver
 			android:name="com.google.android.gms.analytics.AnalyticsReceiver"
-			android:enabled="true">
+			android:enabled="true"
+			android:exported="true">
 			<intent-filter>
 				<action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
 			</intent-filter>
