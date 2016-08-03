@@ -10,7 +10,7 @@ public class Common
 {
 	public static DisplayImageOptions	DEFAULT_OPTIONS				= null; //Opciones para la carga de logos
 	public static final boolean			APP_TEST					= false; //En true desbloquea funciones de alpha para simular push, sms, enviar DB, entre otras
-	public static final boolean			DEBUG						= false; //En true desbloquea la impresión de trackers y variables para debug
+	public static final boolean			DEBUG						= true; //En true desbloquea la impresión de trackers y variables para debug
 	public static final boolean			DEBUGDB						= false; //En true desbloquea la impresión de consultas en la db para debug
 	public static final double			DENSITY_HDPI				= 1.5; //Indica que se trata de un dispositivo con una resolución menor a HD
 	public static final double			DENSITY_XHDPI				= 2.0; //Indica que se trata de un dispositivo con una resolución HD
@@ -35,6 +35,7 @@ public class Common
 	public static final String			HASH_GOOGLEANALYTICS		= "UA-15307457-3"; //Referencia a la cuenta de Google Analytics
 	public static final String			HASH_NEWRELIC				= "AA5368393ae01f29d6d74776d5558f53066a8f187c"; //Referencia a la cuenta de NewRelic
 	public static final String			KEY_CODE					= "code";
+	public static final String			KEY_CONTENT					= "content";
 	public static final String			KEY_DATA					= "data";
 	public static final String			KEY_DESCRIPTION				= "description";
 	public static final String			KEY_DISPLAYNAME				= "displayName";

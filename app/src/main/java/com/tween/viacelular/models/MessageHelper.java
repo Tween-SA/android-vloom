@@ -212,8 +212,8 @@ public abstract class MessageHelper
 						@Override
 						public void execute(Realm bgRealm)
 						{
-							RealmResults<Message> results = bgRealm.where(Message.class).equalTo(Country.KEY_API, "").or().isNull(Country.KEY_API).or().isEmpty(Country.KEY_API)
-																.or().equalTo(Country.KEY_API, "'null'").or().equalTo(Country.KEY_API, "''").findAll();
+							RealmResults<Message> results = bgRealm.where(Message.class).equalTo(Land.KEY_API, "").or().isNull(Land.KEY_API).or().isEmpty(Land.KEY_API)
+																.or().equalTo(Land.KEY_API, "'null'").or().equalTo(Land.KEY_API, "''").findAll();
 
 							for(int i = results.size() -1; i >=0; i--)
 							{
@@ -236,8 +236,8 @@ public abstract class MessageHelper
 
 		//Agregado para evitar ejecución innecesaria de task
 		Realm realm						= Realm.getDefaultInstance();
-		RealmResults<Message> results	= realm.where(Message.class).equalTo(Country.KEY_API, "").or().isNull(Country.KEY_API).or().isEmpty(Country.KEY_API).or()
-											.equalTo(Country.KEY_API, "'null'").or().equalTo(Country.KEY_API, "''").findAll();
+		RealmResults<Message> results	= realm.where(Message.class).equalTo(Land.KEY_API, "").or().isNull(Land.KEY_API).or().isEmpty(Land.KEY_API).or()
+											.equalTo(Land.KEY_API, "'null'").or().equalTo(Land.KEY_API, "''").findAll();
 
 		if(StringUtils.isNotEmpty(country) && results.size() > 0)
 		{

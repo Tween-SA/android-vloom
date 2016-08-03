@@ -29,12 +29,11 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.RecyclerAdapter;
 import com.tween.viacelular.adapters.RecyclerItemClickListener;
 import com.tween.viacelular.asynctask.CaptureSMSAsyncTask;
-import com.tween.viacelular.data.Company;
-import com.tween.viacelular.data.Country;
 import com.tween.viacelular.data.User;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
-import com.tween.viacelular.services.MyGcmListenerService;
+import com.tween.viacelular.services.MyFirebaseMessagingService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -128,7 +127,7 @@ public class SettingsActivity extends AppCompatActivity
 				chkSilence		= (CheckBox) findViewById(R.id.chkSilence);
 				chkStatistics	= (CheckBox) findViewById(R.id.chkStatistics);
 				preferences		= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-				chkSilence.setChecked(preferences.getBoolean(Company.KEY_SILENCED, silenced));
+				chkSilence.setChecked(preferences.getBoolean(Suscription.KEY_SILENCED, silenced));
 				chkStatistics.setChecked(preferences.getBoolean(Common.KEY_SEND_STATISTICS, sendStatistics));
 				Utils.tintColorScreen(this, Common.COLOR_ACTION);
 				Clayout			= (CoordinatorLayout) findViewById(R.id.clSnack);
@@ -212,7 +211,7 @@ public class SettingsActivity extends AppCompatActivity
 
 			if(chkSilence.isChecked())
 			{
-				editor.putBoolean(Company.KEY_SILENCED, true);
+				editor.putBoolean(Suscription.KEY_SILENCED, true);
 				editor.apply();
 				task = new UpdateSilence(Common.BOOL_YES);
 				task.start();
@@ -222,7 +221,7 @@ public class SettingsActivity extends AppCompatActivity
 					@Override
 					public void onClick(View v)
 					{
-						editor.putBoolean(Company.KEY_SILENCED, false);
+						editor.putBoolean(Suscription.KEY_SILENCED, false);
 						editor.apply();
 						task = new UpdateSilence(Common.BOOL_NO);
 						task.start();
@@ -232,7 +231,7 @@ public class SettingsActivity extends AppCompatActivity
 			}
 			else
 			{
-				editor.putBoolean(Company.KEY_SILENCED, false);
+				editor.putBoolean(Suscription.KEY_SILENCED, false);
 				editor.apply();
 				task = new UpdateSilence(Common.BOOL_NO);
 				task.start();
@@ -242,7 +241,7 @@ public class SettingsActivity extends AppCompatActivity
 					@Override
 					public void onClick(View v)
 					{
-						editor.putBoolean(Company.KEY_SILENCED, true);
+						editor.putBoolean(Suscription.KEY_SILENCED, true);
 						editor.apply();
 						task = new UpdateSilence(Common.BOOL_YES);
 						task.start();
@@ -340,9 +339,9 @@ public class SettingsActivity extends AppCompatActivity
 			//Modificación se traslado a Utils para invocarlo también desde IncomingSmsService
 			Message message = new Message();
 			message.setCompanyId("5669786d1b5c469e378a4c15");
-			message.setCountryCode(preferences.getString(Country.KEY_API, ""));
+			message.setCountryCode(preferences.getString(Land.KEY_API, ""));
 			message.setCreated(System.currentTimeMillis());
-			Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), String.valueOf(MyGcmListenerService.PUSH_NORMAL), message);
+			Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), String.valueOf(MyFirebaseMessagingService.PUSH_NORMAL), message);
 		}
 		catch(Exception e)
 		{
@@ -363,7 +362,7 @@ public class SettingsActivity extends AppCompatActivity
 			Message message = new Message();
 			message.setCompanyId("5699028c7669284157dc9153");
 			message.setCreated(System.currentTimeMillis());
-			Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), String.valueOf(MyGcmListenerService.PUSH_WITHOUT_SOUND), message);
+			Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), String.valueOf(MyFirebaseMessagingService.PUSH_WITHOUT_SOUND), message);
 		}
 		catch(Exception e)
 		{
@@ -445,7 +444,7 @@ public class SettingsActivity extends AppCompatActivity
 							break;
 						}
 
-						Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), String.valueOf(MyGcmListenerService.PUSH_NORMAL), message);
+						Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), String.valueOf(MyFirebaseMessagingService.PUSH_NORMAL), message);
 					}
 				}).show();
 		}
@@ -523,7 +522,7 @@ public class SettingsActivity extends AppCompatActivity
 			editor.putBoolean(Common.KEY_PREF_LOGGED, false);
 			editor.putBoolean(Common.KEY_PREF_CHECKED, false);
 			editor.putString(Common.KEY_TOKEN, "");
-			editor.putBoolean(Company.KEY_SILENCED, false);
+			editor.putBoolean(Suscription.KEY_SILENCED, false);
 			editor.putBoolean(Common.KEY_SEND_STATISTICS, false);
 			editor.apply();
 			Intent intent					= new Intent(getApplicationContext(), PhoneActivity.class);
@@ -555,7 +554,7 @@ public class SettingsActivity extends AppCompatActivity
 						public void run()
 						{
 							SharedPreferences.Editor editor = preferences.edit();
-							editor.putBoolean(Company.KEY_SILENCED, false);
+							editor.putBoolean(Suscription.KEY_SILENCED, false);
 							editor.apply();
 							silenceDown();
 						}

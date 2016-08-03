@@ -91,11 +91,11 @@ public abstract class IspHelper
 					}
 				}
 
-				if(json.has(com.tween.viacelular.data.Country.KEY_API))
+				if(json.has(Land.KEY_API))
 				{
-					if(StringUtils.isNotEmpty(json.getString(com.tween.viacelular.data.Country.KEY_API)))
+					if(StringUtils.isNotEmpty(json.getString(Land.KEY_API)))
 					{
-						jCountryCode = json.getString(com.tween.viacelular.data.Country.KEY_API);
+						jCountryCode = json.getString(Land.KEY_API);
 					}
 				}
 

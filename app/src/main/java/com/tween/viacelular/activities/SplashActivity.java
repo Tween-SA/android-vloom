@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,33 +19,38 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.newrelic.agent.android.NewRelic;
 import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.GetLocationByApiAsyncTask;
 import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Migration;
-import com.tween.viacelular.services.MyGcmListenerService;
-import com.tween.viacelular.services.RegistrationIntentService;
+import com.tween.viacelular.models.User;
+import com.tween.viacelular.services.MyFirebaseInstanceIdService;
+import com.tween.viacelular.services.MyFirebaseMessagingService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import io.realm.Realm;
 
-public class SplashActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
+public class SplashActivity extends AppCompatActivity
 {
 	private BroadcastReceiver		mRegistrationBroadcastReceiver;
 	//Ordanamiento de permisos y agregado del permiso para enviar sms
 	private String[]				permissionsNeed = {	Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.BROADCAST_SMS,
 														Manifest.permission.GET_ACCOUNTS, Manifest.permission.INTERNET, Manifest.permission.READ_CONTACTS,
 														Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS,
-														Manifest.permission.RECEIVE_SMS, Manifest.permission.WAKE_LOCK,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+														Manifest.permission.RECEIVE_SMS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 	public static GoogleAnalytics	analytics;
 	public static Tracker			tracker;
 
@@ -83,17 +89,10 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 				@Override
 				public void onReceive(Context context, Intent intent)
 				{
-
 				}
 			};
 
-			if(checkPlayServices())
-			{
-				// Start IntentService to register this application with GCM.
-				Intent intent = new Intent(this, RegistrationIntentService.class);
-				startService(intent);
-			}
-
+			checkPlayServices();//No hace falta levantar un IntentService para push con FCM
 			setContentView(R.layout.activity_splash);
 
 			//Agregado para actualizar coordenadas
@@ -180,21 +179,6 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 		}
 	}
 
-	@Override
-	public void onConnected(final Bundle bundle)
-	{
-	}
-
-	@Override
-	public void onConnectionSuspended(final int i)
-	{
-	}
-
-	@Override
-	public void onConnectionFailed(final ConnectionResult connectionResult)
-	{
-	}
-
 	/**
 	 * Check the device to make sure it has the Google Play Services APK. If it doesn't, display a dialog that allows users to download the APK from the Google Play Store or
 	 * enable it in the device's system settings.
@@ -204,6 +188,14 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 		//Agregado para capturar excepciones
 		try
 		{
+			//Nuevo registro en FCM
+			FirebaseMessaging.getInstance().subscribeToTopic(MyFirebaseInstanceIdService.FRIENDLY_ENGAGE_TOPIC);
+			String token = FirebaseInstanceId.getInstance().getToken();
+			System.out.println("TOKEN NUEVO: "+token);
+			SharedPreferences.Editor preferences	= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE).edit();
+			preferences.putString(User.KEY_GCMID, token);
+			preferences.apply();
+
 			//Actualización de métodos que estaban deprecados
 			GoogleApiAvailability googleApiAvailability	= GoogleApiAvailability.getInstance();
 			int resultCode								= googleApiAvailability.isGooglePlayServicesAvailable(this);
@@ -217,7 +209,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 				{
 					if(googleApiAvailability.isUserResolvableError(resultCode))
 					{
-						googleApiAvailability.getErrorDialog(this, resultCode, MyGcmListenerService.PLAY_SERVICES_RESOLUTION_REQUEST).show();
+						googleApiAvailability.getErrorDialog(this, resultCode, MyFirebaseMessagingService.PLAY_SERVICES_RESOLUTION_REQUEST).show();
 						Utils.checkSesion(activity, Common.SPLASH_SCREEN);
 					}
 					else
@@ -293,7 +285,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 
 		try
 		{
-			LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver, new IntentFilter(MyGcmListenerService.REGISTRATION_COMPLETE));
+			LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver, new IntentFilter(MyFirebaseMessagingService.REGISTRATION_COMPLETE));
 		}
 		catch(Exception e)
 		{

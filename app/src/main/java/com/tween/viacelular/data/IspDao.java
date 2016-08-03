@@ -3,6 +3,7 @@ package com.tween.viacelular.data;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.utils.Common;
 import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
@@ -29,7 +30,7 @@ public class IspDao extends AbstractDao<Isp, Long>
 		public final static Property as				= new Property(1, String.class, Isp.KEY_AS, false, Isp.KEY_AS);
 		public final static Property status			= new Property(2, String.class, Common.KEY_STATUS, false, Common.KEY_STATUS);
 		public final static Property country		= new Property(3, String.class, Isp.KEY_COUNTRY, false, Isp.KEY_COUNTRY);
-		public final static Property countryCode	= new Property(4, String.class, Country.KEY_API, false, CountryDao.KEY_COUNTRYCODE);
+		public final static Property countryCode	= new Property(4, String.class, Land.KEY_API, false, CountryDao.KEY_COUNTRYCODE);
 		public final static Property region			= new Property(5, String.class, Isp.KEY_REGION, false, Isp.KEY_REGION);
 		public final static Property regionName		= new Property(6, String.class, Isp.KEY_REGIONNAME, false, KEY_REGIONNAME);
 		public final static Property city			= new Property(7, String.class, Isp.KEY_CITY, false, Isp.KEY_CITY);

@@ -12,8 +12,8 @@ import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.data.ApiConnection;
-import com.tween.viacelular.data.Country;
+import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
@@ -91,7 +91,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 
 			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			//Corrección de countryCode en Mensajes capturados
-			String country					= preferences.getString(Country.KEY_API, "");
+			String country					= preferences.getString(Land.KEY_API, "");
 
 			if(user != null)
 			{
@@ -99,7 +99,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 				{
 					country							= user.getCountryCode();
 					SharedPreferences.Editor editor	= preferences.edit();
-					editor.putString(Country.KEY_API, country);
+					editor.putString(Land.KEY_API, country);
 					editor.apply();
 				}
 			}

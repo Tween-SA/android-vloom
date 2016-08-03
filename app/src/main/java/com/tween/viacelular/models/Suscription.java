@@ -1,6 +1,6 @@
 package com.tween.viacelular.models;
 
-import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.StringUtils;
 import io.realm.RealmList;
 import io.realm.RealmObject;

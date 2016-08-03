@@ -3,6 +3,7 @@ package com.tween.viacelular.data;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.utils.Common;
 import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
@@ -30,7 +31,7 @@ public class MessageDao extends AbstractDao<Message, Long>
 		public final static Property companyId		= new Property(6, String.class, Company.KEY_API, false, CompanyDao.KEY_COMPANYID);
 		public final static Property ttd			= new Property(7, Integer.class, Message.KEY_TTD, false, Message.KEY_TTD);
 		public final static Property phone			= new Property(8, String.class, User.KEY_PHONE, false, User.KEY_PHONE);
-		public final static Property countryCode	= new Property(9, String.class, Country.KEY_API, false, CountryDao.KEY_COUNTRYCODE);
+		public final static Property countryCode	= new Property(9, String.class, Land.KEY_API, false, CountryDao.KEY_COUNTRYCODE);
 		public final static Property flags			= new Property(10, String.class, Message.KEY_FLAGS, false, Message.KEY_FLAGS);
 		public final static Property created		= new Property(11, Long.class, Message.KEY_CREATED, false, Message.KEY_CREATED);
 		public final static Property processed		= new Property(12, Long.class, Message.KEY_PROCESSED, false, Message.KEY_PROCESSED);

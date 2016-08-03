@@ -3,6 +3,7 @@ package com.tween.viacelular.data;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.utils.Common;
 import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
@@ -34,7 +35,7 @@ public class UserDao extends AbstractDao<User, Long>
 		public final static Property userId			= new Property(5, String.class, User.KEY_API, false, KEY_USERID);
 		public final static Property gcmId			= new Property(6, String.class, User.KEY_GCMID, false, KEY_GCMID);
 		public final static Property status			= new Property(7, Integer.class, Common.KEY_STATUS, false, Common.KEY_STATUS);
-		public final static Property countryCode	= new Property(8, String.class, Country.KEY_API, false, CountryDao.KEY_COUNTRYCODE);
+		public final static Property countryCode	= new Property(8, String.class, Land.KEY_API, false, CountryDao.KEY_COUNTRYCODE);
 		public final static Property facebookId		= new Property(9, String.class, User.KEY_FACEBOOK, false, KEY_FACEBOOK);
 		public final static Property googleId		= new Property(10, String.class, User.KEY_GOOGLE, false, KEY_GOOGLE);
 		public final static Property password		= new Property(11, String.class, User.KEY_PASSWORD, false, User.KEY_PASSWORD);
