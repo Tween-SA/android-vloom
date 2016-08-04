@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.data.ApiConnection;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.ConnectedAccount;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.UserHelper;
@@ -131,11 +131,11 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(result.equals(ApiConnection.OK))
 			{
-				if(jsonResult.has(Common.KEY_DATA))
+				if(jsonResult.has(Common.KEY_CONTENT))
 				{
-					if(!jsonResult.isNull(Common.KEY_DATA))
+					if(!jsonResult.isNull(Common.KEY_CONTENT))
 					{
-						JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_DATA);
+						JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_CONTENT);
 
 						if(jsonData != null)
 						{

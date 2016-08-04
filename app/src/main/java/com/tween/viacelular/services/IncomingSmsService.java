@@ -15,8 +15,8 @@ import android.text.format.DateFormat;
 import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.CheckCodeAsyncTask;
 import com.tween.viacelular.asynctask.ConnectApiSMSAsyncTask;
-import com.tween.viacelular.data.Company;
-import com.tween.viacelular.data.Country;
+import com.tween.viacelular.models.Land;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
@@ -41,6 +41,7 @@ public class IncomingSmsService extends BroadcastReceiver
 
 		try
 		{
+			Migration.getDB(context);
 			final Bundle bundle				= intent.getExtras();
 			SharedPreferences preferences	= context.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			SharedPreferences.Editor editor	= preferences.edit();
@@ -162,26 +163,26 @@ public class IncomingSmsService extends BroadcastReceiver
 										//Modificaciones para contemplar números cortos de más de una company
 										if(StringUtils.isNotEmpty(code))
 										{
-											companyId = Company.COMPANY_ID_VC_MONGO;
+											companyId = Suscription.COMPANY_ID_VC_MONGO;
 										}
 										else
 										{
 											if(message.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || message.toUpperCase().contains("VIACELULAR"))
 											{
 												//Optimización para evitar bucle por un registro
-												companyId = Company.COMPANY_ID_VC_MONGO;
+												companyId = Suscription.COMPANY_ID_VC_MONGO;
 											}
 											else
 											{
 												User user		= realm.where(User.class).findFirst();
-												String country	= preferences.getString(Country.KEY_API, "");
+												String country	= preferences.getString(Land.KEY_API, "");
 
 												if(user != null)
 												{
 													if(StringUtils.isNotEmpty(user.getCountryCode()))
 													{
 														country	= user.getCountryCode();
-														editor.putString(Country.KEY_API, country);
+														editor.putString(Land.KEY_API, country);
 														editor.apply();
 													}
 												}
@@ -198,7 +199,7 @@ public class IncomingSmsService extends BroadcastReceiver
 										}
 
 										//Agregado para contemplar país y celular del usuario al recibir un sms
-										notification.setCountryCode(preferences.getString(Country.KEY_API, ""));
+										notification.setCountryCode(preferences.getString(Land.KEY_API, ""));
 										notification.setPhone(preferences.getString(User.KEY_PHONE, ""));
 										notification.setCompanyId(companyId);
 										notification.setFlags(Message.FLAGS_SMS);
