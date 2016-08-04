@@ -10,7 +10,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.tween.viacelular.R;
-import com.tween.viacelular.data.Company;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import io.realm.Realm;
@@ -73,7 +72,7 @@ public class IconOptionAdapter extends BaseAdapter
 		{
 			//Agregado para posterior migración a Realm
 			realm					= Realm.getDefaultInstance();
-			Suscription suscription	= realm.where(Suscription.class).equalTo(Company.KEY_API, company).findFirst();
+			Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, company).findFirst();
 
 			if(convertView == null)
 			{

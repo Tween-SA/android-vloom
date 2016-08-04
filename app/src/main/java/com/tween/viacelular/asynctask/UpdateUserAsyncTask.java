@@ -8,8 +8,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.activities.SuscriptionsActivity;
-import com.tween.viacelular.data.ApiConnection;
-import com.tween.viacelular.data.Country;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.UserHelper;
@@ -92,7 +91,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 			JSONObject jsonResult			= new JSONObject();
 			JSONObject info					= new JSONObject();
 			String gcmId					= preferences.getString(User.KEY_GCMID, token);
-			String country					= preferences.getString(Country.KEY_API, "");
+			String country					= preferences.getString(Land.KEY_API, "");
 			String phone					= preferences.getString(User.KEY_PHONE, "");
 			String email					= "";
 			String firstName				= "";
@@ -120,7 +119,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 				lastName	= user.getLastName();
 				status		= user.getStatus();
 				email		= user.getEmail();
-				country		= preferences.getString(Country.KEY_API, user.getCountryCode());
+				country		= preferences.getString(Land.KEY_API, user.getCountryCode());
 				phone		= preferences.getString(User.KEY_PHONE, user.getPhone());
 			}
 
@@ -137,7 +136,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 
 				if(result.equals(ApiConnection.OK))
 				{
-					JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_DATA);
+					JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_CONTENT);
 
 					if(jsonData != null)
 					{

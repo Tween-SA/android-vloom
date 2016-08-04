@@ -26,7 +26,7 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.CaptureSMSAsyncTask;
 import com.tween.viacelular.asynctask.CheckCodeAsyncTask;
 import com.tween.viacelular.asynctask.RegisterPhoneAsyncTask;
-import com.tween.viacelular.data.Country;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -366,7 +366,7 @@ public class CodeActivity extends AppCompatActivity
 			editor.apply();
 			Intent intent					= new Intent(getApplicationContext(), PhoneActivity.class);
 			//Agregado para reiniciar el selector de país
-			intent.putExtra(Country.KEY_API, preferences.getString(Country.KEY_API, ""));
+			intent.putExtra(Land.KEY_API, preferences.getString(Land.KEY_API, ""));
 			startActivity(intent);
 			finish();
 		}

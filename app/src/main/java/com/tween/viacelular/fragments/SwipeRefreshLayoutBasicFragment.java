@@ -29,7 +29,7 @@ import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
 import com.tween.viacelular.adapters.IconOptionAdapter;
-import com.tween.viacelular.data.Country;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
@@ -554,7 +554,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					SharedPreferences preferences	= homeActivity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 					SharedPreferences.Editor editor	= preferences.edit();
 					User user						= realm.where(User.class).findFirst();
-					String country					= preferences.getString(Country.KEY_API, "");
+					String country					= preferences.getString(Land.KEY_API, "");
 					String companyId				= "";
 
 					if(user != null)
@@ -562,7 +562,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 						if(StringUtils.isNotEmpty(user.getCountryCode()))
 						{
 							country	= user.getCountryCode();
-							editor.putString(Country.KEY_API, country);
+							editor.putString(Land.KEY_API, country);
 							editor.apply();
 						}
 					}
