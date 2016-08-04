@@ -35,6 +35,7 @@ public class Common
 	public static final String			HASH_GOOGLEANALYTICS		= "UA-15307457-3"; //Referencia a la cuenta de Google Analytics
 	public static final String			HASH_NEWRELIC				= "AA5368393ae01f29d6d74776d5558f53066a8f187c"; //Referencia a la cuenta de NewRelic
 	public static final String			KEY_CODE					= "code";
+	public static final String			KEY_CONTENT					= "content";
 	public static final String			KEY_DATA					= "data";
 	public static final String			KEY_DESCRIPTION				= "description";
 	public static final String			KEY_DISPLAYNAME				= "displayName";

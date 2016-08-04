@@ -9,9 +9,9 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CodeActivity;
-import com.tween.viacelular.data.ApiConnection;
-import com.tween.viacelular.data.Country;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.ConnectedAccount;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.UserHelper;
 import com.tween.viacelular.utils.Common;
@@ -112,9 +112,9 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 				info.put(User.KEY_EMAIL, email);
 			}
 
-			if(StringUtils.isNotEmpty(preferences.getString(Country.KEY_API, "")))
+			if(StringUtils.isNotEmpty(preferences.getString(Land.KEY_API, "")))
 			{
-				info.put(Country.KEY_API, preferences.getString(Country.KEY_API, ""));
+				info.put(Land.KEY_API, preferences.getString(Land.KEY_API, ""));
 			}
 
 			//Modificado para obtener operadora sin consultar en la db
@@ -147,7 +147,7 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(result.equals(ApiConnection.OK) && needRedirect)
 			{
-				JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_DATA);
+				JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_CONTENT);
 
 				if(jsonData != null)
 				{

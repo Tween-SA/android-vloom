@@ -25,6 +25,7 @@ import com.tween.viacelular.asynctask.LogoAsyncTask;
 import com.tween.viacelular.data.Country;
 import com.tween.viacelular.data.User;
 import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -56,13 +57,16 @@ public class MyGcmListenerService extends GcmListenerService
 	{
 		try
 		{
+			//Arreglo temporal para que funcionen las push en background con el método viejo (por http sin xmpp)
+			if(context == null)
+			{
+				context = getApplicationContext();
+			}
+
+			Migration.getDB(context);
+
 			if(data != null)
 			{
-				if(context == null)
-				{
-					context = getApplicationContext();
-				}
-
 				String msgId					= data.getString(Message.KEY_API, "");
 				String msgType					= data.getString(Common.KEY_TYPE, "");
 				String msg						= data.getString(Message.KEY_PLAYLOAD, "");
