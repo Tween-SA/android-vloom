@@ -98,7 +98,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 			String lastName					= "";
 			int status						= User.STATUS_UNVERIFIED;
 
-			if(user != null)
+			if(user == null)
 			{
 				user = realm.where(User.class).findFirst();
 			}
@@ -121,98 +121,101 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 				email		= user.getEmail();
 				country		= preferences.getString(Land.KEY_API, user.getCountryCode());
 				phone		= preferences.getString(User.KEY_PHONE, user.getPhone());
-			}
 
-			//Modificación para solamente actualizar en api datos sin hacer el GET
-			if(useGet)
-			{
-				//Modificación para refrescar suscripciones del usuario
 				if(StringUtils.isIdMongo(userId))
 				{
-					jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + userId, context, ApiConnection.METHOD_GET,
-													preferences.getString(Common.KEY_TOKEN, ""), ""));
-					result		= ApiConnection.checkResponse(context, jsonResult);
-				}
-
-				if(result.equals(ApiConnection.OK))
-				{
-					JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_CONTENT);
-
-					if(jsonData != null)
+					//Modificación para solamente actualizar en api datos sin hacer el GET
+					if(useGet)
 					{
-						userParsed = UserHelper.parseJSON(jsonData, true, context);
-					}
-				}
-			}
-			else
-			{
-				userParsed = user;
-			}
-
-			if(usePut)
-			{
-				if((StringUtils.isNotEmpty(preferences.getString(User.KEY_GCMID, "")) && (!preferences.getString(User.KEY_GCMID, "").equals(gcmId)) || force == 1))
-				{
-					if(userParsed != null)
-					{
-						//Modificación para quitar campos no relevantes y forzar el envio de gsmId
-						boolean modified = false;
-
-						if(StringUtils.isNotEmpty(firstName))
+						//Modificación para refrescar suscripciones del usuario
+						if(StringUtils.isIdMongo(userId))
 						{
-							if(!firstName.equals(userParsed.getFirstName()))
-							{
-								info.put(User.KEY_FIRSTNAME, firstName);
-								modified = true;
-							}
-						}
-
-						if(StringUtils.isNotEmpty(lastName))
-						{
-							if(!lastName.equals(userParsed.getLastName()))
-							{
-								info.put(User.KEY_LASTNAME, lastName);
-								modified = true;
-							}
-						}
-
-						if(StringUtils.isNotEmpty(email))
-						{
-							//Modificación para enviar siempre el email de User para forzar el update con PUT/{userId}
-							info.put(User.KEY_EMAIL, email);
-							modified = true;
-						}
-
-						if(StringUtils.isNotEmpty(country))
-						{
-							if(!country.equals(userParsed.getCountryCode()))
-							{
-								info.put(Land.KEY_API, country);
-								modified = true;
-							}
-						}
-
-						//Agregado para forzar actualización de User si se dio de baja de redis por gcmId no válido
-						if(userParsed.getStatus() != status)
-						{
-							modified = true;
-						}
-
-						if(modified || force == 1)
-						{
-							jsonSend.put(User.KEY_PHONE, ("+"+phone).replace("++", "+"));
-							jsonSend.put(User.KEY_API, user.getUserId());
-							jsonSend.put(User.KEY_GCMID, preferences.getString(User.KEY_GCMID, user.getGcmId()));
-							info.put("os", "android");
-							info.put("countryLanguage", Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
-							jsonSend.put(Common.KEY_INFO, info);
-							jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_PUT,
-															preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+							jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + userId, context, ApiConnection.METHOD_GET,
+									preferences.getString(Common.KEY_TOKEN, ""), ""));
 							result		= ApiConnection.checkResponse(context, jsonResult);
-							//Guardar la fecha de última actualización
-							SharedPreferences.Editor editor = preferences.edit();
-							editor.putLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
-							editor.apply();
+						}
+
+						if(result.equals(ApiConnection.OK))
+						{
+							JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_CONTENT);
+
+							if(jsonData != null)
+							{
+								userParsed = UserHelper.parseJSON(jsonData, true, context);
+							}
+						}
+					}
+					else
+					{
+						userParsed = user;
+					}
+
+					if(usePut)
+					{
+						if((StringUtils.isNotEmpty(preferences.getString(User.KEY_GCMID, "")) && (!preferences.getString(User.KEY_GCMID, "").equals(gcmId)) || force == 1))
+						{
+							if(userParsed != null)
+							{
+								//Modificación para quitar campos no relevantes y forzar el envio de gsmId
+								boolean modified = false;
+
+								if(StringUtils.isNotEmpty(firstName))
+								{
+									if(!firstName.equals(userParsed.getFirstName()))
+									{
+										info.put(User.KEY_FIRSTNAME, firstName);
+										modified = true;
+									}
+								}
+
+								if(StringUtils.isNotEmpty(lastName))
+								{
+									if(!lastName.equals(userParsed.getLastName()))
+									{
+										info.put(User.KEY_LASTNAME, lastName);
+										modified = true;
+									}
+								}
+
+								if(StringUtils.isNotEmpty(email))
+								{
+									//Modificación para enviar siempre el email de User para forzar el update con PUT/{userId}
+									info.put(User.KEY_EMAIL, email);
+									modified = true;
+								}
+
+								if(StringUtils.isNotEmpty(country))
+								{
+									if(!country.equals(userParsed.getCountryCode()))
+									{
+										info.put(Land.KEY_API, country);
+										modified = true;
+									}
+								}
+
+								//Agregado para forzar actualización de User si se dio de baja de redis por gcmId no válido
+								if(userParsed.getStatus() != status)
+								{
+									modified = true;
+								}
+
+								if(modified || force == 1)
+								{
+									jsonSend.put(User.KEY_PHONE, ("+"+phone).replace("++", "+"));
+									jsonSend.put(User.KEY_API, user.getUserId());
+									jsonSend.put(User.KEY_GCMID, preferences.getString(User.KEY_GCMID, user.getGcmId()));
+									info.put("os", "android");
+									info.put("countryLanguage", Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
+									jsonSend.put(Common.KEY_INFO, info);
+									jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_PUT,
+											preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+									result		= ApiConnection.checkResponse(context, jsonResult);
+									//Guardar la fecha de última actualización
+									SharedPreferences.Editor editor = preferences.edit();
+									editor.putLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
+									editor.apply();
+								}
+							}
 						}
 					}
 				}
@@ -230,7 +233,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 			}
 
 			System.out.println("do redirect");
-			if(!displayDialog && useGet && !usePut && StringUtils.isEmpty(token))
+			if(!displayDialog && useGet && !usePut && StringUtils.isEmpty(token) && StringUtils.isIdMongo(userId))
 			{
 				//Redirige a la pantalla home al terminar
 				Intent intent = new Intent(context, HomeActivity.class);
@@ -240,7 +243,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 			}
 			else
 			{
-				if(displayDialog && useGet && !usePut && StringUtils.isEmpty(token))
+				if(displayDialog && useGet && !usePut && StringUtils.isEmpty(token) && StringUtils.isIdMongo(userId))
 				{
 					//Redirige a la pantalla empresas al terminar
 					Intent intent = new Intent(context, SuscriptionsActivity.class);

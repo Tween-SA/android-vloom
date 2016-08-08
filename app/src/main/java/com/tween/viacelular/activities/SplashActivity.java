@@ -30,12 +30,14 @@ import com.newrelic.agent.android.NewRelic;
 import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.GetLocationByApiAsyncTask;
 import com.tween.viacelular.models.Isp;
+import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.MyFirebaseInstanceIdService;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
+import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
 
 import java.util.ArrayList;
@@ -192,9 +194,12 @@ public class SplashActivity extends AppCompatActivity
 			FirebaseMessaging.getInstance().subscribeToTopic(MyFirebaseInstanceIdService.FRIENDLY_ENGAGE_TOPIC);
 			String token = FirebaseInstanceId.getInstance().getToken();
 			System.out.println("TOKEN NUEVO: "+token);
-			SharedPreferences.Editor preferences	= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE).edit();
-			preferences.putString(User.KEY_GCMID, token);
-			preferences.apply();
+			if(StringUtils.isNotEmpty(token))
+			{
+				SharedPreferences.Editor preferences	= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE).edit();
+				preferences.putString(User.KEY_GCMID, token);
+				preferences.apply();
+			}
 
 			//Actualización de métodos que estaban deprecados
 			GoogleApiAvailability googleApiAvailability	= GoogleApiAvailability.getInstance();
@@ -286,6 +291,15 @@ public class SplashActivity extends AppCompatActivity
 		try
 		{
 			LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver, new IntentFilter(MyFirebaseMessagingService.REGISTRATION_COMPLETE));
+
+			//Agregado para redirigir cuando se recibe una push en background
+			if(getIntent() != null)
+			{
+				if(getIntent().getExtras() != null)
+				{
+					MessageHelper.savePush(getIntent().getExtras(), this, "", true);
+				}
+			}
 		}
 		catch(Exception e)
 		{

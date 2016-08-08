@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CodeActivity;
@@ -38,7 +37,6 @@ import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -51,7 +49,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import io.realm.Realm;
 
 /**

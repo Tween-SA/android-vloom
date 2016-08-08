@@ -23,9 +23,9 @@ import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.asynctask.CompanyAsyncTask;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
 import com.tween.viacelular.asynctask.LogoAsyncTask;
-import com.tween.viacelular.data.Country;
-import com.tween.viacelular.data.User;
 import com.tween.viacelular.models.Land;
+import com.tween.viacelular.models.MessageHelper;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
@@ -54,11 +54,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 	{
 		try
 		{
-			context = getApplicationContext();
+			context		= getApplicationContext();
 			Migration.getDB(context);
 			// Handle data payload of FCM messages.
-			String from = remoteMessage.getFrom();
-			Map data = remoteMessage.getData();
+			String from	= remoteMessage.getFrom();
+			Map data	= remoteMessage.getData();
+
 			if(Common.DEBUG)
 			{
 				System.out.println("FCM Id: "+remoteMessage.getMessageId());
@@ -77,318 +78,144 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 
 			if(data != null)
 			{
-				String msgId					= "";
-				String msgType					= "";
-				String msg						= "";
-				String channel					= "";
-				String companyId				= "";
-				String phone					= "";
-				String countryCode				= "";
-				String flags					= "";
-				SharedPreferences preferences	= getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-				String sound					= "0";
-				int notificationId				= preferences.getInt(Common.KEY_LAST_MSGID, 0);
-				int soundOn						= 0; //Agregado para silenciar la push de sms
-				//Agregado para contemplar campos nuevos de push
-				int kind						= Message.KIND_TEXT;
-				String link						= "";
-				String linkThumb				= "";
-				String subMsg					= "";
-				String campaignId				= "";
-				String listId					= "";
-				String created					= String.valueOf(System.currentTimeMillis());
+				Bundle push = new Bundle();
 
 				//Leyendo desde push
 				if(data.get(Message.KEY_API) != null)
 				{
-					msgId = data.get(Message.KEY_API).toString();
+					push.putString(Message.KEY_API, data.get(Message.KEY_API).toString());
 				}
 
 				if(data.get(Common.KEY_TYPE) != null)
 				{
-					msgType = data.get(Common.KEY_TYPE).toString();
+					if(StringUtils.isEmpty(data.get(Common.KEY_TYPE).toString()))
+					{
+						if(StringUtils.isNotEmpty(remoteMessage.getNotification().getTitle()))
+						{
+							push.putString(Common.KEY_TYPE, remoteMessage.getNotification().getTitle());
+						}
+						else
+						{
+							push.putString(Common.KEY_TYPE, context.getString(R.string.notification));
+						}
+					}
+					else
+					{
+						push.putString(Common.KEY_TYPE, data.get(Common.KEY_TYPE).toString());
+					}
+				}
+				else
+				{
+					if(StringUtils.isNotEmpty(remoteMessage.getNotification().getTitle()))
+					{
+						push.putString(Common.KEY_TYPE, remoteMessage.getNotification().getTitle());
+					}
+					else
+					{
+						push.putString(Common.KEY_TYPE, context.getString(R.string.notification));
+					}
 				}
 
 				if(data.get(Message.KEY_PLAYLOAD) != null)
 				{
-					msg = data.get(Message.KEY_PLAYLOAD).toString();
+					if(StringUtils.isEmpty(data.get(Message.KEY_PLAYLOAD).toString()))
+					{
+						if(StringUtils.isNotEmpty(remoteMessage.getNotification().getBody()))
+						{
+							push.putString(Message.KEY_PLAYLOAD, remoteMessage.getNotification().getBody());
+						}
+						else
+						{
+							push.putString(Message.KEY_PLAYLOAD, context.getString(R.string.notification_new));
+						}
+					}
+					else
+					{
+						push.putString(Message.KEY_PLAYLOAD, data.get(Message.KEY_PLAYLOAD).toString());
+					}
+				}
+				else
+				{
+					if(StringUtils.isNotEmpty(remoteMessage.getNotification().getBody()))
+					{
+						push.putString(Message.KEY_PLAYLOAD, remoteMessage.getNotification().getBody());
+					}
+					else
+					{
+						push.putString(Message.KEY_PLAYLOAD, context.getString(R.string.notification_new));
+					}
 				}
 
 				if(data.get(Message.KEY_CHANNEL) != null)
 				{
-					channel = data.get(Message.KEY_CHANNEL).toString();
+					push.putString(Message.KEY_CHANNEL, data.get(Message.KEY_CHANNEL).toString());
 				}
 
 				if(data.get(Suscription.KEY_API) != null)
 				{
-					companyId = data.get(Suscription.KEY_API).toString();
+					push.putString(Suscription.KEY_API, data.get(Suscription.KEY_API).toString());
 				}
 
 				if(data.get(User.KEY_PHONE) != null)
 				{
-					phone = data.get(User.KEY_PHONE).toString();
+					push.putString(User.KEY_PHONE, data.get(User.KEY_PHONE).toString());
+				}
+				else
+				{
+					push.putString(User.KEY_PHONE, from);
 				}
 
 				if(data.get(Land.KEY_API) != null)
 				{
-					countryCode = data.get(Land.KEY_API).toString();
+					push.putString(Land.KEY_API, data.get(Land.KEY_API).toString());
 				}
 
 				if(data.get(Message.KEY_FLAGS) != null)
 				{
-					flags = data.get(Message.KEY_FLAGS).toString();
+					push.putString(Message.KEY_FLAGS, data.get(Message.KEY_FLAGS).toString());
 				}
 
 				if(data.get(Common.KEY_SOUND) != null)
 				{
-					sound							= data.get(Common.KEY_SOUND).toString();
+					push.putString(Common.KEY_SOUND, data.get(Common.KEY_SOUND).toString());
 				}
 
 				if(data.get(Message.KEY_KIND) != null)
 				{
-					kind = Integer.valueOf(data.get(Message.KEY_KIND).toString());
+					push.putInt(Message.KEY_KIND, (int) data.get(Message.KEY_KIND));
 				}
 
 				if(data.get(Message.KEY_LINK) != null)
 				{
-					link = data.get(Message.KEY_LINK).toString();
+					push.putString(Message.KEY_LINK, data.get(Message.KEY_LINK).toString());
 				}
 
 				if(data.get(Message.KEY_LINKTHUMB) != null)
 				{
-					linkThumb = data.get(Message.KEY_LINKTHUMB).toString();
+					push.putString(Message.KEY_LINKTHUMB, data.get(Message.KEY_LINKTHUMB).toString());
 				}
 
 				if(data.get(Message.KEY_SUBMSG) != null)
 				{
-					subMsg = data.get(Message.KEY_SUBMSG).toString();
+					push.putString(Message.KEY_SUBMSG, data.get(Message.KEY_SUBMSG).toString());
 				}
 
 				if(data.get(Message.KEY_CAMPAIGNID) != null)
 				{
-					campaignId = data.get(Message.KEY_CAMPAIGNID).toString();
+					push.putString(Message.KEY_CAMPAIGNID, data.get(Message.KEY_CAMPAIGNID).toString());
 				}
 
 				if(data.get(Message.KEY_LISTID) != null)
 				{
-					listId = data.get(Message.KEY_LISTID).toString();
+					push.putString(Message.KEY_LISTID, data.get(Message.KEY_LISTID).toString());
 				}
 
 				if(data.get(Message.KEY_TIMESTAMP) != null)
 				{
-					created = data.get(Message.KEY_TIMESTAMP).toString();
+					push.putString(Message.KEY_TIMESTAMP, data.get(Message.KEY_TIMESTAMP).toString());
 				}
 
-				//Agregado para contemplar campo sound de iOS
-				if(StringUtils.isNumber(sound))
-				{
-					soundOn = Integer.valueOf(sound);
-				}
-
-				if(StringUtils.isEmpty(msgId))
-				{
-					msgId = String.valueOf(notificationId + 1);
-				}
-
-				if(StringUtils.isEmpty(msgType))
-				{
-					//Agregado para tomar el campo type desde Appboy
-					/**
-					 * Estructura de mensajes Appboy
-					 * a -> Cuerpo
-					 * p -> TTL
-					 * t -> Título
-					 * _ab
-					 * cid
-					 * collapse_key Tipo de mensaje. Por ejemplo: campaign
-					 */
-					if(data.get("t") != null)
-					{
-						if(StringUtils.isNotEmpty(data.get("t").toString()))
-						{
-							if(data.get("t").toString().equals(Common.VALUE_FEEDBACKAPPBOY))
-							{
-								msgType = context.getString(R.string.feedback_typepush);
-							}
-							else
-							{
-								//Agregado para contemplar title de campañas Appboy
-								msgType = data.get("t").toString();
-							}
-						}
-						else
-						{
-							//Agregado para contemplar key estándar de título para la push
-							if(StringUtils.isNotEmpty(data.get("title").toString()))
-							{
-								msgType = data.get("title").toString();
-							}
-							else
-							{
-								msgType = context.getString(R.string.notification);
-							}
-						}
-					}
-				}
-
-				if(StringUtils.isEmpty(msg))
-				{
-					//Agregado para tomar el campo msg desde Appboy
-					if(data.get("a") != null)
-					{
-						if(StringUtils.isNotEmpty(data.get("a").toString()))
-						{
-							msg = data.get("a").toString();
-						}
-					}
-
-					if(data.get("message") != null)
-					{
-						//Agregado para contemplar key estándar de mensaje
-						if(StringUtils.isNotEmpty(data.get("message").toString()))
-						{
-							msg = data.get("message").toString();
-						}
-						else
-						{
-							msg = context.getString(R.string.notification_new);
-						}
-					}
-				}
-
-				if(StringUtils.isEmpty(channel))
-				{
-					channel = context.getString(R.string.app_name);
-				}
-
-				if(StringUtils.isEmpty(companyId))
-				{
-					companyId = Suscription.COMPANY_ID_VC_MONGO;
-				}
-				else
-				{
-					if(	companyId.equals(Suscription.COMPANY_ID_VC) || companyId.equals(Suscription.COMPANY_ID_VC_LONG) || companyId.equals(Suscription.COMPANY_ID_VC_MONGOOLD) ||
-						companyId.equals(Suscription.COMPANY_ID_WEBVC))
-					{
-						companyId = Suscription.COMPANY_ID_VC_MONGO;
-					}
-				}
-
-				if(StringUtils.isEmpty(countryCode))
-				{
-					countryCode = preferences.getString(Land.KEY_API, "");
-				}
-
-				if(StringUtils.isEmpty(phone))
-				{
-					//Agregado para no dejar vacío este campo
-					if(StringUtils.isNotEmpty(from))
-					{
-						phone = from;
-					}
-					else
-					{
-						phone = preferences.getString(User.KEY_PHONE, "");
-					}
-				}
-
-				if(StringUtils.isEmpty(flags))
-				{
-					flags = Message.FLAGS_PUSH;
-				}
-
-				//Agregado para contemplar key estándar de imagen
-				if(StringUtils.isEmpty(link) && kind == Message.KIND_TEXT)
-				{
-					if(data.get("image") != null)
-					{
-						if(StringUtils.isNotEmpty(data.get("image").toString()))
-						{
-							link	= data.get("image").toString();
-							kind	= Message.KIND_IMAGE;
-						}
-					}
-
-					if(data.get("img") != null)
-					{
-						if(StringUtils.isNotEmpty(data.get("img").toString()))
-						{
-							link	= data.get("img").toString();
-							kind	= Message.KIND_IMAGE;
-						}
-					}
-				}
-				else
-				{
-					//Se envía link pero no se especifica si es imagen, audio o vídeo por ende lo interpretamos como archivo común
-					if(StringUtils.isNotEmpty(link) && kind == Message.KIND_TEXT)
-					{
-						kind	= Message.KIND_FILE_DOWNLOADABLE;
-					}
-				}
-
-				if(StringUtils.isNotEmpty(link) && StringUtils.isEmpty(linkThumb))
-				{
-					linkThumb	= link;
-				}
-
-				Long time = System.currentTimeMillis();
-
-				if(StringUtils.isLong(created))
-				{
-					time = Long.valueOf(created);
-
-					if(time < System.currentTimeMillis())
-					{
-						time = System.currentTimeMillis();
-					}
-				}
-
-				//TODO: Agregar autodetección de tipo de mensaje por extensión de url
-
-				//Creamos el objeto inicial en Realm
-				Message message = new Message();
-				message.setMsgId(msgId);
-				message.setType(msgType);
-				message.setMsg(msg);
-				message.setChannel(channel);
-				message.setStatus(Message.STATUS_RECEIVE);
-				message.setCountryCode(countryCode);
-				message.setFlags(flags);
-				message.setCreated(time);//Se modificó para tomar el ts de la push siempre que no sea más viejo que el actual del device
-				message.setDeleted(Common.BOOL_NO);
-				message.setKind(kind);
-				message.setLink(link);
-				message.setLinkThumbnail(linkThumb);
-				message.setSubMsg(subMsg);
-				message.setCampaignId(campaignId);
-				message.setListId(listId);
-				message.setCompanyId(companyId);
-				message.setPhone(phone);
-
-				if(soundOn == PUSH_NORMAL)
-				{
-					Realm realm = Realm.getDefaultInstance();
-					realm.beginTransaction();
-					realm.copyToRealmOrUpdate(message);
-					realm.commitTransaction();
-				}
-				else
-				{
-					msgId = companyId;
-				}
-
-				/**
-				 * Production applications would usually process the message here.
-				 * Eg: - Syncing with server.
-				 *     - Store message in local database.
-				 *     - Update UI.
-				 */
-
-				/**
-				 * In some cases it may be useful to show a notification indicating to the user that a message was received.
-				 */
-				sendNotification(msgId, preferences, soundOn, notificationId, countryCode, msg, context);
+				MessageHelper.savePush(push, context, from, false);
 			}
 		}
 		catch(Exception e)
@@ -410,7 +237,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 	 * @param sound
 	 * @param from
 	 */
-	private void sendNotification(String msgId, SharedPreferences preferences, int sound, int from, String countryCode, String msg, Context context)
+	public void sendNotification(String msgId, SharedPreferences preferences, int sound, int from, String countryCode, String msg, Context context)
 	{
 		try
 		{
@@ -671,232 +498,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					context = getApplicationContext();
 				}
 
-				String msgId					= data.getString(Message.KEY_API, "");
-				String msgType					= data.getString(Common.KEY_TYPE, "");
-				String msg						= data.getString(Message.KEY_PLAYLOAD, "");
-				String channel					= data.getString(Message.KEY_CHANNEL, "");
-				String companyId				= data.getString(Suscription.KEY_API, "");
-				String phone					= data.getString(User.KEY_PHONE, "");
-				String countryCode				= data.getString(Country.KEY_API, "");
-				String flags					= data.getString(Message.KEY_FLAGS, "");
-				SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-				String sound					= data.getString(Common.KEY_SOUND, "0");
-				int notificationId				= preferences.getInt(Common.KEY_LAST_MSGID, 0);
-				int soundOn						= 0; //Agregado para silenciar la push de sms
-				//Agregado para contemplar campos nuevos de push
-				int kind						= data.getInt(Message.KEY_KIND, Message.KIND_TEXT);
-				String link						= data.getString(Message.KEY_LINK, "");
-				String linkThumb				= data.getString(Message.KEY_LINKTHUMB, "");
-				String subMsg					= data.getString(Message.KEY_SUBMSG, "");
-				String campaignId				= data.getString(Message.KEY_CAMPAIGNID, "");
-				String listId					= data.getString(Message.KEY_LISTID, "");
-				String created					= data.getString(Message.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-
-				//Agregado para contemplar campo sound de iOS
-				if(StringUtils.isNumber(sound))
-				{
-					soundOn = Integer.valueOf(sound);
-				}
-
-				if(Common.DEBUG)
-				{
-					System.out.println("Bundle: "+data.toString());
-					System.out.println("From: " + from);
-				}
-
-				if(StringUtils.isEmpty(msgId))
-				{
-					msgId = String.valueOf(notificationId + 1);
-				}
-
-				if(StringUtils.isEmpty(msgType))
-				{
-					//Agregado para tomar el campo type desde Appboy
-					/**
-					 * Estructura de mensajes Appboy
-					 * a -> Cuerpo
-					 * p -> TTL
-					 * t -> Título
-					 * _ab
-					 * cid
-					 * collapse_key Tipo de mensaje. Por ejemplo: campaign
-					 */
-					if(StringUtils.isNotEmpty(data.getString("t", "")))
-					{
-						if(data.getString("t", "").equals(Common.VALUE_FEEDBACKAPPBOY))
-						{
-							msgType = context.getString(R.string.feedback_typepush);
-						}
-						else
-						{
-							//Agregado para contemplar title de campañas Appboy
-							msgType = data.getString("t", "");
-						}
-					}
-					else
-					{
-						//Agregado para contemplar key estándar de título para la push
-						if(StringUtils.isNotEmpty(data.getString("title", "")))
-						{
-							msgType = data.getString("title", "");
-						}
-						else
-						{
-							msgType = context.getString(R.string.notification);
-						}
-					}
-				}
-
-				if(StringUtils.isEmpty(msg))
-				{
-					//Agregado para tomar el campo msg desde Appboy
-					if(StringUtils.isNotEmpty(data.getString("a", "")))
-					{
-						msg = data.getString("a", "");
-					}
-					else
-					{
-						//Agregado para contemplar key estándar de mensaje
-						if(StringUtils.isNotEmpty(data.getString("message", "")))
-						{
-							msg = data.getString("message", "");
-						}
-						else
-						{
-							msg = context.getString(R.string.notification_new);
-						}
-					}
-				}
-
-				if(StringUtils.isEmpty(channel))
-				{
-					channel = context.getString(R.string.app_name);
-				}
-
-				if(StringUtils.isEmpty(companyId))
-				{
-					companyId = Suscription.COMPANY_ID_VC_MONGO;
-				}
-				else
-				{
-					if(	companyId.equals(Suscription.COMPANY_ID_VC) || companyId.equals(Suscription.COMPANY_ID_VC_LONG) || companyId.equals(Suscription.COMPANY_ID_VC_MONGOOLD) ||
-							companyId.equals(Suscription.COMPANY_ID_WEBVC))
-					{
-						companyId = Suscription.COMPANY_ID_VC_MONGO;
-					}
-				}
-
-				if(StringUtils.isEmpty(countryCode))
-				{
-					countryCode = preferences.getString(Country.KEY_API, "");
-				}
-
-				if(StringUtils.isEmpty(phone))
-				{
-					//Agregado para no dejar vacío este campo
-					if(StringUtils.isNotEmpty(from))
-					{
-						phone = from;
-					}
-					else
-					{
-						phone = preferences.getString(User.KEY_PHONE, "");
-					}
-				}
-
-				if(StringUtils.isEmpty(flags))
-				{
-					flags = Message.FLAGS_PUSH;
-				}
-
-				//Agregado para contemplar key estándar de imagen
-				if(StringUtils.isEmpty(link) && kind == Message.KIND_TEXT)
-				{
-					if(StringUtils.isNotEmpty(data.getString("image", "")))
-					{
-						link	= data.getString("image", "");
-						kind	= Message.KIND_IMAGE;
-					}
-					else
-					{
-						if(StringUtils.isNotEmpty(data.getString("img", "")))
-						{
-							link	= data.getString("img", "");
-							kind	= Message.KIND_IMAGE;
-						}
-					}
-				}
-				else
-				{
-					//Se envía link pero no se especifica si es imagen, audio o vídeo por ende lo interpretamos como archivo común
-					if(StringUtils.isNotEmpty(link) && kind == Message.KIND_TEXT)
-					{
-						kind	= Message.KIND_FILE_DOWNLOADABLE;
-					}
-				}
-
-				if(StringUtils.isNotEmpty(link) && StringUtils.isEmpty(linkThumb))
-				{
-					linkThumb	= link;
-				}
-
-				Long time = System.currentTimeMillis();
-
-				if(StringUtils.isLong(created))
-				{
-					time = Long.valueOf(created);
-
-					if(time < System.currentTimeMillis())
-					{
-						time = System.currentTimeMillis();
-					}
-				}
-
-				//TODO: Agregar autodetección de tipo de mensaje por extensión de url
-
-				//Creamos el objeto inicial en Realm
-				Message message = new Message();
-				message.setMsgId(msgId);
-				message.setType(msgType);
-				message.setMsg(msg);
-				message.setChannel(channel);
-				message.setStatus(Message.STATUS_RECEIVE);
-				message.setCountryCode(countryCode);
-				message.setFlags(flags);
-				message.setCreated(time);//Se modificó para tomar el ts de la push siempre que no sea más viejo que el actual del device
-				message.setDeleted(Common.BOOL_NO);
-				message.setKind(kind);
-				message.setLink(link);
-				message.setLinkThumbnail(linkThumb);
-				message.setSubMsg(subMsg);
-				message.setCampaignId(campaignId);
-				message.setListId(listId);
-				message.setCompanyId(companyId);
-				message.setPhone(phone);
-
-				if(soundOn == PUSH_NORMAL)
-				{
-					Realm realm = Realm.getDefaultInstance();
-					realm.beginTransaction();
-					realm.copyToRealmOrUpdate(message);
-					realm.commitTransaction();
-				}
-				else
-				{
-					msgId = companyId;
-				}
-
-				/**
-				 * Production applications would usually process the message here.
-				 * Eg: - Syncing with server.
-				 *     - Store message in local database.
-				 *     - Update UI.
-				 */
-
-				/**
-				 * In some cases it may be useful to show a notification indicating to the user that a message was received.
-				 */
-				sendNotification(msgId, preferences, soundOn, notificationId, countryCode, msg, context);
+				MessageHelper.savePush(data, context, from, false);
+				//Se agrupo el código para procesar la push dentro de MessageHelper
 			}
 		}
 		catch(Exception e)
