@@ -1,19 +1,17 @@
 package com.tween.viacelular.models;
 
 import android.content.Context;
+
 import com.tween.viacelular.data.Company;
 import com.tween.viacelular.utils.Common;
-import io.realm.DynamicRealm;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmMigration;
-import io.realm.RealmObjectSchema;
-import io.realm.RealmSchema;
 
 /**
  * Created by davidfigueroa on 4/2/16.
  */
-public class Migration implements RealmMigration
+public class Migration //implements RealmMigration
 {
 	/**
 	 * Regera la db Realm y la setea como Default para ser usada posteriormente
@@ -28,14 +26,14 @@ public class Migration implements RealmMigration
 				.schemaVersion(version)
 				.build();
 
-			if(version != Common.REALMDB_VERSION)
+			/*if(version != Common.REALMDB_VERSION)
 			{
 				Realm.migrateRealm(config, new Migration());
 				config	= new RealmConfiguration.Builder(context)
 						.name(Common.REALMDB_NAME)
 						.schemaVersion(Common.REALMDB_VERSION)
 						.build();
-			}
+			}*/
 
 			Realm.setDefaultConfiguration(config);
 		}
@@ -108,7 +106,7 @@ public class Migration implements RealmMigration
 	 * @param oldVersion
 	 * @param newVersion
 	 */
-	@Override
+	/*@Override
 	public void migrate(final DynamicRealm realm, long oldVersion, final long newVersion)
 	{
 		try
@@ -136,5 +134,5 @@ public class Migration implements RealmMigration
 				e.printStackTrace();
 			}
 		}
-	}
+	}*/
 }

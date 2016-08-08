@@ -73,8 +73,8 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 			Realm realm						= Realm.getDefaultInstance();
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			JSONObject jsonResult			= null;
-			jsonResult						= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES + "/" + companyId, context, ApiConnection.METHOD_GET,
-												preferences.getString(Common.KEY_TOKEN, ""), ""));
+			jsonResult						= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES + "/" + companyId, context, ApiConnection.METHOD_GET,
+																preferences.getString(Common.KEY_TOKEN, ""), ""));
 			result							= ApiConnection.checkResponse(context, jsonResult);
 
 			if(result.equals(ApiConnection.OK))
@@ -102,6 +102,7 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 		catch(JSONException e)
 		{
 			System.out.println("CompanyAsyncTask:doInBackground - JSONException: " + e);
+
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
@@ -110,6 +111,7 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 		catch(Exception e)
 		{
 			System.out.println("CompanyAsyncTask:doInBackground - Exception: " + e);
+
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();

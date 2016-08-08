@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.tween.viacelular.R;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.ConnectedAccount;
@@ -89,7 +90,7 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 			JSONObject jsonSend				= new JSONObject();
 			JSONObject jsonResult			= new JSONObject();
 			String phone					= preferences.getString(User.KEY_PHONE, "");
-			String gcmId					= preferences.getString(User.KEY_GCMID, User.FAKE_GCMID_EMULATOR);
+			String gcmId					= preferences.getString(User.KEY_GCMID, "");
 
 			if(user == null)
 			{
@@ -99,6 +100,18 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 			{
 				phone	= preferences.getString(User.KEY_PHONE, user.getPhone());
 				gcmId	= preferences.getString(User.KEY_GCMID, user.getGcmId());
+			}
+
+			if(StringUtils.isEmpty(gcmId) || gcmId.equals(User.FAKE_GCMID_EMULATOR))
+			{
+				gcmId = FirebaseInstanceId.getInstance().getToken();
+
+				if(StringUtils.isEmpty(gcmId))
+				{
+					gcmId = User.FAKE_GCMID_EMULATOR;
+				}
+
+				preferences.edit().putString(User.KEY_GCMID, gcmId).apply();
 			}
 
 			//Modificación para evitar duplicación de usuarios

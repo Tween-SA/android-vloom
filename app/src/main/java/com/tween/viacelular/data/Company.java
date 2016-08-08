@@ -2,6 +2,7 @@ package com.tween.viacelular.data;
 
 import android.content.Context;
 import com.tween.viacelular.R;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.services.ApiConnection;
@@ -11,7 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
-
 import io.realm.Realm;
 
 public class Company
@@ -993,13 +993,13 @@ public class Company
 					}
 				}
 
-				if(jsonObject.has(Country.KEY_API))
+				if(jsonObject.has(Land.KEY_API))
 				{
-					if(!jsonObject.isNull(Country.KEY_API))
+					if(!jsonObject.isNull(Land.KEY_API))
 					{
-						if(StringUtils.isNotEmpty(jsonObject.getString(Country.KEY_API)))
+						if(StringUtils.isNotEmpty(jsonObject.getString(Land.KEY_API)))
 						{
-							jCountryCode = jsonObject.getString(Country.KEY_API);
+							jCountryCode = jsonObject.getString(Land.KEY_API);
 						}
 					}
 				}
@@ -1272,13 +1272,13 @@ public class Company
 								}
 							}
 
-							if(jsonObject.has(Country.KEY_API))
+							if(jsonObject.has(Land.KEY_API))
 							{
-								if(!jsonObject.isNull(Country.KEY_API))
+								if(!jsonObject.isNull(Land.KEY_API))
 								{
-									if(StringUtils.isNotEmpty(jsonObject.getString(Country.KEY_API)))
+									if(StringUtils.isNotEmpty(jsonObject.getString(Land.KEY_API)))
 									{
-										jCountryCode = jsonObject.getString(Country.KEY_API);
+										jCountryCode = jsonObject.getString(Land.KEY_API);
 									}
 								}
 							}

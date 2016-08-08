@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
@@ -43,7 +44,7 @@ public class CompanyDao extends AbstractDao<Company, Long>
 		public final static Property id					= new Property(0, Long.class, Common.KEY_ID, true, Common.KEY_ID);
 		public final static Property companyId			= new Property(1, String.class, Company.KEY_API, false, KEY_COMPANYID);
 		public final static Property name				= new Property(2, String.class, Common.KEY_NAME, false, Common.KEY_NAME);
-		public final static Property countryCode		= new Property(3, String.class, Country.KEY_API, false, CountryDao.KEY_COUNTRYCODE);
+		public final static Property countryCode		= new Property(3, String.class, Land.KEY_API, false, CountryDao.KEY_COUNTRYCODE);
 		public final static Property industryCode		= new Property(4, String.class, Company.KEY_INDUSTRYCODE, false, KEY_INDUSTRYCODE);
 		public final static Property industry			= new Property(5, String.class, Company.KEY_INDUSTRY, false, Company.KEY_INDUSTRY);
 		public final static Property type				= new Property(6, Integer.class, Common.KEY_TYPE, false, Common.KEY_TYPE);
@@ -539,7 +540,7 @@ public class CompanyDao extends AbstractDao<Company, Long>
 			UserDao userDao					= null;
 			MessageDao messageDao			= null;
 			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			String country					= preferences.getString(Country.KEY_API, "");
+			String country					= preferences.getString(Land.KEY_API, "");
 			JSONObject jsonResult			= null;
 			String result					= "";
 

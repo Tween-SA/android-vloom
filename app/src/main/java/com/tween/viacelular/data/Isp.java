@@ -2,6 +2,7 @@ package com.tween.viacelular.data;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import org.json.JSONObject;
@@ -494,11 +495,11 @@ public class Isp
 					}
 				}
 
-				if(json.has(Country.KEY_API))
+				if(json.has(Land.KEY_API))
 				{
-					if(StringUtils.isNotEmpty(json.getString(Country.KEY_API)))
+					if(StringUtils.isNotEmpty(json.getString(Land.KEY_API)))
 					{
-						jCountryCode = json.getString(Country.KEY_API);
+						jCountryCode = json.getString(Land.KEY_API);
 					}
 				}
 

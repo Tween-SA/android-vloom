@@ -2,6 +2,7 @@ package com.tween.viacelular.data;
 
 import android.app.Activity;
 import com.tween.viacelular.asynctask.CompanyAsyncTask;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -382,11 +383,11 @@ public class User
 				}
 			}
 
-			if(json.has(Country.KEY_API))
+			if(json.has(Land.KEY_API))
 			{
-				if(StringUtils.isNotEmpty(json.getString(Country.KEY_API)))
+				if(StringUtils.isNotEmpty(json.getString(Land.KEY_API)))
 				{
-					jCountryCode = json.getString(Country.KEY_API);
+					jCountryCode = json.getString(Land.KEY_API);
 				}
 			}
 
@@ -429,11 +430,11 @@ public class User
 					}
 				}
 
-				if(json.has(Country.KEY_API))
+				if(json.has(Land.KEY_API))
 				{
-					if(StringUtils.isNotEmpty(json.getString(Country.KEY_API)))
+					if(StringUtils.isNotEmpty(json.getString(Land.KEY_API)))
 					{
-						jCountryCode = json.getString(Country.KEY_API);
+						jCountryCode = json.getString(Land.KEY_API);
 					}
 				}
 			}

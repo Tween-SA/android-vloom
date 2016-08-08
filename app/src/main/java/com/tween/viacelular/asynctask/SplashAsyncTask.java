@@ -72,6 +72,7 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 		catch(Exception e)
 		{
 			System.out.println("SplashAsyncTask - Exception: " + e);
+
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();

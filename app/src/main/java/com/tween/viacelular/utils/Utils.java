@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CodeActivity;
@@ -37,8 +36,7 @@ import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.services.MyGcmListenerService;
-
+import com.tween.viacelular.services.MyFirebaseMessagingService;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -51,7 +49,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import io.realm.Realm;
 
 /**
@@ -143,7 +140,7 @@ public class Utils
 	{
 		try
 		{
-			MyGcmListenerService push	= new MyGcmListenerService();
+			MyFirebaseMessagingService push	= new MyFirebaseMessagingService();
 			push.setContext(context);
 			Bundle bundle				= new Bundle();
 			bundle.putString(Common.KEY_SOUND, sound);
@@ -165,7 +162,7 @@ public class Utils
 			bundle.putString(Message.KEY_SUBMSG, message.getSubMsg());
 			bundle.putString(Message.KEY_CAMPAIGNID, message.getCampaignId());
 			bundle.putString(Message.KEY_LISTID, message.getListId());
-			push.onMessageReceived(from, bundle);
+			push.onOldPush(from, bundle);
 		}
 		catch(Exception e)
 		{
@@ -596,7 +593,7 @@ public class Utils
 		try
 		{
 			String version			= context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-			String db				= "SQLite: "+ DaoMaster.SCHEMA_VERSION+" Realm: "+Common.REALMDB_VERSION;
+			String db				= "SQLite: "+DaoMaster.SCHEMA_VERSION+" Realm: "+Common.REALMDB_VERSION;
 			String androidVersion	= Build.VERSION.RELEASE + " (" + android.os.Build.VERSION.SDK_INT + ")";
 			String device			= Build.MANUFACTURER + " " + Build.MODEL;
 			String lang				= Locale.getDefault().getDisplayLanguage() + " (" + Locale.getDefault().getLanguage() + ")";
