@@ -121,6 +121,7 @@
 	<string name="register_begin">Inscrivez-vous pour commencer</string>
 	<string name="register_dialog">Enregistrement en cours...</string>
 	<string name="register">Enregistrez-vous avec votre adresse de courrier électronique</string>
+	<string name="register_business">Connectez-vous d\'affaires</string><!-- after traslate -->
 	<string name="registering_message">Génération d\'identifiant d\'instance pour jeton...</string>
 	<string name="reimport_sms">Réimporter mes SMS</string>
 	<string name="repassword_blank">Vous devez confirmer le mot de passe</string>

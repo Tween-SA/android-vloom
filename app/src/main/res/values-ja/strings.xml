@@ -121,6 +121,7 @@
 	<string name="register_begin">登録して開始</string>
 	<string name="register_dialog">登録中...</string>
 	<string name="register">メールを登録</string>
+	<string name="register_business">ビジネスログイン</string><!-- after traslate -->
 	<string name="registering_message">トークンのインスタンスIDの生成中...</string>
 	<string name="reimport_sms">SMSメッセージを再インポート</string>
 	<string name="repassword_blank">パスワードをご確認ください</string>

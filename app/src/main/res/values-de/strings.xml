@@ -121,6 +121,7 @@
 	<string name="register_begin">Registriere dich, um zu beginnen</string>
 	<string name="register_dialog">Registrierung ...</string>
 	<string name="register">Registriere dich mit deiner E-Mail</string>
+	<string name="register_business">Anmeldung Geschäfts</string><!-- after traslate -->
 	<string name="registering_message">Erstelle Instanzkennung für Token...</string>
 	<string name="reimport_sms">Neuimport meiner SMS</string>
 	<string name="repassword_blank">Bitte bestätige dein Passwort</string>

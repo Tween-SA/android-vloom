@@ -121,6 +121,7 @@
 	<string name="refresh_complete">Your subscriptions have been updated</string>
 	<string name="refresh_menu">Update</string>
 	<string name="register_begin">Register to begin</string>
+	<string name="register_business">Sign in Business</string><!-- after traslate -->
 	<string name="register_dialog">Registering...</string>
 	<string name="register">Register with your e-mail</string>
 	<string name="registering_message">Generating instance ID for token ...</string>

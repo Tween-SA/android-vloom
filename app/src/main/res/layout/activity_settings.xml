@@ -80,13 +80,26 @@
 					android:shadowColor="@android:color/transparent"
 					android:textAppearance="?android:attr/textAppearanceMedium"
 					android:gravity="left" />
+				<Button
+					android:id="@+id/btnRegister"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@+id/btnContact"
+					android:layout_marginTop="20dp"
+					android:text="@string/register_business"
+					android:onClick="goBusiness"
+					android:textColor="@color/gray"
+					android:background="@android:color/transparent"
+					android:shadowColor="@android:color/transparent"
+					android:textAppearance="?android:attr/textAppearanceMedium"
+					android:gravity="left" />
 				<TextView
 					android:id="@+id/txtStatistics"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="@string/send_statistics"
 					android:textAppearance="?android:attr/textAppearanceMedium"
-					android:layout_below="@+id/btnContact"
+					android:layout_below="@+id/btnRegister"
 					android:layout_marginTop="20dp"
 					android:onClick="checkStatistics"
 					android:clickable="true"

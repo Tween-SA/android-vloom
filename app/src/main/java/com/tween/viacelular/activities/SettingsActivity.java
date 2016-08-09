@@ -33,6 +33,7 @@ import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -190,6 +191,25 @@ public class SettingsActivity extends AppCompatActivity
 		catch(Exception e)
 		{
 			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
+		}
+
+		finish();
+	}
+
+	public void goBusiness(View v)
+	{
+		try
+		{
+			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ApiConnection.BUSINESS)));
+		}
+		catch(Exception e)
+		{
+			System.out.println("SettingsActivity:goBusiness - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		finish();

@@ -121,6 +121,7 @@
 	<string name="register_begin">Registre-se para começar</string>
 	<string name="register_dialog">Registrando ...</string>
 	<string name="register">Cadastre seu e-mail</string>
+	<string name="register_business">Entrar no negócio</string><!-- after traslate -->
 	<string name="registering_message">Gerando ID de instância para token...</string>
 	<string name="reimport_sms">Reimportar meus SMSs</string>
 	<string name="repassword_blank">Você deve confirmar sua senha</string>

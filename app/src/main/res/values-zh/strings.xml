@@ -121,6 +121,7 @@
 	<string name="register_begin">注册以开始</string>
 	<string name="register_dialog">正在注册...</string>
 	<string name="register">用您的电子邮件进行注册</string>
+	<string name="register_business">登录业务</string><!-- after traslate -->
 	<string name="registering_message">正在生成的令牌实例 ID ...</string>
 	<string name="reimport_sms">重新导入我的短信</string>
 	<string name="repassword_blank">您必须确认您的密码</string>
