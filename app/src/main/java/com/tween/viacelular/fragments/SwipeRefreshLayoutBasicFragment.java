@@ -435,6 +435,12 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 																														.setLabel("AccionUser").build());
 						snackBarText = context.getString(R.string.snack_blocked);
 					}
+					else
+					{
+						//Agregado para capturar evento en Google Analytics
+						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Agregar")
+																														.setLabel("AccionUser").build());
+					}
 
 					BlockedActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(client.getFollower()), false, company.getCompanyId(), true);
 					snackBar = Snackbar.make(clayout, snackBarText, Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()

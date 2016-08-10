@@ -21,6 +21,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CodeActivity;
@@ -105,6 +108,9 @@ public class Utils
 					break;
 
 					case 3:
+						//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
+						GoogleAnalytics.getInstance(activity).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("Entrar")
+																											.setLabel("Accion_user").build());
 						intent = new Intent(activity, SettingsActivity.class);
 						intent.putExtra(Common.KEY_TITLE, activity.getString(R.string.title_settings));
 						intent.putExtra(Common.KEY_SECTION, position);
@@ -471,6 +477,9 @@ public class Utils
 
 				if(action == 1)
 				{
+					//Agregado para capturar evento en Google Analytics
+					GoogleAnalytics.getInstance(activity).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("EmailLanding")
+																										.setLabel("AccionUser").build());
 					//Envía hacia algún cliente de email la casilla recibida en extraText, se corrige para enviar la dirección al Para:
 					intent = new Intent(Intent.ACTION_SEND);
 					intent.setType("text/plain");
@@ -480,6 +489,9 @@ public class Utils
 				}
 				else
 				{
+					//Agregado para capturar evento en Google Analytics
+					GoogleAnalytics.getInstance(activity).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("PhoneLanding")
+																										.setLabel("AccionUser").build());
 					//Envía hacia el cliente de Teléfono el número recibido en extraText
 					intent = new Intent(Intent.ACTION_DIAL);
 					intent.setData(Uri.parse("tel:" + extraText));

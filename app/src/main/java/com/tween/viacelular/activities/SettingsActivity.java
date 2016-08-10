@@ -25,6 +25,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.RecyclerAdapter;
 import com.tween.viacelular.adapters.RecyclerItemClickListener;
@@ -184,6 +186,10 @@ public class SettingsActivity extends AppCompatActivity
 
 	public void goPlayStore(View v)
 	{
+		//Agregado para capturar evento en Google Analytics
+		GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("Playstore")
+																						.setLabel("AccionUser").build());
+
 		try
 		{
 			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
@@ -200,6 +206,9 @@ public class SettingsActivity extends AppCompatActivity
 	{
 		try
 		{
+			//Agregado para capturar evento en Google Analytics
+			GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("Business")
+																							.setLabel("AccionUser").build());
 			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ApiConnection.BUSINESS)));
 		}
 		catch(Exception e)
@@ -231,6 +240,9 @@ public class SettingsActivity extends AppCompatActivity
 
 			if(chkSilence.isChecked())
 			{
+				//Agregado para capturar evento en Google Analytics
+				GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("SilenciarOn")
+																								.setLabel("AccionUser").build());
 				editor.putBoolean(Suscription.KEY_SILENCED, true);
 				editor.apply();
 				task = new UpdateSilence(Common.BOOL_YES);
@@ -251,6 +263,9 @@ public class SettingsActivity extends AppCompatActivity
 			}
 			else
 			{
+				//Agregado para capturar evento en Google Analytics
+				GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("SilenciarOff")
+																								.setLabel("AccionUser").build());
 				editor.putBoolean(Suscription.KEY_SILENCED, false);
 				editor.apply();
 				task = new UpdateSilence(Common.BOOL_NO);
@@ -615,6 +630,9 @@ public class SettingsActivity extends AppCompatActivity
 	{
 		try
 		{
+			//Agregado para capturar evento en Google Analytics
+			GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("Contacto")
+																							.setLabel("AccionUser").build());
 			//Envía email con interacción del usuario y la db adjuntada
 			Utils.sendContactMail(SettingsActivity.this);
 		}

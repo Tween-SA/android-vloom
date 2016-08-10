@@ -422,6 +422,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					{
 						holder.socialAccount.setText(item.getSocialAccount());
 						holder.socialDate.setText(item.getSocialDate());
+						//TODO: Al tocar en la card si es twitter reportar a Analytics (Category:Social - Action:VerContenido - Label:AccionUser)
 					}
 				}
 			}
