@@ -16,6 +16,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.SuscriptionsActivity;
 import com.tween.viacelular.adapters.SuscriptionsAdapter;
@@ -256,6 +258,10 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 	{
 		try
 		{
+			//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
+			GoogleAnalytics.getInstance(getActivityContext()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Filtro")
+																											.setLabel("AccionUser").build());
+
 			if(fab != null)
 			{
 				fab.setImageResource(R.drawable.ic_clear_white_36dp);

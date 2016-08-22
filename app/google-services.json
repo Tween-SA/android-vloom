@@ -1,0 +1,66 @@
+{
+  "project_info": {
+    "project_number": "189459365557",
+    "firebase_url": "https://tween-viacelular.firebaseio.com",
+    "project_id": "tween-viacelular",
+    "storage_bucket": "tween-viacelular.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189459365557:android:59ad38d27c9fbae9",
+        "android_client_info": {
+          "package_name": "com.tween.viacelular"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "189459365557-67vs2o2vbq0qc3iq6fg38lq9m7vq71f7.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "189459365557-au2rtatq67h047pl6i3j9r3vo2dva9n4.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "189459365557-dq59dreg4ievltj07iphm1r137t2v3h3.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "189459365557-qlgu9qm8pegca4hisnr05vo99odembge.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "189459365557-5b01tecbc5o694tod2gop1a5mc3btrd5.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "189459365557-f7mheuu3idq0sbok93250h666fmqa5u4.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "189459365557-g3rb709955mq8njkoneg5c2mau2q5gn6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3EMNetJEeiwi8jd3_qiwcVKD_eQhnMtI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

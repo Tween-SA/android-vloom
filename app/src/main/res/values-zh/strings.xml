@@ -121,6 +121,7 @@
 	<string name="register_begin">注册以开始</string>
 	<string name="register_dialog">正在注册...</string>
 	<string name="register">用您的电子邮件进行注册</string>
+	<string name="register_business">登录业务</string><!-- after traslate -->
 	<string name="registering_message">正在生成的令牌实例 ID ...</string>
 	<string name="reimport_sms">重新导入我的短信</string>
 	<string name="repassword_blank">您必须确认您的密码</string>
@@ -141,6 +142,9 @@
 	<string name="silence_actived">静默模式已启用</string>
 	<string name="silence_desactived">静默模式已禁用</string>
 	<string name="silence">静默</string>
+	<string name="social">我们正在为你的新内容</string><!-- after traslate -->
+	<string name="social_high">鸣叫亮点</string><!-- after traslate -->
+	<string name="social_date">发表于 dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">您想要继续接收这些消息？</string>
 	<string name="sms_text_paid">需付费短信</string>
 	<string name="sms_text">短信</string>
@@ -247,6 +251,12 @@
 		<item>分享</item>
 		<item>标记为垃圾</item>
 		<item>删除</item>
+	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>分享</item>
+		<item>标记为垃圾</item>
+		<item>删除</item>
+		<item>我不希望看到这个了</item><!-- after traslate -->
 	</string-array>
 	<string-array name="optionsChannel">
 		<item>静默</item>

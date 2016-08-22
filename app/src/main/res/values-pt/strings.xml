@@ -121,6 +121,7 @@
 	<string name="register_begin">Registre-se para começar</string>
 	<string name="register_dialog">Registrando ...</string>
 	<string name="register">Cadastre seu e-mail</string>
+	<string name="register_business">Entrar no negócio</string><!-- after traslate -->
 	<string name="registering_message">Gerando ID de instância para token...</string>
 	<string name="reimport_sms">Reimportar meus SMSs</string>
 	<string name="repassword_blank">Você deve confirmar sua senha</string>
@@ -141,6 +142,9 @@
 	<string name="silence_actived">Silêncio ativado</string>
 	<string name="silence_desactived">Silêncio desativado</string>
 	<string name="silence">Silenciar</string>
+	<string name="social">Estamos recebendo novos conteúdos para você</string><!-- after traslate -->
+	<string name="social_high">Tweet Destaques</string><!-- after traslate -->
+	<string name="social_date">Publicado em dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">Deseja receber essas mensagens?</string>
 	<string name="sms_text_paid">SMS Pago</string>
 	<string name="sms_text">SMS</string>
@@ -247,6 +251,12 @@
 		<item>Compartilhar</item>
 		<item>Marcar como spam</item>
 		<item>Remover</item>
+	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>Compartilhar</item>
+		<item>Marcar como spam</item>
+		<item>Remover</item>
+		<item>Eu não quero ver isso mais</item><!-- after traslate -->
 	</string-array>
 	<string-array name="optionsChannel">
 		<item>Silenciar</item>

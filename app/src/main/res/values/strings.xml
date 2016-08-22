@@ -27,7 +27,6 @@
 	<string name="day">día</string>
 	<string name="days">días</string>
 	<string name="disagree">Cancelar</string>
-	<string name="google_app_id" translatable="false">189459365557</string>
 	<string name="email_blank">Debes ingresar un correo electrónico</string>
 	<string name="email_wrong">Formato de correo electrónico inválido</string>
 	<string name="email">Correo electrónico</string>
@@ -41,7 +40,6 @@
 	<string name="feedback_typepush">Respuesta de soporte</string>
 	<string name="gcm_send_message">Token recuperado y enviado al servidor</string>
 	<string name="get_play_services">Obtén Google Play Services</string>
-	<string name="google_api_key" translatable="false">189459365557</string>
 	<string name="hello_world">Hola</string>
 	<string name="home">Verifica tu n° de celular para una mejor experiencia con VíaCelular</string>
 	<string name="hours">horas</string>
@@ -123,6 +121,7 @@
 	<string name="register_begin">Registrate para empezar</string>
 	<string name="register_dialog">Registrando...</string>
 	<string name="register">Registrate con tu e-mail</string>
+	<string name="register_business">Registrarme en Business</string><!-- after traslate -->
 	<string name="registering_message">Generando ID de instancia para token...</string>
 	<string name="reimport_sms">Re-Importar mis SMS</string>
 	<string name="repassword_blank">Debes confirmar la contraseña</string>
@@ -143,6 +142,9 @@
 	<string name="silence_actived">Silencio activado</string>
 	<string name="silence_desactived">Silencio desactivado</string>
 	<string name="silence">Silenciar</string>
+	<string name="social">Estamos recibiendo nuevo contenido para ti</string><!-- after traslate -->
+	<string name="social_high">Tweet destacado</string><!-- after traslate -->
+	<string name="social_date">Publicado el dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">¿Deseas seguir recibiendo estos mensajes?</string>
 	<string name="sms_text_paid">SMS Pago</string>
 	<string name="sms_text">SMS</string>
@@ -249,6 +251,12 @@
 		<item>Compartir</item>
 		<item>Marcar como spam</item>
 		<item>Eliminar</item>
+	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>Compartir</item>
+		<item>Marcar como spam</item>
+		<item>Eliminar</item>
+		<item>No quiero ver más esto</item><!-- after traslate -->
 	</string-array>
 	<string-array name="optionsChannel">
 		<item>Silenciar</item>

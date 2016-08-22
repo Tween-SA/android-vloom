@@ -29,6 +29,7 @@ import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
 import com.tween.viacelular.adapters.IconOptionAdapter;
+import com.tween.viacelular.asynctask.GetTweetsAsyncTask;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
@@ -36,6 +37,7 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
 import java.util.ArrayList;
@@ -297,9 +299,36 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		{
 			if(!clicked)
 			{
-				Intent intent = new Intent(getActivity(), CardViewActivity.class);
-				intent.putExtra(Common.KEY_ID, companyId);
-				startActivity(intent);
+				Realm realm				= Realm.getDefaultInstance();
+				Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+
+				if(suscription != null)
+				{
+					if(suscription.getLastSocialUpdated() != null)
+					{
+						//Solamente se pide una vez al día
+						if(DateUtils.needUpdate(suscription.getLastSocialUpdated(), DateUtils.DAY_MILLIS))
+						{
+							new GetTweetsAsyncTask(getActivity(), true, companyId).execute();
+						}
+						else
+						{
+							Intent intent = new Intent(getActivity(), CardViewActivity.class);
+							intent.putExtra(Common.KEY_ID, companyId);
+							startActivity(intent);
+						}
+					}
+					else
+					{
+						new GetTweetsAsyncTask(getActivity(), true, companyId).execute();
+					}
+				}
+				else
+				{
+					Intent intent = new Intent(getActivity(), CardViewActivity.class);
+					intent.putExtra(Common.KEY_ID, companyId);
+					startActivity(intent);
+				}
 			}
 			else
 			{
@@ -405,6 +434,12 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Bloquear")
 																														.setLabel("AccionUser").build());
 						snackBarText = context.getString(R.string.snack_blocked);
+					}
+					else
+					{
+						//Agregado para capturar evento en Google Analytics
+						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Agregar")
+																														.setLabel("AccionUser").build());
 					}
 
 					BlockedActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(client.getFollower()), false, company.getCompanyId(), true);
