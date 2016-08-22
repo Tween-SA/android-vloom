@@ -304,23 +304,32 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 				if(suscription != null)
 				{
-					if(suscription.getLastSocialUpdated() != null)
+					if(StringUtils.isIdMongo(suscription.getCompanyId()))
 					{
-						//Solamente se pide una vez al día
-						if(DateUtils.needUpdate(suscription.getLastSocialUpdated(), DateUtils.DAY_MILLIS))
+						if(suscription.getLastSocialUpdated() != null)
 						{
-							new GetTweetsAsyncTask(getActivity(), true, companyId).execute();
+							//Solamente se pide una vez al día
+							if(DateUtils.needUpdate(suscription.getLastSocialUpdated(), DateUtils.DAY_MILLIS))
+							{
+								new GetTweetsAsyncTask(getActivity(), true, companyId).execute();
+							}
+							else
+							{
+								Intent intent = new Intent(getActivity(), CardViewActivity.class);
+								intent.putExtra(Common.KEY_ID, companyId);
+								startActivity(intent);
+							}
 						}
 						else
 						{
-							Intent intent = new Intent(getActivity(), CardViewActivity.class);
-							intent.putExtra(Common.KEY_ID, companyId);
-							startActivity(intent);
+							new GetTweetsAsyncTask(getActivity(), true, companyId).execute();
 						}
 					}
 					else
 					{
-						new GetTweetsAsyncTask(getActivity(), true, companyId).execute();
+						Intent intent = new Intent(getActivity(), CardViewActivity.class);
+						intent.putExtra(Common.KEY_ID, companyId);
+						startActivity(intent);
 					}
 				}
 				else

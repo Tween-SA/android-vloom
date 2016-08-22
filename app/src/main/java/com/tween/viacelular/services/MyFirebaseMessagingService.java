@@ -54,41 +54,64 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 	{
 		try
 		{
-			context		= getApplicationContext();
-			Migration.getDB(context, Common.REALMDB_VERSION);
-			// Handle data payload of FCM messages.
-			String from	= remoteMessage.getFrom();
-			Map data	= remoteMessage.getData();
-
-			if(Common.DEBUG)
+			if(remoteMessage != null)
 			{
-				System.out.println("FCM Id: "+remoteMessage.getMessageId());
-				System.out.println("FCM FROM: "+from);
-				System.out.println("FCM Notification Body: "+remoteMessage.getNotification().getBody());
-				System.out.println("FCM Notification LocalizationKey: "+remoteMessage.getNotification().getBodyLocalizationKey());
-				System.out.println("FCM Notification ClickAction: "+remoteMessage.getNotification().getClickAction());
-				System.out.println("FCM Notification Color: "+remoteMessage.getNotification().getColor());
-				System.out.println("FCM Notification Icon: "+remoteMessage.getNotification().getIcon());
-				System.out.println("FCM Notification Sound: "+remoteMessage.getNotification().getSound());
-				System.out.println("FCM Notification Tag: "+remoteMessage.getNotification().getTag());
-				System.out.println("FCM Notification Title: "+remoteMessage.getNotification().getTitle());
-				System.out.println("FCM Notification TitleLocalizationKey: "+remoteMessage.getNotification().getTitleLocalizationKey());
-				System.out.println("FCM Data: "+remoteMessage.getData());
-			}
+				context		= getApplicationContext();
+				Migration.getDB(context, Common.REALMDB_VERSION);
+				// Handle data payload of FCM messages.
+				String from	= remoteMessage.getFrom();
+				Map data	= remoteMessage.getData();
 
-			if(data != null)
-			{
-				Bundle push = new Bundle();
-
-				//Leyendo desde push
-				if(data.get(Message.KEY_API) != null)
+				if(Common.DEBUG)
 				{
-					push.putString(Message.KEY_API, data.get(Message.KEY_API).toString());
+					System.out.println("FCM Id: "+remoteMessage.getMessageId());
+					System.out.println("FCM FROM: "+from);
+
+					if(remoteMessage.getNotification() != null)
+					{
+						System.out.println("FCM Notification Body: "+remoteMessage.getNotification().getBody());
+						System.out.println("FCM Notification LocalizationKey: "+remoteMessage.getNotification().getBodyLocalizationKey());
+						System.out.println("FCM Notification ClickAction: "+remoteMessage.getNotification().getClickAction());
+						System.out.println("FCM Notification Color: "+remoteMessage.getNotification().getColor());
+						System.out.println("FCM Notification Icon: "+remoteMessage.getNotification().getIcon());
+						System.out.println("FCM Notification Sound: "+remoteMessage.getNotification().getSound());
+						System.out.println("FCM Notification Tag: "+remoteMessage.getNotification().getTag());
+						System.out.println("FCM Notification Title: "+remoteMessage.getNotification().getTitle());
+						System.out.println("FCM Notification TitleLocalizationKey: "+remoteMessage.getNotification().getTitleLocalizationKey());
+					}
+
+					System.out.println("FCM Data: "+remoteMessage.getData());
 				}
 
-				if(data.get(Common.KEY_TYPE) != null)
+				if(data != null)
 				{
-					if(StringUtils.isEmpty(data.get(Common.KEY_TYPE).toString()))
+					Bundle push = new Bundle();
+
+					//Leyendo desde push
+					if(data.get(Message.KEY_API) != null)
+					{
+						push.putString(Message.KEY_API, data.get(Message.KEY_API).toString());
+					}
+
+					if(data.get(Common.KEY_TYPE) != null)
+					{
+						if(StringUtils.isEmpty(data.get(Common.KEY_TYPE).toString()))
+						{
+							if(StringUtils.isNotEmpty(remoteMessage.getNotification().getTitle()))
+							{
+								push.putString(Common.KEY_TYPE, remoteMessage.getNotification().getTitle());
+							}
+							else
+							{
+								push.putString(Common.KEY_TYPE, context.getString(R.string.notification));
+							}
+						}
+						else
+						{
+							push.putString(Common.KEY_TYPE, data.get(Common.KEY_TYPE).toString());
+						}
+					}
+					else
 					{
 						if(StringUtils.isNotEmpty(remoteMessage.getNotification().getTitle()))
 						{
@@ -99,26 +122,26 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 							push.putString(Common.KEY_TYPE, context.getString(R.string.notification));
 						}
 					}
-					else
-					{
-						push.putString(Common.KEY_TYPE, data.get(Common.KEY_TYPE).toString());
-					}
-				}
-				else
-				{
-					if(StringUtils.isNotEmpty(remoteMessage.getNotification().getTitle()))
-					{
-						push.putString(Common.KEY_TYPE, remoteMessage.getNotification().getTitle());
-					}
-					else
-					{
-						push.putString(Common.KEY_TYPE, context.getString(R.string.notification));
-					}
-				}
 
-				if(data.get(Message.KEY_PLAYLOAD) != null)
-				{
-					if(StringUtils.isEmpty(data.get(Message.KEY_PLAYLOAD).toString()))
+					if(data.get(Message.KEY_PLAYLOAD) != null)
+					{
+						if(StringUtils.isEmpty(data.get(Message.KEY_PLAYLOAD).toString()))
+						{
+							if(StringUtils.isNotEmpty(remoteMessage.getNotification().getBody()))
+							{
+								push.putString(Message.KEY_PLAYLOAD, remoteMessage.getNotification().getBody());
+							}
+							else
+							{
+								push.putString(Message.KEY_PLAYLOAD, context.getString(R.string.notification_new));
+							}
+						}
+						else
+						{
+							push.putString(Message.KEY_PLAYLOAD, data.get(Message.KEY_PLAYLOAD).toString());
+						}
+					}
+					else
 					{
 						if(StringUtils.isNotEmpty(remoteMessage.getNotification().getBody()))
 						{
@@ -129,93 +152,78 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 							push.putString(Message.KEY_PLAYLOAD, context.getString(R.string.notification_new));
 						}
 					}
+
+					if(data.get(Message.KEY_CHANNEL) != null)
+					{
+						push.putString(Message.KEY_CHANNEL, data.get(Message.KEY_CHANNEL).toString());
+					}
+
+					if(data.get(Suscription.KEY_API) != null)
+					{
+						push.putString(Suscription.KEY_API, data.get(Suscription.KEY_API).toString());
+					}
+
+					if(data.get(User.KEY_PHONE) != null)
+					{
+						push.putString(User.KEY_PHONE, data.get(User.KEY_PHONE).toString());
+					}
 					else
 					{
-						push.putString(Message.KEY_PLAYLOAD, data.get(Message.KEY_PLAYLOAD).toString());
+						push.putString(User.KEY_PHONE, from);
 					}
-				}
-				else
-				{
-					if(StringUtils.isNotEmpty(remoteMessage.getNotification().getBody()))
+
+					if(data.get(Land.KEY_API) != null)
 					{
-						push.putString(Message.KEY_PLAYLOAD, remoteMessage.getNotification().getBody());
+						push.putString(Land.KEY_API, data.get(Land.KEY_API).toString());
 					}
-					else
+
+					if(data.get(Message.KEY_FLAGS) != null)
 					{
-						push.putString(Message.KEY_PLAYLOAD, context.getString(R.string.notification_new));
+						push.putString(Message.KEY_FLAGS, data.get(Message.KEY_FLAGS).toString());
 					}
-				}
 
-				if(data.get(Message.KEY_CHANNEL) != null)
-				{
-					push.putString(Message.KEY_CHANNEL, data.get(Message.KEY_CHANNEL).toString());
-				}
+					if(data.get(Common.KEY_SOUND) != null)
+					{
+						push.putString(Common.KEY_SOUND, data.get(Common.KEY_SOUND).toString());
+					}
 
-				if(data.get(Suscription.KEY_API) != null)
-				{
-					push.putString(Suscription.KEY_API, data.get(Suscription.KEY_API).toString());
-				}
+					if(data.get(Message.KEY_KIND) != null)
+					{
+						push.putInt(Message.KEY_KIND, (int) data.get(Message.KEY_KIND));
+					}
 
-				if(data.get(User.KEY_PHONE) != null)
-				{
-					push.putString(User.KEY_PHONE, data.get(User.KEY_PHONE).toString());
-				}
-				else
-				{
-					push.putString(User.KEY_PHONE, from);
-				}
+					if(data.get(Message.KEY_LINK) != null)
+					{
+						push.putString(Message.KEY_LINK, data.get(Message.KEY_LINK).toString());
+					}
 
-				if(data.get(Land.KEY_API) != null)
-				{
-					push.putString(Land.KEY_API, data.get(Land.KEY_API).toString());
-				}
+					if(data.get(Message.KEY_LINKTHUMB) != null)
+					{
+						push.putString(Message.KEY_LINKTHUMB, data.get(Message.KEY_LINKTHUMB).toString());
+					}
 
-				if(data.get(Message.KEY_FLAGS) != null)
-				{
-					push.putString(Message.KEY_FLAGS, data.get(Message.KEY_FLAGS).toString());
-				}
+					if(data.get(Message.KEY_SUBMSG) != null)
+					{
+						push.putString(Message.KEY_SUBMSG, data.get(Message.KEY_SUBMSG).toString());
+					}
 
-				if(data.get(Common.KEY_SOUND) != null)
-				{
-					push.putString(Common.KEY_SOUND, data.get(Common.KEY_SOUND).toString());
-				}
+					if(data.get(Message.KEY_CAMPAIGNID) != null)
+					{
+						push.putString(Message.KEY_CAMPAIGNID, data.get(Message.KEY_CAMPAIGNID).toString());
+					}
 
-				if(data.get(Message.KEY_KIND) != null)
-				{
-					push.putInt(Message.KEY_KIND, (int) data.get(Message.KEY_KIND));
-				}
+					if(data.get(Message.KEY_LISTID) != null)
+					{
+						push.putString(Message.KEY_LISTID, data.get(Message.KEY_LISTID).toString());
+					}
 
-				if(data.get(Message.KEY_LINK) != null)
-				{
-					push.putString(Message.KEY_LINK, data.get(Message.KEY_LINK).toString());
-				}
+					if(data.get(Message.KEY_TIMESTAMP) != null)
+					{
+						push.putString(Message.KEY_TIMESTAMP, data.get(Message.KEY_TIMESTAMP).toString());
+					}
 
-				if(data.get(Message.KEY_LINKTHUMB) != null)
-				{
-					push.putString(Message.KEY_LINKTHUMB, data.get(Message.KEY_LINKTHUMB).toString());
+					MessageHelper.savePush(push, context, from, false);
 				}
-
-				if(data.get(Message.KEY_SUBMSG) != null)
-				{
-					push.putString(Message.KEY_SUBMSG, data.get(Message.KEY_SUBMSG).toString());
-				}
-
-				if(data.get(Message.KEY_CAMPAIGNID) != null)
-				{
-					push.putString(Message.KEY_CAMPAIGNID, data.get(Message.KEY_CAMPAIGNID).toString());
-				}
-
-				if(data.get(Message.KEY_LISTID) != null)
-				{
-					push.putString(Message.KEY_LISTID, data.get(Message.KEY_LISTID).toString());
-				}
-
-				if(data.get(Message.KEY_TIMESTAMP) != null)
-				{
-					push.putString(Message.KEY_TIMESTAMP, data.get(Message.KEY_TIMESTAMP).toString());
-				}
-
-				MessageHelper.savePush(push, context, from, false);
 			}
 		}
 		catch(Exception e)

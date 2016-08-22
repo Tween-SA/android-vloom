@@ -45,9 +45,10 @@ public class StringUtils
 	 */
 	public static String sanitizeText(String text)
 	{
-		text	= text.replace("\\n", "").replace("\n", "").replace("\\r", "").replace("\r", "").replace("\\t", "").replace("\t", "").replace(":", "").replace(".", "").replace(";", "");
-		text	= text.replace("{", "").replace("}", "").replace("[", "").replace("]", "").replace("*", "").replace(",", "").replace("\"", "").replace("'", "").replace("`", "");
-		text	= text.replace("\\", "").replace("/", "");
+		//Se admiten : , . /
+		text	= text.replace("\\n", "").replace("\n", "").replace("\\r", "").replace("\r", "").replace("\\t", "").replace("\t", "").replace(";", "");
+		text	= text.replace("{", "").replace("}", "").replace("[", "").replace("]", "").replace("*", "").replace("\"", "").replace("'", "").replace("`", "");
+		text	= text.replace("\\", "");
 		return text;
 	}
 
