@@ -3,6 +3,7 @@ package com.tween.viacelular.models;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.TimestampComparator;
 import com.tween.viacelular.services.ApiConnection;
