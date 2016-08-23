@@ -3,7 +3,6 @@ package com.tween.viacelular.models;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.TimestampComparator;
 import com.tween.viacelular.services.ApiConnection;
@@ -48,8 +47,13 @@ public abstract class SuscriptionHelper
 				RealmResults<Suscription> companiesWithNumber = realm.where(Suscription.class).contains(Suscription.KEY_NUMBERS, addressee, Case.INSENSITIVE).findAll();
 				//Verificamos coincidencias (companies que compartan el número)
 				count = companiesWithNumber.size();
+				if(addressee.equals("1018") || addressee.equals("11011"))
+				{
+					System.out.println("Inicio Addressee: "+addressee+" Message: "+message+" Country: "+country+" Cuenta: "+count+" CompanyId: "+companyId);
+					debugSuscription(realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst());
+				}
 
-				if(companiesWithNumber.size() > 1)
+				if(count > 1)
 				{
 					//Hay ocurrencias, revisaremos las keywords
 					for(Suscription company : companiesWithNumber)
@@ -71,11 +75,13 @@ public abstract class SuscriptionHelper
 						}
 					}
 
+					Suscription client = null;
+
 					//No hubo coincidencia, se genera company fantasma
 					if(StringUtils.isEmpty(companyId))
 					{
 						//Buscamos si ya existia la company phantom para ese número
-						Suscription client = realm.where(Suscription.class).equalTo(Common.KEY_NAME, addressee, Case.INSENSITIVE).findFirst();
+						client = realm.where(Suscription.class).equalTo(Common.KEY_NAME, addressee, Case.INSENSITIVE).findFirst();
 
 						if(client != null)
 						{
@@ -89,11 +95,43 @@ public abstract class SuscriptionHelper
 							companyId	= client.getCompanyId();
 						}
 					}
+					else
+					{
+						//Desconfia de la coincidencia por el último
+						boolean correct = false;
+						client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+
+						if(client != null)
+						{
+							if(hasNumber(client, addressee))
+							{
+								correct = true;
+							}
+						}
+
+						if(!correct)
+						{
+							//Buscamos si ya existia la company phantom para ese número
+							client = realm.where(Suscription.class).equalTo(Common.KEY_NAME, addressee, Case.INSENSITIVE).findFirst();
+
+							if(client != null)
+							{
+								//Existe se asocia
+								companyId = client.getCompanyId();
+							}
+							else
+							{
+								//No existe este número corto en la db, generamos company fantasma
+								client		= createPhantom(addressee, context, country);
+								companyId	= client.getCompanyId();
+							}
+						}
+					}
 				}
 				else
 				{
 					//Coincidencia única se asocia directamente
-					if(companiesWithNumber.size() == 1)
+					if(count == 1)
 					{
 						//Encontró una única company
 						companyId = companiesWithNumber.get(0).getCompanyId();
@@ -113,6 +151,36 @@ public abstract class SuscriptionHelper
 							//No existe este número corto en la db, generamos company fantasma
 							client		= createPhantom(addressee, context, country);
 							companyId	= client.getCompanyId();
+						}
+
+						//Desconfia de la coincidencia por el último
+						boolean correct = false;
+						client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+
+						if(client != null)
+						{
+							if(hasNumber(client, addressee))
+							{
+								correct = true;
+							}
+						}
+
+						if(!correct)
+						{
+							//Buscamos si ya existia la company phantom para ese número
+							client = realm.where(Suscription.class).equalTo(Common.KEY_NAME, addressee, Case.INSENSITIVE).findFirst();
+
+							if(client != null)
+							{
+								//Existe se asocia
+								companyId = client.getCompanyId();
+							}
+							else
+							{
+								//No existe este número corto en la db, generamos company fantasma
+								client		= createPhantom(addressee, context, country);
+								companyId	= client.getCompanyId();
+							}
 						}
 					}
 				}
@@ -1119,7 +1187,7 @@ public abstract class SuscriptionHelper
 	 * @param number
 	 * @return boolean
 	 */
-	public static boolean hasNumber(Suscription suscription, String number)
+	private static boolean hasNumber(Suscription suscription, String number)
 	{
 		try
 		{
@@ -1134,7 +1202,7 @@ public abstract class SuscriptionHelper
 			else
 			{
 				Realm realm	= Realm.getDefaultInstance();
-				suscription	= realm.where(Suscription.class).contains(Suscription.KEY_NUMBERS, number, Case.INSENSITIVE).findFirst();
+				suscription	= realm.where(Suscription.class).contains(Suscription.KEY_NUMBERS, "\""+number+"\"", Case.INSENSITIVE).findFirst();
 
 				if(suscription != null)
 				{
@@ -1308,7 +1376,7 @@ public abstract class SuscriptionHelper
 	 * @param countryCode
 	 * @return Suscription
 	 */
-	public static Suscription createPhantom(String fewness, Context context, String countryCode)
+	private static Suscription createPhantom(String fewness, Context context, String countryCode)
 	{
 		Suscription client	= new Suscription();
 
@@ -1387,7 +1455,7 @@ public abstract class SuscriptionHelper
 	 * @param suscription
 	 * @return String
 	 */
-	public static String addNumber(String number, String type, Suscription suscription)
+	private static String addNumber(String number, String type, Suscription suscription)
 	{
 		String fromNumbers = StringUtils.removeSpacesJSON(suscription.getFromNumbers());
 

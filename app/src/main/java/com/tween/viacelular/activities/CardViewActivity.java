@@ -186,8 +186,6 @@ public class CardViewActivity extends AppCompatActivity
 												.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 						}
 
-						System.out.println("Notifications: "+notifications.toString());
-
 						//Agregado como atajo para ir a la pantalla Configuración
 						txtTitle.setOnClickListener(new View.OnClickListener()
 						{
