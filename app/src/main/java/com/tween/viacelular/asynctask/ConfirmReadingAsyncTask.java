@@ -98,7 +98,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 		try
 		{
-			System.out.println("Confirma doInBackground");
+			System.out.println("Confirma doInBackground - msgId: " + msgId+" status: "+status+" companyId: "+companyId);
 			JSONObject jsonSend				= new JSONObject();
 			SharedPreferences preferences	= context.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			JSONArray jsonArray				= new JSONArray();
