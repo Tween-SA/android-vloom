@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Looper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
+import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Message;
@@ -61,6 +62,8 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 					.show();
 			}
 
+			System.out.println("Confirma onPreExecute - msgId: " + msgId+" status: "+status+" companyId: "+companyId);
+
 			//Reportar coordenadas
 			if(StringUtils.isIdMongo(msgId) && status < Message.STATUS_SPAM)
 			{
@@ -95,6 +98,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 		try
 		{
+			System.out.println("Confirma doInBackground");
 			JSONObject jsonSend				= new JSONObject();
 			SharedPreferences preferences	= context.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			JSONArray jsonArray				= new JSONArray();
@@ -153,45 +157,46 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 			}
 			else
 			{
-				Suscription suscription = null;
-
-				if(StringUtils.isIdMongo(companyId))
-				{
-					suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-				}
+				Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+				SuscriptionHelper.debugSuscription(suscription);
 
 				if(suscription != null)
 				{
 					//Agregado para actualizar el status en thread aparte
 					RealmResults<Message> notifications = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
 															.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAll();
+					System.out.println("Messages to mark: "+notifications.toString());
 
 					if(notifications.size() > 0)
 					{
 						UpdateMessages task = new UpdateMessages(suscription.getCompanyId());
 						task.start();
 
-						for(Message notification : notifications)
+						//Solamente lo que es real se reporta a la api
+						if(StringUtils.isIdMongo(companyId))
 						{
-							//Agregado para confirmar lectura de varios mensajes contra la api, mejora para evitar enviar confirmación de objecto local que no está en mongo
-							if(StringUtils.isIdMongo(suscription.getCompanyId()) && StringUtils.isIdMongo(notification.getMsgId().replace("-", "")))
+							for(Message notification : notifications)
 							{
-								JSONObject jsonObject = new JSONObject();
-								jsonObject.put(Common.KEY_ID, notification.getMsgId());
-								jsonObject.put(Common.KEY_STATUS, Message.STATUS_READ);
-
-								//Agregado para incluir campos de campaña y lista si están
-								if(StringUtils.isNotEmpty(notification.getCampaignId()))
+								//Agregado para confirmar lectura de varios mensajes contra la api, mejora para evitar enviar confirmación de objecto local que no está en mongo
+								if(StringUtils.isIdMongo(suscription.getCompanyId()) && StringUtils.isIdMongo(notification.getMsgId().replace("-", "")))
 								{
-									jsonObject.put(Message.KEY_CAMPAIGNID, notification.getCampaignId());
-								}
+									JSONObject jsonObject = new JSONObject();
+									jsonObject.put(Common.KEY_ID, notification.getMsgId());
+									jsonObject.put(Common.KEY_STATUS, Message.STATUS_READ);
 
-								if(StringUtils.isNotEmpty(notification.getListId()))
-								{
-									jsonObject.put(Message.KEY_LISTID, notification.getListId());
-								}
+									//Agregado para incluir campos de campaña y lista si están
+									if(StringUtils.isNotEmpty(notification.getCampaignId()))
+									{
+										jsonObject.put(Message.KEY_CAMPAIGNID, notification.getCampaignId());
+									}
 
-								jsonArray.put(jsonObject);
+									if(StringUtils.isNotEmpty(notification.getListId()))
+									{
+										jsonObject.put(Message.KEY_LISTID, notification.getListId());
+									}
+
+									jsonArray.put(jsonObject);
+								}
 							}
 						}
 
@@ -229,11 +234,11 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 		return result;
 	}
 
-	public class UpdateMessages extends Thread
+	private class UpdateMessages extends Thread
 	{
 		private String	id;
 
-		public UpdateMessages(String id)
+		private UpdateMessages(String id)
 		{
 			this.id	= id;
 		}
@@ -256,6 +261,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 					{
 						RealmResults<Message> messages = bgRealm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
 															.equalTo(Suscription.KEY_API, id).findAll();
+						System.out.println("Messages to mark Thread: "+messages.toString());
 
 						for(int i = messages.size() -1; i >=0; i--)
 						{

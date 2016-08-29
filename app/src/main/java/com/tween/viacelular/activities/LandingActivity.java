@@ -59,7 +59,6 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	private TextView			txtSubTitleCollapsed;
 	private TextView			txtAbout;
 	private float				scale;
-	private int					dpAsPixels;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -252,6 +251,12 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
 							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(circleView);
 							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(logo);
+						}
+						else
+						{
+							//Mostrar el logo de Vloom si no tiene logo
+							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(circleView);
+							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(logo);
 						}
 
 						Utils.tintColorScreen(this, color);
@@ -497,6 +502,8 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	{
 		try
 		{
+			int dpAsPixels;
+
 			if(percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS)
 			{
 				if(mIsTheTitleContainerVisible)

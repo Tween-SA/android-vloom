@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+<?xml version="1.0" encoding="UTF-8"?><resources xmlns:tools="http://schemas.android.com/tools"
+                                                 xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">Angenommen</string>
 	<string name="action_example">Beispiel</string>
@@ -192,7 +193,7 @@
 	<string name="today">Heute</string>
 	<string name="token_error_message">Bei der Erstellung des Tokens ist ein Fehler passiert</string>
 	<string name="tomorrow">Morgen</string>
-	<string name="unauthorized">Nicht authorisiert</string>
+	<string name="unauthorized" tools:ignore="Typos">Nicht authorisiert</string>
 	<string name="undo">RÜCKGÄNGIG MACHEN (UNDO)</string>
 	<string name="unsuscribe">ABMELDEN</string>
 	<string name="upgrade_text">Wir aktualisieren Ihre Informationen</string><!-- after traslate -->

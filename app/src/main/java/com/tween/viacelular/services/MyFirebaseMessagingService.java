@@ -46,8 +46,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 	public static final String	SENT_TOKEN_TO_SERVER				= "sentTokenToServer";
 	public static final String	REGISTRATION_COMPLETE				= "registrationComplete";
 	private Context				context;
-	private Bitmap				bmp;
-	private String				image;
 
 	@Override
 	public void onMessageReceived(RemoteMessage remoteMessage)
@@ -255,8 +253,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 			int statusP			= Suscription.STATUS_BLOCKED;
 			String title		= context.getString(R.string.app_name);
 			Suscription clientP	= null;
-			image				= "";
-			bmp					= BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+			String image		= "";
+			Bitmap bmp			= BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
 			Realm realm			= Realm.getDefaultInstance();
 			Message message		= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
 			String companyIdApi	= "";

@@ -41,7 +41,6 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 	private static final String			ARG_SECTION_NUMBER	= "section_number";
 	private SuscriptionsActivity		activityContext;
 	private int							section;
-	private SuscriptionsAdapter			adapter				= null;
 	private StickyListHeadersListView	stickyList;
 	private TextInputLayout				inputFilter;
 	private FloatingActionButton		fab;
@@ -201,7 +200,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 				}
 			}
 
-			adapter = new SuscriptionsAdapter(listSuscriptions, activityContext);
+			SuscriptionsAdapter adapter = new SuscriptionsAdapter(listSuscriptions, activityContext);
 			stickyList.setAdapter(adapter);
 		}
 		catch(Exception e)

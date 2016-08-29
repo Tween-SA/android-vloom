@@ -60,7 +60,6 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 	private boolean				started		= false;
 	private MaterialDialog		list		= null;
 	private List<Suscription>	companies	= new ArrayList<>();
-	private List<String>		ids			= new ArrayList<>();
 	private CoordinatorLayout	clayout;
 	private HomeAdapter			adapter;
 	private HomeActivity		homeActivity;
@@ -293,7 +292,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 	}
 
-	public void redirectCard(Suscription client, String companyId)
+	public void redirectCard(String companyId)
 	{
 		try
 		{
@@ -559,10 +558,10 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 	public class RefreshCompanyTask extends AsyncTask<Void, Void, List<String>>
 	{
-		Activity	homeActivity;
-		boolean		forceByUser;
+		private Activity	homeActivity;
+		private boolean		forceByUser;
 
-		public RefreshCompanyTask(Activity homeActivity, boolean forceByUser)
+		private RefreshCompanyTask(Activity homeActivity, boolean forceByUser)
 		{
 			this.homeActivity	= homeActivity;
 			this.forceByUser	= forceByUser;
@@ -614,7 +613,8 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					for(Suscription phantom : companyPhantom)
 					{
 						companyId				= "";
-						RealmResults<Message> messages	= realm.where(Message.class).equalTo(Suscription.KEY_API, phantom.getCompanyId()).findAll().distinct(Message.KEY_CHANNEL);
+						RealmResults<Message> messages	= realm.where(Message.class).equalTo(Suscription.KEY_API, phantom.getCompanyId()).equalTo(Message.KEY_DELETED, Common.BOOL_NO)
+															.lessThan(Common.KEY_STATUS, Message.STATUS_SPAM).findAll().distinct(Message.KEY_CHANNEL);
 
 						if(messages.size() > 0)
 						{
