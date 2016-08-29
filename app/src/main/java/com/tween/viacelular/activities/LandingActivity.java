@@ -1,5 +1,6 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -21,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Message;
@@ -56,7 +59,6 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	private TextView			txtSubTitleCollapsed;
 	private TextView			txtAbout;
 	private float				scale;
-	private int					dpAsPixels;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -167,6 +169,17 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 								txtUrl.setText(suscription.getUrl());
 								iconUrl.setVisibility(ImageView.VISIBLE);
 								txtUrl.setVisibility(TextView.VISIBLE);
+								final Activity activity = this;
+								txtUrl.setOnClickListener(new View.OnClickListener()
+								{
+									@Override
+									public void onClick(final View view)
+									{
+										//Agregado para capturar evento en Google Analytics
+										GoogleAnalytics.getInstance(activity).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company")
+																															.setAction("WebLanding").setLabel("AccionUser").build());
+									}
+								});
 							}
 							else
 							{
@@ -238,6 +251,12 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
 							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(circleView);
 							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(logo);
+						}
+						else
+						{
+							//Mostrar el logo de Vloom si no tiene logo
+							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(circleView);
+							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(logo);
 						}
 
 						Utils.tintColorScreen(this, color);
@@ -483,6 +502,8 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	{
 		try
 		{
+			int dpAsPixels;
+
 			if(percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS)
 			{
 				if(mIsTheTitleContainerVisible)
@@ -571,13 +592,26 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	{
 		try
 		{
-			System.out.println("apreta boton");
+			//TODO: Contemplar caso de añadir una empresa sugerida y medir con Analytics: (Category:Company - Action:AgregarSugerencia - Label:AccionUser)
 			//Agregado para verificar si la company ya estaba o no suscripta
 			Realm realm				= Realm.getDefaultInstance();
 			Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 
 			if(suscription != null)
 			{
+				if(Utils.reverseBool(suscription.getFollower()) == Common.BOOL_YES)
+				{
+					//Agregado para capturar evento en Google Analytics
+					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("AgregarLanding")
+																									.setLabel("AccionUser").build());
+				}
+				else
+				{
+					//Agregado para capturar evento en Google Analytics
+					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("BloquearLanding")
+																									.setLabel("AccionUser").build());
+				}
+
 				BlockedActivity.modifySubscriptions(LandingActivity.this, Utils.reverseBool(suscription.getFollower()), false, companyId, true);
 
 				//Agregado para redirigir a la pantallas cards para pedir la identificación del cliente si es necesario

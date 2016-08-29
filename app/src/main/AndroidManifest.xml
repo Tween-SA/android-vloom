@@ -23,6 +23,8 @@
 		android:allowBackup="true"
 		android:fullBackupContent="true"
 		android:icon="@mipmap/ic_launcher"
+		android:supportsRtl="false"
+		android:logo="@mipmap/ic_launcher"
 		android:label="@string/app_name"
 		android:theme="@style/Theme.MyTheme">
 		<activity
@@ -32,18 +34,18 @@
 			android:theme="@style/Login"
 			android:windowSoftInputMode="adjustResize|stateHidden">
 			<intent-filter>
-				<action android:name="android.intent.action.MAIN"/>
-				<category android:name="android.intent.category.LAUNCHER"/>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 			<intent-filter>
-				<action android:name="android.intent.action.VIEW"/>
-				<category android:name="android.intent.category.DEFAULT"/>
-				<category android:name="android.intent.category.BROWSABLE"/>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
 				<!-- Accepts URIs that begin with "http://*.viacelular.com/” -->
 				<data
 					android:host="*.vloom.io"
 					android:pathPrefix="/"
-					android:scheme="http"/>
+					android:scheme="http" />
 				<!-- note that the leading "/" is required for pathPrefix.  Accepts URIs that begin with "example://gizmos” <data android:scheme="example" android:host="gizmos" /> -->
 			</intent-filter>
 		</activity>
@@ -121,7 +123,7 @@
 		<receiver
 			android:name="com.tween.viacelular.services.IncomingSmsService"
 			android:enabled="true"
-			android:exported="true">
+			android:exported="true" android:permission="android.permission.BROADCAST_SMS">
 			<intent-filter android:priority="200">
 				<action android:name="android.provider.Telephony.SMS_RECEIVED" />
 			</intent-filter>
@@ -156,24 +158,21 @@
 		<!-- Services -->
 		<service
 			android:name="com.tween.viacelular.services.MyGcmListenerService"
-			android:enabled="true"
-			android:exported="true">
+			android:enabled="true">
 			<intent-filter>
 				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
 			</intent-filter>
 		</service>
 		<service
 			android:name="com.tween.viacelular.services.MyInstanceIDListenerService"
-			android:enabled="true"
-			android:exported="true">
+			android:enabled="true">
 			<intent-filter>
 				<action android:name="com.google.android.gms.iid.InstanceID" />
 			</intent-filter>
 		</service>
 		<service
 			android:name="com.tween.viacelular.services.RegistrationIntentService"
-			android:enabled="true"
-			android:exported="true">
+			android:enabled="true">
 		</service>
 		<service
 			android:name="com.google.android.gms.analytics.AnalyticsService"

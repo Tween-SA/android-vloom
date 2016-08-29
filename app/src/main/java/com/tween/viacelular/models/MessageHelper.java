@@ -1,7 +1,6 @@
 package com.tween.viacelular.models;
 
 import android.os.Looper;
-import com.tween.viacelular.data.Country;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import io.realm.Realm;
@@ -36,6 +35,13 @@ public abstract class MessageHelper
 			System.out.println("Message - subMsg: " + message.getSubMsg());
 			System.out.println("Message - campaignId: " + message.getCampaignId());
 			System.out.println("Message - listId: " + message.getListId());
+			System.out.println("Message - companyId: " + message.getCompanyId());
+			System.out.println("Message - socialId: " + message.getSocialId());
+			System.out.println("Message - socialDate: " + message.getSocialDate());
+			System.out.println("Message - socialLikes: " + message.getSocialLikes());
+			System.out.println("Message - socialShares: " + message.getSocialShares());
+			System.out.println("Message - socialAccount: " + message.getSocialAccount());
+			System.out.println("Message - socialName: " + message.getSocialName());
 		}
 		else
 		{
@@ -55,7 +61,7 @@ public abstract class MessageHelper
 			private String	companyId;
 			private int		flag;
 
-			public DeleteMessages(String companyId, int flag)
+			private DeleteMessages(String companyId, int flag)
 			{
 				this.companyId	= companyId;
 				this.flag		= flag;
@@ -115,7 +121,7 @@ public abstract class MessageHelper
 			private String	newCompanyId;
 			private boolean	modify;
 
-			public GroupMessages(String companyId, String newCompanyId)
+			private GroupMessages(String companyId, String newCompanyId)
 			{
 				this.companyId		= companyId;
 				this.newCompanyId	= newCompanyId;
@@ -191,7 +197,7 @@ public abstract class MessageHelper
 		{
 			private String country;
 
-			public UpdateCountry(String country)
+			private UpdateCountry(String country)
 			{
 				this.country = country;
 			}

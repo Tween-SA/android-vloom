@@ -3,6 +3,7 @@ package com.tween.viacelular.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.TextInputLayout;
@@ -79,7 +80,16 @@ public class CodeActivity extends AppCompatActivity
 
 				inputCode.setErrorEnabled(false);
 				Utils.tintColorScreen(this, Common.COLOR_ACTION);
-				txtRecive.setText(Html.fromHtml(txtRecive.getText().toString().replace("+000000000000", "<b>" + preferences.getString(User.KEY_PHONE, "") + "</b>")));
+
+				if(Common.API_LEVEL >= Build.VERSION_CODES.N)
+				{
+					txtRecive.setText(Html.fromHtml(txtRecive.getText().toString().replace("+000000000000", "<b>" + preferences.getString(User.KEY_PHONE, "") + "</b>"), Html.FROM_HTML_MODE_LEGACY));
+				}
+				else
+				{
+					txtRecive.setText(Html.fromHtml(txtRecive.getText().toString().replace("+000000000000", "<b>" + preferences.getString(User.KEY_PHONE, "") + "</b>")));
+				}
+
 				String code = preferences.getString(Common.KEY_CODE, "");
 
 				if(StringUtils.isNotEmpty(code))

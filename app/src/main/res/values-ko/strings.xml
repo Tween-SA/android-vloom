@@ -121,6 +121,7 @@
 	<string name="register_begin">시작하기 위해 등록</string>
 	<string name="register_dialog">등록 중...</string>
 	<string name="register">본인의 이메일로 등록하기</string>
+	<string name="register_business">비즈니스 로그인</string><!-- after traslate -->
 	<string name="registering_message">토큰을 위한 인스턴트 ID를 생성 중...</string>
 	<string name="reimport_sms">내 SMS 메시지를 다시 가져오기</string>
 	<string name="repassword_blank">귀하의 비밀번호를 확인해야 합니다</string>
@@ -141,6 +142,9 @@
 	<string name="silence_actived">음소거 모드 활성화</string>
 	<string name="silence_desactived">음소거 모드 비활성화</string>
 	<string name="silence">음소거</string>
+	<string name="social">우리는 당신을 위해 새로운 콘텐츠를 얻고있다</string><!-- after traslate -->
+	<string name="social_high">트윗 하이라이트</string><!-- after traslate -->
+	<string name="social_date">에 게시 dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">이 메시지를 수신하시겠습니까?</string>
 	<string name="sms_text_paid">유료 SMS</string>
 	<string name="sms_text">SMS</string>
@@ -247,6 +251,12 @@
 		<item>공유하기</item>
 		<item>스팸으로 표시하기</item>
 		<item>제거하기</item>
+	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>공유하기</item>
+		<item>스팸으로 표시하기</item>
+		<item>제거하기</item>
+		<item>나는이 문제를 더 이상보고 싶지 않아</item><!-- after traslate -->
 	</string-array>
 	<string-array name="optionsChannel">
 		<item>음소거</item>

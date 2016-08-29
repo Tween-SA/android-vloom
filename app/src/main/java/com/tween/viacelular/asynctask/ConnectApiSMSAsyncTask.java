@@ -81,8 +81,6 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 			//Modificación para reducir if innecesarios y corrección de CountryCode incorrecto, se tomará desde el Usuario que es el correcto
 			if(user != null)
 			{
-				String countryCode = user.getCountryCode();
-
 				//Agregado para enviar a la api sms que acaba de llegar
 				if(message != null)
 				{

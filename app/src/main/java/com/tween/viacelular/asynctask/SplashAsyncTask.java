@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.IspHelper;
 import com.tween.viacelular.models.Land;
@@ -14,7 +15,6 @@ import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -87,6 +87,8 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 
 		try
 		{
+			System.out.println("name: "+Suscription.class.getName()+" simple: "+Suscription.class.getSimpleName()+" canonical: "+Suscription.class.getCanonicalName());
+
 			if(!splashed)
 			{
 				//Modificaciones para contemplar migración a Realm

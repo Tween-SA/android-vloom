@@ -25,14 +25,17 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.RecyclerAdapter;
 import com.tween.viacelular.adapters.RecyclerItemClickListener;
 import com.tween.viacelular.asynctask.CaptureSMSAsyncTask;
-import com.tween.viacelular.data.User;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
+import com.tween.viacelular.models.User;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.services.MyGcmListenerService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -183,6 +186,10 @@ public class SettingsActivity extends AppCompatActivity
 
 	public void goPlayStore(View v)
 	{
+		//Agregado para capturar evento en Google Analytics
+		GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("Playstore")
+																						.setLabel("AccionUser").build());
+
 		try
 		{
 			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
@@ -190,6 +197,28 @@ public class SettingsActivity extends AppCompatActivity
 		catch(Exception e)
 		{
 			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
+		}
+
+		finish();
+	}
+
+	public void goBusiness(View v)
+	{
+		try
+		{
+			//Agregado para capturar evento en Google Analytics
+			GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("Business")
+																							.setLabel("AccionUser").build());
+			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ApiConnection.BUSINESS)));
+		}
+		catch(Exception e)
+		{
+			System.out.println("SettingsActivity:goBusiness - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		finish();
@@ -211,6 +240,9 @@ public class SettingsActivity extends AppCompatActivity
 
 			if(chkSilence.isChecked())
 			{
+				//Agregado para capturar evento en Google Analytics
+				GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("SilenciarOn")
+																								.setLabel("AccionUser").build());
 				editor.putBoolean(Suscription.KEY_SILENCED, true);
 				editor.apply();
 				task = new UpdateSilence(Common.BOOL_YES);
@@ -231,6 +263,9 @@ public class SettingsActivity extends AppCompatActivity
 			}
 			else
 			{
+				//Agregado para capturar evento en Google Analytics
+				GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("SilenciarOff")
+																								.setLabel("AccionUser").build());
 				editor.putBoolean(Suscription.KEY_SILENCED, false);
 				editor.apply();
 				task = new UpdateSilence(Common.BOOL_NO);
@@ -492,7 +527,7 @@ public class SettingsActivity extends AppCompatActivity
 			bo.write(dateBytes);
 			String sReflectedClassName		= "com.android.internal.telephony.GsmAlphabet";
 			Class cReflectedNFCExtras		= Class.forName(sReflectedClassName);
-			Method stringToGsm7BitPacked	= cReflectedNFCExtras.getMethod("stringToGsm7BitPacked", new Class[]{String.class});
+			Method stringToGsm7BitPacked	= cReflectedNFCExtras.getMethod("stringToGsm7BitPacked", String.class);
 			stringToGsm7BitPacked.setAccessible(true);
 			byte[] bodybytes				= (byte[]) stringToGsm7BitPacked.invoke(null, body);
 			bo.write(bodybytes);
@@ -595,6 +630,9 @@ public class SettingsActivity extends AppCompatActivity
 	{
 		try
 		{
+			//Agregado para capturar evento en Google Analytics
+			GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("Contacto")
+																							.setLabel("AccionUser").build());
 			//Envía email con interacción del usuario y la db adjuntada
 			Utils.sendContactMail(SettingsActivity.this);
 		}

@@ -5,8 +5,9 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import com.tween.viacelular.R;
-import com.tween.viacelular.data.User;
 import com.tween.viacelular.models.Land;
+import com.tween.viacelular.models.Suscription;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import org.json.JSONObject;
@@ -25,25 +26,29 @@ import java.util.Locale;
 public class ApiConnection
 {
 	public static final String OK					= "OK";
-	public static final String FAIL					= "FAIL";
+	private static final String FAIL				= "FAIL";
 	public static final String METHOD_GET			= "GET";
 	public static final String METHOD_POST			= "POST";
 	public static final String METHOD_PUT			= "PUT";
-	public static final String TOKEN_AUTHORIZATION	= "Bearer d32f7a8d983b442f608bcdbef27e41c32bf0d9a8";
+	private static final String TOKEN_AUTHORIZATION	= "Bearer d32f7a8d983b442f608bcdbef27e41c32bf0d9a8";
 	public static final String CLOUDFRONT_S3		= "https://d1ads2zadze8sp.cloudfront.net/"; //Recuerdo que apunta al s3 https://s3-sa-east-1.amazonaws.com/vc-img/Logos/
-	public static final String SERVERP				= "https://api.vloom.io/v1/"; //New Production - master
-	//public static final String SERVERP				= "https://dev.vloom.io/v1/"; //Testing - develop
-	//public static final String SERVER				= "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
-	//public static final String SERVER				= "https://private-29fe84-davidfigueroa.apiary-mock.com/v1/"; //Development Apiary Private
+	public static final String BUSINESS				= "https://business.vloom.io/register"; //Production web business
+	//public static final String BUSINESS			= "https://dev-business.vloom.io/register"; //Testing web business
+	private static final String SERVERP				= "https://api.vloom.io/v1/"; //New Production - master
+	//private static final String SERVERP				= "https://dev.vloom.io/v1/"; //Testing - develop
+	//private static final String SERVER			= "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
+	//private static final String SERVER			= "https://private-29fe84-davidfigueroa.apiary-mock.com/v1/"; //Development Apiary Private
 	public static final String IP_API				= "http://ip-api.com/json";
-	public static final String COMPANIES			= SERVERP + "companies";
-	public static final String COUNTRIES			= SERVERP + "countries?locale="+Locale.getDefault().getLanguage();
-	public static final String MESSAGES				= SERVERP + "messages";
-	public static final String USERS				= SERVERP + "users";
+	public static final String COMPANIES			= SERVERP+"companies";
+	public static final String COUNTRIES			= SERVERP+"countries?locale="+Locale.getDefault().getLanguage();
+	public static final String MESSAGES				= SERVERP+"messages";
+	public static final String USERS				= SERVERP+"users";
 	public static final String COMPANIES_BY_COUNTRY	= COMPANIES+"/"+ Land.KEY_API+"?code";
-	public static final String SEND_SMS				= MESSAGES + "/lists";
-	public static final String CALLME				= USERS + "/tts";
-	public static final String MODIFY_COMPANIES		= USERS + "/" + User.KEY_API + "/subscriptions";
+	public static final String COMPANIES_SOCIAL		= COMPANIES+"/"+Suscription.KEY_API+"/social";
+	public static final String SEND_SMS				= MESSAGES+"/lists";
+	public static final String CALLME				= USERS+"/tts";
+	public static final String MODIFY_COMPANIES		= USERS+"/"+ User.KEY_API+"/subscriptions";
+	public static final String SUGGESTIONS			= MODIFY_COMPANIES+"?country="+Land.KEY_API;
 
 	/**
 	 * Detecta si hay conexión a internet.
@@ -331,7 +336,7 @@ public class ApiConnection
 		return result;
 	}
 
-	public static String convertInputStreamToString(InputStream inputStream)
+	private static String convertInputStreamToString(InputStream inputStream)
 	{
 		String result = "";
 		try
@@ -445,6 +450,7 @@ public class ApiConnection
 		catch(Exception e)
 		{
 			System.out.println("ApiConnection:checkResponse - Exception: " + e);
+
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();

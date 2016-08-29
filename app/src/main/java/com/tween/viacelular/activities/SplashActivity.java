@@ -191,7 +191,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 	}
 
 	@Override
-	public void onConnectionFailed(final ConnectionResult connectionResult)
+	public void onConnectionFailed(@NonNull final ConnectionResult connectionResult)
 	{
 	}
 

@@ -121,6 +121,7 @@
 	<string name="register_begin">登録して開始</string>
 	<string name="register_dialog">登録中...</string>
 	<string name="register">メールを登録</string>
+	<string name="register_business">ビジネスログイン</string><!-- after traslate -->
 	<string name="registering_message">トークンのインスタンスIDの生成中...</string>
 	<string name="reimport_sms">SMSメッセージを再インポート</string>
 	<string name="repassword_blank">パスワードをご確認ください</string>
@@ -141,6 +142,9 @@
 	<string name="silence_actived">サイレントモードが有効になっています</string>
 	<string name="silence_desactived">サイレントモードが無効になっています</string>
 	<string name="silence">サイレントにする</string>
+	<string name="social">私たちはあなたのための新しいコンテンツを取得しています</string><!-- after traslate -->
+	<string name="social_high">ツイートハイライト</string><!-- after traslate -->
+	<string name="social_date">上の公開 dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">引き続きこれらのメッセージを受信しますか？</string>
 	<string name="sms_text_paid">有料SMS</string>
 	<string name="sms_text">SMS</string>
@@ -247,6 +251,12 @@
 		<item>共有</item>
 		<item>スパムとしてマーク</item>
 		<item>削除</item>
+	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>共有</item>
+		<item>スパムとしてマーク</item>
+		<item>削除</item>
+		<item>私はこれをもう見たくありません</item><!-- after traslate -->
 	</string-array>
 	<string-array name="optionsChannel">
 		<item>サイレント</item>

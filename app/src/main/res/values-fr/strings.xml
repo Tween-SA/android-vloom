@@ -121,6 +121,7 @@
 	<string name="register_begin">Inscrivez-vous pour commencer</string>
 	<string name="register_dialog">Enregistrement en cours...</string>
 	<string name="register">Enregistrez-vous avec votre adresse de courrier électronique</string>
+	<string name="register_business">Connectez-vous d\'affaires</string><!-- after traslate -->
 	<string name="registering_message">Génération d\'identifiant d\'instance pour jeton...</string>
 	<string name="reimport_sms">Réimporter mes SMS</string>
 	<string name="repassword_blank">Vous devez confirmer le mot de passe</string>
@@ -141,6 +142,9 @@
 	<string name="silence_actived">Mode silencieux activé</string>
 	<string name="silence_desactived">Mode silencieux désactivé</string>
 	<string name="silence">Mettre en mode silencieux</string>
+	<string name="social">Nous obtenons un nouveau contenu pour vous</string><!-- after traslate -->
+	<string name="social_high">Tweet Faits saillants</string><!-- after traslate -->
+	<string name="social_date">Publié le dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">Souhaitez-vous continuer à recevoir ces messages ?</string>
 	<string name="sms_text_paid">SMS avec coût</string>
 	<string name="sms_text">SMS</string>
@@ -247,6 +251,12 @@
 		<item>Partager</item>
 		<item>Marquer comme spam</item>
 		<item>Éliminer</item>
+	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>Partager</item>
+		<item>Marquer comme spam</item>
+		<item>Éliminer</item>
+		<item>Je ne veux pas voir ça plus</item><!-- after traslate -->
 	</string-array>
 	<string-array name="optionsChannel">
 		<item>Mode silencieux</item>

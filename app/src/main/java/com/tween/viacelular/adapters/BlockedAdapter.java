@@ -90,6 +90,11 @@ public class BlockedAdapter extends RecyclerView.Adapter<BlockedAdapter.ViewHold
 						//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
 						Picasso.with(activity).load(item.getImage()).placeholder(R.drawable.ic_launcher).into(holder.picture);
 					}
+					else
+					{
+						//Mostrar el logo de Vloom si no tiene logo
+						Picasso.with(activity).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(holder.picture);
+					}
 
 					holder.txtTitle.setText(item.getName());
 					holder.txtContent.setText(item.getIndustry());

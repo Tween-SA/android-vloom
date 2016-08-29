@@ -121,6 +121,7 @@
 	<string name="refresh_complete">Your subscriptions have been updated</string>
 	<string name="refresh_menu">Update</string>
 	<string name="register_begin">Register to begin</string>
+	<string name="register_business">Sign in Business</string><!-- after traslate -->
 	<string name="register_dialog">Registering...</string>
 	<string name="register">Register with your e-mail</string>
 	<string name="registering_message">Generating instance ID for token ...</string>
@@ -143,6 +144,9 @@
 	<string name="silence_actived">Silent mode activated</string>
 	<string name="silence_desactived">Silent mode disabled</string>
 	<string name="silence">Silence</string>
+	<string name="social">We are getting new content for you</string><!-- after traslate -->
+	<string name="social_high">Tweet Highlights</string><!-- after traslate -->
+	<string name="social_date">Published on dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">Would you like to continue receiving these messages?</string>
 	<string name="sms_text_paid">Paid SMS</string>
 	<string name="sms_text">SMS</string>
@@ -248,6 +252,12 @@
 		<item>Share</item>
 		<item>Mark as spam</item>
 		<item>Delete</item>
+	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>Share</item>
+		<item>Mark as spam</item>
+		<item>Delete</item>
+		<item>I do not want to see this anymore</item><!-- after traslate -->
 	</string-array>
 	<string-array name="optionsChannel">
 		<item>Silence</item>

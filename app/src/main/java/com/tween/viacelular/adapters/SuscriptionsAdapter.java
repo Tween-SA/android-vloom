@@ -29,7 +29,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 	private List<Suscription>		suscriptions		= new ArrayList<>();
 	private SuscriptionsActivity	activityContext;
 	private int[]					mSectionIndices;
-	public Character[]				mSectionLetters;
+	private Character[]				mSectionLetters;
 	private LayoutInflater			mInflater;
 
 	public SuscriptionsAdapter(List<String> itemList, SuscriptionsActivity activityContext)
@@ -170,6 +170,11 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 						{
 							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
 							Picasso.with(activityContext).load(item.getImage()).placeholder(R.drawable.ic_launcher).into(holder.picture);
+						}
+						else
+						{
+							//Mostrar el logo de Vloom si no tiene logo
+							Picasso.with(activityContext).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(holder.picture);
 						}
 
 						holder.txtTitle.setText(item.getName());
@@ -362,16 +367,16 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		return 0;
 	}
 
-	class HeaderViewHolder
+	private class HeaderViewHolder
 	{
 		TextView text;
 	}
 
-	class ViewHolder
+	private class ViewHolder
 	{
-		public CircleImageView	picture;
+		private CircleImageView	picture;
 		public TextView			txtTitle;
-		public RelativeLayout	rlSuscription;
+		private RelativeLayout	rlSuscription;
 	}
 
 	@Override
@@ -449,20 +454,20 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		}
 	}
 
-	public Suscription removeItem(int position)
+	private Suscription removeItem(int position)
 	{
 		final Suscription model = suscriptions.remove(position);
 		//notifyItemRemoved(position);
 		return model;
 	}
 
-	public void addItem(int position, Suscription model)
+	private void addItem(int position, Suscription model)
 	{
 		suscriptions.add(position, model);
 		//notifyItemInserted(position);
 	}
 
-	public void moveItem(int fromPosition, int toPosition)
+	private void moveItem(int fromPosition, int toPosition)
 	{
 		final Suscription model = suscriptions.remove(fromPosition);
 		suscriptions.add(toPosition, model);

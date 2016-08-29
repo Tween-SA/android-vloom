@@ -39,6 +39,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 	public final static int			OPTION_SHARE	= 0;
 	public final static int			OPTION_BLOCK	= 1;
 	public final static int			OPTION_DELETE	= 2;
+	public final static int			OPTION_DISMISS	= 3;
 
 	public static class ViewHolder extends RecyclerView.ViewHolder
 	{
@@ -265,12 +266,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 						if(holder.ibOptions != null)
 						{
+							final String msgId = item.getMsgId();
 							holder.ibOptions.setOnClickListener(new View.OnClickListener()
 							{
 								@Override
 								public void onClick(View v)
 								{
-									activity.showOptionsCard(position);
+									activity.showOptionsCard(position, msgId);
 								}
 							});
 						}
@@ -414,6 +416,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								activityContext.startActivity(intent);
 							}
 						});
+					}
+
+					if(item.getKind() == Message.KIND_TWITTER)
+					{
+						holder.socialAccount.setText(item.getSocialAccount());
+						holder.socialDate.setText(item.getSocialDate());
+						//TODO: Al tocar en la card si es twitter reportar a Analytics (Category:Social - Action:VerContenido - Label:AccionUser)
 					}
 				}
 			}

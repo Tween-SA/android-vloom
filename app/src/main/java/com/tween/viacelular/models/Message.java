@@ -32,6 +32,12 @@ public class Message extends RealmObject
 	private String	listId;
 	@Index
 	private String	companyId;
+	private String	socialId;
+	private String	socialDate;
+	private int		socialLikes;
+	private int		socialShares;
+	private String	socialAccount;
+	private String	socialName;
 
 	@Ignore
 	public static final int KIND_TEXT				= 0; //La push contiene únicamente texto, clase de push por defecto
@@ -107,6 +113,18 @@ public class Message extends RealmObject
 	public static final String KEY_PLAYLOAD			= "payload";
 	@Ignore
 	public static final String KEY_TIMESTAMP		= "timestamp";
+	@Ignore
+	public static final String KEY_SOCIALID			= "socialId";
+	@Ignore
+	public static final String KEY_SOCIALDATE		= "socialDate";
+	@Ignore
+	public static final String KEY_SOCIALLIKES		= "socialLikes";
+	@Ignore
+	public static final String KEY_SOCIALSHARES		= "socialShares";
+	@Ignore
+	public static final String KEY_SOCIALACCOUNT	= "socialAccount";
+	@Ignore
+	public static final String KEY_SOCIALNAME		= "socialName";
 	@Ignore
 	public static final String SMS_CODE				= "ViaCelular code: ";
 	@Ignore
@@ -317,5 +335,65 @@ public class Message extends RealmObject
 	public void setCompanyId(final String companyId)
 	{
 		this.companyId = companyId;
+	}
+
+	public String getSocialId()
+	{
+		return socialId;
+	}
+
+	public void setSocialId(final String socialId)
+	{
+		this.socialId = socialId;
+	}
+
+	public String getSocialDate()
+	{
+		return socialDate;
+	}
+
+	public void setSocialDate(final String socialDate)
+	{
+		this.socialDate = socialDate;
+	}
+
+	public int getSocialLikes()
+	{
+		return socialLikes;
+	}
+
+	public void setSocialLikes(final int socialLikes)
+	{
+		this.socialLikes = socialLikes;
+	}
+
+	public int getSocialShares()
+	{
+		return socialShares;
+	}
+
+	public void setSocialShares(final int socialShares)
+	{
+		this.socialShares = socialShares;
+	}
+
+	public String getSocialAccount()
+	{
+		return socialAccount;
+	}
+
+	public void setSocialAccount(final String socialAccount)
+	{
+		this.socialAccount = socialAccount;
+	}
+
+	public String getSocialName()
+	{
+		return socialName;
+	}
+
+	public void setSocialName(final String socialName)
+	{
+		this.socialName = socialName;
 	}
 }
