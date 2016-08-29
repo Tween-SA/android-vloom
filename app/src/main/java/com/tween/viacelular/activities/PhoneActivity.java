@@ -123,7 +123,12 @@ public class PhoneActivity extends AppCompatActivity
 		return super.onOptionsItemSelected(item);
 	}
 
-	public boolean register(View view)
+	public void register(View view)
+	{
+		registerMethod();
+	}
+
+	public boolean registerMethod()
 	{
 		try
 		{

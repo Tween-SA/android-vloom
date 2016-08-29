@@ -1,4 +1,4 @@
-<resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">Aceptado</string>
 	<string name="action_example">Ejemplo</string>
@@ -51,7 +51,7 @@
 	<string name="landing_card_error_header">Oops!</string><!-- after traslate -->
 	<string name="landing_card_error_retry">Enviar nuevamente</string><!-- after traslate -->
 	<string name="landing_card_error_text">Tus datos no se guardaron, por favor intenta nuevamente.</string><!-- after traslate -->
-	<string name="landing_card_loading_header">Solo un momento...</string><!-- after traslate -->
+	<string name="landing_card_loading_header" tools:ignore="Typos">Solo un momento...</string><!-- after traslate -->
 	<string name="landing_card_loading_text">Estamos guardando tus datos</string><!-- after traslate -->
 	<string name="landing_card_ok_header">¡Todo en marcha!</string><!-- after traslate -->
 	<string name="landing_card_ok_text">Guardamos tu identificación de cliente para ofrecerte una mejor experiencia</string><!-- after traslate -->
@@ -166,7 +166,7 @@
 	<string name="sub_send_stadistics">Envíe estadísticas de uso</string>
 	<string name="sub_sms_paid_text">Este servicio posee costos por mensaje</string>
 	<string name="suggestions_atitle">Sugerencias</string><!-- after traslate -->
-	<string name="suggestions_subtitle">Recibirás información relevante de tus suscripciones, recuerda que puedes quitar esta empresa en cualquier momento si lo deseas.</string><!-- after traslate -->
+	<string name="suggestions_subtitle" tools:ignore="Typos">Recibirás información relevante de tus suscripciones, recuerda que puedes quitar esta empresa en cualquier momento si lo deseas.</string><!-- after traslate -->
 	<string name="suggestions_title">Tus primeras suscripciones</string><!-- after traslate -->
 	<string name="thank_you">Gracias!</string>
 	<string name="timer_count">Si no recibiste el sms, te llamaremos en 0:00</string>

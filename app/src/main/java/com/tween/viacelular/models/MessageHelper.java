@@ -43,6 +43,13 @@ public abstract class MessageHelper
 			System.out.println("Message - subMsg: " + message.getSubMsg());
 			System.out.println("Message - campaignId: " + message.getCampaignId());
 			System.out.println("Message - listId: " + message.getListId());
+			System.out.println("Message - companyId: " + message.getCompanyId());
+			System.out.println("Message - socialId: " + message.getSocialId());
+			System.out.println("Message - socialDate: " + message.getSocialDate());
+			System.out.println("Message - socialLikes: " + message.getSocialLikes());
+			System.out.println("Message - socialShares: " + message.getSocialShares());
+			System.out.println("Message - socialAccount: " + message.getSocialAccount());
+			System.out.println("Message - socialName: " + message.getSocialName());
 		}
 		else
 		{
