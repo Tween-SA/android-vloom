@@ -174,6 +174,11 @@ public class CardViewActivity extends AppCompatActivity
 							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
 							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(circleView);
 						}
+						else
+						{
+							//Mostrar el logo de Vloom si no tiene logo
+							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(circleView);
+						}
 
 						txtSubTitleCollapsed.setText(suscription.getIndustry());
 						toolBar.setBackgroundColor(Color.parseColor(color));

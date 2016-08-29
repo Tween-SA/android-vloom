@@ -527,7 +527,7 @@ public class SettingsActivity extends AppCompatActivity
 			bo.write(dateBytes);
 			String sReflectedClassName		= "com.android.internal.telephony.GsmAlphabet";
 			Class cReflectedNFCExtras		= Class.forName(sReflectedClassName);
-			Method stringToGsm7BitPacked	= cReflectedNFCExtras.getMethod("stringToGsm7BitPacked", new Class[]{String.class});
+			Method stringToGsm7BitPacked	= cReflectedNFCExtras.getMethod("stringToGsm7BitPacked", String.class);
 			stringToGsm7BitPacked.setAccessible(true);
 			byte[] bodybytes				= (byte[]) stringToGsm7BitPacked.invoke(null, body);
 			bo.write(bodybytes);

@@ -49,7 +49,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingLeft="60dp"
-		android:text="soporte@vloom.com"
+		android:text="soporte@vloom.io"
 		android:textColor="@color/black"
 		android:layout_below="@id/txtContact"
 		android:layout_marginTop="40dp"
