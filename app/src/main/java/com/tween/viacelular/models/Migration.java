@@ -20,36 +20,45 @@ public class Migration implements RealmMigration
 	 * Regera la db Realm y la setea como Default para ser usada posteriormente
 	 * @param context
 	 */
-	public static void getDB(Context context)
+	public static void getDB(Context context, boolean checkMigration)
 	{
 		try
 		{
-			String version					= context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			boolean splashed				= preferences.getBoolean(Common.KEY_PREF_SPLASHED, false);
-			boolean upgraded				= preferences.getBoolean(Common.KEY_PREF_UPGRADED + version, false);
+			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);//Agregar algo para saber cuando es la primera vez que levanta la app
+			boolean upgradedDB				= preferences.getBoolean(Common.KEY_PREF_UPGRADED +"DB"+ Common.REALMDB_VERSION, false);
 
-			if(!splashed && !upgraded)
+			if(checkMigration)
 			{
-				RealmConfiguration config	= new RealmConfiguration.Builder(context)
-						.name(Common.REALMDB_NAME)
-						.schemaVersion(Common.REALMDB_VERSION)
-						.build();
-				Realm.setDefaultConfiguration(config);
-			}
-			else
-			{
-				if(splashed)
+				if(!upgradedDB)
 				{
 					//App actualizada
 					RealmConfiguration config	= new RealmConfiguration.Builder(context)
 							.name(Common.REALMDB_NAME)
 							.schemaVersion(Common.REALMDB_VERSION)
-							//.migration(new Migration())
+							.migration(new Migration())
+							.deleteRealmIfMigrationNeeded()
+							.build();
+					Realm.setDefaultConfiguration(config);
+					preferences.edit().putBoolean(Common.KEY_PREF_UPGRADED +"DB"+ Common.REALMDB_VERSION, true).apply();
+				}
+				else
+				{
+					RealmConfiguration config	= new RealmConfiguration.Builder(context)
+							.name(Common.REALMDB_NAME)
+							.schemaVersion(Common.REALMDB_VERSION)
 							//.deleteRealmIfMigrationNeeded()
 							.build();
 					Realm.setDefaultConfiguration(config);
 				}
+			}
+			else
+			{
+				RealmConfiguration config	= new RealmConfiguration.Builder(context)
+						.name(Common.REALMDB_NAME)
+						.schemaVersion(Common.REALMDB_VERSION)
+						//.deleteRealmIfMigrationNeeded()
+						.build();
+				Realm.setDefaultConfiguration(config);
 			}
 		}
 		catch(Exception e)
@@ -111,18 +120,58 @@ public class Migration implements RealmMigration
 		{
 			System.out.println("Migrando dbRealm: oldv:"+oldVersion+" newv:"+newVersion);
 
-			if(oldVersion > newVersion)
+			if(realm != null)
 			{
-				RealmSchema schema = realm.getSchema();
-				RealmObjectSchema subscription = schema.get(Suscription.class.getName());
-				subscription.addField(Suscription.KEY_LASTSOCIALUPDATED, Long.class);
-				RealmObjectSchema message = schema.get(Message.class.getName());
-				message.addField(Message.KEY_SOCIALID, String.class);
-				message.addField(Message.KEY_SOCIALDATE, String.class);
-				message.addField(Message.KEY_SOCIALLIKES, int.class);
-				message.addField(Message.KEY_SOCIALSHARES, int.class);
-				message.addField(Message.KEY_SOCIALACCOUNT, String.class);
-				message.addField(Message.KEY_SOCIALNAME, String.class);
+				if(oldVersion < newVersion)
+				{
+					RealmSchema schema = realm.getSchema();
+
+					if(schema != null)
+					{
+						RealmObjectSchema subscription = schema.get(Suscription.class.getSimpleName());
+
+						if(subscription != null)
+						{
+							System.out.println("Antes de tocar subscription: "+subscription.getFieldNames().toString());
+							subscription.addField(Suscription.KEY_LASTSOCIALUPDATED, Long.class);
+							System.out.println("Después de tocar subscription: "+subscription.getFieldNames().toString());
+						}
+						else
+						{
+							System.out.println("subscription is null");
+						}
+
+						RealmObjectSchema message = schema.get(Message.class.getSimpleName());
+
+						if(message != null)
+						{
+							System.out.println("Antes de tocar message: "+message.getFieldNames().toString());
+							message.addField(Message.KEY_SOCIALID, String.class);
+							message.addField(Message.KEY_SOCIALDATE, String.class);
+							message.addField(Message.KEY_SOCIALLIKES, int.class);
+							message.addField(Message.KEY_SOCIALSHARES, int.class);
+							message.addField(Message.KEY_SOCIALACCOUNT, String.class);
+							message.addField(Message.KEY_SOCIALNAME, String.class);
+							System.out.println("Después de tocar message: "+message.getFieldNames().toString());
+						}
+						else
+						{
+							System.out.println("message is null");
+						}
+					}
+					else
+					{
+						System.out.println("schema is null");
+					}
+				}
+				else
+				{
+					System.out.println("db version is update");
+				}
+			}
+			else
+			{
+				System.out.println("realm is null");
 			}
 		}
 		catch(Exception e)

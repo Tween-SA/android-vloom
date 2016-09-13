@@ -92,7 +92,7 @@ public class CardViewActivity extends AppCompatActivity
 			}
 
 			super.onCreate(savedInstanceState);
-			Migration.getDB(this);
+			Migration.getDB(this, false);
 			setContentView(R.layout.activity_cardview);
 			toolBar										= (Toolbar) findViewById(R.id.toolBarCardView);
 			rcwCard										= (RecyclerView) findViewById(R.id.rcwCard);
@@ -354,7 +354,7 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			if(menu != null)
 			{
-				Migration.getDB(CardViewActivity.this);
+				Migration.getDB(CardViewActivity.this, false);
 				Realm realm	= Realm.getDefaultInstance();
 				suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 

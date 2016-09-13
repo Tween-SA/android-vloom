@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,10 +29,12 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.GetLocationByApiAsyncTask;
 import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Migration;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.MyGcmListenerService;
 import com.tween.viacelular.services.RegistrationIntentService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
+import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,8 +76,20 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 				System.out.println("Densidad de pantalla: " + getResources().getDisplayMetrics().density);
 			}
 
-			//Agregado para inicializar nueva base de datos Realm
-			Migration.getDB(this);
+			//Revisar si hay alguna preferencia que indique si estuvo logueado
+			SharedPreferences preferences	= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			System.out.println("Prefencias: "+preferences.getAll());
+
+			//Agregado para inicializar nueva base de datos Realm y migrar si es necesario
+			if(StringUtils.isNotEmpty(preferences.getString(User.KEY_PHONE, "")))
+			{
+				Migration.getDB(this, true);
+			}
+			else
+			{
+				Migration.getDB(this, false);
+			}
+
 			Realm realm = Realm.getDefaultInstance();
 			realm.setAutoRefresh(true);
 
@@ -83,7 +98,6 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 				@Override
 				public void onReceive(Context context, Intent intent)
 				{
-
 				}
 			};
 

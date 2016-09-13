@@ -172,7 +172,7 @@ public abstract class SuscriptionHelper
 		try
 		{
 			//Modificación para contemplar migración a Realm
-			Migration.getDB(activity);
+			Migration.getDB(activity, false);
 			Realm realm						= Realm.getDefaultInstance();
 			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			String country					= preferences.getString(Land.KEY_API, "");
@@ -272,7 +272,7 @@ public abstract class SuscriptionHelper
 
 		try
 		{
-			Migration.getDB(context);
+			Migration.getDB(context, false);
 			Realm realm							= Realm.getDefaultInstance();//No mostrar mensajes personales
 			RealmResults<Message> realmResults	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
 													.findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);

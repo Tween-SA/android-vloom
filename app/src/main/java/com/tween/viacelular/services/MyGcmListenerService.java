@@ -63,7 +63,7 @@ public class MyGcmListenerService extends GcmListenerService
 				context = getApplicationContext();
 			}
 
-			Migration.getDB(context);
+			Migration.getDB(context, false);
 
 			if(data != null)
 			{

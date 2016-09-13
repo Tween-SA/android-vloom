@@ -41,7 +41,7 @@ public class IncomingSmsService extends BroadcastReceiver
 
 		try
 		{
-			Migration.getDB(context);
+			Migration.getDB(context, false);
 			final Bundle bundle				= intent.getExtras();
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			SharedPreferences.Editor editor	= preferences.edit();
