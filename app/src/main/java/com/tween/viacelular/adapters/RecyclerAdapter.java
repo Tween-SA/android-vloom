@@ -71,7 +71,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 	{
 		try
 		{
-			Migration.getDB(context, Common.REALMDB_VERSION);
+			Migration.getDB(context, false);
 			//Modificaciones para contemplar migración a Realm
 			Realm realm		= Realm.getDefaultInstance();
 			User user		= realm.where(User.class).findFirst();

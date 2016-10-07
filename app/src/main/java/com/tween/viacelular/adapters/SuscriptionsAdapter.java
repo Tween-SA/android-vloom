@@ -57,21 +57,33 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		try
 		{
 			ArrayList<Integer> sectionIndices = new ArrayList<>();
-			char lastFirstChar;
+			char lastFirstChar = '\0';
 
 			if(suscriptions != null)
 			{
 				if(suscriptions.size() > 0)
 				{
-					lastFirstChar = suscriptions.get(0).getName().charAt(0);
-					sectionIndices.add(0);
+					if(suscriptions.get(0) != null)
+					{
+						if(suscriptions.get(0).getName() != null)
+						{
+							lastFirstChar = suscriptions.get(0).getName().charAt(0);
+							sectionIndices.add(0);
+						}
+					}
 
 					for(int i = 1; i < suscriptions.size(); i++)
 					{
-						if(suscriptions.get(i).getName().charAt(0) != lastFirstChar)
+						if(suscriptions.get(i) != null)
 						{
-							lastFirstChar = suscriptions.get(i).getName().charAt(0);
-							sectionIndices.add(i);
+							if(suscriptions.get(i).getName() != null)
+							{
+								if(suscriptions.get(i).getName().charAt(0) != lastFirstChar)
+								{
+									lastFirstChar = suscriptions.get(i).getName().charAt(0);
+									sectionIndices.add(i);
+								}
+							}
 						}
 					}
 				}

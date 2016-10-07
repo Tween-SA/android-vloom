@@ -61,7 +61,7 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 					.show();
 			}
 
-			Migration.getDB(context, Common.REALMDB_VERSION);
+			Migration.getDB(context, false);
 		}
 		catch(Exception e)
 		{

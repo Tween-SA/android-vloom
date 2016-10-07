@@ -55,7 +55,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 			if(remoteMessage != null)
 			{
 				context		= getApplicationContext();
-				Migration.getDB(context, Common.REALMDB_VERSION);
+				Migration.getDB(context, false);
 				// Handle data payload of FCM messages.
 				String from	= remoteMessage.getFrom();
 				Map data	= remoteMessage.getData();

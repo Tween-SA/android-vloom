@@ -49,7 +49,7 @@ public class SplashActivity extends AppCompatActivity
 	private String[]				permissionsNeed = {	Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.BROADCAST_SMS,
 														Manifest.permission.GET_ACCOUNTS, Manifest.permission.INTERNET, Manifest.permission.READ_CONTACTS,
 														Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS,
-														Manifest.permission.RECEIVE_SMS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+														Manifest.permission.RECEIVE_SMS, Manifest.permission.WAKE_LOCK,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 	public static GoogleAnalytics	analytics;
 	public static Tracker			tracker;
 
@@ -59,6 +59,8 @@ public class SplashActivity extends AppCompatActivity
 		try
 		{
 			super.onCreate(savedInstanceState);
+			//Nueva forma de inicializar la base de datos
+			Realm.init(this);
 
 			if(!Common.DEBUG)
 			{
@@ -78,8 +80,20 @@ public class SplashActivity extends AppCompatActivity
 				System.out.println("Densidad de pantalla: " + getResources().getDisplayMetrics().density);
 			}
 
-			//Agregado para inicializar nueva base de datos Realm
-			Migration.getDB(this, Common.REALMDB_VERSION);
+			//Revisar si hay alguna preferencia que indique si estuvo logueado
+			SharedPreferences preferences	= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			System.out.println("Prefencias: "+preferences.getAll());
+
+			//Agregado para inicializar nueva base de datos Realm y migrar si es necesario
+			if(StringUtils.isNotEmpty(preferences.getString(User.KEY_PHONE, "")))
+			{
+				Migration.getDB(this, true);
+			}
+			else
+			{
+				Migration.getDB(this, false);
+			}
+
 			Realm realm = Realm.getDefaultInstance();
 			realm.setAutoRefresh(true);
 

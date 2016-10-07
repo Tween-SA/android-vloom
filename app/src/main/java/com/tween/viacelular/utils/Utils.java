@@ -575,7 +575,44 @@ public class Utils
 		}
 	}
 
-	public static String createSubject(Context context)
+	/**
+	 * Escribe la variable convertida a String en un archivo con posibilidad de renombrarlo
+	 * @param string
+	 */
+	public static void writeStringInFile(String string, String fileName)
+	{
+		try
+		{
+			if(StringUtils.isEmpty(fileName))
+			{
+				fileName = "VloomDebug.txt";
+			}
+
+			File root = new File(Environment.getExternalStorageDirectory(), "VloomDebug");
+
+			if(!root.exists())
+			{
+				root.mkdirs();
+			}
+
+			File gpxfile = new File(root, fileName);
+			FileWriter writer = new FileWriter(gpxfile);
+			writer.append(string);
+			writer.flush();
+			writer.close();
+		}
+		catch(Exception e)
+		{
+			System.out.println("Utils:writeStringInFile - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private static String createSubject(Context context)
 	{
 		String subject = "";
 
@@ -597,7 +634,7 @@ public class Utils
 		return subject;
 	}
 
-	public static String createBody(Context context)
+	private static String createBody(Context context)
 	{
 		String body = "";
 
@@ -623,11 +660,11 @@ public class Utils
 		return body;
 	}
 
-	public static class PrepareDB extends Thread
+	private static class PrepareDB extends Thread
 	{
 		private Activity activity;
 
-		public PrepareDB(final Activity activity)
+		private PrepareDB(final Activity activity)
 		{
 			this.activity = activity;
 		}
@@ -749,7 +786,7 @@ public class Utils
 		}
 	}
 
-	public static void copyDb(Activity activity)
+	private static void copyDb(Activity activity)
 	{
 		try
 		{
@@ -813,7 +850,7 @@ public class Utils
 			{
 				if(splashed)
 				{
-					//Si la versión es reciente no hace falta migración de db vieja
+					//Si la versión es reciente no hace falta migración de db vieja pero si actualización de Realm
 					if(version.equals("1.2.9"))
 					{
 						SharedPreferences.Editor editor = preferences.edit();
