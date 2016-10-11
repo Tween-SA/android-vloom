@@ -65,7 +65,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 				{
 					if(suscriptions.get(0) != null)
 					{
-						if(suscriptions.get(0).getName() != null)
+						if(StringUtils.isNotEmpty(suscriptions.get(0).getName()))
 						{
 							lastFirstChar = suscriptions.get(0).getName().charAt(0);
 							sectionIndices.add(0);
@@ -269,8 +269,14 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 
 					if(item != null)
 					{
-						String headerText = "" + item.getName().subSequence(0, 1).charAt(0);
-						holder.text.setText(headerText);
+						if(StringUtils.isNotEmpty(item.getName()))
+						{
+							if(item.getName().length() >= 2)
+							{
+								String headerText = "" + item.getName().subSequence(0, 1).charAt(0);
+								holder.text.setText(headerText);
+							}
+						}
 					}
 				}
 			}
@@ -302,7 +308,13 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 
 					if(item != null)
 					{
-						id = item.getName().subSequence(0, 1).charAt(0);
+						if(StringUtils.isNotEmpty(item.getName()))
+						{
+							if(item.getName().length() >= 2)
+							{
+								id = item.getName().subSequence(0, 1).charAt(0);
+							}
+						}
 					}
 				}
 			}

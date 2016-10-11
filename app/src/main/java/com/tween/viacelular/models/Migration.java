@@ -58,7 +58,8 @@ public class Migration implements RealmMigration
 						.schemaVersion(Common.REALMDB_VERSION)
 						.deleteRealmIfMigrationNeeded()
 						.build();
-				Realm.setDefaultConfiguration(config);
+				Realm.setDefaultConfiguration(config);//Es instalación nueva no hace falta migrar
+				preferences.edit().putBoolean(Common.KEY_PREF_UPGRADED +"DB"+ Common.REALMDB_VERSION, true).apply();
 			}
 		}
 		catch(Exception e)
@@ -166,7 +167,7 @@ public class Migration implements RealmMigration
 				}
 				else
 				{
-					System.out.println("db version is update");
+					System.out.println("db version is updated");
 				}
 			}
 			else
@@ -183,5 +184,17 @@ public class Migration implements RealmMigration
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return 37;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		return (o instanceof Migration);
 	}
 }
