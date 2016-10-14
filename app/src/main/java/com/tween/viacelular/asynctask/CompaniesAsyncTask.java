@@ -76,7 +76,6 @@ public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 			realm.beginTransaction();
 			results.deleteAllFromRealm();
 			realm.commitTransaction();
-			JSONObject jsonResult				= null;
 			String country						= "";
 			User user							= realm.where(User.class).findFirst();
 
@@ -103,8 +102,9 @@ public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 			SharedPreferences.Editor editor	= preferences.edit();
 			editor.putString(Land.KEY_API, country);
 			editor.apply();
-			jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
-			result		= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
+			JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET,
+														preferences.getString(Common.KEY_TOKEN, ""), ""));
+			result					= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
 
 			if(result.equals(ApiConnection.OK))
 			{

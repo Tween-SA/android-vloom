@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.tween.viacelular.data.Company;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.Utils;
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -20,55 +21,43 @@ public class Migration implements RealmMigration
 	 * Regera la db Realm y la setea como Default para ser usada posteriormente
 	 * @param context
 	 */
-	public static void getDB(Context context, boolean checkMigration)
+	public static void getDB(Context context)
 	{
 		try
 		{
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);//Agregar algo para saber cuando es la primera vez que levanta la app
 			boolean upgradedDB				= preferences.getBoolean(Common.KEY_PREF_UPGRADED +"DB"+ Common.REALMDB_VERSION, false);
 
-			if(checkMigration)
+			if(upgradedDB)
 			{
-				if(!upgradedDB)
-				{
-					//App actualizada
-					RealmConfiguration config	= new RealmConfiguration.Builder()
-							.name(Common.REALMDB_NAME)
-							.schemaVersion(Common.REALMDB_VERSION)
-							.migration(new Migration())
-							.deleteRealmIfMigrationNeeded()
-							.build();
-					Realm.setDefaultConfiguration(config);
-					preferences.edit().putBoolean(Common.KEY_PREF_UPGRADED +"DB"+ Common.REALMDB_VERSION, true).apply();
-				}
-				else
-				{
-					RealmConfiguration config	= new RealmConfiguration.Builder()
-							.name(Common.REALMDB_NAME)
-							.schemaVersion(Common.REALMDB_VERSION)
-							.deleteRealmIfMigrationNeeded()
-							.build();
-					Realm.setDefaultConfiguration(config);
-				}
-			}
-			else
-			{
-				RealmConfiguration config	= new RealmConfiguration.Builder()
+				//No necesita migrarse porque es instalación nueva
+				RealmConfiguration config	= new RealmConfiguration.Builder(context)
 						.name(Common.REALMDB_NAME)
 						.schemaVersion(Common.REALMDB_VERSION)
 						.deleteRealmIfMigrationNeeded()
 						.build();
-				Realm.setDefaultConfiguration(config);//Es instalación nueva no hace falta migrar
-				preferences.edit().putBoolean(Common.KEY_PREF_UPGRADED +"DB"+ Common.REALMDB_VERSION, true).apply();
+				Realm.setDefaultConfiguration(config);
+			}
+			else
+			{
+				//Necesita migrarse porque es un update en caliente
+				RealmConfiguration config	= new RealmConfiguration.Builder(context)
+						.name(Common.REALMDB_NAME)
+						.schemaVersion(Common.REALMDB_VERSION)
+						.migration(new Migration())
+						.deleteRealmIfMigrationNeeded()
+						.build();
+				Realm.setDefaultConfiguration(config);
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("Migration:getDB - Exception: " + e);
+			System.out.println(Migration.class.getName()+":getDB - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
+				Utils.writeStringInFile(Migration.class.getName()+":getDB - Exception: " + e, "");
 			}
 		}
 	}
@@ -119,7 +108,8 @@ public class Migration implements RealmMigration
 	{
 		try
 		{
-			System.out.println("Migrando dbRealm: oldv:"+oldVersion+" newv:"+newVersion);
+			System.out.println("Migrando dbRealm: oldVersion:"+oldVersion+" newVersion:"+newVersion);
+			Utils.writeStringInFile("Migrando dbRealm: oldVersion:"+oldVersion+" newVersion:"+newVersion, "");
 
 			if(realm != null)
 			{
@@ -133,9 +123,9 @@ public class Migration implements RealmMigration
 
 						if(subscription != null)
 						{
-							System.out.println("Antes de tocar subscription: "+subscription.getFieldNames().toString());
+							Utils.writeStringInFile("Antes de tocar subscription: "+subscription.getFieldNames().toString(), "");
 							subscription.addField(Suscription.KEY_LASTSOCIALUPDATED, Long.class);
-							System.out.println("Después de tocar subscription: "+subscription.getFieldNames().toString());
+							Utils.writeStringInFile("Después de tocar subscription: "+subscription.getFieldNames().toString(), "");
 						}
 						else
 						{
@@ -146,14 +136,14 @@ public class Migration implements RealmMigration
 
 						if(message != null)
 						{
-							System.out.println("Antes de tocar message: "+message.getFieldNames().toString());
+							Utils.writeStringInFile("Antes de tocar message: "+message.getFieldNames().toString(), "");
 							message.addField(Message.KEY_SOCIALID, String.class);
 							message.addField(Message.KEY_SOCIALDATE, String.class);
 							message.addField(Message.KEY_SOCIALLIKES, int.class);
 							message.addField(Message.KEY_SOCIALSHARES, int.class);
 							message.addField(Message.KEY_SOCIALACCOUNT, String.class);
 							message.addField(Message.KEY_SOCIALNAME, String.class);
-							System.out.println("Después de tocar message: "+message.getFieldNames().toString());
+							Utils.writeStringInFile("Después de tocar message: "+message.getFieldNames().toString(), "");
 						}
 						else
 						{
@@ -182,6 +172,8 @@ public class Migration implements RealmMigration
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
+
+				Utils.writeStringInFile(Migration.class.getName()+":migrate - Exception: " + e, "");
 			}
 		}
 	}

@@ -37,11 +37,9 @@ public class IncomingSmsService extends BroadcastReceiver
 	@Override
 	public void onReceive(final Context context, final Intent intent)
 	{
-		Realm realm = null;
-
 		try
 		{
-			Migration.getDB(context, false);
+			Migration.getDB(context);
 			final Bundle bundle				= intent.getExtras();
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			SharedPreferences.Editor editor	= preferences.edit();
@@ -57,7 +55,7 @@ public class IncomingSmsService extends BroadcastReceiver
 					//Mejora en la performance
 					for(Object singlePdusObj : pdusObj)
 					{
-						SmsMessage currentMessage = null;
+						SmsMessage currentMessage;
 
 						if(Common.API_LEVEL >= Build.VERSION_CODES.M)
 						{
@@ -73,9 +71,9 @@ public class IncomingSmsService extends BroadcastReceiver
 							currentMessage = SmsMessage.createFromPdu((byte[]) singlePdusObj);
 						}
 
-						String address	= "";
-						String message	= "";
-						String date		= "";
+						String address;
+						String message;
+						String date;
 
 						if(currentMessage != null)
 						{
@@ -102,124 +100,120 @@ public class IncomingSmsService extends BroadcastReceiver
 							}
 
 							//Agregado para prevenir las consultas si no se otorgo sessión para el dao
-							realm = Realm.getDefaultInstance();
+							Realm realm = Realm.getDefaultInstance();
 							RealmResults<Message> notifications = realm.where(Message.class).equalTo(Message.KEY_CHANNEL, address).equalTo(Common.KEY_TYPE, Message.TYPE_SMS)
 																	.equalTo(Message.KEY_CREATED, Long.valueOf(date)).findAll();
 
-							if(notifications != null)
+							if(notifications.size() == 0)
 							{
-								if(notifications.size() == 0)
+								if(	StringUtils.isPhoneNumber(address) || message.contains(Message.SMS_CODE) || message.contains(Message.SMS_CODE_ES) || message.contains(Message.SMS_CODE_NEW) ||
+									message.contains(Message.SMS_CODE_ES_NEW))
 								{
-									if(	StringUtils.isPhoneNumber(address) || message.contains(Message.SMS_CODE) || message.contains(Message.SMS_CODE_ES) || message.contains(Message.SMS_CODE_NEW) ||
-										message.contains(Message.SMS_CODE_ES_NEW))
+									notification = new Message();
+									notification.setType(Message.TYPE_SMS);
+									notification.setMsg(message);
+									notification.setCreated(System.currentTimeMillis());
+									notification.setChannel(address);
+									notification.setStatus(Message.STATUS_RECEIVE);
+
+									//Modificación para contemplar cambio en tratamiento de números cortos
+									editor.putInt(Common.KEY_LAST_MSGID, preferences.getInt(Common.KEY_LAST_MSGID, 1) + 1);
+									editor.apply();
+									notification.setMsgId(String.valueOf(preferences.getInt(Common.KEY_LAST_MSGID, 1)));
+									//Agregado para continuar numeración de msgId
+
+									Suscription client	= null;
+									String companyId	= "";
+
+									if(message.contains(Message.SMS_CODE))
 									{
-										notification = new Message();
-										notification.setType(Message.TYPE_SMS);
-										notification.setMsg(message);
-										notification.setCreated(System.currentTimeMillis());
-										notification.setChannel(address);
-										notification.setStatus(Message.STATUS_RECEIVE);
-
-										//Modificación para contemplar cambio en tratamiento de números cortos
-										editor.putInt(Common.KEY_LAST_MSGID, preferences.getInt(Common.KEY_LAST_MSGID, 1) + 1);
-										editor.apply();
-										notification.setMsgId(String.valueOf(preferences.getInt(Common.KEY_LAST_MSGID, 1)));
-										//Agregado para continuar numeración de msgId
-
-										boolean coincidenceKeyword	= false;
-										Suscription client			= null;
-										String companyId			= "";
-
-										if(message.contains(Message.SMS_CODE))
+										code	= message.replace(Message.SMS_CODE, "");
+										code	= code.trim().substring(0, Common.CODE_LENGTH);
+									}
+									else
+									{
+										//Agregado para contemplar cuando el mensaje sea traducido al español
+										if(message.contains(Message.SMS_CODE_ES))
 										{
-											code	= message.replace(Message.SMS_CODE, "");
+											code	= message.replace(Message.SMS_CODE_ES, "");
 											code	= code.trim().substring(0, Common.CODE_LENGTH);
 										}
-										else
-										{
-											//Agregado para contemplar cuando el mensaje sea traducido al español
-											if(message.contains(Message.SMS_CODE_ES))
-											{
-												code	= message.replace(Message.SMS_CODE_ES, "");
-												code	= code.trim().substring(0, Common.CODE_LENGTH);
-											}
-										}
+									}
 
-										if(message.contains(Message.SMS_CODE_NEW))
+									if(message.contains(Message.SMS_CODE_NEW))
+									{
+										code	= message.replace(Message.SMS_CODE_NEW, "");
+										code	= code.trim().substring(0, Common.CODE_LENGTH);
+									}
+									else
+									{
+										//Agregado para contemplar cuando el mensaje sea traducido al español
+										if(message.contains(Message.SMS_CODE_ES_NEW))
 										{
-											code	= message.replace(Message.SMS_CODE_NEW, "");
+											code	= message.replace(Message.SMS_CODE_ES_NEW, "");
 											code	= code.trim().substring(0, Common.CODE_LENGTH);
 										}
-										else
-										{
-											//Agregado para contemplar cuando el mensaje sea traducido al español
-											if(message.contains(Message.SMS_CODE_ES_NEW))
-											{
-												code	= message.replace(Message.SMS_CODE_ES_NEW, "");
-												code	= code.trim().substring(0, Common.CODE_LENGTH);
-											}
-										}
+									}
 
-										//Modificaciones para contemplar números cortos de más de una company
-										if(StringUtils.isNotEmpty(code))
+									//Modificaciones para contemplar números cortos de más de una company
+									if(StringUtils.isNotEmpty(code))
+									{
+										companyId = Suscription.COMPANY_ID_VC_MONGO;
+									}
+									else
+									{
+										if(message.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || message.toUpperCase().contains("VIACELULAR"))
 										{
+											//Optimización para evitar bucle por un registro
 											companyId = Suscription.COMPANY_ID_VC_MONGO;
 										}
 										else
 										{
-											if(message.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || message.toUpperCase().contains("VIACELULAR"))
+											User user		= realm.where(User.class).findFirst();
+											String country	= preferences.getString(Land.KEY_API, "");
+
+											if(user != null)
 											{
-												//Optimización para evitar bucle por un registro
-												companyId = Suscription.COMPANY_ID_VC_MONGO;
-											}
-											else
-											{
-												User user		= realm.where(User.class).findFirst();
-												String country	= preferences.getString(Land.KEY_API, "");
-
-												if(user != null)
+												if(StringUtils.isNotEmpty(user.getCountryCode()))
 												{
-													if(StringUtils.isNotEmpty(user.getCountryCode()))
-													{
-														country	= user.getCountryCode();
-														editor.putString(Land.KEY_API, country);
-														editor.apply();
-													}
-												}
-
-												//Re-estructuración para mejorar clasificación de sms
-												client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(address, message, context, country))
-															.findFirst();
-
-												if(client != null)
-												{
-													companyId = client.getCompanyId();
+													country	= user.getCountryCode();
+													editor.putString(Land.KEY_API, country);
+													editor.apply();
 												}
 											}
+
+											//Re-estructuración para mejorar clasificación de sms
+											client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(address, message, context, country))
+														.findFirst();
+
+											if(client != null)
+											{
+												companyId = client.getCompanyId();
+											}
 										}
+									}
 
-										//Agregado para contemplar país y celular del usuario al recibir un sms
-										notification.setCountryCode(preferences.getString(Land.KEY_API, ""));
-										notification.setPhone(preferences.getString(User.KEY_PHONE, ""));
-										notification.setCompanyId(companyId);
-										notification.setFlags(Message.FLAGS_SMS);
-										//Agregado para contemplar números largos
-										notification.setKind(Message.KIND_TEXT);
+									//Agregado para contemplar país y celular del usuario al recibir un sms
+									notification.setCountryCode(preferences.getString(Land.KEY_API, ""));
+									notification.setPhone(preferences.getString(User.KEY_PHONE, ""));
+									notification.setCompanyId(companyId);
+									notification.setFlags(Message.FLAGS_SMS);
+									//Agregado para contemplar números largos
+									notification.setKind(Message.KIND_TEXT);
 
-										if(!StringUtils.isCompanyNumber(address))
-										{
-											notification.setStatus(Message.STATUS_PERSONAL);
-										}
+									if(!StringUtils.isCompanyNumber(address))
+									{
+										notification.setStatus(Message.STATUS_PERSONAL);
+									}
 
-										realm.beginTransaction();
-										realm.copyToRealmOrUpdate(notification);
-										realm.commitTransaction();
+									realm.beginTransaction();
+									realm.copyToRealmOrUpdate(notification);
+									realm.commitTransaction();
 
-										//Agregado para mostrar notificación sin sonido
-										if(notification.getStatus() != Message.STATUS_PERSONAL || StringUtils.isNotEmpty(code))
-										{
-											Utils.showPush(context, preferences.getString(User.KEY_PHONE, ""), String.valueOf(Common.BOOL_YES), notification);
-										}
+									//Agregado para mostrar notificación sin sonido
+									if(notification.getStatus() != Message.STATUS_PERSONAL || StringUtils.isNotEmpty(code))
+									{
+										Utils.showPush(context, preferences.getString(User.KEY_PHONE, ""), String.valueOf(Common.BOOL_YES), notification);
 									}
 								}
 							}

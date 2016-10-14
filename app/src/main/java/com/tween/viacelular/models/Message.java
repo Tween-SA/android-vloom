@@ -38,6 +38,7 @@ public class Message extends RealmObject
 	private int		socialShares;
 	private String	socialAccount;
 	private String	socialName;
+	private String	txid;
 
 	@Ignore
 	public static final int KIND_TEXT				= 0; //La push contiene únicamente texto, clase de push por defecto
@@ -395,5 +396,15 @@ public class Message extends RealmObject
 	public void setSocialName(final String socialName)
 	{
 		this.socialName = socialName;
+	}
+
+	public String getTxid()
+	{
+		return txid;
+	}
+
+	public void setTxid(final String txid)
+	{
+		this.txid = txid;
 	}
 }

@@ -52,7 +52,7 @@
 	<string name="landing_card_error_header">Hoppla!</string><!-- after traslate -->
 	<string name="landing_card_error_retry">Wieder senden</string><!-- after traslate -->
 	<string name="landing_card_error_text">Ihre Daten werden nicht gespeichert, bitte versuchen Sie es erneut.</string><!-- after traslate -->
-	<string name="landing_card_loading_header">Nur einen Moment ...</string><!-- after traslate -->
+	<string name="landing_card_loading_header">Nur einen Moment &#8230;</string><!-- after traslate -->
 	<string name="landing_card_loading_text">Wir halten Ihre Daten</string><!-- after traslate -->
 	<string name="landing_card_ok_header">All up!</string><!-- after traslate -->
 	<string name="landing_card_ok_text">Halten Sie Ihre Kunden-ID, um ein besseres Erlebnis zu bieten</string><!-- after traslate -->
@@ -109,8 +109,8 @@
 	<string name="phone_lenght">Die Länge deiner Telefonnummer muss der Anzahl der Ziffern in deinem Land entsprechen</string>
 	<string name="phone">Telefon</string>
 	<string name="please_retry">Bitte versuche es später noch einmal</string>
-	<string name="please_wait">Bitte warten...</string>
-	<string name="progress_dialog">In Bearbeitung ...</string>
+	<string name="please_wait">Bitte warten&#8230;</string>
+	<string name="progress_dialog">In Bearbeitung&#8230;</string>
 	<string name="rate_dialog_title">Vloom 5 Sterne geben?</string>
 	<string name="rate_dialog_message">Es dauert nur eine Minute. Deine Meinung ist uns wichtig, danke!</string>
 	<string name="rate_dialog_ok">Bewerten</string>
@@ -120,10 +120,10 @@
 	<string name="refresh_complete">Deine Abonnements wurden aktualisiert</string>
 	<string name="refresh_menu">Aktualisieren</string>
 	<string name="register_begin">Registriere dich, um zu beginnen</string>
-	<string name="register_dialog">Registrierung ...</string>
+	<string name="register_dialog">Registrierung&#8230;</string>
 	<string name="register">Registriere dich mit deiner E-Mail</string>
 	<string name="register_business">Anmeldung Geschäfts</string><!-- after traslate -->
-	<string name="registering_message">Erstelle Instanzkennung für Token...</string>
+	<string name="registering_message">Erstelle Instanzkennung für Token&#8230;</string>
 	<string name="reimport_sms">Neuimport meiner SMS</string>
 	<string name="repassword_blank">Bitte bestätige dein Passwort</string>
 	<string name="repassword">Passwort wiederholen</string>
@@ -198,7 +198,7 @@
 	<string name="unsuscribe">ABMELDEN</string>
 	<string name="upgrade_text">Wir aktualisieren Ihre Informationen</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
-	<string name="verify_dialog">Überprüfen ...</string>
+	<string name="verify_dialog">Überprüfen&#8230;</string>
 	<string name="version_settins">für Android v</string>
 	<string name="week">Woche</string>
 	<string name="weeks">Wochen</string>

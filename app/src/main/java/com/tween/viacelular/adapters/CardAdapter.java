@@ -133,7 +133,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		//Agregado para capturar excepciones
 		try
 		{
-			View view = null;
+			View view;
 
 			switch(viewType)
 			{

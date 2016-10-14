@@ -8,6 +8,7 @@
 	android:paddingTop="8dp"
 	android:background="?android:attr/selectableItemBackground">
 	<ImageView
+		android:contentDescription="@string/app_name"
 		android:id="@+id/circleView"
 		android:layout_width="50dp"
 		android:layout_height="50dp"
@@ -36,6 +37,7 @@
 		android:layout_alignLeft="@+id/rowText"
 		android:layout_alignStart="@+id/rowText" />
 	<ImageButton
+		android:contentDescription="@string/app_name"
 		android:id="@+id/ibUnLock"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

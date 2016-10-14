@@ -198,7 +198,7 @@ public class Utils
 			boolean logged					= preferences.getBoolean(Common.KEY_PREF_LOGGED, false);
 			boolean checked					= preferences.getBoolean(Common.KEY_PREF_CHECKED, false);
 			boolean freePassOn				= preferences.getBoolean(Common.KEY_PREF_FREEPASS, false);
-			Intent intent					= null;
+			Intent intent;
 
 			switch(pantalla)
 			{
@@ -472,7 +472,7 @@ public class Utils
 		{
 			if(StringUtils.isNotEmpty(extraText))
 			{
-				Intent intent = null;
+				Intent intent;
 
 				if(action == 1)
 				{
@@ -589,15 +589,10 @@ public class Utils
 			}
 
 			File root = new File(Environment.getExternalStorageDirectory(), "VloomDebug");
-
-			if(!root.exists())
-			{
-				root.mkdirs();
-			}
-
+			root.mkdirs();
 			File gpxfile = new File(root, fileName);
 			FileWriter writer = new FileWriter(gpxfile);
-			writer.append(string);
+			writer.append(System.getProperty("line.separator")+string);
 			writer.flush();
 			writer.close();
 		}
@@ -729,10 +724,10 @@ public class Utils
 				//Agregado para comprimir archivos de db
 				if(files.size() > 0)
 				{
-					BufferedInputStream origin	= null;
-					FileOutputStream dest		= new FileOutputStream(path2Copy+"vloomdb.zip");
-					ZipOutputStream out			= new ZipOutputStream(new BufferedOutputStream(dest));
-					byte dataEmail[]			= new byte[2048];
+					BufferedInputStream origin;
+					FileOutputStream dest	= new FileOutputStream(path2Copy+"vloomdb.zip");
+					ZipOutputStream out		= new ZipOutputStream(new BufferedOutputStream(dest));
+					byte dataEmail[]		= new byte[2048];
 
 					for(int i = 0; i < files.size(); i++)
 					{
@@ -768,8 +763,8 @@ public class Utils
 			}
 			catch(Exception e)
 			{
-				FileWriter fichero	= null;
-				PrintWriter pw		= null;
+				FileWriter fichero;
+				PrintWriter pw;
 
 				try
 				{
@@ -798,8 +793,8 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			FileWriter fichero	= null;
-			PrintWriter pw		= null;
+			FileWriter fichero;
+			PrintWriter pw;
 
 			try
 			{

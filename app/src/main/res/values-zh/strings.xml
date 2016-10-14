@@ -108,8 +108,8 @@
 	<string name="phone_lenght">您手机号码的位数必须与您所在国家要求的位数相一致</string>
 	<string name="phone">手机</string>
 	<string name="please_retry">请稍后再试</string>
-	<string name="please_wait">请稍候...</string>
-	<string name="progress_dialog">正在处理...</string>
+	<string name="please_wait">请稍候&#8230;</string>
+	<string name="progress_dialog">正在处理&#8230;</string>
 	<string name="rate_dialog_title">您是否想给 Vloom 5 星评价？</string>
 	<string name="rate_dialog_message">这仅需要一分钟。您的意见对我们很重要，谢谢！</string>
 	<string name="rate_dialog_ok">评价</string>
@@ -119,10 +119,10 @@
 	<string name="refresh_complete">您的订阅已更新</string>
 	<string name="refresh_menu">更新</string>
 	<string name="register_begin">注册以开始</string>
-	<string name="register_dialog">正在注册...</string>
+	<string name="register_dialog">正在注册&#8230;</string>
 	<string name="register">用您的电子邮件进行注册</string>
 	<string name="register_business">登录业务</string><!-- after traslate -->
-	<string name="registering_message">正在生成的令牌实例 ID ...</string>
+	<string name="registering_message">正在生成的令牌实例 ID&#8230;</string>
 	<string name="reimport_sms">重新导入我的短信</string>
 	<string name="repassword_blank">您必须确认您的密码</string>
 	<string name="repassword">重复密码</string>

@@ -108,7 +108,7 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 			//Se quitó lo referido a isp para obtener desde clase sin consultar a la db
 			JSONObject jsonSend		= new JSONObject();
 			JSONObject info			= new JSONObject();
-			JSONObject jsonResult	= new JSONObject();
+			JSONObject jsonResult;
 			String email			= preferences.getString(User.KEY_EMAIL, "");
 
 			if(StringUtils.isEmpty(email))

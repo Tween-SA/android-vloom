@@ -59,8 +59,6 @@ public class SplashActivity extends AppCompatActivity
 		try
 		{
 			super.onCreate(savedInstanceState);
-			//Nueva forma de inicializar la base de datos
-			Realm.init(this);
 
 			if(!Common.DEBUG)
 			{
@@ -85,18 +83,15 @@ public class SplashActivity extends AppCompatActivity
 			System.out.println("Prefencias: "+preferences.getAll());
 
 			//Agregado para inicializar nueva base de datos Realm y migrar si es necesario
-			if(StringUtils.isNotEmpty(preferences.getString(User.KEY_PHONE, "")))
+			if(StringUtils.isEmpty(preferences.getString(User.KEY_PHONE, "")))
 			{
-				Migration.getDB(this, true);
-			}
-			else
-			{
-				Migration.getDB(this, false);
+				//Clean install
+				preferences.edit().putBoolean(Common.KEY_PREF_UPGRADED +"DB"+ Common.REALMDB_VERSION, true).apply();
 			}
 
+			Migration.getDB(this);
 			Realm realm = Realm.getDefaultInstance();
 			realm.setAutoRefresh(true);
-
 			mRegistrationBroadcastReceiver = new BroadcastReceiver()
 			{
 				@Override
@@ -205,6 +200,7 @@ public class SplashActivity extends AppCompatActivity
 			FirebaseMessaging.getInstance().subscribeToTopic(MyFirebaseInstanceIdService.FRIENDLY_ENGAGE_TOPIC);
 			String token = FirebaseInstanceId.getInstance().getToken();
 			System.out.println("TOKEN NUEVO: "+token);
+
 			if(StringUtils.isNotEmpty(token))
 			{
 				SharedPreferences.Editor preferences	= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE).edit();

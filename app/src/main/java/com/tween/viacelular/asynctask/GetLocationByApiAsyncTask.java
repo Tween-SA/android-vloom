@@ -50,7 +50,7 @@ public class GetLocationByApiAsyncTask extends AsyncTask<Void, Void, String>
 						.show();
 			}
 
-			Migration.getDB(context, false);
+			Migration.getDB(context);
 		}
 		catch(Exception e)
 		{

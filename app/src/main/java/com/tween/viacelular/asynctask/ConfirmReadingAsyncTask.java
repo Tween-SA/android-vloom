@@ -63,7 +63,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 					.show();
 			}
 
-			Migration.getDB(context, false);
+			Migration.getDB(context);
 			System.out.println("Confirma onPreExecute - msgId: " + msgId+" status: "+status+" companyId: "+companyId);
 
 			//Reportar coordenadas

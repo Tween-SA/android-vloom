@@ -34,8 +34,8 @@ public class ApiConnection
 	public static final String CLOUDFRONT_S3		= "https://d1ads2zadze8sp.cloudfront.net/"; //Recuerdo que apunta al s3 https://s3-sa-east-1.amazonaws.com/vc-img/Logos/
 	public static final String BUSINESS				= "https://business.vloom.io/register"; //Production web business
 	//public static final String BUSINESS			= "https://dev-business.vloom.io/register"; //Testing web business
-	//private static final String SERVERP				= "https://api.vloom.io/v1/"; //New Production - master
-	private static final String SERVERP				= "https://dev.vloom.io/v1/"; //Testing - develop
+	private static final String SERVERP				= "https://api.vloom.io/v1/"; //New Production - master
+	//private static final String SERVERP				= "https://dev.vloom.io/v1/"; //Testing - develop
 	//private static final String SERVER			= "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
 	//private static final String SERVER			= "https://private-29fe84-davidfigueroa.apiary-mock.com/v1/"; //Development Apiary Private
 	public static final String IP_API				= "http://ip-api.com/json";
@@ -217,21 +217,18 @@ public class ApiConnection
 
 				httpConnection.connect();
 
-				if(httpConnection != null)
+				try
 				{
-					try
-					{
-						code	= httpConnection.getResponseCode();
-						message	= httpConnection.getResponseMessage();
-					}
-					catch(Exception e)
-					{
-						System.out.println("ApiConnection:request:getResponseCode() - Exception: " + e);
+					code	= httpConnection.getResponseCode();
+					message	= httpConnection.getResponseMessage();
+				}
+				catch(Exception e)
+				{
+					System.out.println("ApiConnection:request:getResponseCode() - Exception: " + e);
 
-						if(Common.DEBUG)
-						{
-							e.printStackTrace();
-						}
+					if(Common.DEBUG)
+					{
+						e.printStackTrace();
 					}
 				}
 
@@ -342,14 +339,11 @@ public class ApiConnection
 		try
 		{
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+			String line;
 
-			if(bufferedReader != null)
+			while((line = bufferedReader.readLine()) != null)
 			{
-				String line = "";
-				while((line = bufferedReader.readLine()) != null)
-				{
-					result += line;
-				}
+				result += line;
 			}
 
 			inputStream.close();

@@ -598,7 +598,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					SharedPreferences.Editor editor	= preferences.edit();
 					User user						= realm.where(User.class).findFirst();
 					String country					= preferences.getString(Land.KEY_API, "");
-					String companyId				= "";
+					String companyId;
 
 					if(user != null)
 					{
@@ -612,7 +612,6 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 					for(Suscription phantom : companyPhantom)
 					{
-						companyId				= "";
 						RealmResults<Message> messages	= realm.where(Message.class).equalTo(Suscription.KEY_API, phantom.getCompanyId()).equalTo(Message.KEY_DELETED, Common.BOOL_NO)
 															.lessThan(Common.KEY_STATUS, Message.STATUS_SPAM).findAll().distinct(Message.KEY_CHANNEL);
 

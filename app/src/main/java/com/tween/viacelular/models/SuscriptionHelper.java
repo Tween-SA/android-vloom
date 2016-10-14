@@ -32,22 +32,20 @@ public abstract class SuscriptionHelper
 		try
 		{
 			Realm realm	= Realm.getDefaultInstance();
-			int count	= 0;
 
 			//Revisamos si el sms tiene las keywords de Vloom
 			if(	message.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || message.toUpperCase().contains("VIACELULAR") ||
 				addressee.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || addressee.toUpperCase().contains("VIACELULAR"))
 			{
 				companyId	= Suscription.COMPANY_ID_VC_MONGO;
-				count		= 1;
 			}
 			else
 			{
 				//Buscamos companies con el número del que vino el sms
 				RealmResults<Suscription> companiesWithNumber	= realm.where(Suscription.class).contains(Suscription.KEY_NUMBERS, "\""+addressee+"\"", Case.INSENSITIVE).findAll();
 				//Verificamos coincidencias (companies que compartan el número)
-				count											= companiesWithNumber.size();
-				Suscription client								= null;
+				int count										= companiesWithNumber.size();
+				Suscription client;
 
 				switch(count)
 				{
@@ -172,12 +170,12 @@ public abstract class SuscriptionHelper
 		try
 		{
 			//Modificación para contemplar migración a Realm
-			Migration.getDB(activity, false);
+			Migration.getDB(activity);
 			Realm realm						= Realm.getDefaultInstance();
 			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			String country					= preferences.getString(Land.KEY_API, "");
-			JSONObject jsonResult			= null;
-			String result					= "";
+			JSONObject jsonResult;
+			String result;
 
 			if(StringUtils.isEmpty(country))
 			{
@@ -272,7 +270,7 @@ public abstract class SuscriptionHelper
 
 		try
 		{
-			Migration.getDB(context, false);
+			Migration.getDB(context);
 			Realm realm							= Realm.getDefaultInstance();//No mostrar mensajes personales
 			RealmResults<Message> realmResults	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
 													.findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);

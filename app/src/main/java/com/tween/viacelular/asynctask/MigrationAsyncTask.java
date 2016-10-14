@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.BlockedActivity;
 import com.tween.viacelular.data.Company;
 import com.tween.viacelular.data.CompanyDao;
-import com.tween.viacelular.data.CountryDao;
 import com.tween.viacelular.data.DaoMaster;
 import com.tween.viacelular.data.DaoSession;
 import com.tween.viacelular.data.Isp;
@@ -23,7 +23,9 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+
 import java.util.List;
+
 import io.realm.Realm;
 
 public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
@@ -59,7 +61,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 					.progress(true, 0)
 					.show();
 
-				Migration.getDB(activity, false);
+				Migration.getDB(activity);
 				final ReadAccountsAsyncTask task	= new ReadAccountsAsyncTask(activity, false);
 				task.execute();
 			}
@@ -90,11 +92,9 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(session != null)
 			{
-				CompanyDao companyDao	= session.getCompanyDao();
 				MessageDao messageDao	= session.getMessageDao();
 				UserDao userDao			= session.getUserDao();
 				IspDao ispDao			= session.getIspDao();
-				CountryDao countryDao	= session.getCountryDao();
 				String countryCode		= "";
 				String phone			= "";
 

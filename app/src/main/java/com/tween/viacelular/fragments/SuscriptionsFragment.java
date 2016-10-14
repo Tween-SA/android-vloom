@@ -140,7 +140,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		try
 		{
 			Realm realm								= Realm.getDefaultInstance();
-			RealmResults<Suscription> suscriptions	= null;
+			RealmResults<Suscription> suscriptions;
 			List<String> listSuscriptions			= new ArrayList<>();
 
 			if(section == 1)
@@ -183,19 +183,16 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 				}
 			}
 
-			if(suscriptions != null)
-			{
-				suscriptions.sort(Common.KEY_NAME);
+			suscriptions.sort(Common.KEY_NAME);
 
-				if(suscriptions.size() > 0)
+			if(suscriptions.size() > 0)
+			{
+				for(Suscription suscription: suscriptions)
 				{
-					for(Suscription suscription: suscriptions)
+					//Agregado para evitar mostrar phantoms companies
+					if(StringUtils.isIdMongo(suscription.getCompanyId()))
 					{
-						//Agregado para evitar mostrar phantoms companies
-						if(StringUtils.isIdMongo(suscription.getCompanyId()))
-						{
-							listSuscriptions.add(suscription.getCompanyId());
-						}
+						listSuscriptions.add(suscription.getCompanyId());
 					}
 				}
 			}

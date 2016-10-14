@@ -51,7 +51,7 @@
 	<string name="landing_card_error_header">Oops!</string><!-- after traslate -->
 	<string name="landing_card_error_retry">Envoyer à nouveau</string><!-- after traslate -->
 	<string name="landing_card_error_text">Leurs données ne sont pas enregistrées, merci de réessayer.</string><!-- after traslate, problem with ' -->
-	<string name="landing_card_loading_header">Juste un instant...</string><!-- after traslate -->
+	<string name="landing_card_loading_header">Juste un instant&#8230;</string><!-- after traslate -->
 	<string name="landing_card_loading_text">Nous gardons vos données</string><!-- after traslate -->
 	<string name="landing_card_ok_header">Tous up!</string><!-- after traslate -->
 	<string name="landing_card_ok_text">Gardez votre numéro de client de fournir une meilleure expérience</string><!-- after traslate -->
@@ -108,8 +108,8 @@
 	<string name="phone_lenght">Votre numéro de téléphone doit respecter le nombre de chiffres selon votre pays</string>
 	<string name="phone">Numéro de téléphone</string>
 	<string name="please_retry">Veuillez réessayer plus tard</string>
-	<string name="please_wait">Veuillez patienter...</string>
-	<string name="progress_dialog">Traitement en cours...</string>
+	<string name="please_wait">Veuillez patienter&#8230;</string>
+	<string name="progress_dialog">Traitement en cours&#8230;</string>
 	<string name="rate_dialog_title">Voulez-vous donner une note de 5 étoiles à Vloom ?</string>
 	<string name="rate_dialog_message">Cela prendra juste une minute. Votre avis nous intéresse. Merci !</string>
 	<string name="rate_dialog_ok">Noter</string>
@@ -119,10 +119,10 @@
 	<string name="refresh_complete">Vos abonnements ont été mis à jour</string>
 	<string name="refresh_menu">Mettre à jour</string>
 	<string name="register_begin">Inscrivez-vous pour commencer</string>
-	<string name="register_dialog">Enregistrement en cours...</string>
+	<string name="register_dialog">Enregistrement en cours&#8230;</string>
 	<string name="register">Enregistrez-vous avec votre adresse de courrier électronique</string>
 	<string name="register_business">Connectez-vous d\'affaires</string><!-- after traslate -->
-	<string name="registering_message">Génération d\'identifiant d\'instance pour jeton...</string>
+	<string name="registering_message">Génération d\'identifiant d\'instance pour jeton&#8230;</string>
 	<string name="reimport_sms">Réimporter mes SMS</string>
 	<string name="repassword_blank">Vous devez confirmer le mot de passe</string>
 	<string name="repassword">Répéter le mot de passe</string>
@@ -197,7 +197,7 @@
 	<string name="unsuscribe">DÉSABONNER</string>
 	<string name="upgrade_text">Nous mettons à jour vos informations</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
-	<string name="verify_dialog">Vérification en cours...</string>
+	<string name="verify_dialog">Vérification en cours&#8230;</string>
 	<string name="version_settins">pour Android v</string>
 	<string name="week">semaine</string>
 	<string name="weeks">semaines</string>

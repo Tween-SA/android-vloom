@@ -480,9 +480,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 
 	private Suscription removeItem(int position)
 	{
-		final Suscription model = suscriptions.remove(position);
-		//notifyItemRemoved(position);
-		return model;
+		return suscriptions.remove(position);
 	}
 
 	private void addItem(int position, Suscription model)
