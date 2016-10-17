@@ -45,7 +45,6 @@ public class Migration implements RealmMigration
 						.name(Common.REALMDB_NAME)
 						.schemaVersion(Common.REALMDB_VERSION)
 						.migration(new Migration())
-						.deleteRealmIfMigrationNeeded()
 						.build();
 				Realm.setDefaultConfiguration(config);
 			}
@@ -109,7 +108,6 @@ public class Migration implements RealmMigration
 		try
 		{
 			System.out.println("Migrando dbRealm: oldVersion:"+oldVersion+" newVersion:"+newVersion);
-			Utils.writeStringInFile("Migrando dbRealm: oldVersion:"+oldVersion+" newVersion:"+newVersion, "");
 
 			if(realm != null)
 			{
@@ -123,9 +121,7 @@ public class Migration implements RealmMigration
 
 						if(subscription != null)
 						{
-							Utils.writeStringInFile("Antes de tocar subscription: "+subscription.getFieldNames().toString(), "");
 							subscription.addField(Suscription.KEY_LASTSOCIALUPDATED, Long.class);
-							Utils.writeStringInFile("Después de tocar subscription: "+subscription.getFieldNames().toString(), "");
 						}
 						else
 						{
@@ -136,14 +132,15 @@ public class Migration implements RealmMigration
 
 						if(message != null)
 						{
-							Utils.writeStringInFile("Antes de tocar message: "+message.getFieldNames().toString(), "");
 							message.addField(Message.KEY_SOCIALID, String.class);
 							message.addField(Message.KEY_SOCIALDATE, String.class);
 							message.addField(Message.KEY_SOCIALLIKES, int.class);
 							message.addField(Message.KEY_SOCIALSHARES, int.class);
 							message.addField(Message.KEY_SOCIALACCOUNT, String.class);
 							message.addField(Message.KEY_SOCIALNAME, String.class);
-							Utils.writeStringInFile("Después de tocar message: "+message.getFieldNames().toString(), "");
+							message.addField(Message.KEY_TXID, String.class);
+							message.addField(Message.KEY_NOTE, String.class);
+							message.addField(Message.KEY_ATTACHED, String.class);
 						}
 						else
 						{
@@ -172,7 +169,6 @@ public class Migration implements RealmMigration
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
-
 				Utils.writeStringInFile(Migration.class.getName()+":migrate - Exception: " + e, "");
 			}
 		}

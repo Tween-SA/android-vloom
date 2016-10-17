@@ -592,7 +592,7 @@ public class Utils
 			root.mkdirs();
 			File gpxfile = new File(root, fileName);
 			FileWriter writer = new FileWriter(gpxfile);
-			writer.append(System.getProperty("line.separator")+string);
+			writer.append(System.getProperty("line.separator")+DateUtils.getDateTimePhone()+": "+string);
 			writer.flush();
 			writer.close();
 		}

@@ -80,13 +80,18 @@ public class SplashActivity extends AppCompatActivity
 
 			//Revisar si hay alguna preferencia que indique si estuvo logueado
 			SharedPreferences preferences	= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			System.out.println("Prefencias: "+preferences.getAll());
+
 
 			//Agregado para inicializar nueva base de datos Realm y migrar si es necesario
 			if(StringUtils.isEmpty(preferences.getString(User.KEY_PHONE, "")))
 			{
 				//Clean install
 				preferences.edit().putBoolean(Common.KEY_PREF_UPGRADED +"DB"+ Common.REALMDB_VERSION, true).apply();
+			}
+
+			if(Common.DEBUG)
+			{
+				System.out.println("Prefencias: "+preferences.getAll());
 			}
 
 			Migration.getDB(this);
