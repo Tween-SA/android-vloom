@@ -238,7 +238,6 @@
 					android:id="@+id/txtValue"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="@string/google_app_id"
 					android:textColor="@color/black"
 					android:textAppearance="?android:attr/textAppearanceSmall"
 					android:layout_weight="2" />

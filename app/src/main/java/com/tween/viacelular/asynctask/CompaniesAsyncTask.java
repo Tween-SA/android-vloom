@@ -6,8 +6,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Land;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
@@ -76,7 +76,6 @@ public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 			realm.beginTransaction();
 			results.deleteAllFromRealm();
 			realm.commitTransaction();
-			JSONObject jsonResult				= null;
 			String country						= "";
 			User user							= realm.where(User.class).findFirst();
 
@@ -103,8 +102,9 @@ public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 			SharedPreferences.Editor editor	= preferences.edit();
 			editor.putString(Land.KEY_API, country);
 			editor.apply();
-			jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
-			result		= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
+			JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET,
+														preferences.getString(Common.KEY_TOKEN, ""), ""));
+			result					= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
 
 			if(result.equals(ApiConnection.OK))
 			{

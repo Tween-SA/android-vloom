@@ -72,7 +72,7 @@
 				android:layout_height="20dp"
 				android:layout_marginLeft="16dp"
 				android:layout_below="@id/dividerTitle"
-				android:src="@drawable/ic_language_gray_48dp"
+				android:src="@drawable/ic_circle_file_download"
 				android:visibility="visible"
 				android:layout_marginTop="10dp"
 				android:layout_marginBottom="10dp"

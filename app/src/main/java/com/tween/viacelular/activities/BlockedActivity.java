@@ -45,8 +45,6 @@ public class BlockedActivity extends AppCompatActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		Realm realm = null;
-
 		try
 		{
 			super.onCreate(savedInstanceState);
@@ -54,7 +52,7 @@ public class BlockedActivity extends AppCompatActivity
 
 			if(Utils.checkSesion(this, Common.ANOTHER_SCREEN))
 			{
-				realm							= Realm.getDefaultInstance();
+				Realm realm						= Realm.getDefaultInstance();
 				final Intent intentRecive		= getIntent();
 				setTitle(intentRecive.getStringExtra(Common.KEY_TITLE));
 				Toolbar toolbar					= (Toolbar) findViewById(R.id.toolBar);
@@ -63,9 +61,9 @@ public class BlockedActivity extends AppCompatActivity
 				mRecyclerView.setHasFixedSize(true);
 				rcwBlocked						= (RecyclerView) findViewById(R.id.rcwBlocked);
 				rlEmpty							= (RelativeLayout) findViewById(R.id.rlEmpty);
-				RecyclerView.Adapter mAdapter	= null;
-				mAdapter = new RecyclerAdapter(	Utils.getMenu(getApplicationContext()),
-												intentRecive.getIntExtra(Common.KEY_SECTION, 0), ContextCompat.getColor(getApplicationContext(), R.color.accent), getApplicationContext());
+				RecyclerView.Adapter mAdapter	= new RecyclerAdapter(	Utils.getMenu(getApplicationContext()),
+																		intentRecive.getIntExtra(Common.KEY_SECTION, 0), ContextCompat.getColor(getApplicationContext(), R.color.accent),
+																		getApplicationContext());
 				mRecyclerView.setAdapter(mAdapter);
 				RecyclerView.LayoutManager mLayoutManager	= new LinearLayoutManager(this);
 				mRecyclerView.setLayoutManager(mLayoutManager);
@@ -244,23 +242,16 @@ public class BlockedActivity extends AppCompatActivity
 			{
 				public void run()
 				{
-					//Modificación para migración de Company a Realm
-					Realm realm = null;
-
 					try
 					{
-						realm	= Realm.getDefaultInstance();
-						clients	= realm.where(Suscription.class).equalTo(Common.KEY_STATUS, Suscription.STATUS_BLOCKED).or().equalTo(Suscription.KEY_BLOCKED, Common.BOOL_YES)
-									.findAllSorted(Common.KEY_NAME);
+						Realm realm	= Realm.getDefaultInstance();
+						clients		= realm.where(Suscription.class).equalTo(Common.KEY_STATUS, Suscription.STATUS_BLOCKED).or().equalTo(Suscription.KEY_BLOCKED, Common.BOOL_YES)
+										.findAllSorted(Common.KEY_NAME);
 
-						if(clients != null)
+						if(clients.size() > 0)
 						{
 							adapter = new BlockedAdapter(clients, BlockedActivity.this);
-
-							if(adapter != null)
-							{
-								rcwBlocked.setAdapter(adapter);
-							}
+							rcwBlocked.setAdapter(adapter);
 
 							if(clients.size() > 0)
 							{

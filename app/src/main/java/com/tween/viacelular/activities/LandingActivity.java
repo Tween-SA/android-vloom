@@ -1,5 +1,6 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -21,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Message;
@@ -56,13 +59,10 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	private TextView			txtSubTitleCollapsed;
 	private TextView			txtAbout;
 	private float				scale;
-	private int					dpAsPixels;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		Realm realm = null;
-
 		try
 		{
 			super.onCreate(savedInstanceState);
@@ -87,7 +87,6 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			View contact									= findViewById(R.id.contentContact);
 			btnSuscribe										= (Button) findViewById(R.id.btnSuscribe);
 			circleView										= (CircleImageView) findViewById(R.id.circleView);
-			FrameLayout flTitle								= (FrameLayout) findViewById(R.id.flTitle);
 			ImageView ivPlaceholder							= (ImageView) findViewById(R.id.ivPlaceholder);
 			final ImageView ibBack							= (ImageView) findViewById(R.id.ibBack);
 			logo											= (ImageView) findViewById(R.id.logo);
@@ -121,7 +120,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 
 			if(intentRecive != null)
 			{
-				realm		= Realm.getDefaultInstance();
+				Realm realm		= Realm.getDefaultInstance();
 				companyId	= intentRecive.getStringExtra(Common.KEY_ID);
 				section		= intentRecive.getStringExtra(Common.KEY_SECTION);
 
@@ -164,14 +163,32 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 
 							if(StringUtils.isNotEmpty(suscription.getUrl()))
 							{
-								txtUrl.setText(suscription.getUrl());
-								iconUrl.setVisibility(ImageView.VISIBLE);
-								txtUrl.setVisibility(TextView.VISIBLE);
+								if(txtUrl != null)
+								{
+									txtUrl.setText(suscription.getUrl());
+									iconUrl.setVisibility(ImageView.VISIBLE);
+									txtUrl.setVisibility(TextView.VISIBLE);
+									final Activity activity = this;
+									txtUrl.setOnClickListener(new View.OnClickListener()
+									{
+										@Override
+										public void onClick(final View view)
+										{
+											//Agregado para capturar evento en Google Analytics
+											GoogleAnalytics.getInstance(activity).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company")
+													.setAction("WebLanding").setLabel("AccionUser").build());
+										}
+									});
+								}
 							}
 							else
 							{
 								iconUrl.setVisibility(ImageView.GONE);
-								txtUrl.setVisibility(TextView.GONE);
+
+								if(txtUrl != null)
+								{
+									txtUrl.setVisibility(TextView.GONE);
+								}
 							}
 
 							if(StringUtils.isNotEmpty(suscription.getEmail()))
@@ -239,21 +256,23 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(circleView);
 							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(logo);
 						}
+						else
+						{
+							//Mostrar el logo de Vloom si no tiene logo
+							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(circleView);
+							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(logo);
+						}
 
 						Utils.tintColorScreen(this, color);
 						collapsingToolbarLayout.setStatusBarScrimColor(Color.parseColor(color));
-
-						if(ibBack != null)
+						ibBack.setOnClickListener(new View.OnClickListener()
 						{
-							ibBack.setOnClickListener(new View.OnClickListener()
+							@Override
+							public void onClick(final View v)
 							{
-								@Override
-								public void onClick(final View v)
-								{
-									onBackPressed();
-								}
-							});
-						}
+								onBackPressed();
+							}
+						});
 
 						//Agregado para diferenciar vista cuando la company está añadida
 						if(suscription.getFollower() == Common.BOOL_YES)
@@ -279,14 +298,21 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 
 			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
 			{
-				circleView.setElevation((float) 4);
-				mAppBarLayout.setElevation((float) 4);
+				if(circleView != null)
+				{
+					circleView.setElevation((float) 4);
+				}
+
+				if(mAppBarLayout != null)
+				{
+					mAppBarLayout.setElevation((float) 4);
+				}
 			}
 
 			//Agregado para replicar función de ir Cards como estaba en profile
 			if(suscription != null)
 			{
-				realm			= Realm.getDefaultInstance();
+				Realm realm		= Realm.getDefaultInstance();
 				long messages	= realm.where(Message.class).equalTo(Message.KEY_DELETED, Common.BOOL_NO).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
 									.equalTo(Suscription.KEY_API, suscription.getCompanyId()).count();
 
@@ -343,7 +369,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	{
 		try
 		{
-			String extraText	= "";
+			String extraText;
 			Integer action		= (Integer) view.getTag();
 
 			if(action == 1)
@@ -393,7 +419,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	{
 		try
 		{
-			Intent intent = null;
+			Intent intent;
 
 			//Agregado para volver a la activity que corresponda
 			if(section.equals("card"))
@@ -483,6 +509,8 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	{
 		try
 		{
+			int dpAsPixels;
+
 			if(percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS)
 			{
 				if(mIsTheTitleContainerVisible)
@@ -571,13 +599,26 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	{
 		try
 		{
-			System.out.println("apreta boton");
+			//TODO: Contemplar caso de añadir una empresa sugerida y medir con Analytics: (Category:Company - Action:AgregarSugerencia - Label:AccionUser)
 			//Agregado para verificar si la company ya estaba o no suscripta
 			Realm realm				= Realm.getDefaultInstance();
 			Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 
 			if(suscription != null)
 			{
+				if(Utils.reverseBool(suscription.getFollower()) == Common.BOOL_YES)
+				{
+					//Agregado para capturar evento en Google Analytics
+					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("AgregarLanding")
+																									.setLabel("AccionUser").build());
+				}
+				else
+				{
+					//Agregado para capturar evento en Google Analytics
+					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("BloquearLanding")
+																									.setLabel("AccionUser").build());
+				}
+
 				BlockedActivity.modifySubscriptions(LandingActivity.this, Utils.reverseBool(suscription.getFollower()), false, companyId, true);
 
 				//Agregado para redirigir a la pantallas cards para pedir la identificación del cliente si es necesario

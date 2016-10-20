@@ -8,6 +8,7 @@
 	android:paddingTop="8dp"
 	android:id="@+id/rlItem">
 	<ImageView
+		android:contentDescription="@string/app_name"
 		android:id="@+id/rowIcon"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

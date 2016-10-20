@@ -9,7 +9,6 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.activities.BlockedActivity;
 import com.tween.viacelular.data.Company;
 import com.tween.viacelular.data.CompanyDao;
-import com.tween.viacelular.data.CountryDao;
 import com.tween.viacelular.data.DaoMaster;
 import com.tween.viacelular.data.DaoSession;
 import com.tween.viacelular.data.Isp;
@@ -90,11 +89,9 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(session != null)
 			{
-				CompanyDao companyDao	= session.getCompanyDao();
 				MessageDao messageDao	= session.getMessageDao();
 				UserDao userDao			= session.getUserDao();
 				IspDao ispDao			= session.getIspDao();
-				CountryDao countryDao	= session.getCountryDao();
 				String countryCode		= "";
 				String phone			= "";
 
@@ -176,7 +173,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 																		existingCompany.getPhone(), existingCompany.getMsgExamples(), existingCompany.getIdentificationKey(), existingCompany.getDataSent(),
 																		existingCompany.getIdentificationValue(), existingCompany.getAbout(), existingCompany.getStatus(), existingCompany.getSilenced(),
 																		existingCompany.getBlocked(), existingCompany.getEmail(), existingCompany.getReceive(), existingCompany.getSuscribe(),
-																		existingCompany.getFollower(), existingCompany.getGray());
+																		existingCompany.getFollower(), existingCompany.getGray(), "");
 							realm.copyToRealmOrUpdate(suscription);
 							realm.commitTransaction();
 						}

@@ -52,7 +52,7 @@
 	<string name="landing_card_error_header">Oops!</string><!-- after traslate -->
 	<string name="landing_card_error_retry">Send again</string><!-- after traslate -->
 	<string name="landing_card_error_text">Your data will not be saved, please try again.</string><!-- after traslate -->
-	<string name="landing_card_loading_header">Only a moment...</string><!-- after traslate -->
+	<string name="landing_card_loading_header">Only a moment&#8230;</string><!-- after traslate -->
 	<string name="landing_card_loading_text">We are keeping your data</string><!-- after traslate -->
 	<string name="landing_card_ok_header">All up!</string><!-- after traslate -->
 	<string name="landing_card_ok_text">Keep your customer ID to provide a better experience</string><!-- after traslate -->
@@ -110,8 +110,8 @@
 	<string name="phone_lenght">Your phone number must correspond with the number of digits according to your country</string>
 	<string name="phone">Phone</string>
 	<string name="please_retry">Please try again later</string>
-	<string name="please_wait">Please wait...</string>
-	<string name="progress_dialog">Processing...</string>
+	<string name="please_wait">Please wait&#8230;</string>
+	<string name="progress_dialog">Processing&#8230;</string>
 	<string name="rate_dialog_title">Would you like to rate Vloom with 5 stars?</string>
 	<string name="rate_dialog_message">Just one minute. Your opinion is important to us. Thanks!</string>
 	<string name="rate_dialog_ok">Rate</string>
@@ -121,9 +121,10 @@
 	<string name="refresh_complete">Your subscriptions have been updated</string>
 	<string name="refresh_menu">Update</string>
 	<string name="register_begin">Register to begin</string>
-	<string name="register_dialog">Registering...</string>
+	<string name="register_business">Sign in Business</string><!-- after traslate -->
+	<string name="register_dialog">Registering&#8230;</string>
 	<string name="register">Register with your e-mail</string>
-	<string name="registering_message">Generating instance ID for token ...</string>
+	<string name="registering_message">Generating instance ID for token&#8230;</string>
 	<string name="reimport_sms">Re-import my SMS messages</string>
 	<string name="repassword_blank">You must confirm your password</string>
 	<string name="repassword">Repeat password</string>
@@ -143,6 +144,9 @@
 	<string name="silence_actived">Silent mode activated</string>
 	<string name="silence_desactived">Silent mode disabled</string>
 	<string name="silence">Silence</string>
+	<string name="social">We are getting new content for you</string><!-- after traslate -->
+	<string name="social_high">Tweet Highlights</string><!-- after traslate -->
+	<string name="social_date">Published on dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">Would you like to continue receiving these messages?</string>
 	<string name="sms_text_paid">Paid SMS</string>
 	<string name="sms_text">SMS</string>
@@ -194,7 +198,7 @@
 	<string name="undo">UNDO</string>
 	<string name="upgrade_text">We are updating your information</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
-	<string name="verify_dialog">Verifying ...</string>
+	<string name="verify_dialog">Verifying&#8230;</string>
 	<string name="version_settins">for Android v</string>
 	<string name="week">week</string>
 	<string name="weeks">weeks</string>
@@ -248,6 +252,12 @@
 		<item>Share</item>
 		<item>Mark as spam</item>
 		<item>Delete</item>
+	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>Share</item>
+		<item>Mark as spam</item>
+		<item>Delete</item>
+		<item>I do not want to see this anymore</item><!-- after traslate -->
 	</string-array>
 	<string-array name="optionsChannel">
 		<item>Silence</item>

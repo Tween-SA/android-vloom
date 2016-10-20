@@ -51,7 +51,7 @@
 	<string name="landing_card_error_header">아차</string><!-- after traslate -->
 	<string name="landing_card_error_retry">다시 보내기</string><!-- after traslate -->
 	<string name="landing_card_error_text">귀하의 데이터는, 다시 시도하십시오 저장되지 않습니다.</string><!-- after traslate -->
-	<string name="landing_card_loading_header">그냥 순간 ...</string><!-- after traslate -->
+	<string name="landing_card_loading_header">그냥 순간 &#8230;</string><!-- after traslate -->
 	<string name="landing_card_loading_text">우리는 데이터를 유지하고 있습니다</string><!-- after traslate -->
 	<string name="landing_card_ok_header">모든 업!</string><!-- after traslate -->
 	<string name="landing_card_ok_text">더 나은 경험을 제공하기 위해 고객 ID를 유지</string><!-- after traslate -->
@@ -108,8 +108,8 @@
 	<string name="phone_lenght">전화번호는 귀하 국가의 자리 수와 일치해야 합니다</string>
 	<string name="phone">전화</string>
 	<string name="please_retry">나중에 다시 시도하십시오</string>
-	<string name="please_wait">잠시 기다려주십시오 ...</string>
-	<string name="progress_dialog">처리 중 ...</string>
+	<string name="please_wait">잠시 기다려주십시오 &#8230;</string>
+	<string name="progress_dialog">처리 중 &#8230;</string>
 	<string name="rate_dialog_title">별 5개로 Vloom를 평가하시겠습니까?</string>
 	<string name="rate_dialog_message">1분이면 충분합니다. 귀하의 의견은 저희에게 중요합니다. 감사합니다!</string>
 	<string name="rate_dialog_ok">평가하기</string>
@@ -119,9 +119,10 @@
 	<string name="refresh_complete">귀하의 구독이 업데이트되었습니다</string>
 	<string name="refresh_menu">업데이트</string>
 	<string name="register_begin">시작하기 위해 등록</string>
-	<string name="register_dialog">등록 중...</string>
+	<string name="register_dialog">등록 중&#8230;</string>
 	<string name="register">본인의 이메일로 등록하기</string>
-	<string name="registering_message">토큰을 위한 인스턴트 ID를 생성 중...</string>
+	<string name="register_business">비즈니스 로그인</string><!-- after traslate -->
+	<string name="registering_message">토큰을 위한 인스턴트 ID를 생성 중&#8230;</string>
 	<string name="reimport_sms">내 SMS 메시지를 다시 가져오기</string>
 	<string name="repassword_blank">귀하의 비밀번호를 확인해야 합니다</string>
 	<string name="repassword">비밀번호 재입력</string>
@@ -141,6 +142,9 @@
 	<string name="silence_actived">음소거 모드 활성화</string>
 	<string name="silence_desactived">음소거 모드 비활성화</string>
 	<string name="silence">음소거</string>
+	<string name="social">우리는 당신을 위해 새로운 콘텐츠를 얻고있다</string><!-- after traslate -->
+	<string name="social_high">트윗 하이라이트</string><!-- after traslate -->
+	<string name="social_date">에 게시 dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">이 메시지를 수신하시겠습니까?</string>
 	<string name="sms_text_paid">유료 SMS</string>
 	<string name="sms_text">SMS</string>
@@ -193,7 +197,7 @@
 	<string name="unsuscribe">취소하기</string>
 	<string name="upgrade_text">우리는 귀하의 정보를 업데이트</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
-	<string name="verify_dialog">확인 중...</string>
+	<string name="verify_dialog">확인 중&#8230;</string>
 	<string name="version_settins">안드로이드 v용</string>
 	<string name="week">주</string>
 	<string name="weeks">주</string>
@@ -247,6 +251,12 @@
 		<item>공유하기</item>
 		<item>스팸으로 표시하기</item>
 		<item>제거하기</item>
+	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>공유하기</item>
+		<item>스팸으로 표시하기</item>
+		<item>제거하기</item>
+		<item>나는이 문제를 더 이상보고 싶지 않아</item><!-- after traslate -->
 	</string-array>
 	<string-array name="optionsChannel">
 		<item>음소거</item>

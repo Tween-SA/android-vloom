@@ -465,7 +465,6 @@ public class User
 									{
 										//Modificación para validar paso de contexto Realm
 										Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-										String companyIdApi		= "";
 
 										if(suscription == null)
 										{

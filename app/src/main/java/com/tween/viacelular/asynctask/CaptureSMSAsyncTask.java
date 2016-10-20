@@ -12,8 +12,8 @@ import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Land;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
@@ -150,7 +150,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 							//Se incorpora lectura de sms personales
 							if(StringUtils.isPhoneNumber(address))
 							{
-								RealmResults<Message> notifications = null;
+								RealmResults<Message> notifications;
 
 								if(date.equals(date_sent))
 								{

@@ -16,6 +16,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.SuscriptionsActivity;
 import com.tween.viacelular.adapters.SuscriptionsAdapter;
@@ -39,9 +41,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 	private static final String			ARG_SECTION_NUMBER	= "section_number";
 	private SuscriptionsActivity		activityContext;
 	private int							section;
-	private SuscriptionsAdapter			adapter				= null;
 	private StickyListHeadersListView	stickyList;
-	private TextInputLayout				inputFilter;
 	private FloatingActionButton		fab;
 	private int							originalSoftInputMode;
 	private EditText					editFilter;
@@ -72,7 +72,6 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 			if(Utils.checkSesion(activityContext, Common.ANOTHER_SCREEN))
 			{
 				stickyList	= (StickyListHeadersListView) view.findViewById(R.id.list);
-				inputFilter	= (TextInputLayout) view.findViewById(R.id.inputFilter);
 				editFilter	= (EditText) view.findViewById(R.id.editFilter);
 				fab			= (FloatingActionButton) view.findViewById(R.id.fab);
 				section		= getArguments().getInt(ARG_SECTION_NUMBER);
@@ -139,7 +138,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		try
 		{
 			Realm realm								= Realm.getDefaultInstance();
-			RealmResults<Suscription> suscriptions	= null;
+			RealmResults<Suscription> suscriptions;
 			List<String> listSuscriptions			= new ArrayList<>();
 
 			if(section == 1)
@@ -182,24 +181,21 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 				}
 			}
 
-			if(suscriptions != null)
-			{
-				suscriptions.sort(Common.KEY_NAME);
+			suscriptions.sort(Common.KEY_NAME);
 
-				if(suscriptions.size() > 0)
+			if(suscriptions.size() > 0)
+			{
+				for(Suscription suscription: suscriptions)
 				{
-					for(Suscription suscription: suscriptions)
+					//Agregado para evitar mostrar phantoms companies
+					if(StringUtils.isIdMongo(suscription.getCompanyId()))
 					{
-						//Agregado para evitar mostrar phantoms companies
-						if(StringUtils.isIdMongo(suscription.getCompanyId()))
-						{
-							listSuscriptions.add(suscription.getCompanyId());
-						}
+						listSuscriptions.add(suscription.getCompanyId());
 					}
 				}
 			}
 
-			adapter = new SuscriptionsAdapter(listSuscriptions, activityContext);
+			SuscriptionsAdapter adapter = new SuscriptionsAdapter(listSuscriptions, activityContext);
 			stickyList.setAdapter(adapter);
 		}
 		catch(Exception e)
@@ -256,6 +252,10 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 	{
 		try
 		{
+			//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
+			GoogleAnalytics.getInstance(getActivityContext()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Filtro")
+																											.setLabel("AccionUser").build());
+
 			if(fab != null)
 			{
 				fab.setImageResource(R.drawable.ic_clear_white_36dp);
@@ -269,11 +269,10 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 				});
 			}
 
-			if(inputFilter != null)
+			if(editFilter != null)
 			{
-				inputFilter.setVisibility(TextInputLayout.VISIBLE);
+				editFilter.setVisibility(EditText.VISIBLE);
 				editFilter.requestFocus();
-				inputFilter.requestFocus();
 				showSoftKeyboard();
 			}
 		}
@@ -305,17 +304,12 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 				});
 			}
 
-			if(inputFilter != null)
+			if(editFilter != null)
 			{
-				inputFilter.setVisibility(TextInputLayout.GONE);
-
-				if(editFilter != null)
+				if(StringUtils.isNotEmpty(editFilter.getText().toString()))
 				{
-					if(StringUtils.isNotEmpty(editFilter.getText().toString()))
-					{
-						editFilter.setText("");
-						populateList();
-					}
+					editFilter.setText("");
+					populateList();
 				}
 			}
 

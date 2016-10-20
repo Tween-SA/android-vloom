@@ -92,6 +92,7 @@ public class CardViewActivity extends AppCompatActivity
 			}
 
 			super.onCreate(savedInstanceState);
+			Migration.getDB(this);
 			setContentView(R.layout.activity_cardview);
 			toolBar										= (Toolbar) findViewById(R.id.toolBarCardView);
 			rcwCard										= (RecyclerView) findViewById(R.id.rcwCard);
@@ -173,6 +174,11 @@ public class CardViewActivity extends AppCompatActivity
 						{
 							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
 							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(circleView);
+						}
+						else
+						{
+							//Mostrar el logo de Vloom si no tiene logo
+							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(circleView);
 						}
 
 						txtSubTitleCollapsed.setText(suscription.getIndustry());
@@ -408,12 +414,24 @@ public class CardViewActivity extends AppCompatActivity
 		return super.onPrepareOptionsMenu(menu);
 	}
 
-	public void showOptionsCard(final int position)
+	public void showOptionsCard(final int position, final String msgId)
 	{
 		try
 		{
+			int items = R.array.optionsCard;
+			Realm realm = Realm.getDefaultInstance();
+			Message message = realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+			if(message != null)
+			{
+				if(message.getKind() == Message.KIND_TWITTER)
+				{
+					items = R.array.optionsCardSocial;
+				}
+			}
+
 			list = new MaterialDialog.Builder(this)
-					.items(R.array.optionsCard)
+					.items(items)
 					.itemsCallback(new MaterialDialog.ListCallback()
 					{
 						@Override
@@ -436,11 +454,9 @@ public class CardViewActivity extends AppCompatActivity
 
 	public void becomeGray(View view)
 	{
-		Realm realm = null;
-
 		try
 		{
-			realm		= Realm.getDefaultInstance();
+			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			realm.beginTransaction();
 			suscription.setGray(Common.BOOL_YES);
@@ -506,6 +522,9 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
+			//Agregado para capturar evento en Google Analytics
+			GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("BloquearInCompany")
+																							.setLabel("AccionUser").build());
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, true);
@@ -562,30 +581,52 @@ public class CardViewActivity extends AppCompatActivity
 				break;
 
 				case CardAdapter.OPTION_BLOCK:
-					//Agregado para capturar evento en Google Analytics
+					//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
 																									.setLabel("Accion_user").build());
 					realm.beginTransaction();
 					notification.setStatus(Message.STATUS_SPAM);
 					realm.commitTransaction();
-					ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_SPAM);
-					task.execute();
+					new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_SPAM).execute();
 
-					snackBar						= Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
+					snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
 						@Override
 						public void onClick(View v)
 						{
-							Realm realm						= Realm.getDefaultInstance();
+							Realm realm = Realm.getDefaultInstance();
 							realm.beginTransaction();
 							notification.setStatus(Message.STATUS_READ);
 							realm.commitTransaction();
 							refresh(false);
-							ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_READ);
-							task.execute();
+							new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_READ).execute();
 						}
 					});
 				break;
+
+				case CardAdapter.OPTION_DISMISS:
+					//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
+					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Social").setAction("Marcarspam")
+																									.setLabel("Accion_user").build());
+					realm.beginTransaction();
+					notification.setStatus(Message.STATUS_SPAM);
+					realm.commitTransaction();
+					new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_SPAM).execute();
+
+					snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
+					{
+						@Override
+						public void onClick(View v)
+						{
+							Realm realm = Realm.getDefaultInstance();
+							realm.beginTransaction();
+							notification.setStatus(Message.STATUS_READ);
+							realm.commitTransaction();
+							refresh(false);
+							new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_READ).execute();
+						}
+					});
+					break;
 
 				case CardAdapter.OPTION_DELETE:
 					//Agregado para capturar evento en Google Analytics
@@ -947,6 +988,9 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
+			//Agregado para capturar evento en Google Analytics
+			GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("AgregarInCompany")
+																							.setLabel("AccionUser").build());
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, true);
@@ -1139,6 +1183,9 @@ public class CardViewActivity extends AppCompatActivity
 				//Al igual que Silenciar/Activar, esta es la opción para suscribir
 				if(item.toString().equals(getString(R.string.landing_suscribe)))
 				{
+					//Agregado para capturar evento en Google Analytics
+					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("AgregarInCompany")
+																									.setLabel("AccionUser").build());
 					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, true);
 					txtTitle.setTextColor(colorTitle);
 					txtSubTitleCollapsed.setTextColor(colorSubTitle);

@@ -7,13 +7,14 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CodeActivity;
-import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.ConnectedAccount;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.UserHelper;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -87,14 +88,27 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			Realm realm						= Realm.getDefaultInstance();
 			RealmResults<User> users		= realm.where(User.class).findAll();
+			String gcmId					= preferences.getString(User.KEY_GCMID, "");
 			realm.beginTransaction();
 			users.deleteAllFromRealm();
 			realm.commitTransaction();
 
+			if(StringUtils.isEmpty(gcmId))
+			{
+				gcmId = FirebaseInstanceId.getInstance().getToken();
+
+				if(StringUtils.isEmpty(gcmId))
+				{
+					gcmId = User.FAKE_GCMID_EMULATOR;
+				}
+
+				preferences.edit().putString(User.KEY_GCMID, gcmId).apply();
+			}
+
 			//Se quitó lo referido a isp para obtener desde clase sin consultar a la db
 			JSONObject jsonSend		= new JSONObject();
 			JSONObject info			= new JSONObject();
-			JSONObject jsonResult	= new JSONObject();
+			JSONObject jsonResult;
 			String email			= preferences.getString(User.KEY_EMAIL, "");
 
 			if(StringUtils.isEmpty(email))
@@ -133,7 +147,7 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 			//Modificación para incoporar api de llamada desde esta misma AsyncTask
 			if(needRedirect)
 			{
-				jsonSend.put(User.KEY_GCMID, preferences.getString(User.KEY_GCMID, User.FAKE_GCMID_EMULATOR));
+				jsonSend.put(User.KEY_GCMID, gcmId);
 				jsonSend.put(Common.KEY_INFO, info);
 
 				jsonResult = new JSONObject(ApiConnection.request(ApiConnection.USERS, activity, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));

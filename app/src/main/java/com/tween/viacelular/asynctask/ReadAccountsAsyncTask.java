@@ -11,8 +11,8 @@ import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.data.User;
 import com.tween.viacelular.models.ConnectedAccount;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import io.realm.Realm;
@@ -69,8 +69,6 @@ public class ReadAccountsAsyncTask extends AsyncTask<Void, Void, Boolean>
 	@Override
 	protected Boolean doInBackground(Void... params)
 	{
-		boolean result = false;
-
 		try
 		{
 			if(ContextCompat.checkSelfPermission(activity, Manifest.permission.GET_ACCOUNTS) == PackageManager.PERMISSION_GRANTED)
@@ -115,6 +113,8 @@ public class ReadAccountsAsyncTask extends AsyncTask<Void, Void, Boolean>
 					}
 				}
 			}
+
+			return true;
 		}
 		catch(Exception e)
 		{
@@ -126,6 +126,6 @@ public class ReadAccountsAsyncTask extends AsyncTask<Void, Void, Boolean>
 			}
 		}
 
-		return result;
+		return false;
 	}
 }

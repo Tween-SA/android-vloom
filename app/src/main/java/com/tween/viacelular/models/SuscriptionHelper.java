@@ -3,7 +3,6 @@ package com.tween.viacelular.models;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.TimestampComparator;
 import com.tween.viacelular.services.ApiConnection;
@@ -33,87 +32,114 @@ public abstract class SuscriptionHelper
 		try
 		{
 			Realm realm	= Realm.getDefaultInstance();
-			int count	= 0;
 
 			//Revisamos si el sms tiene las keywords de Vloom
 			if(	message.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || message.toUpperCase().contains("VIACELULAR") ||
 				addressee.toUpperCase().contains(context.getString(R.string.app_name).toUpperCase()) || addressee.toUpperCase().contains("VIACELULAR"))
 			{
 				companyId	= Suscription.COMPANY_ID_VC_MONGO;
-				count		= 1;
 			}
 			else
 			{
 				//Buscamos companies con el número del que vino el sms
-				RealmResults<Suscription> companiesWithNumber = realm.where(Suscription.class).contains(Suscription.KEY_NUMBERS, addressee, Case.INSENSITIVE).findAll();
+				RealmResults<Suscription> companiesWithNumber	= realm.where(Suscription.class).contains(Suscription.KEY_NUMBERS, "\""+addressee+"\"", Case.INSENSITIVE).findAll();
 				//Verificamos coincidencias (companies que compartan el número)
-				count = companiesWithNumber.size();
+				int count										= companiesWithNumber.size();
+				Suscription client;
 
-				if(companiesWithNumber.size() > 1)
+				switch(count)
 				{
-					//Hay ocurrencias, revisaremos las keywords
-					for(Suscription company : companiesWithNumber)
-					{
-						//Verificamos si el mensaje contiene el nombre de la company
-						if(message.toUpperCase().contains(company.getName().toUpperCase()))
+					case 0:
+						//Buscamos si ya existia la company phantom para ese número
+						client = realm.where(Suscription.class).equalTo(Common.KEY_NAME, addressee, Case.INSENSITIVE).findFirst();
+
+						if(client != null)
 						{
-							companyId = company.getCompanyId();
-							break;
+							//Existe se asocia
+							companyId = client.getCompanyId();
 						}
 						else
 						{
-							//Verificamos si el mensaje contiene alguna de las keywords
-							if(StringUtils.containsKeywords(message, company.getKeywords()))
+							//No existe este número corto en la db, generamos company fantasma
+							client		= createPhantom(addressee, context, country);
+							companyId	= client.getCompanyId();
+						}
+					break;
+
+					case 1:
+						//Encontró una única company
+						companyId = companiesWithNumber.get(0).getCompanyId();
+					break;
+
+					default:
+						//Hay ocurrencias, revisaremos las keywords
+						for(Suscription company : companiesWithNumber)
+						{
+							//Verificamos si el mensaje contiene el nombre de la company
+							if(message.toUpperCase().contains(company.getName().toUpperCase()))
 							{
 								companyId = company.getCompanyId();
 								break;
 							}
+							else
+							{
+								//Verificamos si el mensaje contiene alguna de las keywords
+								if(StringUtils.containsKeywords(message, company.getKeywords()))
+								{
+									companyId = company.getCompanyId();
+									break;
+								}
+							}
 						}
-					}
 
-					//No hubo coincidencia, se genera company fantasma
-					if(StringUtils.isEmpty(companyId))
+						//No hubo coincidencia, se genera company fantasma
+						if(StringUtils.isEmpty(companyId))
+						{
+							//Buscamos si ya existia la company phantom para ese número
+							client = realm.where(Suscription.class).equalTo(Common.KEY_NAME, addressee, Case.INSENSITIVE).findFirst();
+
+							if(client != null)
+							{
+								//Existe se asocia
+								companyId = client.getCompanyId();
+							}
+							else
+							{
+								//No existe este número corto en la db, generamos company fantasma
+								client		= createPhantom(addressee, context, country);
+								companyId	= client.getCompanyId();
+							}
+						}
+					break;
+				}
+
+				//Desconfia de la coincidencia por el último
+				boolean correct = false;
+				client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+
+				if(client != null)
+				{
+					if(hasNumber(client, addressee))
 					{
-						//Buscamos si ya existia la company phantom para ese número
-						Suscription client = realm.where(Suscription.class).equalTo(Common.KEY_NAME, addressee, Case.INSENSITIVE).findFirst();
-
-						if(client != null)
-						{
-							//Existe se asocia
-							companyId = client.getCompanyId();
-						}
-						else
-						{
-							//No existe este número corto en la db, generamos company fantasma
-							client		= createPhantom(addressee, context, country);
-							companyId	= client.getCompanyId();
-						}
+						correct = true;
 					}
 				}
-				else
+
+				if(!correct)
 				{
-					//Coincidencia única se asocia directamente
-					if(companiesWithNumber.size() == 1)
+					//Buscamos si ya existia la company phantom para ese número
+					client = realm.where(Suscription.class).equalTo(Common.KEY_NAME, addressee, Case.INSENSITIVE).findFirst();
+
+					if(client != null)
 					{
-						//Encontró una única company
-						companyId = companiesWithNumber.get(0).getCompanyId();
+						//Existe se asocia
+						companyId = client.getCompanyId();
 					}
 					else
 					{
-						//Buscamos si ya existia la company phantom para ese número
-						Suscription client = realm.where(Suscription.class).equalTo(Common.KEY_NAME, addressee, Case.INSENSITIVE).findFirst();
-
-						if(client != null)
-						{
-							//Existe se asocia
-							companyId = client.getCompanyId();
-						}
-						else
-						{
-							//No existe este número corto en la db, generamos company fantasma
-							client		= createPhantom(addressee, context, country);
-							companyId	= client.getCompanyId();
-						}
+						//No existe este número corto en la db, generamos company fantasma
+						client		= createPhantom(addressee, context, country);
+						companyId	= client.getCompanyId();
 					}
 				}
 			}
@@ -148,8 +174,8 @@ public abstract class SuscriptionHelper
 			Realm realm						= Realm.getDefaultInstance();
 			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			String country					= preferences.getString(Land.KEY_API, "");
-			JSONObject jsonResult			= null;
-			String result					= "";
+			JSONObject jsonResult;
+			String result;
 
 			if(StringUtils.isEmpty(country))
 			{
@@ -189,7 +215,7 @@ public abstract class SuscriptionHelper
 				if(DateUtils.needUpdate(tsUpated, DateUtils.VERYHIGH_FREQUENCY) && ApiConnection.checkInternet(activity))
 				{
 					jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET,
-							preferences.getString(Common.KEY_TOKEN, ""), ""));
+													preferences.getString(Common.KEY_TOKEN, ""), ""));
 					result		= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
 
 					if(result.equals(ApiConnection.OK))
@@ -325,7 +351,7 @@ public abstract class SuscriptionHelper
 															"[{“title”:”Favorite Road Trips”,”msg”:”Tu credit con Falabella cumple 180 días de mora el 02-12-2015…”,”created”:”1450370433000”}]",
 															"", Common.BOOL_NO, "", "Recibe notificaciones de vencimiento, promociones y novedades de "+context.getString(R.string.app_name),
 															Suscription.STATUS_ACTIVE, Common.BOOL_NO, Common.BOOL_NO, Common.MAIL_TWEEN, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_YES,
-															Common.BOOL_NO);
+															Common.BOOL_NO, Suscription.KEY_DEFAULTTWITTER);
 
 						realm.beginTransaction();
 						realm.copyToRealmOrUpdate(vc);
@@ -342,8 +368,8 @@ public abstract class SuscriptionHelper
 							context.getString(R.string.app_name) + ",", "", context.getString(R.string.url), "2614239139",
 							"[{“title”:”Favorite Road Trips”,”msg”:”Tu credit con Falabella cumple 180 días de mora el 02-12-2015…”,”created”:”1450370433000”}]",
 							"", Common.BOOL_NO, "", "Recibe notificaciones de vencimiento, promociones y novedades de "+context.getString(R.string.app_name),
-							Suscription.STATUS_ACTIVE, Common.BOOL_NO, Common.BOOL_NO, Common.MAIL_TWEEN, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_NO);
-
+							Suscription.STATUS_ACTIVE, Common.BOOL_NO, Common.BOOL_NO, Common.MAIL_TWEEN, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_NO,
+							Suscription.KEY_DEFAULTTWITTER);
 					realm.beginTransaction();
 					realm.copyToRealmOrUpdate(vc);
 					realm.commitTransaction();
@@ -403,6 +429,7 @@ public abstract class SuscriptionHelper
 			String jIdentificationValue	= "";
 			Integer jFollower			= Common.BOOL_NO;
 			Integer jGray				= Common.BOOL_NO;
+			String twitter				= "";
 			Realm realm					= Realm.getDefaultInstance();
 
 			//Agregado para preañadir company nueva sin tener que esperar el get de la task
@@ -862,6 +889,17 @@ public abstract class SuscriptionHelper
 									}
 								}
 							}
+
+							if(jsonObject.has(Suscription.KEY_TWITTER))
+							{
+								if(!jsonObject.isNull(Suscription.KEY_TWITTER))
+								{
+									if(StringUtils.isNotEmpty(jsonObject.getString(Suscription.KEY_TWITTER)))
+									{
+										twitter = jsonObject.getString(Suscription.KEY_TWITTER);
+									}
+								}
+							}
 						}
 					}
 				}
@@ -925,7 +963,7 @@ public abstract class SuscriptionHelper
 			}
 
 			company = new Suscription(	jCompanyId, jName, jCountryCode, jIndustryCode, jIndustry, jType, jImage, jColorHex, jFromNumbers, jKeywords, jUnsuscribe, jUrl, jPhone, jMsgExamples,
-										jIdentificationKey, jDataSent, jIdentificationValue, jAbout, jStatus, jSilenced, jBlocked, jEmail, jReceive, jSuscribe, jFollower, jGray);
+										jIdentificationKey, jDataSent, jIdentificationValue, jAbout, jStatus, jSilenced, jBlocked, jEmail, jReceive, jSuscribe, jFollower, jGray, twitter);
 			company.setReceive(Common.BOOL_YES);
 
 			//Agregado para actualizar companies mediante pull update
@@ -953,6 +991,7 @@ public abstract class SuscriptionHelper
 					existingCompany.setMsgExamples(company.getMsgExamples());
 					existingCompany.setAbout(company.getAbout());
 					existingCompany.setIdentificationKey(company.getIdentificationKey());
+					existingCompany.setTwitter(company.getTwitter());
 					//Los campos internos no se actualizan para no perder la configuración local: silenced, blocked, receive, suscribe, dataSent, identificationValue, follower, gray
 					realm.copyToRealmOrUpdate(existingCompany);
 				}
@@ -1119,7 +1158,7 @@ public abstract class SuscriptionHelper
 	 * @param number
 	 * @return boolean
 	 */
-	public static boolean hasNumber(Suscription suscription, String number)
+	private static boolean hasNumber(Suscription suscription, String number)
 	{
 		try
 		{
@@ -1134,7 +1173,7 @@ public abstract class SuscriptionHelper
 			else
 			{
 				Realm realm	= Realm.getDefaultInstance();
-				suscription	= realm.where(Suscription.class).contains(Suscription.KEY_NUMBERS, number, Case.INSENSITIVE).findFirst();
+				suscription	= realm.where(Suscription.class).contains(Suscription.KEY_NUMBERS, "\""+number+"\"", Case.INSENSITIVE).findFirst();
 
 				if(suscription != null)
 				{
@@ -1308,20 +1347,21 @@ public abstract class SuscriptionHelper
 	 * @param countryCode
 	 * @return Suscription
 	 */
-	public static Suscription createPhantom(String fewness, Context context, String countryCode)
+	private static Suscription createPhantom(String fewness, Context context, String countryCode)
 	{
-		Suscription client	= new Suscription();
+		Suscription client	= null;
 
 		try
 		{
 			Realm realm = Realm.getDefaultInstance();
+			client	= new Suscription();
 			client.setName(fewness);
 			client.setIndustry(context.getString(R.string.app));
 			client.setIndustryCode("2");
 			client.setCountryCode(countryCode);
 			client.setSilenced(Common.BOOL_NO);
 			client.setBlocked(Common.BOOL_NO);
-			client.setImage("");
+			client.setImage(Suscription.ICON_APP);
 			client.setColorHex(Common.COLOR_ACTION);
 			client.setType(Suscription.TYPE_AUTOGENERATED);
 			client.setUnsuscribe("");
@@ -1343,28 +1383,10 @@ public abstract class SuscriptionHelper
 				client.setKeywords(fewness + ",");
 			}
 
-			//Generando nuevo companyId para Phantom
-			RealmResults<Suscription> companies	= realm.where(Suscription.class).equalTo(Suscription.KEY_INDUSTRYCODE, "2").equalTo(Suscription.KEY_IMAGE, "")
-													.equalTo(Suscription.KEY_COLOR, Common.COLOR_ACTION).findAllSorted(Suscription.KEY_API, Sort.DESCENDING);
-			int id								= 0;
-
-			if(companies.size() > 0)
-			{
-				for(Suscription suscription : companies)
-				{
-					if(!StringUtils.isIdMongo(suscription.getCompanyId()))
-					{
-						id = Integer.valueOf(companies.get(0).getCompanyId());
-						break;
-					}
-				}
-			}
-
-			id = id+1;
-			client.setCompanyId(String.valueOf(id));
+			client.setCompanyId(String.valueOf(System.currentTimeMillis())); //Generamos el nuevo id con timestamp para evitar duplicados
 			client.setFromNumbers(addNumber(fewness, Suscription.NUMBER_FREE, client));
 			realm.beginTransaction();
-			realm.copyToRealmOrUpdate(client);
+			realm.insert(client);
 			realm.commitTransaction();
 		}
 		catch(Exception e)
@@ -1387,7 +1409,7 @@ public abstract class SuscriptionHelper
 	 * @param suscription
 	 * @return String
 	 */
-	public static String addNumber(String number, String type, Suscription suscription)
+	private static String addNumber(String number, String type, Suscription suscription)
 	{
 		String fromNumbers = StringUtils.removeSpacesJSON(suscription.getFromNumbers());
 

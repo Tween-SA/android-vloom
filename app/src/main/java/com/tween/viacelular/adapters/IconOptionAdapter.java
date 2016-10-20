@@ -66,12 +66,10 @@ public class IconOptionAdapter extends BaseAdapter
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		Realm realm = null;
-
 		try
 		{
 			//Agregado para posterior migración a Realm
-			realm					= Realm.getDefaultInstance();
+			Realm realm				= Realm.getDefaultInstance();
 			Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, company).findFirst();
 
 			if(convertView == null)

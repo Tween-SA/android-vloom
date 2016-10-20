@@ -11,7 +11,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.tween.viacelular.R;
+import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.StringUtils;
 
 public class LogoAsyncTask extends AsyncTask<Void, Void, Bitmap>
 {
@@ -81,6 +83,11 @@ public class LogoAsyncTask extends AsyncTask<Void, Void, Bitmap>
 
 			if(imageLoader != null)
 			{
+				if(StringUtils.isEmpty(urlLogo))
+				{
+					urlLogo = Suscription.ICON_APP;
+				}
+
 				//Agregado para evitar errores por codificación del @
 				if(density == Common.DENSITY_XHDPI)
 				{

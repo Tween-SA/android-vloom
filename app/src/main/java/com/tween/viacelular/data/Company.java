@@ -1616,11 +1616,10 @@ public class Company
 	public static Company createPhantom(CompanyDao companyDao, String fewness, Context context, String countryCode)
 	{
 		Company client	= new Company();
-		Realm realm		= null;
 
 		try
 		{
-			realm = Realm.getDefaultInstance();
+			Realm realm = Realm.getDefaultInstance();
 			client.setName(fewness);
 			client.setIndustry(context.getString(R.string.app));
 			client.setIndustryCode("2");
@@ -1754,8 +1753,6 @@ public class Company
 	//Agregado para verificar si la Company posee al menos un número corto pago en base a los mensajes
 	public boolean isRevenue(List<Message> notifications)
 	{
-		boolean result = false;
-
 		if(notifications.size() > 0)
 		{
 			//Modificación para mejorar rendimiento
@@ -1772,7 +1769,7 @@ public class Company
 			}
 		}
 
-		return result;
+		return false;
 	}
 
 	/**
