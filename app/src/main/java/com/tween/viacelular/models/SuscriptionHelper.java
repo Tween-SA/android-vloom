@@ -351,7 +351,7 @@ public abstract class SuscriptionHelper
 															"[{“title”:”Favorite Road Trips”,”msg”:”Tu credit con Falabella cumple 180 días de mora el 02-12-2015…”,”created”:”1450370433000”}]",
 															"", Common.BOOL_NO, "", "Recibe notificaciones de vencimiento, promociones y novedades de "+context.getString(R.string.app_name),
 															Suscription.STATUS_ACTIVE, Common.BOOL_NO, Common.BOOL_NO, Common.MAIL_TWEEN, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_YES,
-															Common.BOOL_NO);
+															Common.BOOL_NO, Suscription.KEY_DEFAULTTWITTER);
 
 						realm.beginTransaction();
 						realm.copyToRealmOrUpdate(vc);
@@ -368,8 +368,8 @@ public abstract class SuscriptionHelper
 							context.getString(R.string.app_name) + ",", "", context.getString(R.string.url), "2614239139",
 							"[{“title”:”Favorite Road Trips”,”msg”:”Tu credit con Falabella cumple 180 días de mora el 02-12-2015…”,”created”:”1450370433000”}]",
 							"", Common.BOOL_NO, "", "Recibe notificaciones de vencimiento, promociones y novedades de "+context.getString(R.string.app_name),
-							Suscription.STATUS_ACTIVE, Common.BOOL_NO, Common.BOOL_NO, Common.MAIL_TWEEN, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_NO);
-
+							Suscription.STATUS_ACTIVE, Common.BOOL_NO, Common.BOOL_NO, Common.MAIL_TWEEN, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_NO,
+							Suscription.KEY_DEFAULTTWITTER);
 					realm.beginTransaction();
 					realm.copyToRealmOrUpdate(vc);
 					realm.commitTransaction();
@@ -429,6 +429,7 @@ public abstract class SuscriptionHelper
 			String jIdentificationValue	= "";
 			Integer jFollower			= Common.BOOL_NO;
 			Integer jGray				= Common.BOOL_NO;
+			String twitter				= "";
 			Realm realm					= Realm.getDefaultInstance();
 
 			//Agregado para preañadir company nueva sin tener que esperar el get de la task
@@ -888,6 +889,17 @@ public abstract class SuscriptionHelper
 									}
 								}
 							}
+
+							if(jsonObject.has(Suscription.KEY_TWITTER))
+							{
+								if(!jsonObject.isNull(Suscription.KEY_TWITTER))
+								{
+									if(StringUtils.isNotEmpty(jsonObject.getString(Suscription.KEY_TWITTER)))
+									{
+										twitter = jsonObject.getString(Suscription.KEY_TWITTER);
+									}
+								}
+							}
 						}
 					}
 				}
@@ -951,7 +963,7 @@ public abstract class SuscriptionHelper
 			}
 
 			company = new Suscription(	jCompanyId, jName, jCountryCode, jIndustryCode, jIndustry, jType, jImage, jColorHex, jFromNumbers, jKeywords, jUnsuscribe, jUrl, jPhone, jMsgExamples,
-										jIdentificationKey, jDataSent, jIdentificationValue, jAbout, jStatus, jSilenced, jBlocked, jEmail, jReceive, jSuscribe, jFollower, jGray);
+										jIdentificationKey, jDataSent, jIdentificationValue, jAbout, jStatus, jSilenced, jBlocked, jEmail, jReceive, jSuscribe, jFollower, jGray, twitter);
 			company.setReceive(Common.BOOL_YES);
 
 			//Agregado para actualizar companies mediante pull update
@@ -979,6 +991,7 @@ public abstract class SuscriptionHelper
 					existingCompany.setMsgExamples(company.getMsgExamples());
 					existingCompany.setAbout(company.getAbout());
 					existingCompany.setIdentificationKey(company.getIdentificationKey());
+					existingCompany.setTwitter(company.getTwitter());
 					//Los campos internos no se actualizan para no perder la configuración local: silenced, blocked, receive, suscribe, dataSent, identificationValue, follower, gray
 					realm.copyToRealmOrUpdate(existingCompany);
 				}

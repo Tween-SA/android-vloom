@@ -42,7 +42,6 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 	private SuscriptionsActivity		activityContext;
 	private int							section;
 	private StickyListHeadersListView	stickyList;
-	private TextInputLayout				inputFilter;
 	private FloatingActionButton		fab;
 	private int							originalSoftInputMode;
 	private EditText					editFilter;
@@ -73,7 +72,6 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 			if(Utils.checkSesion(activityContext, Common.ANOTHER_SCREEN))
 			{
 				stickyList	= (StickyListHeadersListView) view.findViewById(R.id.list);
-				inputFilter	= (TextInputLayout) view.findViewById(R.id.inputFilter);
 				editFilter	= (EditText) view.findViewById(R.id.editFilter);
 				fab			= (FloatingActionButton) view.findViewById(R.id.fab);
 				section		= getArguments().getInt(ARG_SECTION_NUMBER);
@@ -271,11 +269,10 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 				});
 			}
 
-			if(inputFilter != null)
+			if(editFilter != null)
 			{
-				inputFilter.setVisibility(TextInputLayout.VISIBLE);
+				editFilter.setVisibility(EditText.VISIBLE);
 				editFilter.requestFocus();
-				inputFilter.requestFocus();
 				showSoftKeyboard();
 			}
 		}
@@ -307,17 +304,12 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 				});
 			}
 
-			if(inputFilter != null)
+			if(editFilter != null)
 			{
-				inputFilter.setVisibility(TextInputLayout.GONE);
-
-				if(editFilter != null)
+				if(StringUtils.isNotEmpty(editFilter.getText().toString()))
 				{
-					if(StringUtils.isNotEmpty(editFilter.getText().toString()))
-					{
-						editFilter.setText("");
-						populateList();
-					}
+					editFilter.setText("");
+					populateList();
 				}
 			}
 

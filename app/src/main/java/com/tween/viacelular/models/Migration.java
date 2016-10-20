@@ -122,6 +122,7 @@ public class Migration implements RealmMigration
 						if(subscription != null)
 						{
 							subscription.addField(Suscription.KEY_LASTSOCIALUPDATED, Long.class);
+							subscription.addField(Suscription.KEY_TWITTER, String.class);
 						}
 						else
 						{

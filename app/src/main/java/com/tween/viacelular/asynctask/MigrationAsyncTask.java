@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.BlockedActivity;
@@ -23,9 +22,7 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
-
 import java.util.List;
-
 import io.realm.Realm;
 
 public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
@@ -176,7 +173,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 																		existingCompany.getPhone(), existingCompany.getMsgExamples(), existingCompany.getIdentificationKey(), existingCompany.getDataSent(),
 																		existingCompany.getIdentificationValue(), existingCompany.getAbout(), existingCompany.getStatus(), existingCompany.getSilenced(),
 																		existingCompany.getBlocked(), existingCompany.getEmail(), existingCompany.getReceive(), existingCompany.getSuscribe(),
-																		existingCompany.getFollower(), existingCompany.getGray());
+																		existingCompany.getFollower(), existingCompany.getGray(), "");
 							realm.copyToRealmOrUpdate(suscription);
 							realm.commitTransaction();
 						}
