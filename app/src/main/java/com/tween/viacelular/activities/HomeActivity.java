@@ -94,13 +94,8 @@ public class HomeActivity extends AppCompatActivity
 				setSupportActionBar(toolbar);
 				RecyclerView mRecyclerView		= (RecyclerView) findViewById(R.id.RecyclerView);
 				mRecyclerView.setHasFixedSize(true);
-				ImageView ivIcon				= (ImageView) findViewById(R.id.ivIcon);
-				RecyclerView.Adapter mAdapter	= null;
-
-				//Se quitó la precarga de la imagen de VC blanca para procesarla en HomeAdapter
-
-				mAdapter = new RecyclerAdapter(	Utils.getMenu(getApplicationContext()), RecyclerAdapter.HOME_SELECTED, ContextCompat.getColor(getApplicationContext(), R.color.accent),
-												getApplicationContext());
+				RecyclerView.Adapter mAdapter	= new RecyclerAdapter(	Utils.getMenu(getApplicationContext()), RecyclerAdapter.HOME_SELECTED, ContextCompat.getColor(getApplicationContext(), R.color.accent),
+																		getApplicationContext());
 
 				mRecyclerView.setAdapter(mAdapter);
 				RecyclerView.LayoutManager mLayoutManager	= new LinearLayoutManager(this);

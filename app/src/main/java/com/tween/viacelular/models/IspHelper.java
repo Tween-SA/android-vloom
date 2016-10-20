@@ -182,7 +182,7 @@ public abstract class IspHelper
 
 			//Obtenemos la operadora
 			TelephonyManager manager	= (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-			Isp isp						= null;
+			Isp isp;
 
 			if(manager != null)
 			{

@@ -61,7 +61,7 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 					.show();
 			}
 
-			Migration.getDB(activity, Common.REALMDB_VERSION);
+			Migration.getDB(activity);
 
 			if(!splashed)
 			{

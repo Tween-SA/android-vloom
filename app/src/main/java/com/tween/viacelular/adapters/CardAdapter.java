@@ -14,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CardViewActivity;
@@ -48,7 +50,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		public ImageView	iconSMS;
 		public TextView		rowTime;
 		public TextView		txtTitle;
-		public ImageButton	ibOptions;
+		public ImageView	ibOptions;
 		public TextView		txtContent;
 		private View		dividerTitle;
 		private ImageView	iconDown;
@@ -94,7 +96,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 				case Message.KIND_FACEBOOK_IMAGE:
 				case Message.KIND_TWITTER_IMAGE:
-					ibOptions		= (ImageButton) itemView.findViewById(R.id.ibOptions);
+					ibOptions		= (ImageView) itemView.findViewById(R.id.ibOptions);
 					iconSocial		= (ImageView) itemView.findViewById(R.id.iconSocial);
 					socialAccount	= (TextView) itemView.findViewById(R.id.socialAccount);
 					socialDate		= (TextView) itemView.findViewById(R.id.socialDate);
@@ -103,7 +105,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 				case Message.KIND_FACEBOOK:
 				case Message.KIND_TWITTER:
-					ibOptions		= (ImageButton) itemView.findViewById(R.id.ibOptions);
+					ibOptions		= (ImageView) itemView.findViewById(R.id.ibOptions);
 					iconSocial		= (ImageView) itemView.findViewById(R.id.iconSocial);
 					socialAccount	= (TextView) itemView.findViewById(R.id.socialAccount);
 					socialDate		= (TextView) itemView.findViewById(R.id.socialDate);
@@ -112,7 +114,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 				default:
 					iconPrice	= (ImageView) itemView.findViewById(R.id.iconPrice);
 					iconSMS		= (ImageView) itemView.findViewById(R.id.iconSMS);
-					ibOptions	= (ImageButton) itemView.findViewById(R.id.ibOptions);
+					ibOptions	= (ImageView) itemView.findViewById(R.id.ibOptions);
 				break;
 			}
 		}
@@ -133,7 +135,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		//Agregado para capturar excepciones
 		try
 		{
-			View view = null;
+			View view;
 
 			switch(viewType)
 			{
@@ -422,7 +424,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					{
 						holder.socialAccount.setText(item.getSocialAccount());
 						holder.socialDate.setText(item.getSocialDate());
-						//TODO: Al tocar en la card si es twitter reportar a Analytics (Category:Social - Action:VerContenido - Label:AccionUser)
+						holder.txtContent.setOnClickListener(new View.OnClickListener()
+						{
+							@Override
+							public void onClick(final View v)
+							{
+								//Indica a Analytics que se uso el contenido social
+								GoogleAnalytics.getInstance(activityContext).newTracker(Common.HASH_GOOGLEANALYTICS)
+										.send(new HitBuilders.EventBuilder().setCategory("Social").setAction("VerContenido").setLabel("AccionUser").build());
+							}
+						});
 					}
 				}
 			}

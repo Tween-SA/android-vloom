@@ -49,7 +49,7 @@ public class SplashActivity extends AppCompatActivity
 	private String[]				permissionsNeed = {	Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.BROADCAST_SMS,
 														Manifest.permission.GET_ACCOUNTS, Manifest.permission.INTERNET, Manifest.permission.READ_CONTACTS,
 														Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS,
-														Manifest.permission.RECEIVE_SMS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+														Manifest.permission.RECEIVE_SMS, Manifest.permission.WAKE_LOCK,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 	public static GoogleAnalytics	analytics;
 	public static Tracker			tracker;
 
@@ -78,11 +78,25 @@ public class SplashActivity extends AppCompatActivity
 				System.out.println("Densidad de pantalla: " + getResources().getDisplayMetrics().density);
 			}
 
-			//Agregado para inicializar nueva base de datos Realm
-			Migration.getDB(this, Common.REALMDB_VERSION);
+			//Revisar si hay alguna preferencia que indique si estuvo logueado
+			SharedPreferences preferences	= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+
+
+			//Agregado para inicializar nueva base de datos Realm y migrar si es necesario
+			if(StringUtils.isEmpty(preferences.getString(User.KEY_PHONE, "")))
+			{
+				//Clean install
+				preferences.edit().putBoolean(Common.KEY_PREF_UPGRADED +"DB"+ Common.REALMDB_VERSION, true).apply();
+			}
+
+			if(Common.DEBUG)
+			{
+				System.out.println("Prefencias: "+preferences.getAll());
+			}
+
+			Migration.getDB(this);
 			Realm realm = Realm.getDefaultInstance();
 			realm.setAutoRefresh(true);
-
 			mRegistrationBroadcastReceiver = new BroadcastReceiver()
 			{
 				@Override
@@ -191,6 +205,7 @@ public class SplashActivity extends AppCompatActivity
 			FirebaseMessaging.getInstance().subscribeToTopic(MyFirebaseInstanceIdService.FRIENDLY_ENGAGE_TOPIC);
 			String token = FirebaseInstanceId.getInstance().getToken();
 			System.out.println("TOKEN NUEVO: "+token);
+
 			if(StringUtils.isNotEmpty(token))
 			{
 				SharedPreferences.Editor preferences	= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE).edit();

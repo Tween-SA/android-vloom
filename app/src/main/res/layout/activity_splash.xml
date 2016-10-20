@@ -10,6 +10,7 @@
 	android:paddingTop="@dimen/init_vertical_margin"
 	tools:context="com.tween.viacelular.activities.SplashActivity">
 	<ImageView
+		android:contentDescription="@string/app_name"
 		android:id="@+id/logo"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

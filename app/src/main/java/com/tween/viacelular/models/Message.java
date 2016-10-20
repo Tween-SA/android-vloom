@@ -38,6 +38,9 @@ public class Message extends RealmObject
 	private int		socialShares;
 	private String	socialAccount;
 	private String	socialName;
+	private String	txid;
+	private String	note;
+	private String	attached;
 
 	@Ignore
 	public static final int KIND_TEXT				= 0; //La push contiene únicamente texto, clase de push por defecto
@@ -66,8 +69,6 @@ public class Message extends RealmObject
 	@Ignore
 	public static final int KIND_FACEBOOK_IMAGE		= 12; //La push es un post de Facebook que contiene una imagen
 	@Ignore
-	public static final String KEY_COMPANYID		= "company_id";
-	@Ignore
 	public static final int STATUS_RECEIVE			= 3;
 	@Ignore
 	public static final int STATUS_READ				= 4;
@@ -75,6 +76,10 @@ public class Message extends RealmObject
 	public static final int STATUS_SPAM				= 5;
 	@Ignore
 	public static final int STATUS_PERSONAL			= 6;
+	@Ignore
+	public static final String KEY_COMPANYID		= "company_id";
+	@Ignore
+	public static final String KEY_TXID				= "txid";
 	@Ignore
 	public static final String FLAGS_PUSH			= "1";
 	@Ignore
@@ -91,6 +96,10 @@ public class Message extends RealmObject
 	public static final String KEY_LISTID			= "listId";
 	@Ignore
 	public static final String KEY_MSG				= "msg";
+	@Ignore
+	public static final String KEY_NOTE				= "note";
+	@Ignore
+	public static final String KEY_ATTACHED			= "attached";
 	@Ignore
 	public static final String KEY_SUBMSG			= "subMsg";
 	@Ignore
@@ -395,5 +404,35 @@ public class Message extends RealmObject
 	public void setSocialName(final String socialName)
 	{
 		this.socialName = socialName;
+	}
+
+	public String getTxid()
+	{
+		return txid;
+	}
+
+	public void setTxid(final String txid)
+	{
+		this.txid = txid;
+	}
+
+	public String getNote()
+	{
+		return note;
+	}
+
+	public void setNote(final String note)
+	{
+		this.note = note;
+	}
+
+	public String getAttached()
+	{
+		return attached;
+	}
+
+	public void setAttached(final String attached)
+	{
+		this.attached = attached;
 	}
 }

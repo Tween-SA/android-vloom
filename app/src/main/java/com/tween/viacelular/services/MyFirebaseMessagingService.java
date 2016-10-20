@@ -55,7 +55,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 			if(remoteMessage != null)
 			{
 				context		= getApplicationContext();
-				Migration.getDB(context, Common.REALMDB_VERSION);
+				Migration.getDB(context);
 				// Handle data payload of FCM messages.
 				String from	= remoteMessage.getFrom();
 				Map data	= remoteMessage.getData();
@@ -252,13 +252,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 			int blocked			= Common.BOOL_YES;
 			int statusP			= Suscription.STATUS_BLOCKED;
 			String title		= context.getString(R.string.app_name);
-			Suscription clientP	= null;
+			Suscription clientP;
 			String image		= "";
 			Bitmap bmp			= BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
 			Realm realm			= Realm.getDefaultInstance();
 			Message message		= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
-			String companyIdApi	= "";
-			String contentText	= "";
+			String companyIdApi;
+			String contentText;
 			boolean newClient	= false;
 
 			if(message != null)
@@ -339,6 +339,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					if(sound == PUSH_HIDDEN)
 					{
 						//TODO en algún momento se prepararán comandos para forzar a la app a realizar algún procedimiento
+						System.out.println("ejecutar comando a definir");
 					}
 				}
 
@@ -346,28 +347,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 				{
 					Intent intent = new Intent(context, CardViewActivity.class);
 
-					if(clientP != null)
+					if(StringUtils.isIdMongo(clientP.getCompanyId()))
 					{
-						if(StringUtils.isIdMongo(clientP.getCompanyId()))
+						intent.putExtra(Common.KEY_ID, clientP.getCompanyId());
+						image = clientP.getImage();
+						//Rollback para autoañadir companies si no está añadida
+						if(!newClient && clientP.getFollower() == Common.BOOL_NO && clientP.getBlocked() == Common.BOOL_NO)
 						{
-							intent.putExtra(Common.KEY_ID, clientP.getCompanyId());
-							image = clientP.getImage();
-							//Rollback para autoañadir companies si no está añadida
-							if(!newClient && clientP.getFollower() == Common.BOOL_NO && clientP.getBlocked() == Common.BOOL_NO)
-							{
-								BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, false, clientP.getCompanyId(), false);
-							}
+							BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, false, clientP.getCompanyId(), false);
 						}
-						else
-						{
-							intent.putExtra(Common.KEY_ID, "");
-						}
+					}
+					else
+					{
+						intent.putExtra(Common.KEY_ID, "");
 					}
 
 					intent.putExtra(Common.KEY_LAST_MSGID, msgId);
 					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					PendingIntent pendingIntent						= PendingIntent.getActivity(context, from, intent, PendingIntent.FLAG_ONE_SHOT);
-					NotificationCompat.Builder notificationBuilder	= null;
+					NotificationCompat.Builder notificationBuilder;
 
 					if(clientP.getCompanyId().equals(Suscription.COMPANY_ID_VC_MONGO))
 					{
@@ -434,7 +432,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 						{
 							LogoAsyncTask task	= new LogoAsyncTask(context, false, image, context.getResources().getDisplayMetrics().density);
 							//TODO implementar callbacks para prevenir la suspención del UI por delay en la Asynctask
-							bmp					= task.execute().get();
+							task.execute();
 						}
 						catch(Exception e)
 						{
@@ -471,7 +469,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					//Agregado para notificar como spam al ser descartado
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
 							.setLabel("Accion_user").build());
-					ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(getApplicationContext(), false, "", id, Message.STATUS_SPAM);
+					ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(context, false, "", id, Message.STATUS_SPAM);
 					task.execute();
 				}
 			}

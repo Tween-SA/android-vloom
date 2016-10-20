@@ -305,23 +305,33 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 				{
 					if(StringUtils.isIdMongo(suscription.getCompanyId()))
 					{
-						if(suscription.getLastSocialUpdated() != null)
+						//Se quita el loader y se previene la posibilidad de que la company no tenga Twitter asociado
+						if(StringUtils.isNotEmpty(suscription.getTwitter()))
 						{
-							//Solamente se pide una vez al día
-							if(DateUtils.needUpdate(suscription.getLastSocialUpdated(), DateUtils.DAY_MILLIS))
+							if(suscription.getLastSocialUpdated() != null)
 							{
-								new GetTweetsAsyncTask(getActivity(), true, companyId).execute();
+								//Solamente se pide una vez al día
+								if(DateUtils.needUpdate(suscription.getLastSocialUpdated(), DateUtils.DAY_MILLIS))
+								{
+									new GetTweetsAsyncTask(getActivity(), false, companyId).execute();
+								}
+								else
+								{
+									Intent intent = new Intent(getActivity(), CardViewActivity.class);
+									intent.putExtra(Common.KEY_ID, companyId);
+									startActivity(intent);
+								}
 							}
 							else
 							{
-								Intent intent = new Intent(getActivity(), CardViewActivity.class);
-								intent.putExtra(Common.KEY_ID, companyId);
-								startActivity(intent);
+								new GetTweetsAsyncTask(getActivity(), false, companyId).execute();
 							}
 						}
 						else
 						{
-							new GetTweetsAsyncTask(getActivity(), true, companyId).execute();
+							Intent intent = new Intent(getActivity(), CardViewActivity.class);
+							intent.putExtra(Common.KEY_ID, companyId);
+							startActivity(intent);
 						}
 					}
 					else
@@ -598,7 +608,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					SharedPreferences.Editor editor	= preferences.edit();
 					User user						= realm.where(User.class).findFirst();
 					String country					= preferences.getString(Land.KEY_API, "");
-					String companyId				= "";
+					String companyId;
 
 					if(user != null)
 					{
@@ -612,7 +622,6 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 					for(Suscription phantom : companyPhantom)
 					{
-						companyId				= "";
 						RealmResults<Message> messages	= realm.where(Message.class).equalTo(Suscription.KEY_API, phantom.getCompanyId()).equalTo(Message.KEY_DELETED, Common.BOOL_NO)
 															.lessThan(Common.KEY_STATUS, Message.STATUS_SPAM).findAll().distinct(Message.KEY_CHANNEL);
 

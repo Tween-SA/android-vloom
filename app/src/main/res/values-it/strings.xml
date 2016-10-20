@@ -51,7 +51,7 @@
 	<string name="landing_card_error_header">Spiacenti!</string><!-- after traslate -->
 	<string name="landing_card_error_retry">Rispedire</string><!-- after traslate -->
 	<string name="landing_card_error_text">I suoi dati non saranno salvati, si prega di riprovare.</string><!-- after traslate -->
-	<string name="landing_card_loading_header">Solo un momento...</string><!-- after traslate -->
+	<string name="landing_card_loading_header">Solo un momento&#8230;</string><!-- after traslate -->
 	<string name="landing_card_loading_text">Stiamo mantenendo i vostri dati</string><!-- after traslate -->
 	<string name="landing_card_ok_header">Tutto su!</string><!-- after traslate -->
 	<string name="landing_card_ok_text">Mantenete il vostro ID cliente per fornire una migliore esperienza</string><!-- after traslate -->
@@ -108,8 +108,8 @@
 	<string name="phone_lenght">Il tuo numero di telefono deve rispettare il numero di cifre secondo il tuo paese</string>
 	<string name="phone">Telefono</string>
 	<string name="please_retry">Riprova più tardi</string>
-	<string name="please_wait">Attendere...</string>
-	<string name="progress_dialog">Elaborazione in corso...</string>
+	<string name="please_wait">Attendere&#8230;</string>
+	<string name="progress_dialog">Elaborazione in corso&#8230;</string>
 	<string name="rate_dialog_title">Desideri valutare Vloom con 5 stelle?</string>
 	<string name="rate_dialog_message">Ci metterai solo un minuto. La tua opinione è importante per noi, grazie!</string>
 	<string name="rate_dialog_ok">Valuta</string>
@@ -119,10 +119,10 @@
 	<string name="refresh_complete">Le iscrizioni si sono aggiornate</string>
 	<string name="refresh_menu">Aggiorna</string>
 	<string name="register_begin">Registrati per iniziare</string>
-	<string name="register_dialog">Registrazione in corso...</string>
+	<string name="register_dialog">Registrazione in corso&#8230;</string>
 	<string name="register">Registrati con la tua e-mail</string>
 	<string name="register_business">Entra in Business</string><!-- after traslate -->
-	<string name="registering_message">Generazione ID istanza per token...</string>
+	<string name="registering_message">Generazione ID istanza per token&#8230;</string>
 	<string name="reimport_sms">Reimporta i miei messaggi SMS</string>
 	<string name="repassword_blank">Devi confermare la password</string>
 	<string name="repassword">Ripeti la password</string>
@@ -197,7 +197,7 @@
 	<string name="unsuscribe">DISISCRIVERSI</string>
 	<string name="upgrade_text">Stiamo aggiornando le informazioni</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
-	<string name="verify_dialog">Verifica in corso...</string>
+	<string name="verify_dialog">Verifica in corso&#8230;</string>
 	<string name="version_settins">per Android v</string>
 	<string name="week">settimana</string>
 	<string name="weeks">settimane</string>

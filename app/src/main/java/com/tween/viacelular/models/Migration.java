@@ -1,138 +1,189 @@
 package com.tween.viacelular.models;
 
 import android.content.Context;
-
+import android.content.SharedPreferences;
 import com.tween.viacelular.data.Company;
 import com.tween.viacelular.utils.Common;
-
+import com.tween.viacelular.utils.Utils;
+import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmMigration;
+import io.realm.RealmObjectSchema;
+import io.realm.RealmSchema;
 
 /**
  * Created by davidfigueroa on 4/2/16.
  */
-public class Migration //implements RealmMigration
+public class Migration implements RealmMigration
 {
 	/**
 	 * Regera la db Realm y la setea como Default para ser usada posteriormente
 	 * @param context
 	 */
-	public static void getDB(Context context, int version)
+	public static void getDB(Context context)
 	{
 		try
 		{
-			RealmConfiguration config	= new RealmConfiguration.Builder(context)
-				.name(Common.REALMDB_NAME)
-				.schemaVersion(version)
-				.build();
+			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);//Agregar algo para saber cuando es la primera vez que levanta la app
+			boolean upgradedDB				= preferences.getBoolean(Common.KEY_PREF_UPGRADED +"DB"+ Common.REALMDB_VERSION, false);
 
-			/*if(version != Common.REALMDB_VERSION)
+			if(upgradedDB)
 			{
-				Realm.migrateRealm(config, new Migration());
-				config	= new RealmConfiguration.Builder(context)
+				//No necesita migrarse porque es instalación nueva
+				RealmConfiguration config	= new RealmConfiguration.Builder(context)
 						.name(Common.REALMDB_NAME)
 						.schemaVersion(Common.REALMDB_VERSION)
+						.deleteRealmIfMigrationNeeded()
 						.build();
-			}*/
-
-			Realm.setDefaultConfiguration(config);
+				Realm.setDefaultConfiguration(config);
+			}
+			else
+			{
+				//Necesita migrarse porque es un update en caliente
+				RealmConfiguration config	= new RealmConfiguration.Builder(context)
+						.name(Common.REALMDB_NAME)
+						.schemaVersion(Common.REALMDB_VERSION)
+						.migration(new Migration())
+						.build();
+				Realm.setDefaultConfiguration(config);
+			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("Migration:getDB - Exception: " + e);
+			System.out.println(Migration.class.getName()+":getDB - Exception: " + e);
+
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
+				Utils.writeStringInFile(Migration.class.getName()+":getDB - Exception: " + e, "");
 			}
 		}
 	}
 
 	public static Suscription companyToSuscription(Suscription suscription, Company company)
 	{
-		try
+		if(suscription == null)
 		{
-			if(suscription == null)
-			{
-				suscription = new Suscription();
-			}
-
-			if(company == null)
-			{
-				company = new Company();
-			}
-
-			suscription.setCompanyId(company.getCompanyId());
-			suscription.setName(company.getName());
-			suscription.setCountryCode(company.getCountryCode());
-			suscription.setIndustryCode(company.getIndustryCode());
-			suscription.setIndustry(company.getIndustry());
-			suscription.setType(company.getType());
-			suscription.setImage(company.getImage());
-			suscription.setColorHex(company.getColorHex());
-			suscription.setFromNumbers(company.getFromNumbers());
-			suscription.setKeywords(company.getKeywords());
-			suscription.setUnsuscribe(company.getUnsuscribe());
-			suscription.setUrl(company.getUrl());
-			suscription.setPhone(company.getPhone());
-			suscription.setMsgExamples(company.getMsgExamples());
-			suscription.setIdentificationKey(company.getIdentificationKey());
-			suscription.setDataSent(company.getDataSent());
-			suscription.setIdentificationValue(company.getIdentificationValue());
-			suscription.setAbout(company.getAbout());
-			suscription.setStatus(company.getStatus());
-			suscription.setSilenced(company.getSilenced());
-			suscription.setBlocked(company.getBlocked());
-			suscription.setEmail(company.getEmail());
-			suscription.setReceive(company.getReceive());
-			suscription.setSuscribe(company.getSuscribe());
-			suscription.setFollower(company.getFollower());
+			suscription = new Suscription();
 		}
-		catch(Exception e)
+
+		if(company == null)
 		{
-			System.out.println("Migration:migrate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			company = new Company();
 		}
+
+		suscription.setCompanyId(company.getCompanyId());
+		suscription.setName(company.getName());
+		suscription.setCountryCode(company.getCountryCode());
+		suscription.setIndustryCode(company.getIndustryCode());
+		suscription.setIndustry(company.getIndustry());
+		suscription.setType(company.getType());
+		suscription.setImage(company.getImage());
+		suscription.setColorHex(company.getColorHex());
+		suscription.setFromNumbers(company.getFromNumbers());
+		suscription.setKeywords(company.getKeywords());
+		suscription.setUnsuscribe(company.getUnsuscribe());
+		suscription.setUrl(company.getUrl());
+		suscription.setPhone(company.getPhone());
+		suscription.setMsgExamples(company.getMsgExamples());
+		suscription.setIdentificationKey(company.getIdentificationKey());
+		suscription.setDataSent(company.getDataSent());
+		suscription.setIdentificationValue(company.getIdentificationValue());
+		suscription.setAbout(company.getAbout());
+		suscription.setStatus(company.getStatus());
+		suscription.setSilenced(company.getSilenced());
+		suscription.setBlocked(company.getBlocked());
+		suscription.setEmail(company.getEmail());
+		suscription.setReceive(company.getReceive());
+		suscription.setSuscribe(company.getSuscribe());
+		suscription.setFollower(company.getFollower());
 
 		return suscription;
 	}
 
-	/**
-	 * Actualización de cambios en modelos de la db
-	 * @param realm
-	 * @param oldVersion
-	 * @param newVersion
-	 */
-	/*@Override
-	public void migrate(final DynamicRealm realm, long oldVersion, final long newVersion)
+	@Override
+	public void migrate(final DynamicRealm realm, final long oldVersion, final long newVersion)
 	{
 		try
 		{
-			RealmSchema schema = realm.getSchema();
+			System.out.println("Migrando dbRealm: oldVersion:"+oldVersion+" newVersion:"+newVersion);
 
-			if(oldVersion == Common.REALMDB_VERSION-1)
+			if(realm != null)
 			{
-				RealmObjectSchema messages = schema.get("Message");
-				messages.addField(Message.KEY_SOCIALID, String.class);
-				messages.addField(Message.KEY_SOCIALDATE, Long.class);
-				messages.addField(Message.KEY_SOCIALLIKES, int.class);
-				messages.addField(Message.KEY_SOCIALSHARES, int.class);
-				messages.addField(Message.KEY_SOCIALACCOUNT, String.class);
-				messages.addField(Message.KEY_SOCIALNAME, String.class);
-				oldVersion++;
+				if(oldVersion < newVersion)
+				{
+					RealmSchema schema = realm.getSchema();
+
+					if(schema != null)
+					{
+						RealmObjectSchema subscription = schema.get(Suscription.class.getSimpleName());
+
+						if(subscription != null)
+						{
+							subscription.addField(Suscription.KEY_LASTSOCIALUPDATED, Long.class);
+							subscription.addField(Suscription.KEY_TWITTER, String.class);
+						}
+						else
+						{
+							System.out.println("subscription is null");
+						}
+
+						RealmObjectSchema message = schema.get(Message.class.getSimpleName());
+
+						if(message != null)
+						{
+							message.addField(Message.KEY_SOCIALID, String.class);
+							message.addField(Message.KEY_SOCIALDATE, String.class);
+							message.addField(Message.KEY_SOCIALLIKES, int.class);
+							message.addField(Message.KEY_SOCIALSHARES, int.class);
+							message.addField(Message.KEY_SOCIALACCOUNT, String.class);
+							message.addField(Message.KEY_SOCIALNAME, String.class);
+							message.addField(Message.KEY_TXID, String.class);
+							message.addField(Message.KEY_NOTE, String.class);
+							message.addField(Message.KEY_ATTACHED, String.class);
+						}
+						else
+						{
+							System.out.println("message is null");
+						}
+					}
+					else
+					{
+						System.out.println("schema is null");
+					}
+				}
+				else
+				{
+					System.out.println("db version is updated");
+				}
+			}
+			else
+			{
+				System.out.println("realm is null");
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("Migration:migrate - Exception: " + e);
+			System.out.println(Migration.class.getName()+":migrate - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
+				Utils.writeStringInFile(Migration.class.getName()+":migrate - Exception: " + e, "");
 			}
 		}
-	}*/
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return 37;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		return (o instanceof Migration);
+	}
 }

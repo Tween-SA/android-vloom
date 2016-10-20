@@ -169,13 +169,11 @@ public class SuscriptionsActivity extends AppCompatActivity
 	 */
 	public static void redirectLanding(Activity activity, String companyId)
 	{
-		Realm realm = null;
-
 		try
 		{
 			//Unificación de landing activity
 			Intent intent		= new Intent(activity, LandingActivity.class);
-			realm				= Realm.getDefaultInstance();
+			Realm realm				= Realm.getDefaultInstance();
 			Suscription client	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			intent.putExtra(Common.KEY_ID, client.getCompanyId());
 			intent.putExtra(Common.KEY_SECTION, "companies");

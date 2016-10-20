@@ -89,9 +89,8 @@ public class SettingsActivity extends AppCompatActivity
 				setSupportActionBar(toolBar);
 				RecyclerView mRecyclerView		= (RecyclerView) findViewById(R.id.RecyclerView);
 				mRecyclerView.setHasFixedSize(true);
-				RecyclerView.Adapter mAdapter	= null;
-				mAdapter = new RecyclerAdapter(	Utils.getMenu(getApplicationContext()), intentRecive.getIntExtra(Common.KEY_SECTION, RecyclerAdapter.SETTINGS_SELECTED),
-												ContextCompat.getColor(getApplicationContext(), R.color.accent), getApplicationContext());
+				RecyclerView.Adapter mAdapter	= new RecyclerAdapter(	Utils.getMenu(getApplicationContext()), intentRecive.getIntExtra(Common.KEY_SECTION, RecyclerAdapter.SETTINGS_SELECTED),
+																		ContextCompat.getColor(getApplicationContext(), R.color.accent), getApplicationContext());
 
 				mRecyclerView.setAdapter(mAdapter);
 				RecyclerView.LayoutManager mLayoutManager	= new LinearLayoutManager(this);
@@ -236,7 +235,7 @@ public class SettingsActivity extends AppCompatActivity
 			final SharedPreferences.Editor editor	= preferences.edit();
 			final String active						= getString(R.string.silence_actived);
 			final String desactive					= getString(R.string.silence_desactived);
-			Snackbar snackBar						= null;
+			Snackbar snackBar;
 
 			if(chkSilence.isChecked())
 			{
@@ -503,7 +502,6 @@ public class SettingsActivity extends AppCompatActivity
 			Context context					= getApplicationContext();
 			String sender					= "22626";
 			String body						= "Nuevo mensaje de ICBC";
-			byte[] pdu						= null;
 			byte[] scBytes					= PhoneNumberUtils.networkPortionToCalledPartyBCD("0000000000");
 			byte[] senderBytes				= PhoneNumberUtils.networkPortionToCalledPartyBCD(sender);
 			int lsmcs						= scBytes.length;
@@ -531,7 +529,7 @@ public class SettingsActivity extends AppCompatActivity
 			stringToGsm7BitPacked.setAccessible(true);
 			byte[] bodybytes				= (byte[]) stringToGsm7BitPacked.invoke(null, body);
 			bo.write(bodybytes);
-			pdu								= bo.toByteArray();
+			byte[] pdu						= bo.toByteArray();
 			Intent intent					= new Intent();
 			intent.setAction("android.provider.Telephony.SMS_RECEIVED");
 			intent.putExtra("pdus", new Object[] { pdu });
@@ -699,11 +697,9 @@ public class SettingsActivity extends AppCompatActivity
 				Looper.prepare();
 			}
 
-			Realm realm	= null;
-
 			try
 			{
-				realm	= Realm.getDefaultInstance();
+				Realm realm	= Realm.getDefaultInstance();
 				realm.executeTransaction(new Realm.Transaction()
 				{
 					@Override

@@ -534,7 +534,7 @@ public class CompanyDao extends AbstractDao<Company, Long>
 		{
 			//Modificación para evitar bloqueos en la db
 			session							= DaoMaster.openDB(activity.getApplicationContext());
-			Migration.getDB(activity, Common.REALMDB_VERSION);
+			Migration.getDB(activity);
 			realm							= Realm.getDefaultInstance();
 			CompanyDao companyDao			= null;
 			UserDao userDao					= null;

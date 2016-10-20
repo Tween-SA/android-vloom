@@ -150,7 +150,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 							//Se incorpora lectura de sms personales
 							if(StringUtils.isPhoneNumber(address))
 							{
-								RealmResults<Message> notifications = null;
+								RealmResults<Message> notifications;
 
 								if(date.equals(date_sent))
 								{

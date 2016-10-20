@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Looper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Isp;
@@ -62,6 +63,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 					.show();
 			}
 
+			Migration.getDB(context);
 			System.out.println("Confirma onPreExecute - msgId: " + msgId+" status: "+status+" companyId: "+companyId);
 
 			//Reportar coordenadas

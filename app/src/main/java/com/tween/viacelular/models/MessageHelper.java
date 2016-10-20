@@ -69,7 +69,7 @@ public abstract class MessageHelper
 			private String	companyId;
 			private int		flag;
 
-			public DeleteMessages(String companyId, int flag)
+			private DeleteMessages(String companyId, int flag)
 			{
 				this.companyId	= companyId;
 				this.flag		= flag;
@@ -129,7 +129,7 @@ public abstract class MessageHelper
 			private String	newCompanyId;
 			private boolean	modify;
 
-			public GroupMessages(String companyId, String newCompanyId)
+			private GroupMessages(String companyId, String newCompanyId)
 			{
 				this.companyId		= companyId;
 				this.newCompanyId	= newCompanyId;
@@ -205,7 +205,7 @@ public abstract class MessageHelper
 		{
 			private String country;
 
-			public UpdateCountry(String country)
+			private UpdateCountry(String country)
 			{
 				this.country = country;
 			}

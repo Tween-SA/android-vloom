@@ -57,21 +57,33 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		try
 		{
 			ArrayList<Integer> sectionIndices = new ArrayList<>();
-			char lastFirstChar;
+			char lastFirstChar = '\0';
 
 			if(suscriptions != null)
 			{
 				if(suscriptions.size() > 0)
 				{
-					lastFirstChar = suscriptions.get(0).getName().charAt(0);
-					sectionIndices.add(0);
+					if(suscriptions.get(0) != null)
+					{
+						if(StringUtils.isNotEmpty(suscriptions.get(0).getName()))
+						{
+							lastFirstChar = suscriptions.get(0).getName().charAt(0);
+							sectionIndices.add(0);
+						}
+					}
 
 					for(int i = 1; i < suscriptions.size(); i++)
 					{
-						if(suscriptions.get(i).getName().charAt(0) != lastFirstChar)
+						if(suscriptions.get(i) != null)
 						{
-							lastFirstChar = suscriptions.get(i).getName().charAt(0);
-							sectionIndices.add(i);
+							if(suscriptions.get(i).getName() != null)
+							{
+								if(suscriptions.get(i).getName().charAt(0) != lastFirstChar)
+								{
+									lastFirstChar = suscriptions.get(i).getName().charAt(0);
+									sectionIndices.add(i);
+								}
+							}
 						}
 					}
 				}
@@ -257,8 +269,14 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 
 					if(item != null)
 					{
-						String headerText = "" + item.getName().subSequence(0, 1).charAt(0);
-						holder.text.setText(headerText);
+						if(StringUtils.isNotEmpty(item.getName()))
+						{
+							if(item.getName().length() >= 2)
+							{
+								String headerText = "" + item.getName().subSequence(0, 1).charAt(0);
+								holder.text.setText(headerText);
+							}
+						}
 					}
 				}
 			}
@@ -290,7 +308,13 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 
 					if(item != null)
 					{
-						id = item.getName().subSequence(0, 1).charAt(0);
+						if(StringUtils.isNotEmpty(item.getName()))
+						{
+							if(item.getName().length() >= 2)
+							{
+								id = item.getName().subSequence(0, 1).charAt(0);
+							}
+						}
 					}
 				}
 			}
@@ -456,9 +480,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 
 	private Suscription removeItem(int position)
 	{
-		final Suscription model = suscriptions.remove(position);
-		//notifyItemRemoved(position);
-		return model;
+		return suscriptions.remove(position);
 	}
 
 	private void addItem(int position, Suscription model)

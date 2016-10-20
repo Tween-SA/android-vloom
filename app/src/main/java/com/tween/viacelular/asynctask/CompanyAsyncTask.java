@@ -65,17 +65,13 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 	@Override
 	protected String doInBackground(Void... params)
 	{
-		String result = "";
-
 		try
 		{
-			Suscription company				= null;
-			Realm realm						= Realm.getDefaultInstance();
+			Suscription company;
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			JSONObject jsonResult			= null;
-			jsonResult						= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES + "/" + companyId, context, ApiConnection.METHOD_GET,
+			JSONObject jsonResult			= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES + "/" + companyId, context, ApiConnection.METHOD_GET,
 																preferences.getString(Common.KEY_TOKEN, ""), ""));
-			result							= ApiConnection.checkResponse(context, jsonResult);
+			String result					= ApiConnection.checkResponse(context, jsonResult);
 
 			if(result.equals(ApiConnection.OK))
 			{

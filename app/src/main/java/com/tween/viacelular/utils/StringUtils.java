@@ -133,7 +133,7 @@ public class StringUtils
 		{
 			if(isNotEmpty(number))
 			{
-				long num = Long.parseLong(number);
+				Long.parseLong(number);
 			}
 			else
 			{
@@ -154,7 +154,7 @@ public class StringUtils
 		{
 			if(isNotEmpty(number))
 			{
-				int num = Integer.parseInt(number);
+				Integer.parseInt(number);
 			}
 			else
 			{

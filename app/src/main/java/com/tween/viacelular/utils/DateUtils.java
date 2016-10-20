@@ -244,11 +244,9 @@ public class DateUtils
 		//Agregado para prevenir excepciones
 		try
 		{
-			String result	= "";
 			Calendar cal	= Calendar.getInstance();
 			cal.setTimeInMillis(time);
-			result			= DateFormat.format("dd/MM/yyyy HH:mm:ss", cal).toString();
-			return result;
+			return DateFormat.format("dd/MM/yyyy HH:mm:ss", cal).toString();
 		}
 		catch(Exception e)
 		{
