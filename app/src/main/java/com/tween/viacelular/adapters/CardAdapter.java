@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.squareup.picasso.Picasso;
@@ -62,6 +63,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		private ImageView	iconSocial;
 		private TextView	socialAccount;
 		private TextView	socialDate;
+		private ImageView	iconCert;
+		private ImageView	iconComent;
+		private ImageView	iconAttach;
 
 		public ViewHolder(View itemView, int viewType)
 		{
@@ -115,6 +119,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					iconPrice	= (ImageView) itemView.findViewById(R.id.iconPrice);
 					iconSMS		= (ImageView) itemView.findViewById(R.id.iconSMS);
 					ibOptions	= (ImageView) itemView.findViewById(R.id.ibOptions);
+					iconCert	= (ImageView) itemView.findViewById(R.id.iconCert);
+					iconComent	= (ImageView) itemView.findViewById(R.id.iconComent);
+					iconAttach	= (ImageView) itemView.findViewById(R.id.iconAttach);
 				break;
 			}
 		}
@@ -191,6 +198,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		catch(Exception e)
 		{
 			System.out.println("CardAdapter:onCreateViewHolder - Exception: " + e);
+
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
@@ -208,7 +216,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		{
 			if(notificationList.size() > 0)
 			{
-				Message item = notificationList.get(position);
+				final Message item = notificationList.get(position);
 
 				if(item != null)
 				{
@@ -432,6 +440,39 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								//Indica a Analytics que se uso el contenido social
 								GoogleAnalytics.getInstance(activityContext).newTracker(Common.HASH_GOOGLEANALYTICS)
 										.send(new HitBuilders.EventBuilder().setCategory("Social").setAction("VerContenido").setLabel("AccionUser").build());
+							}
+						});
+					}
+
+					if(holder.iconComent != null)
+					{
+						holder.iconComent.setOnClickListener(new View.OnClickListener()
+						{
+							@Override
+							public void onClick(final View v)
+							{
+								System.out.println("Tocaste para comentario");
+							}
+						});
+					}
+
+					if(holder.iconAttach != null)
+					{
+						holder.iconAttach.setOnClickListener(new View.OnClickListener()
+						{
+							@Override
+							public void onClick(final View v)
+							{
+								System.out.println("Tocaste para adjuntar");
+								if(StringUtils.isNotEmpty(item.getAttached()) && StringUtils.isNotEmpty(item.getAttachedTwo()) && StringUtils.isNotEmpty(item.getAttachedThree()))
+								{
+									//Sory no more files
+									Toast.makeText(activity, "Demasiadas imagenes", Toast.LENGTH_SHORT).show();
+								}
+								else
+								{
+									activity.callCamera(item.getMsgId());
+								}
 							}
 						});
 					}

@@ -41,6 +41,8 @@ public class Message extends RealmObject
 	private String	txid;
 	private String	note;
 	private String	attached;
+	private String	attachedTwo;
+	private String	attachedThree;
 
 	@Ignore
 	public static final int KIND_TEXT				= 0; //La push contiene únicamente texto, clase de push por defecto
@@ -100,6 +102,10 @@ public class Message extends RealmObject
 	public static final String KEY_NOTE				= "note";
 	@Ignore
 	public static final String KEY_ATTACHED			= "attached";
+	@Ignore
+	public static final String KEY_ATTACHEDTWO		= "attachedTwo";
+	@Ignore
+	public static final String KEY_ATTACHEDTHREE	= "attachedThree";
 	@Ignore
 	public static final String KEY_SUBMSG			= "subMsg";
 	@Ignore
@@ -434,5 +440,25 @@ public class Message extends RealmObject
 	public void setAttached(final String attached)
 	{
 		this.attached = attached;
+	}
+
+	public String getAttachedTwo()
+	{
+		return attachedTwo;
+	}
+
+	public void setAttachedTwo(final String attachedTwo)
+	{
+		this.attachedTwo = attachedTwo;
+	}
+
+	public String getAttachedThree()
+	{
+		return attachedThree;
+	}
+
+	public void setAttachedThree(final String attachedThree)
+	{
+		this.attachedThree = attachedThree;
 	}
 }

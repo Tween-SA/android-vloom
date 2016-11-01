@@ -31,7 +31,8 @@ public class ApiConnection
 	public static final String METHOD_POST				= "POST";
 	public static final String METHOD_PUT				= "PUT";
 	private static final String TOKEN_AUTHORIZATION		= "Bearer d32f7a8d983b442f608bcdbef27e41c32bf0d9a8";
-	public static final String CLOUDFRONT_ATTACHMENTS	= "https://d1ads2zadze8sp.cloudfront.net/"; //Recuerdo que apunta al s3 https://s3-sa-east-1.amazonaws.com/vc-img/Logos/
+	public static final String FIREBASE_STORAGE			= "gs://tween-viacelular.appspot.com"; //Cubeta en Firebase para adjuntar imagenes a los mensajes
+	public static final String FIREBASE_CHILD			= "messages_attached"; //Cubeta en Firebase para adjuntar imagenes a los mensajes
 	public static final String CLOUDFRONT_S3			= "https://dfp5lnxq5eoj6.cloudfront.net/"; //Recuerdo que apunta al s3 https://s3-sa-east-1.amazonaws.com/vc-img/Logos/
 	/**
 	 * Url para redirigir a la web business
