@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.squareup.picasso.Picasso;
@@ -46,26 +49,28 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 	public static class ViewHolder extends RecyclerView.ViewHolder
 	{
-		public int			HolderId;
-		public ImageView	iconPrice;
-		public ImageView	iconSMS;
-		public TextView		rowTime;
-		public TextView		txtTitle;
-		public ImageView	ibOptions;
-		public TextView		txtContent;
-		private View		dividerTitle;
-		private ImageView	iconDown;
-		private Button		btnDownload;
-		private ImageView	ivPicture;
-		private Button		btnView;
-		private Button		btnShare;
-		private RatingBar	ratingBar;
-		private ImageView	iconSocial;
-		private TextView	socialAccount;
-		private TextView	socialDate;
-		private ImageView	iconCert;
-		private ImageView	iconComent;
-		private ImageView	iconAttach;
+		public int				HolderId;
+		public ImageView		iconPrice;
+		public ImageView		iconSMS;
+		public TextView			rowTime;
+		public TextView			txtTitle;
+		public ImageView		ibOptions;
+		public TextView			txtContent;
+		private View			dividerTitle;
+		private ImageView		iconDown;
+		private Button			btnDownload;
+		private ImageView		ivPicture;
+		private Button			btnView;
+		private Button			btnShare;
+		private RatingBar		ratingBar;
+		private ImageView		iconSocial;
+		private TextView		socialAccount;
+		private TextView		socialDate;
+		private ImageView		iconCert;
+		private ImageView		iconComent;
+		private ImageView		iconAttach;
+		private LinearLayout	llComment;
+		private TextView		txtComment;
 
 		public ViewHolder(View itemView, int viewType)
 		{
@@ -122,6 +127,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					iconCert	= (ImageView) itemView.findViewById(R.id.iconCert);
 					iconComent	= (ImageView) itemView.findViewById(R.id.iconComent);
 					iconAttach	= (ImageView) itemView.findViewById(R.id.iconAttach);
+					llComment	= (LinearLayout) itemView.findViewById(R.id.llComment);
+					txtComment	= (TextView) itemView.findViewById(R.id.txtComment);
 				break;
 			}
 		}
@@ -439,19 +446,71 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							{
 								//Indica a Analytics que se uso el contenido social
 								GoogleAnalytics.getInstance(activityContext).newTracker(Common.HASH_GOOGLEANALYTICS)
-										.send(new HitBuilders.EventBuilder().setCategory("Social").setAction("VerContenido").setLabel("AccionUser").build());
+									.send(new HitBuilders.EventBuilder().setCategory("Social").setAction("VerContenido").setLabel("AccionUser").build());
 							}
 						});
 					}
 
-					if(holder.iconComent != null)
+					if(holder.iconComent != null && holder.llComment != null)
 					{
+						if(StringUtils.isNotEmpty(item.getNote()))
+						{
+							holder.txtComment.setText(item.getNote());
+							holder.llComment.setVisibility(LinearLayout.VISIBLE);
+						}
+						else
+						{
+							holder.txtComment.setText("");
+							holder.llComment.setVisibility(LinearLayout.GONE);
+						}
+
 						holder.iconComent.setOnClickListener(new View.OnClickListener()
 						{
 							@Override
 							public void onClick(final View v)
 							{
-								System.out.println("Tocaste para comentario");
+								if(StringUtils.isNotEmpty(item.getNote()))
+								{
+									holder.txtComment.setText(item.getNote());
+									holder.llComment.setVisibility(LinearLayout.VISIBLE);
+								}
+								else
+								{
+									new MaterialDialog.Builder(activity).title("Añadir comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
+									.input("Exprésate", "", new MaterialDialog.InputCallback()
+									{
+										@Override
+										public void onInput(MaterialDialog dialog, CharSequence input)
+										{
+											System.out.println("input: "+input);
+											if(input != null)
+											{
+												if(input != "")
+												{
+													final String comment = input.toString();
+
+													if(StringUtils.isNotEmpty(comment))
+													{
+														Realm realm = Realm.getDefaultInstance();
+														realm.executeTransaction(new Realm.Transaction()
+														{
+															@Override
+															public void execute(Realm bgRealm)
+															{
+																Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, item.getMsgId()).findFirst();
+
+																if(message != null)
+																{
+																	message.setNote(comment);
+																}
+															}
+														});
+													}
+												}
+											}
+										}
+									}).show();
+								}
 							}
 						});
 					}

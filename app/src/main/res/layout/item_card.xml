@@ -67,6 +67,17 @@
 				android:text="@string/you_have"
 				android:textColor="@color/action"
 				android:textSize="20sp" />
+			<ImageButton
+				android:contentDescription="@string/app_name"
+				android:id="@+id/ibOptions"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/ic_more_vert_black_24dp"
+				android:background="?android:attr/selectableItemBackground"
+				android:layout_above="@+id/txtContent"
+				android:layout_alignParentRight="true"
+				android:clickable="true"
+				android:layout_alignParentEnd="true" />
 			<TextView
 				android:id="@+id/txtContent"
 				android:layout_width="match_parent"
@@ -98,12 +109,29 @@
 				android:layout_below="@id/txtContent"
 				android:src="@drawable/ic_circle_file_download"
 				android:background="?android:attr/selectableItemBackground"
-				android:visibility="gone"
+				android:visibility="visible"
 				android:layout_marginTop="10dp"
 				android:layout_marginBottom="10dp"
 				android:layout_centerVertical="true"
-				android:layout_toLeftOf="@+id/iconAttach"
+				android:layout_alignParentLeft="true"
 				android:contentDescription="@string/landing_contact" />
+			<LinearLayout
+				android:id="@+id/llComment"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:background="@color/accent"
+				android:layout_below="@+id/iconComent"
+				android:layout_marginRight="10dp"
+				android:padding="4dp"
+				android:visibility="gone">
+				<TextView
+					android:id="@+id/txtComment"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="comentario"
+					android:textColor="@color/text" />
+			</LinearLayout>
 			<ImageView
 				android:id="@+id/iconAttach"
 				android:layout_width="30dp"
@@ -114,10 +142,10 @@
 				android:visibility="visible"
 				android:layout_margin="10dp"
 				android:layout_centerVertical="true"
-				android:layout_toLeftOf="@+id/ibOptions"
+				android:layout_toRightOf="@+id/iconComent"
 				android:contentDescription="@string/landing_contact" />
 			<ImageView
-				android:id="@+id/ibOptions"
+				android:id="@+id/ivChain"
 				android:layout_width="30dp"
 				android:layout_height="30dp"
 				android:layout_below="@id/txtContent"
