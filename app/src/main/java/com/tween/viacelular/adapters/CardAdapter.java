@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -69,8 +70,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		private ImageView		iconCert;
 		private ImageView		iconComent;
 		private ImageView		iconAttach;
-		private LinearLayout	llComment;
+		private RelativeLayout	rlComment;
 		private TextView		txtComment;
+		private ImageView		ivEdit;
 
 		public ViewHolder(View itemView, int viewType)
 		{
@@ -127,8 +129,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					iconCert	= (ImageView) itemView.findViewById(R.id.iconCert);
 					iconComent	= (ImageView) itemView.findViewById(R.id.iconComent);
 					iconAttach	= (ImageView) itemView.findViewById(R.id.iconAttach);
-					llComment	= (LinearLayout) itemView.findViewById(R.id.llComment);
+					rlComment	= (RelativeLayout) itemView.findViewById(R.id.rlComment);
 					txtComment	= (TextView) itemView.findViewById(R.id.txtComment);
+					ivEdit		= (ImageView) itemView.findViewById(R.id.ivEdit);
 				break;
 			}
 		}
@@ -451,17 +454,61 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 						});
 					}
 
-					if(holder.iconComent != null && holder.llComment != null)
+					if(holder.iconComent != null && holder.rlComment != null)
 					{
+						holder.ivEdit.setOnClickListener(new View.OnClickListener()
+						{
+							@Override
+							public void onClick(final View view)
+							{
+								new MaterialDialog.Builder(activity).title("Editar comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
+								.input("Exprésate", item.getNote(), new MaterialDialog.InputCallback()
+								{
+									@Override
+									public void onInput(MaterialDialog dialog, CharSequence input)
+									{
+										if(input != null)
+										{
+											if(input != "")
+											{
+												final String comment = input.toString();
+
+												if(StringUtils.isNotEmpty(comment))
+												{
+													Realm realm = Realm.getDefaultInstance();
+													realm.executeTransaction(new Realm.Transaction()
+													{
+														@Override
+														public void execute(Realm bgRealm)
+														{
+															Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, item.getMsgId()).findFirst();
+
+															if(message != null)
+															{
+																message.setNote(comment);
+															}
+														}
+													});
+
+													holder.txtComment.setText(item.getNote());
+													holder.rlComment.setVisibility(LinearLayout.VISIBLE);
+												}
+											}
+										}
+									}
+								}).show();
+							}
+						});
+
 						if(StringUtils.isNotEmpty(item.getNote()))
 						{
 							holder.txtComment.setText(item.getNote());
-							holder.llComment.setVisibility(LinearLayout.VISIBLE);
+							holder.rlComment.setVisibility(LinearLayout.VISIBLE);
 						}
 						else
 						{
 							holder.txtComment.setText("");
-							holder.llComment.setVisibility(LinearLayout.GONE);
+							holder.rlComment.setVisibility(LinearLayout.GONE);
 						}
 
 						holder.iconComent.setOnClickListener(new View.OnClickListener()
@@ -471,13 +518,47 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							{
 								if(StringUtils.isNotEmpty(item.getNote()))
 								{
-									holder.txtComment.setText(item.getNote());
-									holder.llComment.setVisibility(LinearLayout.VISIBLE);
+									new MaterialDialog.Builder(activity).title("Editar comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
+									.input("Exprésate", item.getNote(), new MaterialDialog.InputCallback()
+									{
+										@Override
+										public void onInput(MaterialDialog dialog, CharSequence input)
+										{
+											if(input != null)
+											{
+												if(input != "")
+												{
+													final String comment = input.toString();
+
+													if(StringUtils.isNotEmpty(comment))
+													{
+														Realm realm = Realm.getDefaultInstance();
+														realm.executeTransaction(new Realm.Transaction()
+														{
+															@Override
+															public void execute(Realm bgRealm)
+															{
+																Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, item.getMsgId()).findFirst();
+
+																if(message != null)
+																{
+																	message.setNote(comment);
+																}
+															}
+														});
+
+														holder.txtComment.setText(item.getNote());
+														holder.rlComment.setVisibility(LinearLayout.VISIBLE);
+													}
+												}
+											}
+										}
+									}).show();
 								}
 								else
 								{
 									new MaterialDialog.Builder(activity).title("Añadir comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
-									.input("Exprésate", "", new MaterialDialog.InputCallback()
+									.input("Exprésate", item.getNote(), new MaterialDialog.InputCallback()
 									{
 										@Override
 										public void onInput(MaterialDialog dialog, CharSequence input)
@@ -505,6 +586,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 																}
 															}
 														});
+
+														holder.txtComment.setText(item.getNote());
+														holder.rlComment.setVisibility(LinearLayout.VISIBLE);
 													}
 												}
 											}

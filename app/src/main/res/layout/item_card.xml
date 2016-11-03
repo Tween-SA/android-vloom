@@ -88,6 +88,7 @@
 				android:layout_below="@+id/txtTitle"
 				android:autoLink="web"
 				android:textSize="15sp"
+				android:layout_marginBottom="2dp"
 				android:lineSpacingExtra="4dp" />
 			<ImageView
 				android:id="@+id/iconCert"
@@ -104,57 +105,60 @@
 				android:contentDescription="@string/landing_contact" />
 			<ImageView
 				android:id="@+id/iconComent"
-				android:layout_width="30dp"
-				android:layout_height="30dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
 				android:layout_below="@id/txtContent"
-				android:src="@drawable/ic_circle_file_download"
+				android:src="@drawable/comment"
 				android:background="?android:attr/selectableItemBackground"
 				android:visibility="visible"
 				android:layout_marginTop="10dp"
-				android:layout_marginBottom="10dp"
-				android:layout_centerVertical="true"
+				android:layout_marginRight="10dp"
 				android:layout_alignParentLeft="true"
 				android:contentDescription="@string/landing_contact" />
-			<LinearLayout
-				android:id="@+id/llComment"
-				android:layout_width="match_parent"
+			<RelativeLayout
+				android:id="@+id/rlComment"
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:orientation="horizontal"
-				android:background="@color/accent"
+				android:background="@drawable/bubble_b"
 				android:layout_below="@+id/iconComent"
 				android:layout_marginRight="10dp"
-				android:padding="4dp"
-				android:visibility="gone">
+				android:visibility="visible">
 				<TextView
 					android:id="@+id/txtComment"
-					android:layout_width="match_parent"
+					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="comentario"
+					android:layout_alignParentLeft="true"
 					android:textColor="@color/text" />
-			</LinearLayout>
+				<ImageView
+					android:id="@+id/ivEdit"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="10dp"
+					android:layout_alignParentRight="true"
+					android:src="@drawable/ic_edit_white_18dp" />
+			</RelativeLayout>
 			<ImageView
 				android:id="@+id/iconAttach"
-				android:layout_width="30dp"
-				android:layout_height="30dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
 				android:layout_below="@id/txtContent"
 				android:background="?android:attr/selectableItemBackground"
-				android:src="@drawable/ic_done_48"
+				android:src="@drawable/photo"
 				android:visibility="visible"
-				android:layout_margin="10dp"
+				android:layout_marginTop="10dp"
 				android:layout_centerVertical="true"
 				android:layout_toRightOf="@+id/iconComent"
 				android:contentDescription="@string/landing_contact" />
 			<ImageView
 				android:id="@+id/ivChain"
-				android:layout_width="30dp"
-				android:layout_height="30dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
 				android:layout_below="@id/txtContent"
-				android:src="@drawable/ic_more_vert_black_24dp"
+				android:src="@drawable/certificate"
 				android:background="?android:attr/selectableItemBackground"
 				android:visibility="visible"
 				android:layout_marginTop="10dp"
-				android:layout_marginBottom="10dp"
-				android:layout_centerVertical="true"
 				android:layout_alignParentRight="true"
 				android:clickable="true"
 				android:contentDescription="@string/landing_contact" />

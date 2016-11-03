@@ -16,4 +16,5 @@
 	<color name="snack_gray">#323232</color>
 	<color name="text">#FFFFFF</color>
 	<color name="sub_text">#727272</color>
+	<color name="comment">#007AF6</color>
 </resources>

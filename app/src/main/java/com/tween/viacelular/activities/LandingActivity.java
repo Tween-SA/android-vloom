@@ -332,7 +332,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()))
 				{
 					txtId.setVisibility(TextView.VISIBLE);
-					llId.setVisibility(LinearLayout.VISIBLE);
+					//TODO Cuando terminemos de definir esta funcionalidad mostramos llId y seguimos desarrollando el popup para editar el dato
 				}
 				else
 				{
