@@ -208,7 +208,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		{
 			if(notificationList.size() > 0)
 			{
-				Message item = notificationList.get(position);
+				final Message item = notificationList.get(position);
 
 				if(item != null)
 				{

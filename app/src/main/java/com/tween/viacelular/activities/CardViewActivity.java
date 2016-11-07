@@ -527,7 +527,7 @@ public class CardViewActivity extends AppCompatActivity
 																							.setLabel("AccionUser").build());
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, true);
+			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, false);
 			Utils.hideCard(cardPayout);
 			Utils.hideCard(cardSuscribe);
 
@@ -993,7 +993,7 @@ public class CardViewActivity extends AppCompatActivity
 																							.setLabel("AccionUser").build());
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, true);
+			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, false);
 			Utils.hideCard(cardPayout);
 			Utils.hideCard(cardSuscribe);
 			txtTitle.setTextColor(colorTitle);
@@ -1171,7 +1171,7 @@ public class CardViewActivity extends AppCompatActivity
 					//Agregado para capturar evento en Google Analytics
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("BloquearInCompany")
 																									.setLabel("AccionUser").build());
-					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, true);
+					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, false);
 					Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
 					intent.putExtra(Common.KEY_ID, companyId);
 					intent.putExtra(Suscription.KEY_BLOCKED, Common.BOOL_YES);
@@ -1186,7 +1186,7 @@ public class CardViewActivity extends AppCompatActivity
 					//Agregado para capturar evento en Google Analytics
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("AgregarInCompany")
 																									.setLabel("AccionUser").build());
-					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, true);
+					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, false);
 					txtTitle.setTextColor(colorTitle);
 					txtSubTitleCollapsed.setTextColor(colorSubTitle);
 					toolBar.setBackgroundColor(Color.parseColor(suscription.getColorHex()));

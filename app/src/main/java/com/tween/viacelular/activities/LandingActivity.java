@@ -332,7 +332,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()))
 				{
 					txtId.setVisibility(TextView.VISIBLE);
-					llId.setVisibility(LinearLayout.VISIBLE);
+					//TODO Cuando terminemos de definir esta funcionalidad mostramos llId y seguimos desarrollando el popup para editar el dato
 				}
 				else
 				{
@@ -619,7 +619,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 																									.setLabel("AccionUser").build());
 				}
 
-				BlockedActivity.modifySubscriptions(LandingActivity.this, Utils.reverseBool(suscription.getFollower()), false, companyId, true);
+				BlockedActivity.modifySubscriptions(LandingActivity.this, Utils.reverseBool(suscription.getFollower()), false, companyId, false);
 
 				//Agregado para redirigir a la pantallas cards para pedir la identificación del cliente si es necesario
 				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()) && Utils.reverseBool(suscription.getFollower()) == Common.BOOL_YES)
