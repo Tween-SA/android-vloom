@@ -143,7 +143,7 @@ public class BlockedActivity extends AppCompatActivity
 				if(client != null)
 				{
 					//Se quitó momentaneamente la llamda a la api hasta que esté disponible
-					modifySubscriptions(this, Common.BOOL_YES, false, client.getCompanyId(), true);
+					modifySubscriptions(this, Common.BOOL_YES, false, client.getCompanyId(), false);
 					refresh();
 
 					Snackbar snackBar = Snackbar.make(Clayout, getString(R.string.snack_unblocked), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
@@ -154,7 +154,7 @@ public class BlockedActivity extends AppCompatActivity
 							try
 							{
 								//Se quitó momentaneamente la llamda a la api hasta que esté disponible
-								modifySubscriptions(getApplicationContext(), Common.BOOL_NO, false, client.getCompanyId(), true);
+								modifySubscriptions(getApplicationContext(), Common.BOOL_NO, false, client.getCompanyId(), false);
 								refresh();
 							}
 							catch(Exception e)

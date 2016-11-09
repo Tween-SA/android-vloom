@@ -103,6 +103,8 @@ public class Message extends RealmObject
 	@Ignore
 	public static final String KEY_ATTACHED			= "attached";
 	@Ignore
+	public static final String KEY_ATTACHMENTS		= "attachments";
+	@Ignore
 	public static final String KEY_ATTACHEDTWO		= "attachedTwo";
 	@Ignore
 	public static final String KEY_ATTACHEDTHREE	= "attachedThree";

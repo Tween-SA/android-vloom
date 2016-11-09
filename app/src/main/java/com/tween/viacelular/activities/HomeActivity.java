@@ -144,7 +144,7 @@ public class HomeActivity extends AppCompatActivity
 						@Override
 						public void onClick(View v)
 						{
-							BlockedActivity.modifySubscriptions(activity, Common.BOOL_YES, false, companyId, true);
+							BlockedActivity.modifySubscriptions(activity, Common.BOOL_YES, false, companyId, false);
 							fragment.refresh(false, false);
 						}
 					});

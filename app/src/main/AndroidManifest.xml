@@ -27,8 +27,7 @@
 		android:supportsRtl="false"
 		android:logo="@mipmap/ic_launcher"
 		android:label="@string/app_name"
-		android:theme="@style/Theme.MyTheme"
-		tools:replace="android:supportsRtl">
+		android:theme="@style/Theme.MyTheme">
 		<activity
 			android:name="com.tween.viacelular.activities.SplashActivity"
 			android:noHistory="true"

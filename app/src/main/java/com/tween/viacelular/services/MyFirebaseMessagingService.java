@@ -31,6 +31,7 @@ import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import org.json.JSONArray;
 import java.util.Map;
 import io.realm.Realm;
 
@@ -185,24 +186,70 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 						push.putString(Common.KEY_SOUND, data.get(Common.KEY_SOUND).toString());
 					}
 
-					if(data.get(Message.KEY_KIND) != null)
+					//TODO rever si no llega a venir como JSONArray
+					if(data.get(Message.KEY_ATTACHMENTS) != null)
 					{
-						push.putInt(Message.KEY_KIND, (int) data.get(Message.KEY_KIND));
-					}
+						JSONArray attachments = new JSONArray(data.get(Message.KEY_ATTACHMENTS).toString());
 
-					if(data.get(Message.KEY_LINK) != null)
-					{
-						push.putString(Message.KEY_LINK, data.get(Message.KEY_LINK).toString());
-					}
+						if(attachments.length() > 0)
+						{
+							if(attachments.getJSONObject(0) != null)
+							{
+								if(attachments.getJSONObject(0).has(Common.KEY_TYPE))
+								{
+									if(StringUtils.isNotEmpty(attachments.getJSONObject(0).getString(Common.KEY_TYPE)))
+									{
+										push.putInt(Message.KEY_KIND, attachments.getJSONObject(0).getInt(Common.KEY_TYPE));
+									}
+								}
 
-					if(data.get(Message.KEY_LINKTHUMB) != null)
-					{
-						push.putString(Message.KEY_LINKTHUMB, data.get(Message.KEY_LINKTHUMB).toString());
-					}
+								if(attachments.getJSONObject(0).has(Message.KEY_LINK))
+								{
+									if(StringUtils.isNotEmpty(attachments.getJSONObject(0).getString(Message.KEY_LINK)))
+									{
+										push.putString(Message.KEY_LINK, attachments.getJSONObject(0).getString(Message.KEY_LINK));
+									}
+								}
 
-					if(data.get(Message.KEY_SUBMSG) != null)
+								if(attachments.getJSONObject(0).has(Message.KEY_LINKTHUMB))
+								{
+									if(StringUtils.isNotEmpty(attachments.getJSONObject(0).getString(Message.KEY_LINKTHUMB)))
+									{
+										push.putString(Message.KEY_LINKTHUMB, attachments.getJSONObject(0).getString(Message.KEY_LINKTHUMB));
+									}
+								}
+
+								if(attachments.getJSONObject(0).has(Message.KEY_SUBMSG))
+								{
+									if(StringUtils.isNotEmpty(attachments.getJSONObject(0).getString(Message.KEY_SUBMSG)))
+									{
+										push.putString(Message.KEY_SUBMSG, attachments.getJSONObject(0).getString(Message.KEY_SUBMSG));
+									}
+								}
+							}
+						}
+					}
+					else
 					{
-						push.putString(Message.KEY_SUBMSG, data.get(Message.KEY_SUBMSG).toString());
+						if(data.get(Message.KEY_KIND) != null)
+						{
+							push.putInt(Message.KEY_KIND, (int) data.get(Message.KEY_KIND));
+						}
+
+						if(data.get(Message.KEY_LINK) != null)
+						{
+							push.putString(Message.KEY_LINK, data.get(Message.KEY_LINK).toString());
+						}
+
+						if(data.get(Message.KEY_LINKTHUMB) != null)
+						{
+							push.putString(Message.KEY_LINKTHUMB, data.get(Message.KEY_LINKTHUMB).toString());
+						}
+
+						if(data.get(Message.KEY_SUBMSG) != null)
+						{
+							push.putString(Message.KEY_SUBMSG, data.get(Message.KEY_SUBMSG).toString());
+						}
 					}
 
 					if(data.get(Message.KEY_CAMPAIGNID) != null)
