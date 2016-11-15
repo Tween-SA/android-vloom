@@ -201,6 +201,14 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 						realm.commitTransaction();
 					}
 				}
+
+				//Agregado para llamar a callback con push de bienvenida para app
+				jsonSend	= new JSONObject();
+				jsonSend.put(User.KEY_PHONE, phone);
+				jsonSend.put(User.KEY_GCMID, gcmId);
+				jsonSend.put(Common.KEY_INFO, info);
+				jsonResult	= new JSONObject(ApiConnection.request(	ApiConnection.USERS+"/callbacks/welcome", context, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""),
+																	jsonSend.toString()));
 			}
 		}
 		catch(JSONException e)

@@ -78,7 +78,7 @@
 						android:textColor="@color/text"
 						android:text="@string/app_name"
 						android:layout_toRightOf="@+id/circleView"
-						android:singleLine="true"
+						android:maxLines="1"
 						android:ellipsize="end"
 						android:textSize="18sp"
 						android:visibility="gone" />
@@ -94,7 +94,7 @@
 						android:layout_below="@+id/txtTitle"
 						android:layout_toRightOf="@+id/circleView"
 						android:text="@string/app"
-						android:singleLine="true"
+						android:maxLines="1"
 						android:ellipsize="end"
 						android:layout_alignParentLeft="@+id/txtTitle"
 						android:visibility="gone" />
@@ -226,6 +226,7 @@
 				android:weightSum="3"
 				android:id="@+id/llId"
 				android:layout_below="@+id/txtId"
+				android:visibility="gone"
 				android:orientation="horizontal">
 				<ImageView
 					android:id="@+id/iconId"
