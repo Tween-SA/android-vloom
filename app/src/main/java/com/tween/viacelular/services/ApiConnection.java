@@ -43,7 +43,7 @@ public class ApiConnection
 	public static final String BUSINESS					= "https://business.vloom.io/register";
 	/**
 	 * Url base del server
-	 * "https://api.vloom.io/v1/"; //New Production - master
+	 * "https://api.vloom.io/v1/"; //Production - master
 	 * "https://stagging.vloom.io/v1/"; //Stagging - stagging
 	 * "https://dev.vloom.io/v1/"; //Testing - develop
 	 * "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
