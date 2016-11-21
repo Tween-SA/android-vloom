@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
@@ -224,8 +225,7 @@ public class IncomingSmsService extends BroadcastReceiver
 					{
 						if(StringUtils.isValidCode(code))
 						{
-							final CheckCodeAsyncTask task = new CheckCodeAsyncTask(context, code, false);
-							task.execute();
+							new CheckCodeAsyncTask(context, code, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 						}
 					}
 					else
@@ -235,7 +235,7 @@ public class IncomingSmsService extends BroadcastReceiver
 						{
 							final ConnectApiSMSAsyncTask task	= new ConnectApiSMSAsyncTask(context, false);
 							task.setMessage(notification);
-							task.execute();
+							task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 						}
 					}
 				}

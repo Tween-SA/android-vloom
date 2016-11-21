@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -343,7 +344,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 				{
 					CompanyAsyncTask task	= new CompanyAsyncTask(context, false, companyIdApi, countryCode);
 					task.setFlag(Common.BOOL_YES);
-					task.execute();
+					task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 				catch(Exception e)
 				{
@@ -477,9 +478,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					{
 						try
 						{
-							LogoAsyncTask task	= new LogoAsyncTask(context, false, image, context.getResources().getDisplayMetrics().density);
+							new LogoAsyncTask(context, false, image, context.getResources().getDisplayMetrics().density).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 							//TODO implementar callbacks para prevenir la suspención del UI por delay en la Asynctask
-							task.execute();
 						}
 						catch(Exception e)
 						{
@@ -493,8 +493,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 				{
 					try
 					{
-						ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(context, false, "", msgId, Message.STATUS_RECEIVE);
-						task.execute();
+						new ConfirmReadingAsyncTask(context, false, "", msgId, Message.STATUS_RECEIVE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 					catch(Exception e)
 					{
@@ -516,8 +515,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					//Agregado para notificar como spam al ser descartado
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
 							.setLabel("Accion_user").build());
-					ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(context, false, "", id, Message.STATUS_SPAM);
-					task.execute();
+					new ConfirmReadingAsyncTask(context, false, "", id, Message.STATUS_SPAM).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 			}
 		}

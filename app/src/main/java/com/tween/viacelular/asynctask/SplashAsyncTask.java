@@ -65,8 +65,7 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(!splashed)
 			{
-				final ReadAccountsAsyncTask task = new ReadAccountsAsyncTask(activity, false);
-				task.execute();
+				new ReadAccountsAsyncTask(activity, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 		}
 		catch(Exception e)
@@ -182,8 +181,7 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(!splashed)
 			{
-				CountryAsyncTask task = new CountryAsyncTask(activity, false);
-				task.execute();
+				new CountryAsyncTask(activity, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 
 			Utils.checkSesion(activity, Common.SPLASH_SCREEN);

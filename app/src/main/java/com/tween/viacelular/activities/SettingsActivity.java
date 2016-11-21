@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -352,8 +353,7 @@ public class SettingsActivity extends AppCompatActivity
 			SharedPreferences.Editor editor	= preferences.edit();
 			editor.putBoolean(Common.KEY_PREF_CAPTURED, false);
 			editor.apply();
-			final CaptureSMSAsyncTask task = new CaptureSMSAsyncTask(SettingsActivity.this, false);
-			task.execute();
+			new CaptureSMSAsyncTask(SettingsActivity.this, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 		catch(Exception e)
 		{

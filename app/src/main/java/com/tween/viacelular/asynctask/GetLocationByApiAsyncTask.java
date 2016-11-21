@@ -111,8 +111,7 @@ public class GetLocationByApiAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(!update)
 			{
-				CountryAsyncTask task = new CountryAsyncTask(context, false);
-				task.execute();
+				new CountryAsyncTask(context, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 		}
 		catch(Exception e)
