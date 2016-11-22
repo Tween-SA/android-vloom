@@ -203,7 +203,7 @@ public class SplashActivity extends AppCompatActivity
 			//Nuevo registro en FCM
 			FirebaseMessaging.getInstance().subscribeToTopic(MyFirebaseInstanceIdService.FRIENDLY_ENGAGE_TOPIC);
 			String token = FirebaseInstanceId.getInstance().getToken();
-			System.out.println("TOKEN NUEVO: "+token);
+			System.out.println("TOKEN NUEVO SPLASH: "+token);
 
 			if(StringUtils.isNotEmpty(token))
 			{

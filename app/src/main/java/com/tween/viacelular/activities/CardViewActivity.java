@@ -262,10 +262,10 @@ public class CardViewActivity extends AppCompatActivity
 
 				if(suscription != null)
 				{
-					RealmResults<Message> unread = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
-														.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAll();
+					long unread = realm.where(Message.class).equalTo(Message.KEY_DELETED, Common.BOOL_NO).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
+									.equalTo(Suscription.KEY_API, suscription.getCompanyId()).count();
 
-					if(unread.size() > 0)
+					if(unread > 0)
 					{
 						new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, "", Message.STATUS_READ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
@@ -1059,7 +1059,7 @@ public class CardViewActivity extends AppCompatActivity
 				inputCode.setErrorEnabled(false);
 				SendIdentificationKeyAsyncTask task = new SendIdentificationKeyAsyncTask(this, true, editCode.getText().toString(), companyId);
 
-				if(task.execute().get().equals(ApiConnection.OK))
+				if(task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get().equals(ApiConnection.OK))
 				{
 					Utils.showCard(cardOk);
 				}

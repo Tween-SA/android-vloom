@@ -84,7 +84,11 @@ public class ApiConnection
 
 					if(networkInfo != null)
 					{
-						System.out.println("Red: "+networkInfo.getTypeName()+" - "+networkInfo.toString());
+						if(Common.DEBUG)
+						{
+							System.out.println("Red: "+networkInfo.getTypeName()+" - "+networkInfo.toString());
+						}
+
 						//Emulador: [type: MOBILE[UMTS], state: CONNECTED/CONNECTED, reason: connected, extra: epc.tmobile.com, roaming: false, failover: false, isAvailable: true,
 						// isConnectedToProvisioningNetwork: false]
 						if(networkInfo.isConnected())

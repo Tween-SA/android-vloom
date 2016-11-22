@@ -5,11 +5,14 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.IspHelper;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.utils.Common;
 import org.json.JSONObject;
+
+import io.realm.Realm;
 
 /**
  * Created by davidfigueroa on 15/6/16.
@@ -111,7 +114,13 @@ public class GetLocationByApiAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(!update)
 			{
-				new CountryAsyncTask(context, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				Realm realm = Realm.getDefaultInstance();
+				long lands = realm.where(Land.class).count();
+
+				if(lands < 3)
+				{
+					new CountryAsyncTask(context, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
 			}
 		}
 		catch(Exception e)

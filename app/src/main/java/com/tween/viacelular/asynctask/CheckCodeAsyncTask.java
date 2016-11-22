@@ -255,7 +255,7 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 				if(isWasValidated())
 				{
 					//Agregado para refrescar las suscripciones locales
-					new UpdateUserAsyncTask(context, Common.BOOL_NO, false, "", true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					new UpdateUserAsyncTask(context, Common.BOOL_YES, false, "", true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 			}
 			else
