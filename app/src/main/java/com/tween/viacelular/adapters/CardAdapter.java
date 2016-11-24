@@ -1,9 +1,14 @@
 package com.tween.viacelular.adapters;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.method.LinkMovementMethod;
@@ -21,19 +26,34 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CardViewActivity;
+import com.tween.viacelular.asynctask.AttachAsyncTask;
+import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
+import java.io.ByteArrayOutputStream;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by david.figueroa on 8/7/15.
@@ -47,6 +67,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 	public final static int			OPTION_BLOCK	= 1;
 	public final static int			OPTION_DELETE	= 2;
 	public final static int			OPTION_DISMISS	= 3;
+	private int						field			= 1;
+	private String					msgId			= "";
+	private ImageView				imgOne;
+	private ImageView				imgTwo;
+	private ImageView				imgThree;
 
 	public static class ViewHolder extends RecyclerView.ViewHolder
 	{
@@ -73,6 +98,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		private RelativeLayout	rlComment;
 		private TextView		txtComment;
 		private ImageView		ivEdit;
+		private ImageView		imgOne;
+		private ImageView		imgTwo;
+		private ImageView		imgThree;
 
 		public ViewHolder(View itemView, int viewType)
 		{
@@ -132,6 +160,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					rlComment	= (RelativeLayout) itemView.findViewById(R.id.rlComment);
 					txtComment	= (TextView) itemView.findViewById(R.id.txtComment);
 					ivEdit		= (ImageView) itemView.findViewById(R.id.ivEdit);
+					imgOne		= (ImageView) itemView.findViewById(R.id.imgOne);
+					imgTwo		= (ImageView) itemView.findViewById(R.id.imgTwo);
+					imgThree	= (ImageView) itemView.findViewById(R.id.imgThree);
 				break;
 			}
 		}
@@ -549,6 +580,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 														holder.txtComment.setText(item.getNote());
 														holder.rlComment.setVisibility(LinearLayout.VISIBLE);
+														attach(item.getMsgId(), holder.imgOne, holder.imgTwo, holder.imgThree);
 													}
 												}
 											}
@@ -589,6 +621,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 														holder.txtComment.setText(item.getNote());
 														holder.rlComment.setVisibility(LinearLayout.VISIBLE);
+														attach(item.getMsgId(), holder.imgOne, holder.imgTwo, holder.imgThree);
 													}
 												}
 											}
@@ -606,7 +639,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							@Override
 							public void onClick(final View v)
 							{
-								System.out.println("Tocaste para adjuntar");
 								if(StringUtils.isNotEmpty(item.getAttached()) && StringUtils.isNotEmpty(item.getAttachedTwo()) && StringUtils.isNotEmpty(item.getAttachedThree()))
 								{
 									//Sory no more files
@@ -614,10 +646,67 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								}
 								else
 								{
-									activity.callCamera(item.getMsgId());
+									callCamera(item.getMsgId(), holder.imgOne, holder.imgTwo, holder.imgThree);
 								}
 							}
 						});
+					}
+
+					if(holder.imgOne != null && holder.imgTwo != null && holder.imgThree != null)
+					{
+						if(StringUtils.isNotEmpty(item.getAttached()))
+						{
+							Picasso.with(activity).load(item.getAttached()).into(imgOne, new Callback()
+							{
+								@Override
+								public void onSuccess()
+								{
+									imgOne.setVisibility(ImageView.VISIBLE);
+								}
+
+								@Override
+								public void onError()
+								{
+									imgOne.setVisibility(ImageView.GONE);
+								}
+							});
+						}
+
+						if(StringUtils.isNotEmpty(item.getAttachedTwo()))
+						{
+							Picasso.with(activity).load(item.getAttachedTwo()).into(imgTwo, new Callback()
+							{
+								@Override
+								public void onSuccess()
+								{
+									imgTwo.setVisibility(ImageView.VISIBLE);
+								}
+
+								@Override
+								public void onError()
+								{
+									imgTwo.setVisibility(ImageView.GONE);
+								}
+							});
+						}
+
+						if(StringUtils.isNotEmpty(item.getAttachedThree()))
+						{
+							Picasso.with(activity).load(item.getAttachedThree()).into(imgThree, new Callback()
+							{
+								@Override
+								public void onSuccess()
+								{
+									imgThree.setVisibility(ImageView.VISIBLE);
+								}
+
+								@Override
+								public void onError()
+								{
+									imgThree.setVisibility(ImageView.GONE);
+								}
+							});
+						}
 					}
 				}
 			}
@@ -665,5 +754,270 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		}
 
 		return type;
+	}
+
+	private void attach(String id, final ImageView hImgOne, final ImageView hImgTwo, final ImageView hImgThree)
+	{
+		try
+		{
+			msgId		= id;
+			imgOne		= hImgOne;
+			imgTwo		= hImgTwo;
+			imgThree	= hImgThree;
+			System.out.println("attach");
+			new AttachAsyncTask(activity, false, new CallBackListener()
+			{
+				@Override
+				public void callBack()
+				{
+					System.out.println("callBack in activity");
+					activity.runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							Realm realm		= Realm.getDefaultInstance();
+							Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+							if(message != null && imgOne != null && imgTwo != null && imgThree != null)
+							{
+								if(StringUtils.isNotEmpty(message.getAttached()))
+								{
+									Picasso.with(activity).load(message.getAttached()).into(imgOne, new Callback()
+									{
+										@Override
+										public void onSuccess()
+										{
+											imgOne.setVisibility(ImageView.VISIBLE);
+										}
+
+										@Override
+										public void onError()
+										{
+											imgOne.setVisibility(ImageView.GONE);
+										}
+									});
+								}
+
+								if(StringUtils.isNotEmpty(message.getAttachedTwo()))
+								{
+									Picasso.with(activity).load(message.getAttachedTwo()).into(imgTwo, new Callback()
+									{
+										@Override
+										public void onSuccess()
+										{
+											imgTwo.setVisibility(ImageView.VISIBLE);
+										}
+
+										@Override
+										public void onError()
+										{
+											imgTwo.setVisibility(ImageView.GONE);
+										}
+									});
+								}
+
+								if(StringUtils.isNotEmpty(message.getAttachedThree()))
+								{
+									Picasso.with(activity).load(message.getAttachedThree()).into(imgThree, new Callback()
+									{
+										@Override
+										public void onSuccess()
+										{
+											imgThree.setVisibility(ImageView.VISIBLE);
+										}
+
+										@Override
+										public void onError()
+										{
+											imgThree.setVisibility(ImageView.GONE);
+										}
+									});
+								}
+							}
+						}
+					});
+				}
+			}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		}
+		catch(Exception e)
+		{
+			System.out.println("CardAdapter:attach - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void callCamera(String id, ImageView hImgOne, ImageView hImgTwo, ImageView hImgThree)
+	{
+		try
+		{
+			System.out.println("callCamera");
+			msgId				= id;
+			imgOne				= hImgOne;
+			imgTwo				= hImgTwo;
+			imgThree			= hImgThree;
+			Intent cameraIntent	= new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			activity.startActivityForResult(cameraIntent, 0);
+		}
+		catch(Exception e)
+		{
+			System.out.println("CardAdapter:callCamera - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent)
+	{
+		System.out.println("onActivityResult");
+		System.out.println("requestCode: "+requestCode);
+		System.out.println("resultCode: "+resultCode);
+		System.out.println("id result: " + msgId);
+
+		try
+		{
+			if(resultCode == RESULT_OK)
+			{
+				System.out.println("data: "+intent.getExtras().get("data").toString());
+				Bitmap bitmap = (Bitmap) intent.getExtras().get("data");
+
+				if(bitmap != null)
+				{
+					Realm realm		= Realm.getDefaultInstance();
+					Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+					if(message != null)
+					{
+						ByteArrayOutputStream baos	= new ByteArrayOutputStream();
+						bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+						byte[] data					= baos.toByteArray();
+						BroadcastReceiver mBroadcastReceiver;
+						FirebaseAuth mAuth			= FirebaseAuth.getInstance();
+						FirebaseStorage storage		= FirebaseStorage.getInstance();
+						StorageReference storageRef	= storage.getReferenceFromUrl(ApiConnection.FIREBASE_STORAGE);
+						//Directorio por mensaje
+						String fileName				= "";
+
+						if(StringUtils.isIdMongo(message.getMsgId()))
+						{
+							fileName = message.getMsgId();
+						}
+						else
+						{
+							fileName = String.valueOf(System.currentTimeMillis());
+						}
+
+						if(StringUtils.isNotEmpty(message.getAttached()) && StringUtils.isNotEmpty(message.getAttachedTwo()))
+						{
+							//Lastone
+							fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image3.png";
+							field		= 3;
+						}
+						else
+						{
+							if(StringUtils.isNotEmpty(message.getAttached()))
+							{
+								//Second
+								fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image2.png";
+								field		= 2;
+							}
+							else
+							{
+								//First
+								fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image1.png";
+								field		= 1;
+							}
+						}
+
+						StorageReference imagesRef	= storageRef.child(fileName);
+						UploadTask uploadTask = imagesRef.putBytes(data);
+						uploadTask.addOnFailureListener(new OnFailureListener()
+						{
+							@Override
+							public void onFailure(@NonNull Exception exception)
+							{
+								System.out.println("CardAdapter:onActivityResult:onFailure - Exception: " + exception);
+								// Handle unsuccessful uploads
+							}
+						}).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+						{
+							@Override
+							public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+							{
+								try
+								{
+									// taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+									final Uri downloadUrl	= taskSnapshot.getDownloadUrl();
+									System.out.println("onSuccess uri: "+downloadUrl.toString());
+									Realm realm		= Realm.getDefaultInstance();
+
+									realm.executeTransaction(new Realm.Transaction()
+									{
+										@Override
+										public void execute(Realm bgRealm)
+										{
+											Message message	= bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+											if(message != null)
+											{
+												switch(field)
+												{
+													case 1:
+														message.setAttached(downloadUrl.toString());
+														break;
+
+													case 2:
+														message.setAttachedTwo(downloadUrl.toString());
+														break;
+
+													case 3:
+														message.setAttachedThree(downloadUrl.toString());
+														break;
+												}
+											}
+
+											attach(msgId, imgOne, imgTwo, imgThree);
+										}
+									});
+								}
+								catch(Exception e)
+								{
+									System.out.println("CardAdapter:onActivityResult:onSuccess - Exception: " + e);
+
+									if(Common.DEBUG)
+									{
+										e.printStackTrace();
+									}
+								}
+							}
+						});
+					}
+					else
+					{
+						System.out.println("message is null");
+					}
+				}
+				else
+				{
+					System.out.println("bitmap is null");
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("CardAdapter:onActivityResult - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 }

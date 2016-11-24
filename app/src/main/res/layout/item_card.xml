@@ -3,6 +3,7 @@
 	xmlns:card_view="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	xmlns:app="http://schemas.android.com/tools"
 	android:layout_marginBottom="10dp"
 	android:layout_marginTop="10dp"
 	android:id="@+id/rlItem">
@@ -150,6 +151,48 @@
 				android:layout_centerVertical="true"
 				android:layout_toRightOf="@+id/iconComent"
 				android:contentDescription="@string/landing_contact" />
+			<de.hdodenhof.circleimageview.CircleImageView
+				android:id="@+id/imgOne"
+				android:layout_width="30dp"
+				android:layout_height="30dp"
+				android:layout_marginTop="12dp"
+				android:layout_marginLeft="10dp"
+				android:layout_below="@id/txtContent"
+				android:src="@drawable/ic_launcher"
+				android:layout_centerVertical="true"
+				android:layout_toRightOf="@+id/iconAttach"
+				app:civ_border_width="0dp"
+				app:civ_border_color="@color/text"
+				android:visibility="gone"
+				app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />
+			<de.hdodenhof.circleimageview.CircleImageView
+				android:id="@+id/imgTwo"
+				android:layout_width="30dp"
+				android:layout_height="30dp"
+				android:layout_marginTop="12dp"
+				android:layout_marginLeft="4dp"
+				android:layout_below="@id/txtContent"
+				android:src="@drawable/ic_launcher"
+				android:layout_centerVertical="true"
+				android:layout_toRightOf="@+id/imgOne"
+				app:civ_border_width="0dp"
+				app:civ_border_color="@color/text"
+				android:visibility="gone"
+				app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />
+			<de.hdodenhof.circleimageview.CircleImageView
+				android:id="@+id/imgThree"
+				android:layout_width="30dp"
+				android:layout_height="30dp"
+				android:layout_marginTop="12dp"
+				android:layout_marginLeft="4dp"
+				android:layout_below="@id/txtContent"
+				android:src="@drawable/ic_launcher"
+				android:layout_centerVertical="true"
+				android:layout_toRightOf="@+id/imgTwo"
+				app:civ_border_width="0dp"
+				android:visibility="gone"
+				app:civ_border_color="@color/text"
+				app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />
 			<ImageView
 				android:id="@+id/ivChain"
 				android:layout_width="wrap_content"

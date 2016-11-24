@@ -47,11 +47,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.CardAdapter;
+import com.tween.viacelular.asynctask.AttachAsyncTask;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
 import com.tween.viacelular.asynctask.SendIdentificationKeyAsyncTask;
+import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;
@@ -73,8 +76,6 @@ public class CardViewActivity extends AppCompatActivity
 	private RealmResults<Message>	notifications	= null;
 	private int						colorTitle		= Color.WHITE;
 	private int						colorSubTitle	= Color.LTGRAY;
-	private int						field			= 1;
-	private String					msgId			= "";
 	private RecyclerView			rcwCard;
 	private CardAdapter				mAdapter;
 	private CoordinatorLayout		Clayout;
@@ -227,7 +228,7 @@ public class CardViewActivity extends AppCompatActivity
 							}
 						});
 
-						mAdapter = new CardAdapter(this, suscription.getCompanyId());
+						mAdapter = new CardAdapter(CardViewActivity.this, suscription.getCompanyId());
 						rcwCard.setAdapter(mAdapter);
 					}
 					else
@@ -305,172 +306,6 @@ public class CardViewActivity extends AppCompatActivity
 		catch(Exception e)
 		{
 			System.out.println("CardViewActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void callCamera(String id)
-	{
-		System.out.println("id activity: " + id);
-		try
-		{
-			msgId = id;
-			Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			startActivityForResult(cameraIntent, 0);
-		}
-		catch(Exception e)
-		{
-			System.out.println("CardViewActivity:callCamera - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent intent)
-	{
-		System.out.println("requestCode: "+requestCode);
-		System.out.println("resultCode: "+resultCode);
-		System.out.println("id result: " + msgId);
-		super.onActivityResult(requestCode, resultCode, intent);
-
-		try
-		{
-			if(resultCode == RESULT_OK)
-			{
-				System.out.println("data: "+intent.getExtras().get("data").toString());
-				Bitmap bitmap = (Bitmap) intent.getExtras().get("data");
-
-				if(bitmap != null)
-				{
-					Realm realm		= Realm.getDefaultInstance();
-					Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
-
-					if(message != null)
-					{
-						ByteArrayOutputStream baos	= new ByteArrayOutputStream();
-						bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-						byte[] data					= baos.toByteArray();
-						BroadcastReceiver mBroadcastReceiver;
-						FirebaseAuth mAuth			= FirebaseAuth.getInstance();
-						FirebaseStorage storage		= FirebaseStorage.getInstance();
-						StorageReference storageRef	= storage.getReferenceFromUrl(ApiConnection.FIREBASE_STORAGE);
-						//Directorio por mensaje
-						String fileName				= "";
-
-						if(StringUtils.isIdMongo(message.getMsgId()))
-						{
-							fileName = message.getMsgId();
-						}
-						else
-						{
-							fileName = String.valueOf(System.currentTimeMillis());
-						}
-
-						if(StringUtils.isNotEmpty(message.getAttached()) && StringUtils.isNotEmpty(message.getAttachedTwo()))
-						{
-							//Lastone
-							fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image3.png";
-							field		= 3;
-						}
-						else
-						{
-							if(StringUtils.isNotEmpty(message.getAttached()))
-							{
-								//Second
-								fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image2.png";
-								field		= 2;
-							}
-							else
-							{
-								//First
-								fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image1.png";
-								field		= 1;
-							}
-						}
-
-						StorageReference imagesRef	= storageRef.child(fileName);
-						UploadTask uploadTask = imagesRef.putBytes(data);
-						uploadTask.addOnFailureListener(new OnFailureListener()
-						{
-							@Override
-							public void onFailure(@NonNull Exception exception)
-							{
-								System.out.println("CardViewActivity:onActivityResult:onFailure - Exception: " + exception);
-								// Handle unsuccessful uploads
-							}
-						}).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
-						{
-							@Override
-							public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-							{
-								try
-								{
-									// taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-									final Uri downloadUrl	= taskSnapshot.getDownloadUrl();
-									System.out.println("onSuccess uri: "+downloadUrl.toString());
-									Realm realm		= Realm.getDefaultInstance();
-
-									realm.executeTransaction(new Realm.Transaction()
-									{
-										@Override
-										public void execute(Realm bgRealm)
-										{
-											Message message	= bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
-
-											if(message != null)
-											{
-												switch(field)
-												{
-													case 1:
-														message.setAttached(downloadUrl.toString());
-													break;
-
-													case 2:
-														message.setAttachedTwo(downloadUrl.toString());
-													break;
-
-													case 3:
-														message.setAttachedThree(downloadUrl.toString());
-													break;
-												}
-											}
-										}
-									});
-								}
-								catch(Exception e)
-								{
-									System.out.println("CardViewActivity:onActivityResult:onSuccess - Exception: " + e);
-
-									if(Common.DEBUG)
-									{
-										e.printStackTrace();
-									}
-								}
-							}
-						});
-					}
-					else
-					{
-						System.out.println("message is null");
-					}
-				}
-				else
-				{
-					System.out.println("bitmap is null");
-				}
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println("CardViewActivity:onActivityResult - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
