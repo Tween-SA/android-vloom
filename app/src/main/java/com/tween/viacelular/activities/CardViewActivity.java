@@ -1,5 +1,6 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +17,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.os.AsyncTaskCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -47,12 +47,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.CardAdapter;
 import com.tween.viacelular.asynctask.AttachAsyncTask;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
+import com.tween.viacelular.asynctask.LogoAsyncTask;
 import com.tween.viacelular.asynctask.SendIdentificationKeyAsyncTask;
 import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
@@ -76,6 +76,8 @@ public class CardViewActivity extends AppCompatActivity
 	private RealmResults<Message>	notifications	= null;
 	private int						colorTitle		= Color.WHITE;
 	private int						colorSubTitle	= Color.LTGRAY;
+	private int						field			= 1;
+	private String					msgId			= "";
 	private RecyclerView			rcwCard;
 	private CardAdapter				mAdapter;
 	private CoordinatorLayout		Clayout;
@@ -94,6 +96,9 @@ public class CardViewActivity extends AppCompatActivity
 	private Toolbar					toolBar;
 	private TextView				txtTitle;
 	private TextView				txtSubTitleCollapsed;
+	private ImageView				imgOne;
+	private ImageView				imgTwo;
+	private ImageView				imgThree;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -228,7 +233,7 @@ public class CardViewActivity extends AppCompatActivity
 							}
 						});
 
-						mAdapter = new CardAdapter(CardViewActivity.this, suscription.getCompanyId());
+						mAdapter = new CardAdapter(this, suscription.getCompanyId());
 						rcwCard.setAdapter(mAdapter);
 					}
 					else
@@ -306,6 +311,197 @@ public class CardViewActivity extends AppCompatActivity
 		catch(Exception e)
 		{
 			System.out.println("CardViewActivity:onCreate - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void attach(String id)
+	{
+		try
+		{
+			System.out.println("attach in activity");
+			new AttachAsyncTask(this, false, id, new CallBackListener()
+			{
+				@Override
+				public void callBack()
+				{
+					System.out.println("callBack in activity");
+					runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							System.out.println("está ejecutando el runOnUiThread in activity");
+							refresh(false);
+						}
+					});
+				}
+			}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+		}
+		catch(Exception e)
+		{
+			System.out.println("CardViewActivity:attach - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void callCamera(String id)
+	{
+		try
+		{
+			msgId				= id;
+			Intent cameraIntent	= new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			startActivityForResult(cameraIntent, 0);
+		}
+		catch(Exception e)
+		{
+			System.out.println("CardViewActivity:callCamera - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent)
+	{
+		super.onActivityResult(requestCode, resultCode, intent);
+
+		try
+		{
+			if(resultCode == RESULT_OK)
+			{
+				Bitmap bitmap = (Bitmap) intent.getExtras().get("data");
+
+				if(bitmap != null)
+				{
+					Realm realm		= Realm.getDefaultInstance();
+					Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+					if(message != null)
+					{
+						ByteArrayOutputStream baos	= new ByteArrayOutputStream();
+						bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+						byte[] data					= baos.toByteArray();
+						BroadcastReceiver mBroadcastReceiver;
+						FirebaseAuth mAuth			= FirebaseAuth.getInstance();
+						FirebaseStorage storage		= FirebaseStorage.getInstance();
+						StorageReference storageRef	= storage.getReferenceFromUrl(ApiConnection.FIREBASE_STORAGE);
+						//Directorio por mensaje
+						String fileName				= "";
+
+						if(StringUtils.isIdMongo(message.getMsgId()))
+						{
+							fileName = message.getMsgId();
+						}
+						else
+						{
+							fileName = String.valueOf(System.currentTimeMillis());
+						}
+
+						if(StringUtils.isNotEmpty(message.getAttached()) && StringUtils.isNotEmpty(message.getAttachedTwo()))
+						{
+							//Lastone
+							fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image3.png";
+							field		= 3;
+						}
+						else
+						{
+							if(StringUtils.isNotEmpty(message.getAttached()))
+							{
+								//Second
+								fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image2.png";
+								field		= 2;
+							}
+							else
+							{
+								//First
+								fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image1.png";
+								field		= 1;
+							}
+						}
+
+						StorageReference imagesRef	= storageRef.child(fileName);
+						UploadTask uploadTask		= imagesRef.putBytes(data);
+						final Activity activity		= this;
+						uploadTask.addOnFailureListener(new OnFailureListener()
+						{
+							@Override
+							public void onFailure(@NonNull Exception exception)
+							{
+								System.out.println("CardViewActivity:onActivityResult:onFailure - Exception: " + exception);
+								// Handle unsuccessful uploads
+							}
+						}).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+						{
+							@Override
+							public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+							{
+								try
+								{
+									// taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+									final Uri downloadUrl	= taskSnapshot.getDownloadUrl();
+									System.out.println("onSuccess uri: "+downloadUrl.toString());
+									new LogoAsyncTask(activity, false, downloadUrl.toString(), -1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+									Realm realm		= Realm.getDefaultInstance();
+
+									realm.executeTransaction(new Realm.Transaction()
+									{
+										@Override
+										public void execute(Realm bgRealm)
+										{
+											Message message	= bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+											if(message != null)
+											{
+												switch(field)
+												{
+													case 1:
+														message.setAttached(downloadUrl.toString());
+													break;
+
+													case 2:
+														message.setAttachedTwo(downloadUrl.toString());
+													break;
+
+													case 3:
+														message.setAttachedThree(downloadUrl.toString());
+													break;
+												}
+											}
+
+											attach(msgId);
+										}
+									});
+								}
+								catch(Exception e)
+								{
+									System.out.println("CardViewActivity:onActivityResult:onSuccess - Exception: " + e);
+
+									if(Common.DEBUG)
+									{
+										e.printStackTrace();
+									}
+								}
+							}
+						});
+					}
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("CardViewActivity:onActivityResult - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
@@ -477,7 +673,7 @@ public class CardViewActivity extends AppCompatActivity
 			realm.beginTransaction();
 			suscription.setGray(Common.BOOL_YES);
 			realm.commitTransaction();
-			Utils.hideCard(cardSuscribe);
+			Utils.hideViewWithFade(cardSuscribe);
 			txtTitle.setTextColor(Utils.adjustAlpha(colorTitle, Common.ALPHA_FOR_BLOCKS));
 			txtSubTitleCollapsed.setTextColor(Utils.adjustAlpha(colorSubTitle, Common.ALPHA_FOR_BLOCKS));
 			toolBar.setBackgroundColor(Color.parseColor(Common.COLOR_BLOCKED));
@@ -512,7 +708,7 @@ public class CardViewActivity extends AppCompatActivity
 			realm.beginTransaction();
 			suscription.setReceive(Common.BOOL_YES);
 			realm.commitTransaction();
-			Utils.hideCard(cardPayout);
+			Utils.hideViewWithFade(cardPayout);
 
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -544,8 +740,8 @@ public class CardViewActivity extends AppCompatActivity
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, false);
-			Utils.hideCard(cardPayout);
-			Utils.hideCard(cardSuscribe);
+			Utils.hideViewWithFade(cardPayout);
+			Utils.hideViewWithFade(cardSuscribe);
 
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -819,13 +1015,13 @@ public class CardViewActivity extends AppCompatActivity
 
 								if(idViewFather == cardPayout.getId())
 								{
-									Utils.showCard(cardPayout);
+									Utils.showViewWithFade(cardPayout);
 								}
 								else
 								{
 									if(idViewFather == cardSuscribe.getId())
 									{
-										Utils.showCard(cardSuscribe);
+										Utils.showViewWithFade(cardSuscribe);
 									}
 								}
 							}
@@ -841,7 +1037,7 @@ public class CardViewActivity extends AppCompatActivity
 							{
 								rlEmpty.setVisibility(RelativeLayout.GONE);
 								rcwCard.setVisibility(RecyclerView.GONE);
-								Utils.showCard(cardForm);
+								Utils.showViewWithFade(cardForm);
 								inputCode.setErrorEnabled(false);
 								inputCode.setHint(suscription.getIdentificationKey());
 								String title = getString(R.string.landing_card_form_text1) + " " + suscription.getIdentificationKey() + " " + getString(R.string.landing_card_form_text2);
@@ -887,7 +1083,7 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			Utils.hideCard(cardForm);
+			Utils.hideViewWithFade(cardForm);
 
 			if(StringUtils.isAlphanumeric(editCode.getText().toString()))
 			{
@@ -896,16 +1092,16 @@ public class CardViewActivity extends AppCompatActivity
 
 				if(task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get().equals(ApiConnection.OK))
 				{
-					Utils.showCard(cardOk);
+					Utils.showViewWithFade(cardOk);
 				}
 				else
 				{
-					Utils.showCard(cardRetry);
+					Utils.showViewWithFade(cardRetry);
 				}
 			}
 			else
 			{
-				Utils.showCard(cardRetry);
+				Utils.showViewWithFade(cardRetry);
 				inputCode.setErrorEnabled(true);
 				inputCode.setError(getString(R.string.code_alphanumeric));
 			}
@@ -926,7 +1122,7 @@ public class CardViewActivity extends AppCompatActivity
 		try
 		{
 			inputCode.setErrorEnabled(false);
-			Utils.hideCard(cardRetry);
+			Utils.hideViewWithFade(cardRetry);
 			sendData(view);
 		}
 		catch(Exception e)
@@ -944,11 +1140,11 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			Utils.hideCard(cardForm);
-			Utils.hideCard(cardOk);
-			Utils.hideCard(cardRetry);
-			Utils.hideCard(cardPayout);
-			Utils.hideCard(cardSuscribe);
+			Utils.hideViewWithFade(cardForm);
+			Utils.hideViewWithFade(cardOk);
+			Utils.hideViewWithFade(cardRetry);
+			Utils.hideViewWithFade(cardPayout);
+			Utils.hideViewWithFade(cardSuscribe);
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 			if(notifications != null)
@@ -1010,8 +1206,8 @@ public class CardViewActivity extends AppCompatActivity
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, false);
-			Utils.hideCard(cardPayout);
-			Utils.hideCard(cardSuscribe);
+			Utils.hideViewWithFade(cardPayout);
+			Utils.hideViewWithFade(cardSuscribe);
 			txtTitle.setTextColor(colorTitle);
 			txtSubTitleCollapsed.setTextColor(colorSubTitle);
 			toolBar.setBackgroundColor(Color.parseColor(suscription.getColorHex()));
@@ -1029,7 +1225,7 @@ public class CardViewActivity extends AppCompatActivity
 			{
 				rlEmpty.setVisibility(RelativeLayout.GONE);
 				rcwCard.setVisibility(RecyclerView.GONE);
-				Utils.showCard(cardForm);
+				Utils.showViewWithFade(cardForm);
 				inputCode.setErrorEnabled(false);
 				inputCode.setHint(suscription.getIdentificationKey());
 				String title = getString(R.string.landing_card_form_text1) + " " + suscription.getIdentificationKey() + " " + getString(R.string.landing_card_form_text2);

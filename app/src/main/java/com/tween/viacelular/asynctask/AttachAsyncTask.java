@@ -31,11 +31,12 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 	private CallBackListener	listener;
 	private String				msgId;
 
-	public AttachAsyncTask(Activity activity, boolean displayDialog, CallBackListener listener)
+	public AttachAsyncTask(Activity activity, boolean displayDialog, String msgId, CallBackListener listener)
 	{
 		this.activity		= activity;
 		this.displayDialog	= displayDialog;
 		this.listener		= listener;
+		this.msgId			= msgId;
 	}
 
 	protected void onPreExecute()
@@ -118,6 +119,7 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 				}
 			}
 
+			System.out.println("onPostExecute task... result: "+result);
 			//Llamar al callback
 			if(result.equals(ApiConnection.OK))
 			{

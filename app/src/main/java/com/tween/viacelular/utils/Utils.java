@@ -922,7 +922,7 @@ public class Utils
 		}
 	}
 
-	public static void showCard(View view)
+	public static void showViewWithFade(View view)
 	{
 		try
 		{
@@ -935,7 +935,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:showCard - Exception: " + e);
+			System.out.println("Utils:showViewWithFade - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
@@ -959,7 +959,7 @@ public class Utils
 		return Color.argb(alpha, red, green, blue);
 	}
 
-	public static void hideCard(final View view)
+	public static void hideViewWithFade(final View view)
 	{
 		try
 		{
@@ -985,7 +985,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:hideCard - Exception: " + e);
+			System.out.println("Utils:hideViewWithFade - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
