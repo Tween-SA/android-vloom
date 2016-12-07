@@ -5,11 +5,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -64,7 +66,11 @@ import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -96,9 +102,7 @@ public class CardViewActivity extends AppCompatActivity
 	private Toolbar					toolBar;
 	private TextView				txtTitle;
 	private TextView				txtSubTitleCollapsed;
-	private ImageView				imgOne;
-	private ImageView				imgTwo;
-	private ImageView				imgThree;
+	private Uri						tempUri;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -358,7 +362,11 @@ public class CardViewActivity extends AppCompatActivity
 		try
 		{
 			msgId				= id;
-			Intent cameraIntent	= new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			Intent cameraIntent	= new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+			File out			= Environment.getExternalStorageDirectory();
+			out					= new File(out, msgId);
+			tempUri				= Uri.fromFile(out);
+			cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
 			startActivityForResult(cameraIntent, 0);
 		}
 		catch(Exception e)
@@ -381,7 +389,7 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			if(resultCode == RESULT_OK)
 			{
-				Bitmap bitmap = (Bitmap) intent.getExtras().get("data");
+				Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), tempUri);//(Bitmap) intent.getExtras().get("data");
 
 				if(bitmap != null)
 				{
@@ -391,8 +399,10 @@ public class CardViewActivity extends AppCompatActivity
 					if(message != null)
 					{
 						ByteArrayOutputStream baos	= new ByteArrayOutputStream();
-						bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+						bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 						byte[] data					= baos.toByteArray();
+
+						//Prueba de tamaño de imagen
 						BroadcastReceiver mBroadcastReceiver;
 						FirebaseAuth mAuth			= FirebaseAuth.getInstance();
 						FirebaseStorage storage		= FirebaseStorage.getInstance();
