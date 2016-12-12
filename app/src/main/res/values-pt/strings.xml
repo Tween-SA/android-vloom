@@ -6,6 +6,7 @@
 	<string name="activate_notif">Ativar notificações</string>
 	<string name="agree">Aceitar</string>
 	<string name="app">Aplicação</string>
+	<string name="attach_limit">Você atingiu o limite de imagens anexadas</string>
 	<string name="bad_request">Solicitação incorreta</string>
 	<string name="block_service_text">Você não receberá mais notificações ou informações sobre este serviço.</string>
 	<string name="block_service">Bloquear serviço</string>

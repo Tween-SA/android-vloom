@@ -20,7 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.login.widget.ProfilePictureView;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.kuassivi.view.ProgressProfileView;
@@ -28,6 +27,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CardViewActivity;
+import com.tween.viacelular.activities.GalleryActivity;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
@@ -35,7 +35,6 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -73,7 +72,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		private ImageView			iconSocial;
 		private TextView			socialAccount;
 		private TextView			socialDate;
-		private ImageView			iconCert;
+		private ImageView			ivChain;
 		private ImageView			iconComent;
 		private ImageView			iconAttach;
 		private RelativeLayout		rlComment;
@@ -138,7 +137,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					iconPrice	= (ImageView) itemView.findViewById(R.id.iconPrice);
 					iconSMS		= (ImageView) itemView.findViewById(R.id.iconSMS);
 					ibOptions	= (ImageView) itemView.findViewById(R.id.ibOptions);
-					iconCert	= (ImageView) itemView.findViewById(R.id.iconCert);
+					ivChain		= (ImageView) itemView.findViewById(R.id.ivChain);
 					iconComent	= (ImageView) itemView.findViewById(R.id.iconComent);
 					iconAttach	= (ImageView) itemView.findViewById(R.id.iconAttach);
 					rlComment	= (RelativeLayout) itemView.findViewById(R.id.rlComment);
@@ -636,8 +635,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								{
 									if(StringUtils.isNotEmpty(item.getAttached()) && StringUtils.isNotEmpty(item.getAttachedTwo()) && StringUtils.isNotEmpty(item.getAttachedThree()))
 									{
-										//Sory no more files
-										Toast.makeText(activity, "Demasiadas imagenes", Toast.LENGTH_SHORT).show();
+										Toast.makeText(activity, activity.getString(R.string.attach_limit), Toast.LENGTH_SHORT).show();
+										//TODO cambiar por nuevo icono
+										holder.iconAttach.setColorFilter(R.color.gray);
 									}
 									else
 									{
@@ -651,17 +651,28 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					if(holder.imgOne != null && holder.animOne != null && StringUtils.isNotEmpty(item.getAttached()))
 					{
 						Utils.showViewWithFade(holder.animOne);
-						holder.animOne.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
 						holder.animOne.setProgress(0);
-						holder.animOne.setProgress(100);
-						holder.animOne.startAnimation();
-						Picasso.with(activity).load(item.getAttached()).into(holder.imgOne, new Callback()
+						holder.animOne.setProgress(20);
+						Picasso.with(activity).load(item.getAttached()).resize(100, 100).into(holder.imgOne, new Callback()
 						{
 							@Override
 							public void onSuccess()
 							{
+								holder.animOne.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+								holder.animOne.setProgress(100);
+								holder.animOne.startAnimation();
 								Utils.hideViewWithFade(holder.animOne);
 								Utils.showViewWithFade(holder.imgOne);
+								holder.imgOne.setOnClickListener(new View.OnClickListener()
+								{
+									@Override
+									public void onClick(View view)
+									{
+										Intent intent = new Intent(activity, GalleryActivity.class);
+										intent.putExtra(Common.KEY_ID, item.getMsgId());
+										activity.startActivity(intent);
+									}
+								});
 							}
 
 							@Override
@@ -677,18 +688,32 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					{
 						Utils.showViewWithFade(holder.animOne);
 						Utils.showViewWithFade(holder.animTwo);
-						holder.animTwo.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+						holder.animOne.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+						holder.animOne.setProgress(100);
+						holder.animOne.startAnimation();
 						holder.animTwo.setProgress(0);
-						holder.animTwo.setProgress(100);
-						holder.animTwo.startAnimation();
-						Picasso.with(activity).load(item.getAttachedTwo()).into(holder.imgTwo, new Callback()
+						holder.animTwo.setProgress(20);
+						Picasso.with(activity).load(item.getAttachedTwo()).resize(100, 100).into(holder.imgTwo, new Callback()
 						{
 							@Override
 							public void onSuccess()
 							{
+								holder.animTwo.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+								holder.animTwo.setProgress(100);
+								holder.animTwo.startAnimation();
 								Utils.hideViewWithFade(holder.animTwo);
 								Utils.hideViewWithFade(holder.animOne);
 								Utils.showViewWithFade(holder.imgTwo);
+								holder.imgTwo.setOnClickListener(new View.OnClickListener()
+								{
+									@Override
+									public void onClick(View view)
+									{
+										Intent intent = new Intent(activity, GalleryActivity.class);
+										intent.putExtra(Common.KEY_ID, item.getMsgId());
+										activity.startActivity(intent);
+									}
+								});
 							}
 
 							@Override
@@ -706,19 +731,37 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 						Utils.showViewWithFade(holder.animOne);
 						Utils.showViewWithFade(holder.animTwo);
 						Utils.showViewWithFade(holder.animThree);
-						holder.animThree.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+						holder.animOne.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+						holder.animOne.setProgress(100);
+						holder.animOne.startAnimation();
+						holder.animTwo.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+						holder.animTwo.setProgress(100);
+						holder.animTwo.startAnimation();
 						holder.animThree.setProgress(0);
-						holder.animThree.setProgress(100);
-						holder.animThree.startAnimation();
-						Picasso.with(activity).load(item.getAttachedThree()).into(holder.imgThree, new Callback()
+						holder.animThree.setProgress(20);
+
+						Picasso.with(activity).load(item.getAttachedThree()).resize(100, 100).into(holder.imgThree, new Callback()
 						{
 							@Override
 							public void onSuccess()
 							{
+								holder.animThree.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+								holder.animThree.setProgress(100);
+								holder.animThree.startAnimation();
 								Utils.hideViewWithFade(holder.animThree);
 								Utils.hideViewWithFade(holder.animTwo);
 								Utils.hideViewWithFade(holder.animOne);
 								Utils.showViewWithFade(holder.imgThree);
+								holder.imgThree.setOnClickListener(new View.OnClickListener()
+								{
+									@Override
+									public void onClick(View view)
+									{
+										Intent intent = new Intent(activity, GalleryActivity.class);
+										intent.putExtra(Common.KEY_ID, item.getMsgId());
+										activity.startActivity(intent);
+									}
+								});
 							}
 
 							@Override
@@ -728,6 +771,18 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								Utils.hideViewWithFade(holder.animTwo);
 								Utils.hideViewWithFade(holder.animOne);
 								Utils.showViewWithFade(holder.imgThree);
+							}
+						});
+					}
+
+					if(holder.ivChain != null)
+					{
+						holder.ivChain.setOnClickListener(new View.OnClickListener()
+						{
+							@Override
+							public void onClick(View view)
+							{
+								activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://chain.vloom.io/")));
 							}
 						});
 					}

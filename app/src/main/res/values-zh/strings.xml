@@ -6,6 +6,7 @@
 	<string name="activate_notif">启用通知</string>
 	<string name="agree">接受</string>
 	<string name="app">应用程序</string>
+	<string name="attach_limit">您已达到附加图片的限制</string>
 	<string name="bad_request">无效请求</string>
 	<string name="block_service_text">您将不再收到通知或信息服务。</string>
 	<string name="block_service">模块服务</string>
