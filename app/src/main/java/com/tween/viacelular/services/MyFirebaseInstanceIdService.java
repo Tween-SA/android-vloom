@@ -1,6 +1,7 @@
 package com.tween.viacelular.services;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -51,7 +52,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService
 		try
 		{
 			//Se envía siempre que se actualice el gcmId ya que en xmpp no podemos saber cuando un gcmId es inválido
-			new UpdateUserAsyncTask(context, Common.BOOL_YES, false, token, false, true).execute();
+			new UpdateUserAsyncTask(context, Common.BOOL_YES, false, token, false, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 		catch(Exception e)
 		{

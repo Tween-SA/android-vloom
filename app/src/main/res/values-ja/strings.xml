@@ -6,6 +6,7 @@
 	<string name="activate_notif">通知を有効化</string>
 	<string name="agree">承認</string>
 	<string name="app">アプリケーション</string>
+	<string name="attach_limit">あなたは、添付画像の限界に達しています</string>
 	<string name="bad_request">不正なリクエスト</string>
 	<string name="block_service_text">このサービスに関する通知や情報は受信されなくなります。</string>
 	<string name="block_service">サービスをブロック</string>

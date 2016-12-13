@@ -5,6 +5,10 @@
 	android:layout_height="wrap_content"
 	android:layout_marginBottom="10dp"
 	android:layout_marginTop="10dp"
+	android:layout_marginLeft="4dp"
+	android:layout_marginStart="4dp"
+	android:layout_marginRight="4dp"
+	android:layout_marginEnd="4dp"
 	android:id="@+id/rlItem">
 	<ImageView
 		android:contentDescription="@string/app_name"
@@ -17,6 +21,7 @@
 		android:layout_toStartOf="@+id/rowTime"
 		android:layout_marginBottom="10dp"
 		android:layout_marginRight="4dp"
+		android:layout_marginEnd="4dp"
 		android:visibility="gone" />
 	<ImageView
 		android:contentDescription="@string/app_name"
@@ -29,12 +34,14 @@
 		android:layout_toStartOf="@+id/rowTime"
 		android:layout_marginBottom="10dp"
 		android:layout_marginRight="4dp"
+		android:layout_marginEnd="4dp"
 		android:visibility="gone" />
 	<TextView
 		android:id="@+id/rowTime"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingRight="10dp"
+		android:paddingEnd="10dp"
 		android:layout_marginBottom="8dp"
 		android:text="@string/today"
 		android:textColor="@color/gray"
@@ -46,12 +53,10 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		card_view:cardBackgroundColor="@color/text"
-		card_view:cardCornerRadius="3dp"
-		card_view:cardElevation="2dp"
-		android:layout_marginLeft="10dp"
-		android:layout_marginRight="10dp"
-		android:layout_marginBottom="4dp"
-		android:layout_below="@+id/rowTime">
+		card_view:cardCornerRadius="16dp"
+		card_view:cardElevation="1dp"
+		android:layout_below="@+id/rowTime"
+		android:layout_centerHorizontal="true">
 		<RelativeLayout
 			android:id="@+id/rlCard"
 			android:layout_width="match_parent"
@@ -66,6 +71,7 @@
 				android:layout_height="wrap_content"
 				android:text="@string/you_have"
 				android:textColor="@color/action"
+				android:visibility="gone"
 				android:textSize="20sp" />
 			<ImageView
 				android:contentDescription="@string/app_name"

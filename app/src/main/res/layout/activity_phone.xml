@@ -65,6 +65,8 @@
 					android:hint="@string/phone"
 					android:layout_marginTop="20dp"
 					android:textColorHint="@color/gray"
+					android:maxLines="1"
+					android:imeOptions="actionSend"
 					android:inputType="phone" />
 			</android.support.design.widget.TextInputLayout>
 			<!-- Adaptación a Material Design Guidelines -->

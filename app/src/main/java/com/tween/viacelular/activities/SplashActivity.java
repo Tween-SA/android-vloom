@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -115,14 +116,12 @@ public class SplashActivity extends AppCompatActivity
 			{
 				if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.HIGH_FREQUENCY))
 				{
-					GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(this, false, true);
-					geoTask.execute();
+					new GetLocationByApiAsyncTask(this, false, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 			}
 			else
 			{
-				GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(this, false, false);
-				geoTask.execute();
+				new GetLocationByApiAsyncTask(this, false, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 
 			//Agregado para solicitar permisos en Android 6.0
@@ -204,7 +203,7 @@ public class SplashActivity extends AppCompatActivity
 			//Nuevo registro en FCM
 			FirebaseMessaging.getInstance().subscribeToTopic(MyFirebaseInstanceIdService.FRIENDLY_ENGAGE_TOPIC);
 			String token = FirebaseInstanceId.getInstance().getToken();
-			System.out.println("TOKEN NUEVO: "+token);
+			System.out.println("TOKEN NUEVO SPLASH: "+token);
 
 			if(StringUtils.isNotEmpty(token))
 			{

@@ -7,6 +7,7 @@
 	<string name="activate_notif">Benachrichtigungen aktivieren</string>
 	<string name="agree">Akzeptieren</string>
 	<string name="app">Anwendung</string>
+	<string name="attach_limit">Sie haben das Limit von beigefügten Bilder erreicht</string>
 	<string name="bad_request">Falsche Abfrage</string>
 	<string name="block_service_text">Ab sofort erhältst du keine weiteren Benachrichtigungen oder Informationen von diesem Dienst.</string>
 	<string name="block_service">Dienst blockieren</string>

@@ -23,7 +23,7 @@
 		android:allowBackup="true"
 		android:fullBackupContent="true"
 		android:icon="@mipmap/ic_launcher"
-		android:supportsRtl="false"
+		android:supportsRtl="true"
 		android:logo="@mipmap/ic_launcher"
 		android:label="@string/app_name"
 		android:theme="@style/Theme.MyTheme">
@@ -43,7 +43,7 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 				<!-- Accepts URIs that begin with "http://*.viacelular.com/” -->
 				<data
-					android:host="*.vloom.io"
+					android:host="www.vloom.io"
 					android:pathPrefix="/"
 					android:scheme="http" />
 				<!-- note that the leading "/" is required for pathPrefix.  Accepts URIs that begin with "example://gizmos” <data android:scheme="example" android:host="gizmos" /> -->

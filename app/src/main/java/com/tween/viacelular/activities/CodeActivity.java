@@ -3,21 +3,25 @@ package com.tween.viacelular.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.os.AsyncTaskCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +30,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.CaptureSMSAsyncTask;
 import com.tween.viacelular.asynctask.CheckCodeAsyncTask;
+import com.tween.viacelular.asynctask.CompaniesAsyncTask;
 import com.tween.viacelular.asynctask.RegisterPhoneAsyncTask;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.User;
@@ -68,7 +73,6 @@ public class CodeActivity extends AppCompatActivity
 				setSupportActionBar(toolBar);
 				toolBar.setNavigationIcon(R.drawable.back);
 				btnFreePass.setVisibility(Button.GONE);
-
 				toolBar.setNavigationOnClickListener(new View.OnClickListener()
 				{
 					@Override
@@ -96,16 +100,14 @@ public class CodeActivity extends AppCompatActivity
 				{
 					if(StringUtils.isValidCode(code))
 					{
-						final CheckCodeAsyncTask task = new CheckCodeAsyncTask(CodeActivity.this, code, true);
-						task.execute();
+						new CheckCodeAsyncTask(CodeActivity.this, code, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 				}
 				else
 				{
 					if(!preferences.getBoolean(Common.KEY_PREF_CAPTURED, false))
 					{
-						final CaptureSMSAsyncTask task = new CaptureSMSAsyncTask(CodeActivity.this, false);
-						task.execute();
+						new CompaniesAsyncTask(CodeActivity.this, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 				}
 
@@ -140,6 +142,7 @@ public class CodeActivity extends AppCompatActivity
 					@Override
 					public void beforeTextChanged(CharSequence s, int start, int count, int after)
 					{
+						//TODO Mejora aplicar contador de caracteres para detectar si se termino de colocar los 4 digitos y validar automáticamente similar a la nueva app Galicia
 						inputCode.setErrorEnabled(false);
 						enableNextStep();
 					}
@@ -152,6 +155,21 @@ public class CodeActivity extends AppCompatActivity
 					@Override
 					public void afterTextChanged(Editable s)
 					{
+					}
+				});
+				//Agregado para que el usuario no tenga que tocar el botón para continuar cuando el teclado se oculta
+				editCode.setOnEditorActionListener(new TextView.OnEditorActionListener()
+				{
+					public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+					{
+						if(actionId == EditorInfo.IME_ACTION_SEND)
+						{
+							enableNextStep();
+							login(v);
+							return true;
+						}
+
+						return false;
 					}
 				});
 
@@ -208,8 +226,7 @@ public class CodeActivity extends AppCompatActivity
 				//Modificación para una vez completado el timer llamar directamente a la Api de llamada y quitar el cambio de botón
 				if(preferences.getInt(Common.KEY_PREF_CALLME_TIMES, 0) < 2)
 				{
-					RegisterPhoneAsyncTask task = new RegisterPhoneAsyncTask(CodeActivity.this, preferences.getString(User.KEY_PHONE, ""), false);
-					task.execute();
+					new RegisterPhoneAsyncTask(CodeActivity.this, preferences.getString(User.KEY_PHONE, ""), false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					countDownTimer.start();
 				}
 			}
@@ -318,8 +335,7 @@ public class CodeActivity extends AppCompatActivity
 				editor.putBoolean(Common.KEY_PREF_CALLME, false);
 				editor.apply();
 				//TODO Agregar transitions o delay para indicar actividad luego de oprimir el botón hasta la redirección al home
-				final CheckCodeAsyncTask task = new CheckCodeAsyncTask(CodeActivity.this, editCode.getText().toString().trim(), true);
-				task.execute();
+				new CheckCodeAsyncTask(CodeActivity.this, editCode.getText().toString().trim(), true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 		}
 		catch(Exception e)

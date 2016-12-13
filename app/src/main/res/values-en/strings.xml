@@ -7,6 +7,7 @@
 	<string name="activate_notif">Turn on Notifications</string>
 	<string name="agree">Accept</string>
 	<string name="app">Application</string>
+	<string name="attach_limit">You have reached the limit of attached images</string>
 	<string name="bad_request">Bad Request</string>
 	<string name="block_service_text">You will no longer receive notifications nor information from this service.</string>
 	<string name="block_service">Block service</string>

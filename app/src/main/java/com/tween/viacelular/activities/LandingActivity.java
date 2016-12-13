@@ -90,7 +90,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			ImageView ivPlaceholder							= (ImageView) findViewById(R.id.ivPlaceholder);
 			final ImageView ibBack							= (ImageView) findViewById(R.id.ibBack);
 			logo											= (ImageView) findViewById(R.id.logo);
-			View dividerTitle								=findViewById(R.id.dividerTitle);
+			View dividerTitle								= findViewById(R.id.dividerTitle);
 			ImageView iconShowNotif							= (ImageView) findViewById(R.id.iconShowNotif);
 			TextView txtShowNotif							= (TextView) findViewById(R.id.txtShowNotif);
 			TextView txtId									= (TextView) findViewById(R.id.txtId);

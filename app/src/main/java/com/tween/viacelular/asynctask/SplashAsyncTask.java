@@ -65,8 +65,7 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(!splashed)
 			{
-				final ReadAccountsAsyncTask task = new ReadAccountsAsyncTask(activity, false);
-				task.execute();
+				new ReadAccountsAsyncTask(activity, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 		}
 		catch(Exception e)
@@ -132,16 +131,21 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 
 				realm.commitTransaction();
 
-				JSONObject jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.IP_API, activity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
-				result					= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
+				Isp isp = realm.where(Isp.class).findFirst();
 
-				if(result.equals(ApiConnection.OK))
+				if(isp == null)
 				{
-					IspHelper.parseJSON(jsonResult.getJSONObject(Common.KEY_CONTENT), activity.getApplicationContext(), splashed);
-				}
-				else
-				{
-					IspHelper.parseJSON(null, activity.getApplicationContext(), splashed);
+					JSONObject jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.IP_API, activity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
+					result					= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
+
+					if(result.equals(ApiConnection.OK))
+					{
+						IspHelper.parseJSON(jsonResult.getJSONObject(Common.KEY_CONTENT), activity.getApplicationContext(), splashed);
+					}
+					else
+					{
+						IspHelper.parseJSON(null, activity.getApplicationContext(), splashed);
+					}
 				}
 			}
 			else
@@ -178,12 +182,6 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 						progress.cancel();
 					}
 				}
-			}
-
-			if(!splashed)
-			{
-				CountryAsyncTask task = new CountryAsyncTask(activity, false);
-				task.execute();
 			}
 
 			Utils.checkSesion(activity, Common.SPLASH_SCREEN);

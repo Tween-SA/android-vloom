@@ -43,13 +43,13 @@ public class ApiConnection
 	public static final String BUSINESS					= "https://business.vloom.io/register";
 	/**
 	 * Url base del server
-	 * "https://api.vloom.io/v1/"; //New Production - master
+	 * "https://api.vloom.io/v1/"; //Production - master
 	 * "https://stagging.vloom.io/v1/"; //Stagging - stagging
 	 * "https://dev.vloom.io/v1/"; //Testing - develop
 	 * "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
 	 * "https://private-29fe84-davidfigueroa.apiary-mock.com/v1/"; //Development Apiary Private
 	 */
-	private static final String SERVERP					= "https://api.vloom.io/v1/";
+	private static final String SERVERP					= "https://dev.vloom.io/v1/";
 	public static final String IP_API					= "http://ip-api.com/json";
 	public static final String COMPANIES				= SERVERP+"companies";
 	public static final String COUNTRIES				= SERVERP+"countries?locale="+Locale.getDefault().getLanguage();
@@ -84,7 +84,11 @@ public class ApiConnection
 
 					if(networkInfo != null)
 					{
-						System.out.println("Red: "+networkInfo.getTypeName()+" - "+networkInfo.toString());
+						if(Common.DEBUG)
+						{
+							System.out.println("Red: "+networkInfo.getTypeName()+" - "+networkInfo.toString());
+						}
+
 						//Emulador: [type: MOBILE[UMTS], state: CONNECTED/CONNECTED, reason: connected, extra: epc.tmobile.com, roaming: false, failover: false, isAvailable: true,
 						// isConnectedToProvisioningNetwork: false]
 						if(networkInfo.isConnected())

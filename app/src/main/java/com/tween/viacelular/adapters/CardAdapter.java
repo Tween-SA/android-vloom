@@ -191,6 +191,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		catch(Exception e)
 		{
 			System.out.println("CardAdapter:onCreateViewHolder - Exception: " + e);
+
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();

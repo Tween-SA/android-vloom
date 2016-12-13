@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -84,7 +85,7 @@ public class Utils
 
 						if(realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).count() == 0)
 						{
-							new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).execute();
+							new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 						}
 						else
 						{
@@ -95,7 +96,7 @@ public class Utils
 							if(DateUtils.needUpdate(tsUpated, DateUtils.HIGH_FREQUENCY))
 							{
 								//Se modifica para reemplazar la pantalla Bloquedas por la pantalla Empresas con tab
-								new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).execute();
+								new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 							}
 							else
 							{
@@ -211,7 +212,7 @@ public class Utils
 						if(DateUtils.needUpdate(tsUpated, DateUtils.LOW_FREQUENCY))
 						{
 							//Agregado para actualizar datos del usuario solamente cuando inicia la app
-							new UpdateUserAsyncTask(activity, Common.BOOL_YES, false, "", true, true).execute();
+							new UpdateUserAsyncTask(activity, Common.BOOL_YES, false, "", true, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 						}
 
 						intent	= new Intent(activity, HomeActivity.class);
@@ -860,7 +861,7 @@ public class Utils
 					else
 					{
 						//Para apps viejas si es necesaria la migración
-						new MigrationAsyncTask(activity, true).execute();
+						new MigrationAsyncTask(activity, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 				}
 				else
@@ -882,16 +883,14 @@ public class Utils
 					}
 
 					editor.apply();
-					SplashAsyncTask task = new SplashAsyncTask(activity, false);
-					task.execute();
+					new SplashAsyncTask(activity, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 			}
 			else
 			{
 				if(!splashed)
 				{
-					SplashAsyncTask task = new SplashAsyncTask(activity, false);
-					task.execute();
+					new SplashAsyncTask(activity, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 				else
 				{
@@ -923,7 +922,7 @@ public class Utils
 		}
 	}
 
-	public static void showCard(View view)
+	public static void showViewWithFade(View view)
 	{
 		try
 		{
@@ -936,7 +935,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:showCard - Exception: " + e);
+			System.out.println("Utils:showViewWithFade - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
@@ -960,7 +959,7 @@ public class Utils
 		return Color.argb(alpha, red, green, blue);
 	}
 
-	public static void hideCard(final View view)
+	public static void hideViewWithFade(final View view)
 	{
 		try
 		{
@@ -986,7 +985,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:hideCard - Exception: " + e);
+			System.out.println("Utils:hideViewWithFade - Exception: " + e);
 
 			if(Common.DEBUG)
 			{

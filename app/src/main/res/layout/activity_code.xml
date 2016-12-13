@@ -36,6 +36,8 @@
 				android:layout_height="wrap_content"
 				android:hint="@string/code"
 				android:inputType="number"
+				android:maxLines="1"
+				android:imeOptions="actionSend"
 				android:maxLength="4" />
 		</android.support.design.widget.TextInputLayout>
 		<TextView
