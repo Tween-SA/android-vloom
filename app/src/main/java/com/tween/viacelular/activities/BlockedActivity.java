@@ -3,11 +3,13 @@ package com.tween.viacelular.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -143,7 +145,7 @@ public class BlockedActivity extends AppCompatActivity
 				if(client != null)
 				{
 					//Se quitó momentaneamente la llamda a la api hasta que esté disponible
-					modifySubscriptions(this, Common.BOOL_YES, false, client.getCompanyId(), true);
+					modifySubscriptions(this, Common.BOOL_YES, false, client.getCompanyId(), false);
 					refresh();
 
 					Snackbar snackBar = Snackbar.make(Clayout, getString(R.string.snack_unblocked), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
@@ -154,7 +156,7 @@ public class BlockedActivity extends AppCompatActivity
 							try
 							{
 								//Se quitó momentaneamente la llamda a la api hasta que esté disponible
-								modifySubscriptions(getApplicationContext(), Common.BOOL_NO, false, client.getCompanyId(), true);
+								modifySubscriptions(getApplicationContext(), Common.BOOL_NO, false, client.getCompanyId(), false);
 								refresh();
 							}
 							catch(Exception e)
@@ -202,7 +204,7 @@ public class BlockedActivity extends AppCompatActivity
 				}
 			}
 
-			new UpdateSuscriptionsAsyncTask(context, blockUI, flag, goToHome, companyId).execute();
+			new UpdateSuscriptionsAsyncTask(context, blockUI, flag, goToHome, companyId).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 			if(sendSMS)
 			{
@@ -212,7 +214,7 @@ public class BlockedActivity extends AppCompatActivity
 
 				if(messages.size() > 0)
 				{
-					String number			= SuscriptionHelper.searchUnsuscribeNumber(suscription, messages);
+					String number = SuscriptionHelper.searchUnsuscribeNumber(suscription, messages);
 
 					if(StringUtils.isNotEmpty(number))
 					{

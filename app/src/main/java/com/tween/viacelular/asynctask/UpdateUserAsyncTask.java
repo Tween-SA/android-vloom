@@ -9,6 +9,7 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.activities.SuscriptionsActivity;
 import com.tween.viacelular.models.Land;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.UserHelper;
 import com.tween.viacelular.services.ApiConnection;
@@ -61,6 +62,8 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 					.progress(true, 0)
 					.show();
 			}
+
+			Migration.getDB(context);
 		}
 		catch(Exception e)
 		{
@@ -129,8 +132,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 						//Modificación para refrescar suscripciones del usuario
 						if(StringUtils.isIdMongo(userId))
 						{
-							jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + userId, context, ApiConnection.METHOD_GET,
-									preferences.getString(Common.KEY_TOKEN, ""), ""));
+							jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.USERS + "/" + userId, context, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
 							result		= ApiConnection.checkResponse(context, jsonResult);
 						}
 

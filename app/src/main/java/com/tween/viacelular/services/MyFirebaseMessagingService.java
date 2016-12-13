@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -31,6 +32,7 @@ import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import org.json.JSONArray;
 import java.util.Map;
 import io.realm.Realm;
 
@@ -185,24 +187,70 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 						push.putString(Common.KEY_SOUND, data.get(Common.KEY_SOUND).toString());
 					}
 
-					if(data.get(Message.KEY_KIND) != null)
+					//TODO rever si no llega a venir como JSONArray
+					if(data.get(Message.KEY_ATTACHMENTS) != null)
 					{
-						push.putInt(Message.KEY_KIND, (int) data.get(Message.KEY_KIND));
-					}
+						JSONArray attachments = new JSONArray(data.get(Message.KEY_ATTACHMENTS).toString());
 
-					if(data.get(Message.KEY_LINK) != null)
-					{
-						push.putString(Message.KEY_LINK, data.get(Message.KEY_LINK).toString());
-					}
+						if(attachments.length() > 0)
+						{
+							if(attachments.getJSONObject(0) != null)
+							{
+								if(attachments.getJSONObject(0).has(Common.KEY_TYPE))
+								{
+									if(StringUtils.isNotEmpty(attachments.getJSONObject(0).getString(Common.KEY_TYPE)))
+									{
+										push.putInt(Message.KEY_KIND, attachments.getJSONObject(0).getInt(Common.KEY_TYPE));
+									}
+								}
 
-					if(data.get(Message.KEY_LINKTHUMB) != null)
-					{
-						push.putString(Message.KEY_LINKTHUMB, data.get(Message.KEY_LINKTHUMB).toString());
-					}
+								if(attachments.getJSONObject(0).has(Message.KEY_LINK))
+								{
+									if(StringUtils.isNotEmpty(attachments.getJSONObject(0).getString(Message.KEY_LINK)))
+									{
+										push.putString(Message.KEY_LINK, attachments.getJSONObject(0).getString(Message.KEY_LINK));
+									}
+								}
 
-					if(data.get(Message.KEY_SUBMSG) != null)
+								if(attachments.getJSONObject(0).has(Message.KEY_LINKTHUMB))
+								{
+									if(StringUtils.isNotEmpty(attachments.getJSONObject(0).getString(Message.KEY_LINKTHUMB)))
+									{
+										push.putString(Message.KEY_LINKTHUMB, attachments.getJSONObject(0).getString(Message.KEY_LINKTHUMB));
+									}
+								}
+
+								if(attachments.getJSONObject(0).has(Message.KEY_SUBMSG))
+								{
+									if(StringUtils.isNotEmpty(attachments.getJSONObject(0).getString(Message.KEY_SUBMSG)))
+									{
+										push.putString(Message.KEY_SUBMSG, attachments.getJSONObject(0).getString(Message.KEY_SUBMSG));
+									}
+								}
+							}
+						}
+					}
+					else
 					{
-						push.putString(Message.KEY_SUBMSG, data.get(Message.KEY_SUBMSG).toString());
+						if(data.get(Message.KEY_KIND) != null)
+						{
+							push.putInt(Message.KEY_KIND, (int) data.get(Message.KEY_KIND));
+						}
+
+						if(data.get(Message.KEY_LINK) != null)
+						{
+							push.putString(Message.KEY_LINK, data.get(Message.KEY_LINK).toString());
+						}
+
+						if(data.get(Message.KEY_LINKTHUMB) != null)
+						{
+							push.putString(Message.KEY_LINKTHUMB, data.get(Message.KEY_LINKTHUMB).toString());
+						}
+
+						if(data.get(Message.KEY_SUBMSG) != null)
+						{
+							push.putString(Message.KEY_SUBMSG, data.get(Message.KEY_SUBMSG).toString());
+						}
 					}
 
 					if(data.get(Message.KEY_CAMPAIGNID) != null)
@@ -296,7 +344,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 				{
 					CompanyAsyncTask task	= new CompanyAsyncTask(context, false, companyIdApi, countryCode);
 					task.setFlag(Common.BOOL_YES);
-					task.execute();
+					task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 				catch(Exception e)
 				{
@@ -380,7 +428,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 								//Modificación para delay en la descarga del logo de la Company
 								LogoAsyncTask task	= new LogoAsyncTask(context, false, image, context.getResources().getDisplayMetrics().density);
 								//TODO implementar callbacks para prevenir la suspención del UI por delay en la Asynctask
-								bmp					= task.execute().get();
+								bmp					= task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
 							}
 							catch(Exception e)
 							{
@@ -392,16 +440,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					}
 
 					notificationBuilder
-							.setSmallIcon(R.drawable.vc)
-							.setContentTitle(title)
-							.setContentText(contentText)
-							.setAutoCancel(true)
-							.setContentIntent(pendingIntent);
+						.setSmallIcon(R.drawable.vc)
+						.setContentTitle(title)
+						.setContentText(contentText)
+						.setAutoCancel(true)
+						.setContentIntent(pendingIntent);
 
 					if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
 					{
-						notificationBuilder.setCategory(Notification.CATEGORY_MESSAGE)
-								.setVisibility(Notification.VISIBILITY_PUBLIC);
+						notificationBuilder.setCategory(Notification.CATEGORY_MESSAGE).setVisibility(Notification.VISIBILITY_PUBLIC);
 					}
 
 					if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN)
@@ -430,9 +477,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					{
 						try
 						{
-							LogoAsyncTask task	= new LogoAsyncTask(context, false, image, context.getResources().getDisplayMetrics().density);
+							new LogoAsyncTask(context, false, image, context.getResources().getDisplayMetrics().density).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 							//TODO implementar callbacks para prevenir la suspención del UI por delay en la Asynctask
-							task.execute();
 						}
 						catch(Exception e)
 						{
@@ -446,8 +492,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 				{
 					try
 					{
-						ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(context, false, "", msgId, Message.STATUS_RECEIVE);
-						task.execute();
+						new ConfirmReadingAsyncTask(context, false, "", msgId, Message.STATUS_RECEIVE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 					catch(Exception e)
 					{
@@ -469,8 +514,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					//Agregado para notificar como spam al ser descartado
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
 							.setLabel("Accion_user").build());
-					ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(context, false, "", id, Message.STATUS_SPAM);
-					task.execute();
+					new ConfirmReadingAsyncTask(context, false, "", id, Message.STATUS_SPAM).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 			}
 		}

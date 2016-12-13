@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.tween.viacelular" xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest package="com.tween.viacelular" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 	<!-- Permissions, Ordanamiento de permisos y agregado del permiso para enviar sms -->
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -23,7 +24,7 @@
 		android:allowBackup="true"
 		android:fullBackupContent="true"
 		android:icon="@mipmap/ic_launcher"
-		android:supportsRtl="false"
+		android:supportsRtl="true"
 		android:logo="@mipmap/ic_launcher"
 		android:label="@string/app_name"
 		android:theme="@style/Theme.MyTheme">
@@ -43,7 +44,7 @@
 				<category android:name="android.intent.category.BROWSABLE" />
 				<!-- Accepts URIs that begin with "http://*.viacelular.com/” -->
 				<data
-					android:host="*.vloom.io"
+					android:host="www.vloom.io"
 					android:pathPrefix="/"
 					android:scheme="http" />
 				<!-- note that the leading "/" is required for pathPrefix.  Accepts URIs that begin with "example://gizmos” <data android:scheme="example" android:host="gizmos" /> -->
@@ -109,6 +110,11 @@
 			android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
 			android:label="@string/app_name"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+		<activity
+			android:name="com.tween.viacelular.activities.GalleryActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/Login"
+			android:windowSoftInputMode="adjustResize|stateHidden" />
 		<!-- Other things -->
 		<meta-data
 			android:name="com.google.android.gms.version"

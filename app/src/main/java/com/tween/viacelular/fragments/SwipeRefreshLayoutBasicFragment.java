@@ -244,7 +244,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 				if(bringOut)
 				{
-					new RefreshCompanyTask(homeActivity, showDialog).execute();
+					new RefreshCompanyTask(homeActivity, showDialog).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 				else
 				{
@@ -313,7 +313,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 								//Solamente se pide una vez al día
 								if(DateUtils.needUpdate(suscription.getLastSocialUpdated(), DateUtils.DAY_MILLIS))
 								{
-									new GetTweetsAsyncTask(getActivity(), false, companyId).execute();
+									new GetTweetsAsyncTask(getActivity(), false, companyId).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 								}
 								else
 								{
@@ -324,7 +324,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 							}
 							else
 							{
-								new GetTweetsAsyncTask(getActivity(), false, companyId).execute();
+								new GetTweetsAsyncTask(getActivity(), false, companyId).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 							}
 						}
 						else
@@ -460,13 +460,13 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 																														.setLabel("AccionUser").build());
 					}
 
-					BlockedActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(client.getFollower()), false, company.getCompanyId(), true);
+					BlockedActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(client.getFollower()), false, company.getCompanyId(), false);
 					snackBar = Snackbar.make(clayout, snackBarText, Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
 						@Override
 						public void onClick(View v)
 						{
-							BlockedActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(company.getFollower()), false, companyId, true);
+							BlockedActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(company.getFollower()), false, companyId, false);
 							refresh(false, false);
 						}
 					});

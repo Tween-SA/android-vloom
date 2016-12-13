@@ -2,6 +2,7 @@ package com.tween.viacelular.models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Looper;
 import com.tween.viacelular.asynctask.CompanyAsyncTask;
 import com.tween.viacelular.utils.Common;
@@ -287,7 +288,7 @@ public abstract class UserHelper
 								{
 									final CompanyAsyncTask task	= new CompanyAsyncTask(context, false, companyId, jCountryCode);
 									task.setFlag(Common.BOOL_YES);
-									task.execute();
+									task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 								}
 								else
 								{
@@ -345,7 +346,7 @@ public abstract class UserHelper
 								{
 									final CompanyAsyncTask task	= new CompanyAsyncTask(context, false, companyId, jCountryCode);
 									task.setFlag(Common.BOOL_NO);
-									task.execute();
+									task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 								}
 								else
 								{

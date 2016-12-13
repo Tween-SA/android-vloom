@@ -59,8 +59,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 					.show();
 
 				Migration.getDB(activity);
-				final ReadAccountsAsyncTask task	= new ReadAccountsAsyncTask(activity, false);
-				task.execute();
+				new ReadAccountsAsyncTask(activity, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 		}
 		catch(Exception e)

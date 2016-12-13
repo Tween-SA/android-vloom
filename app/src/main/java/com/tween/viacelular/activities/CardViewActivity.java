@@ -1,11 +1,20 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -34,20 +43,34 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.CardAdapter;
+import com.tween.viacelular.asynctask.AttachAsyncTask;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
+import com.tween.viacelular.asynctask.LogoAsyncTask;
 import com.tween.viacelular.asynctask.SendIdentificationKeyAsyncTask;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -59,6 +82,8 @@ public class CardViewActivity extends AppCompatActivity
 	private RealmResults<Message>	notifications	= null;
 	private int						colorTitle		= Color.WHITE;
 	private int						colorSubTitle	= Color.LTGRAY;
+	private int						field			= 1;
+	private String					msgId			= "";
 	private RecyclerView			rcwCard;
 	private CardAdapter				mAdapter;
 	private CoordinatorLayout		Clayout;
@@ -77,6 +102,7 @@ public class CardViewActivity extends AppCompatActivity
 	private Toolbar					toolBar;
 	private TextView				txtTitle;
 	private TextView				txtSubTitleCollapsed;
+	private Uri						tempUri;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -246,13 +272,12 @@ public class CardViewActivity extends AppCompatActivity
 
 				if(suscription != null)
 				{
-					RealmResults<Message> unread = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
-														.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAll();
+					long unread = realm.where(Message.class).equalTo(Message.KEY_DELETED, Common.BOOL_NO).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
+									.equalTo(Suscription.KEY_API, suscription.getCompanyId()).count();
 
-					if(unread.size() > 0)
+					if(unread > 0)
 					{
-						ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, "", Message.STATUS_READ);
-						task.execute();
+						new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, "", Message.STATUS_READ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 
 					//Validaciones para mostrar o no campos según disponibilidad de datos
@@ -290,6 +315,203 @@ public class CardViewActivity extends AppCompatActivity
 		catch(Exception e)
 		{
 			System.out.println("CardViewActivity:onCreate - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void attach(String id)
+	{
+		try
+		{
+			System.out.println("attach in activity");
+			new AttachAsyncTask(this, false, id, new CallBackListener()
+			{
+				@Override
+				public void callBack()
+				{
+					System.out.println("callBack in activity");
+					runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							System.out.println("está ejecutando el runOnUiThread in activity");
+							refresh(false);
+						}
+					});
+				}
+			}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+		}
+		catch(Exception e)
+		{
+			System.out.println("CardViewActivity:attach - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void callCamera(String id)
+	{
+		try
+		{
+			msgId				= id;
+			Intent cameraIntent	= new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+			File out			= Environment.getExternalStorageDirectory();
+			out					= new File(out, msgId);
+			tempUri				= Uri.fromFile(out);
+			cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
+			startActivityForResult(cameraIntent, 0);
+		}
+		catch(Exception e)
+		{
+			System.out.println("CardViewActivity:callCamera - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent)
+	{
+		super.onActivityResult(requestCode, resultCode, intent);
+
+		try
+		{
+			if(resultCode == RESULT_OK)
+			{
+				Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), tempUri);//(Bitmap) intent.getExtras().get("data");
+
+				if(bitmap != null)
+				{
+					Realm realm		= Realm.getDefaultInstance();
+					Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+					if(message != null)
+					{
+						ByteArrayOutputStream baos	= new ByteArrayOutputStream();
+						bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+						byte[] data					= baos.toByteArray();
+
+						//Prueba de tamaño de imagen
+						BroadcastReceiver mBroadcastReceiver;
+						FirebaseAuth mAuth			= FirebaseAuth.getInstance();
+						FirebaseStorage storage		= FirebaseStorage.getInstance();
+						StorageReference storageRef	= storage.getReferenceFromUrl(ApiConnection.FIREBASE_STORAGE);
+						//Directorio por mensaje
+						String fileName				= "";
+
+						if(StringUtils.isIdMongo(message.getMsgId()))
+						{
+							fileName = message.getMsgId();
+						}
+						else
+						{
+							fileName = String.valueOf(System.currentTimeMillis());
+						}
+
+						if(StringUtils.isNotEmpty(message.getAttached()) && StringUtils.isNotEmpty(message.getAttachedTwo()))
+						{
+							//Lastone
+							fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image3.png";
+							field		= 3;
+						}
+						else
+						{
+							if(StringUtils.isNotEmpty(message.getAttached()))
+							{
+								//Second
+								fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image2.png";
+								field		= 2;
+							}
+							else
+							{
+								//First
+								fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image1.png";
+								field		= 1;
+							}
+						}
+
+						StorageReference imagesRef	= storageRef.child(fileName);
+						UploadTask uploadTask		= imagesRef.putBytes(data);
+						final Activity activity		= this;
+						uploadTask.addOnFailureListener(new OnFailureListener()
+						{
+							@Override
+							public void onFailure(@NonNull Exception exception)
+							{
+								System.out.println("CardViewActivity:onActivityResult:onFailure - Exception: " + exception);
+								// Handle unsuccessful uploads
+							}
+						}).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+						{
+							@Override
+							public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+							{
+								try
+								{
+									// taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+									final Uri downloadUrl	= taskSnapshot.getDownloadUrl();
+									System.out.println("onSuccess uri: "+downloadUrl.toString());
+									new LogoAsyncTask(activity, false, downloadUrl.toString(), -1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+									Realm realm		= Realm.getDefaultInstance();
+
+									realm.executeTransaction(new Realm.Transaction()
+									{
+										@Override
+										public void execute(Realm bgRealm)
+										{
+											Message message	= bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+											if(message != null)
+											{
+												switch(field)
+												{
+													case 1:
+														message.setAttached(downloadUrl.toString());
+													break;
+
+													case 2:
+														message.setAttachedTwo(downloadUrl.toString());
+													break;
+
+													case 3:
+														message.setAttachedThree(downloadUrl.toString());
+													break;
+												}
+											}
+
+											attach(msgId);
+										}
+									});
+								}
+								catch(Exception e)
+								{
+									System.out.println("CardViewActivity:onActivityResult:onSuccess - Exception: " + e);
+
+									if(Common.DEBUG)
+									{
+										e.printStackTrace();
+									}
+								}
+							}
+						});
+					}
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("CardViewActivity:onActivityResult - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
@@ -461,7 +683,7 @@ public class CardViewActivity extends AppCompatActivity
 			realm.beginTransaction();
 			suscription.setGray(Common.BOOL_YES);
 			realm.commitTransaction();
-			Utils.hideCard(cardSuscribe);
+			Utils.hideViewWithFade(cardSuscribe);
 			txtTitle.setTextColor(Utils.adjustAlpha(colorTitle, Common.ALPHA_FOR_BLOCKS));
 			txtSubTitleCollapsed.setTextColor(Utils.adjustAlpha(colorSubTitle, Common.ALPHA_FOR_BLOCKS));
 			toolBar.setBackgroundColor(Color.parseColor(Common.COLOR_BLOCKED));
@@ -496,7 +718,7 @@ public class CardViewActivity extends AppCompatActivity
 			realm.beginTransaction();
 			suscription.setReceive(Common.BOOL_YES);
 			realm.commitTransaction();
-			Utils.hideCard(cardPayout);
+			Utils.hideViewWithFade(cardPayout);
 
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -527,9 +749,9 @@ public class CardViewActivity extends AppCompatActivity
 																							.setLabel("AccionUser").build());
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, true);
-			Utils.hideCard(cardPayout);
-			Utils.hideCard(cardSuscribe);
+			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, false);
+			Utils.hideViewWithFade(cardPayout);
+			Utils.hideViewWithFade(cardSuscribe);
 
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -587,7 +809,7 @@ public class CardViewActivity extends AppCompatActivity
 					realm.beginTransaction();
 					notification.setStatus(Message.STATUS_SPAM);
 					realm.commitTransaction();
-					new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_SPAM).execute();
+					new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_SPAM).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 					snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
@@ -599,7 +821,7 @@ public class CardViewActivity extends AppCompatActivity
 							notification.setStatus(Message.STATUS_READ);
 							realm.commitTransaction();
 							refresh(false);
-							new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_READ).execute();
+							new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_READ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 						}
 					});
 				break;
@@ -611,7 +833,7 @@ public class CardViewActivity extends AppCompatActivity
 					realm.beginTransaction();
 					notification.setStatus(Message.STATUS_SPAM);
 					realm.commitTransaction();
-					new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_SPAM).execute();
+					new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_SPAM).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 					snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
@@ -623,7 +845,7 @@ public class CardViewActivity extends AppCompatActivity
 							notification.setStatus(Message.STATUS_READ);
 							realm.commitTransaction();
 							refresh(false);
-							new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_READ).execute();
+							new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_READ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 						}
 					});
 					break;
@@ -803,13 +1025,13 @@ public class CardViewActivity extends AppCompatActivity
 
 								if(idViewFather == cardPayout.getId())
 								{
-									Utils.showCard(cardPayout);
+									Utils.showViewWithFade(cardPayout);
 								}
 								else
 								{
 									if(idViewFather == cardSuscribe.getId())
 									{
-										Utils.showCard(cardSuscribe);
+										Utils.showViewWithFade(cardSuscribe);
 									}
 								}
 							}
@@ -825,7 +1047,7 @@ public class CardViewActivity extends AppCompatActivity
 							{
 								rlEmpty.setVisibility(RelativeLayout.GONE);
 								rcwCard.setVisibility(RecyclerView.GONE);
-								Utils.showCard(cardForm);
+								Utils.showViewWithFade(cardForm);
 								inputCode.setErrorEnabled(false);
 								inputCode.setHint(suscription.getIdentificationKey());
 								String title = getString(R.string.landing_card_form_text1) + " " + suscription.getIdentificationKey() + " " + getString(R.string.landing_card_form_text2);
@@ -871,25 +1093,25 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			Utils.hideCard(cardForm);
+			Utils.hideViewWithFade(cardForm);
 
 			if(StringUtils.isAlphanumeric(editCode.getText().toString()))
 			{
 				inputCode.setErrorEnabled(false);
 				SendIdentificationKeyAsyncTask task = new SendIdentificationKeyAsyncTask(this, true, editCode.getText().toString(), companyId);
 
-				if(task.execute().get().equals(ApiConnection.OK))
+				if(task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get().equals(ApiConnection.OK))
 				{
-					Utils.showCard(cardOk);
+					Utils.showViewWithFade(cardOk);
 				}
 				else
 				{
-					Utils.showCard(cardRetry);
+					Utils.showViewWithFade(cardRetry);
 				}
 			}
 			else
 			{
-				Utils.showCard(cardRetry);
+				Utils.showViewWithFade(cardRetry);
 				inputCode.setErrorEnabled(true);
 				inputCode.setError(getString(R.string.code_alphanumeric));
 			}
@@ -910,7 +1132,7 @@ public class CardViewActivity extends AppCompatActivity
 		try
 		{
 			inputCode.setErrorEnabled(false);
-			Utils.hideCard(cardRetry);
+			Utils.hideViewWithFade(cardRetry);
 			sendData(view);
 		}
 		catch(Exception e)
@@ -928,11 +1150,11 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			Utils.hideCard(cardForm);
-			Utils.hideCard(cardOk);
-			Utils.hideCard(cardRetry);
-			Utils.hideCard(cardPayout);
-			Utils.hideCard(cardSuscribe);
+			Utils.hideViewWithFade(cardForm);
+			Utils.hideViewWithFade(cardOk);
+			Utils.hideViewWithFade(cardRetry);
+			Utils.hideViewWithFade(cardPayout);
+			Utils.hideViewWithFade(cardSuscribe);
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 			if(notifications != null)
@@ -993,9 +1215,9 @@ public class CardViewActivity extends AppCompatActivity
 																							.setLabel("AccionUser").build());
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, true);
-			Utils.hideCard(cardPayout);
-			Utils.hideCard(cardSuscribe);
+			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, false);
+			Utils.hideViewWithFade(cardPayout);
+			Utils.hideViewWithFade(cardSuscribe);
 			txtTitle.setTextColor(colorTitle);
 			txtSubTitleCollapsed.setTextColor(colorSubTitle);
 			toolBar.setBackgroundColor(Color.parseColor(suscription.getColorHex()));
@@ -1013,7 +1235,7 @@ public class CardViewActivity extends AppCompatActivity
 			{
 				rlEmpty.setVisibility(RelativeLayout.GONE);
 				rcwCard.setVisibility(RecyclerView.GONE);
-				Utils.showCard(cardForm);
+				Utils.showViewWithFade(cardForm);
 				inputCode.setErrorEnabled(false);
 				inputCode.setHint(suscription.getIdentificationKey());
 				String title = getString(R.string.landing_card_form_text1) + " " + suscription.getIdentificationKey() + " " + getString(R.string.landing_card_form_text2);
@@ -1171,7 +1393,7 @@ public class CardViewActivity extends AppCompatActivity
 					//Agregado para capturar evento en Google Analytics
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("BloquearInCompany")
 																									.setLabel("AccionUser").build());
-					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, true);
+					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, false);
 					Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
 					intent.putExtra(Common.KEY_ID, companyId);
 					intent.putExtra(Suscription.KEY_BLOCKED, Common.BOOL_YES);
@@ -1186,7 +1408,7 @@ public class CardViewActivity extends AppCompatActivity
 					//Agregado para capturar evento en Google Analytics
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("AgregarInCompany")
 																									.setLabel("AccionUser").build());
-					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, true);
+					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, false);
 					txtTitle.setTextColor(colorTitle);
 					txtSubTitleCollapsed.setTextColor(colorSubTitle);
 					toolBar.setBackgroundColor(Color.parseColor(suscription.getColorHex()));

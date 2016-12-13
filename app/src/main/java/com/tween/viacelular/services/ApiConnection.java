@@ -31,7 +31,8 @@ public class ApiConnection
 	public static final String METHOD_POST				= "POST";
 	public static final String METHOD_PUT				= "PUT";
 	private static final String TOKEN_AUTHORIZATION		= "Bearer d32f7a8d983b442f608bcdbef27e41c32bf0d9a8";
-	public static final String CLOUDFRONT_ATTACHMENTS	= "https://d1ads2zadze8sp.cloudfront.net/"; //Recuerdo que apunta al s3 https://s3-sa-east-1.amazonaws.com/vc-img/Logos/
+	public static final String FIREBASE_STORAGE			= "gs://tween-viacelular.appspot.com"; //Cubeta en Firebase para adjuntar imagenes a los mensajes
+	public static final String FIREBASE_CHILD			= "messages_attached"; //Cubeta en Firebase para adjuntar imagenes a los mensajes
 	public static final String CLOUDFRONT_S3			= "https://dfp5lnxq5eoj6.cloudfront.net/"; //Recuerdo que apunta al s3 https://s3-sa-east-1.amazonaws.com/vc-img/Logos/
 	/**
 	 * Url para redirigir a la web business
@@ -42,7 +43,7 @@ public class ApiConnection
 	public static final String BUSINESS					= "https://business.vloom.io/register";
 	/**
 	 * Url base del server
-	 * "https://api.vloom.io/v1/"; //New Production - master
+	 * "https://api.vloom.io/v1/"; //Production - master
 	 * "https://stagging.vloom.io/v1/"; //Stagging - stagging
 	 * "https://dev.vloom.io/v1/"; //Testing - develop
 	 * "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
@@ -83,7 +84,11 @@ public class ApiConnection
 
 					if(networkInfo != null)
 					{
-						System.out.println("Red: "+networkInfo.getTypeName()+" - "+networkInfo.toString());
+						if(Common.DEBUG)
+						{
+							System.out.println("Red: "+networkInfo.getTypeName()+" - "+networkInfo.toString());
+						}
+
 						//Emulador: [type: MOBILE[UMTS], state: CONNECTED/CONNECTED, reason: connected, extra: epc.tmobile.com, roaming: false, failover: false, isAvailable: true,
 						// isConnectedToProvisioningNetwork: false]
 						if(networkInfo.isConnected())

@@ -76,8 +76,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 				{
 					if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.MEAN_FREQUENCY))
 					{
-						GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(context, false, true);
-						geoTask.execute();
+						new GetLocationByApiAsyncTask(context, false, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 				}
 			}
