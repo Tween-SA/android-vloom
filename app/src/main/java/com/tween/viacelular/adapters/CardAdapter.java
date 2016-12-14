@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -62,6 +63,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		private ImageView	iconSocial;
 		private TextView	socialAccount;
 		private TextView	socialDate;
+		private CardView	cardReceipt;
 
 		public ViewHolder(View itemView, int viewType)
 		{
@@ -84,6 +86,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 				break;
 
 				case Message.KIND_INVOICE:
+					cardReceipt = (CardView) itemView.findViewById(R.id.cardReceipt);
+				break;
+
 				case Message.KIND_FILE_DOWNLOADABLE:
 				case Message.KIND_AUDIO:
 					btnDownload	= (Button) itemView.findViewById(R.id.btnDownload);
@@ -144,7 +149,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 				break;
 
 				case Message.KIND_INVOICE:
-					view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_download, parent, false);
+					view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_receipt, parent, false);
 				break;
 
 				case Message.KIND_FILE_DOWNLOADABLE:
@@ -433,6 +438,19 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								//Indica a Analytics que se uso el contenido social
 								GoogleAnalytics.getInstance(activityContext).newTracker(Common.HASH_GOOGLEANALYTICS)
 										.send(new HitBuilders.EventBuilder().setCategory("Social").setAction("VerContenido").setLabel("AccionUser").build());
+							}
+						});
+					}
+
+					//Nueva card para recepción de facturas
+					if(holder.cardReceipt != null)
+					{
+						holder.cardReceipt.setOnClickListener(new View.OnClickListener()
+						{
+							@Override
+							public void onClick(View view)
+							{
+								activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getLink())));
 							}
 						});
 					}

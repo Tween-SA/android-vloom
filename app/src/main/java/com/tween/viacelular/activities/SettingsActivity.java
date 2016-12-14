@@ -454,6 +454,9 @@ public class SettingsActivity extends AppCompatActivity
 							break;
 
 							case Message.KIND_INVOICE:
+								message.setLink("https://apps.tarjetanevada.com.ar/ImpresionResumen/resumen?titular=28844711&periodo=1&server=resujava");
+							break;
+
 							case Message.KIND_FILE_DOWNLOADABLE:
 								message.setLink("http://www.fiat.com.ar/Download.ashx?t=ModelDownload&i=2802");
 							break;

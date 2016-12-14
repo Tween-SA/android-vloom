@@ -5,7 +5,8 @@
 	android:layout_height="wrap_content"
 	android:layout_marginBottom="10dp"
 	android:layout_marginTop="10dp"
-	android:id="@+id/rlItem">
+	android:id="@+id/rlItem"
+	android:background="@color/background_company">
 	<TextView
 		android:id="@+id/rowTime"
 		android:layout_width="wrap_content"
@@ -21,8 +22,8 @@
 		android:id="@+id/cardView"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		card_view:cardBackgroundColor="@color/text"
-		card_view:cardCornerRadius="3dp"
+		card_view:cardBackgroundColor="@android:color/white"
+		card_view:cardCornerRadius="16dp"
 		card_view:cardElevation="2dp"
 		android:layout_marginLeft="10dp"
 		android:layout_marginRight="10dp"

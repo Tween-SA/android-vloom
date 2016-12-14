@@ -916,7 +916,7 @@ public class Utils
 			View snackbarView = snackBar.getView();
 			snackbarView.setBackgroundColor(ContextCompat.getColor(context, R.color.snack_gray));
 			TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-			textView.setTextColor(ContextCompat.getColor(context, R.color.text));
+			textView.setTextColor(ContextCompat.getColor(context, android.R.color.white));
 			snackBar.setActionTextColor(ContextCompat.getColor(context, R.color.action));
 			snackBar.show();
 		}

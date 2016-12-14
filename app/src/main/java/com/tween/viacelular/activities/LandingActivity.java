@@ -285,11 +285,11 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							btnSuscribe.setText(getString(R.string.landing_suscribe));
 							if(Utils.isLightColor(color))
 							{
-								btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.text));
+								btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.white));
 							}
 							else
 							{
-								btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.black));
+								btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.white));
 							}
 						}
 					}
@@ -643,7 +643,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 
 						if(Utils.isLightColor(color))
 						{
-							btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.text));
+							btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.white));
 						}
 						else
 						{

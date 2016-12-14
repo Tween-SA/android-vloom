@@ -5,12 +5,14 @@
 	android:layout_height="wrap_content"
 	android:layout_marginBottom="10dp"
 	android:layout_marginTop="10dp"
-	android:id="@+id/rlItem">
+	android:id="@+id/rlItem"
+	android:background="@color/background_company">
 	<TextView
 		android:id="@+id/rowTime"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginRight="10dp"
+		android:layout_marginEnd="10dp"
 		android:layout_marginBottom="8dp"
 		android:text="@string/today"
 		android:textColor="@color/gray"
@@ -21,8 +23,8 @@
 		android:id="@+id/cardView"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		card_view:cardBackgroundColor="@color/text"
-		card_view:cardCornerRadius="3dp"
+		card_view:cardBackgroundColor="@android:color/white"
+		card_view:cardCornerRadius="16dp"
 		card_view:cardElevation="2dp"
 		android:layout_marginLeft="10dp"
 		android:layout_marginRight="10dp"
@@ -79,6 +81,7 @@
 				android:layout_height="wrap_content"
 				android:layout_marginTop="10dp"
 				android:layout_marginLeft="10dp"
+				android:layout_marginStart="10dp"
 				android:layout_marginBottom="10dp"
 				android:text="@string/special_card_video"
 				android:textAllCaps="true"
@@ -94,13 +97,15 @@
 				android:layout_marginTop="10dp"
 				android:layout_marginBottom="10dp"
 				android:layout_marginLeft="10dp"
+				android:layout_marginStart="10dp"
 				android:text="@string/share"
 				android:textAllCaps="true"
 				android:textColor="@color/accent"
 				android:background="@android:color/transparent"
 				android:shadowColor="@android:color/transparent"
 				android:layout_below="@+id/dividerTitle"
-				android:layout_toRightOf="@+id/btnView" />
+				android:layout_toRightOf="@+id/btnView"
+				android:layout_toEndOf="@+id/btnView" />
 		</RelativeLayout>
 	</android.support.v7.widget.CardView>
 </RelativeLayout>

@@ -5,7 +5,8 @@
 	android:layout_height="wrap_content"
 	android:layout_marginBottom="10dp"
 	android:layout_marginTop="10dp"
-	android:id="@+id/rlItem">
+	android:id="@+id/rlItem"
+	android:background="@color/background_company">
 	<TextView
 		android:id="@+id/rowTime"
 		android:layout_width="wrap_content"
@@ -21,8 +22,8 @@
 		android:id="@+id/cardView"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		card_view:cardBackgroundColor="@color/text"
-		card_view:cardCornerRadius="3dp"
+		card_view:cardBackgroundColor="@android:color/white"
+		card_view:cardCornerRadius="16dp"
 		card_view:cardElevation="2dp"
 		android:layout_marginLeft="10dp"
 		android:layout_marginRight="10dp"
@@ -71,6 +72,7 @@
 				android:layout_width="20dp"
 				android:layout_height="20dp"
 				android:layout_marginLeft="16dp"
+				android:layout_marginStart="16dp"
 				android:layout_below="@id/dividerTitle"
 				android:src="@drawable/ic_circle_file_download"
 				android:visibility="visible"
@@ -84,13 +86,15 @@
 				android:layout_height="wrap_content"
 				android:paddingLeft="10dp"
 				android:layout_marginLeft="10dp"
+				android:layout_marginStart="10dp"
 				android:text="@string/special_card_download"
 				android:textAllCaps="true"
 				android:textColor="@color/accent"
 				android:background="@android:color/transparent"
 				android:shadowColor="@android:color/transparent"
 				android:layout_below="@+id/dividerTitle"
-				android:layout_toRightOf="@+id/iconDown" />
+				android:layout_toRightOf="@+id/iconDown"
+				android:layout_toEndOf="@+id/iconDown" />
 		</RelativeLayout>
 	</android.support.v7.widget.CardView>
 </RelativeLayout>

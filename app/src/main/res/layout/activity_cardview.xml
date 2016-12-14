@@ -4,6 +4,7 @@
 	android:layout_height="match_parent"
 	xmlns:card_view="http://schemas.android.com/apk/res-auto"
 	tools:context="com.tween.viacelular.activities.CardViewActivity"
+	android:background="@color/background_company"
 	android:fitsSystemWindows="true">
 	<include
 		android:id="@+id/toolBarCardView"
@@ -56,6 +57,7 @@
 				android:layout_alignLeft="@+id/txtTitle"
 				android:layout_alignStart="@+id/txtTitle"
 				android:layout_marginLeft="2dp"
+				android:layout_marginStart="2dp"
 				android:layout_alignRight="@+id/ivEmpty"
 				android:layout_alignEnd="@+id/ivEmpty"/>
 		</RelativeLayout>
@@ -63,7 +65,7 @@
 			android:id="@+id/cardPayout"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			card_view:cardBackgroundColor="@color/text"
+			card_view:cardBackgroundColor="@android:color/white"
 			card_view:cardCornerRadius="2dp"
 			card_view:cardElevation="6dp"
 			android:layout_marginBottom="10dp"
@@ -103,7 +105,9 @@
 					android:background="@android:color/transparent"
 					android:shadowColor="@android:color/transparent"
 					android:layout_alignRight="@+id/txtSubContent"
-					android:layout_alignLeft="@+id/txtSubContent" />
+					android:layout_alignEnd="@+id/txtSubContent"
+					android:layout_alignLeft="@+id/txtSubContent"
+					android:layout_alignStart="@+id/txtSubContent" />
 				<Button
 					android:id="@+id/btnBlock"
 					android:layout_width="wrap_content"
@@ -116,14 +120,15 @@
 					android:onClick="blockCompany"
 					android:background="@android:color/transparent"
 					android:shadowColor="@android:color/transparent"
-					android:layout_alignRight="@+id/btnContinue" />
+					android:layout_alignRight="@+id/btnContinue"
+					android:layout_alignEnd="@+id/btnContinue" />
 			</RelativeLayout>
 		</android.support.v7.widget.CardView>
 		<android.support.v7.widget.CardView
 			android:id="@+id/cardSuscribe"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			card_view:cardBackgroundColor="@color/text"
+			card_view:cardBackgroundColor="@android:color/white"
 			card_view:cardCornerRadius="2dp"
 			card_view:cardElevation="6dp"
 			android:layout_marginBottom="10dp"
@@ -163,7 +168,9 @@
 					android:background="@android:color/transparent"
 					android:shadowColor="@android:color/transparent"
 					android:layout_alignRight="@+id/txtSubSuscribe"
-					android:layout_alignLeft="@+id/txtSubSuscribe" />
+					android:layout_alignEnd="@+id/txtSubSuscribe"
+					android:layout_alignLeft="@+id/txtSubSuscribe"
+					android:layout_alignStart="@+id/txtSubSuscribe" />
 				<Button
 					android:id="@+id/btnNo"
 					android:layout_width="wrap_content"
@@ -176,14 +183,15 @@
 					android:onClick="becomeGray"
 					android:background="@android:color/transparent"
 					android:shadowColor="@android:color/transparent"
-					android:layout_alignRight="@+id/btnYes" />
+					android:layout_alignRight="@+id/btnYes"
+					android:layout_alignEnd="@+id/btnYes" />
 			</RelativeLayout>
 		</android.support.v7.widget.CardView>
 		<android.support.v7.widget.CardView
 			android:id="@+id/cardForm"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			card_view:cardBackgroundColor="@color/text"
+			card_view:cardBackgroundColor="@android:color/white"
 			card_view:cardCornerRadius="3dp"
 			card_view:cardElevation="4dp"
 			android:layout_marginTop="20dp"
@@ -206,8 +214,10 @@
 					android:src="@drawable/step1_idkey"
 					android:layout_alignParentBottom="false"
 					android:layout_alignParentRight="false"
+					android:layout_alignParentEnd="false"
 					android:layout_alignParentTop="false"
 					android:layout_alignParentLeft="false"
+					android:layout_alignParentStart="false"
 					android:layout_marginTop="-20dp"/>
 				<TextView
 					android:id="@+id/txtTitleForm"
@@ -246,7 +256,7 @@
 					android:minWidth="88dp"
 					android:layout_height="36dp"
 					android:text="@string/btn_continue"
-					android:textColor="@color/text"
+					android:textColor="@android:color/white"
 					android:textColorHint="@android:color/secondary_text_light"
 					android:textSize="14sp"
 					android:onClick="sendData"
@@ -264,7 +274,7 @@
 			android:id="@+id/cardRetry"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			card_view:cardBackgroundColor="@color/text"
+			card_view:cardBackgroundColor="@android:color/white"
 			card_view:cardCornerRadius="3dp"
 			card_view:cardElevation="4dp"
 			android:layout_marginTop="20dp"
@@ -332,7 +342,7 @@
 			android:id="@+id/cardOk"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			card_view:cardBackgroundColor="@color/text"
+			card_view:cardBackgroundColor="@android:color/white"
 			card_view:cardCornerRadius="3dp"
 			card_view:cardElevation="4dp"
 			android:layout_marginTop="20dp"
@@ -400,8 +410,10 @@
 		android:layout_alignParentBottom="false"
 		android:id="@+id/clSnack"
 		android:layout_alignParentRight="false"
+		android:layout_alignParentEnd="false"
 		android:layout_alignParentTop="false"
 		android:layout_alignParentLeft="false"
+		android:layout_alignParentStart="false"
 		android:layout_marginTop="-20dp">
 	</android.support.design.widget.CoordinatorLayout>
 </RelativeLayout>
