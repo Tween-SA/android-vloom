@@ -27,6 +27,7 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -46,24 +47,26 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 	public static class ViewHolder extends RecyclerView.ViewHolder
 	{
-		public int			HolderId;
-		public ImageView	iconPrice;
-		public ImageView	iconSMS;
-		public TextView		rowTime;
-		public TextView		txtTitle;
-		public ImageView	ibOptions;
-		public TextView		txtContent;
-		private View		dividerTitle;
-		private ImageView	iconDown;
-		private Button		btnDownload;
-		private ImageView	ivPicture;
-		private Button		btnView;
-		private Button		btnShare;
-		private RatingBar	ratingBar;
-		private ImageView	iconSocial;
-		private TextView	socialAccount;
-		private TextView	socialDate;
-		private CardView	cardReceipt;
+		public int				HolderId;
+		public ImageView		iconPrice;
+		public ImageView		iconSMS;
+		public TextView			rowTime;
+		public TextView			txtTitle;
+		public ImageView		ibOptions;
+		public TextView			txtContent;
+		private View			dividerTitle;
+		private ImageView		iconDown;
+		private Button			btnDownload;
+		private ImageView		ivPicture;
+		private Button			btnView;
+		private Button			btnShare;
+		private RatingBar		ratingBar;
+		private ImageView		iconSocial;
+		private TextView		socialAccount;
+		private TextView		socialDate;
+		private CardView		cardReceipt;
+		private CircleImageView	circleReceipt;
+		private TextView		txtReceipt;
 
 		public ViewHolder(View itemView, int viewType)
 		{
@@ -86,7 +89,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 				break;
 
 				case Message.KIND_INVOICE:
-					cardReceipt = (CardView) itemView.findViewById(R.id.cardReceipt);
+					cardReceipt		= (CardView) itemView.findViewById(R.id.cardReceipt);
+					circleReceipt	= (CircleImageView) itemView.findViewById(R.id.circleReceipt);
+					txtReceipt		= (TextView) itemView.findViewById(R.id.txtReceipt);
 				break;
 
 				case Message.KIND_FILE_DOWNLOADABLE:
@@ -453,6 +458,30 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getLink())));
 							}
 						});
+
+						if(holder.circleReceipt != null && holder.txtReceipt != null)
+						{
+							//Agregado para detectar si el color es claro
+							if(Utils.isLightColor(color))
+							{
+								holder.circleReceipt.setColorFilter(Color.parseColor(Common.COLOR_ACCENT));
+								holder.txtReceipt.setTextColor(Color.parseColor(Common.COLOR_ACCENT));
+							}
+							else
+							{
+								//Agregado para evitar excepciones de tipo unknown color
+								try
+								{
+									holder.circleReceipt.setColorFilter(Color.parseColor(suscription.getColorHex()));
+									holder.txtReceipt.setTextColor(Color.parseColor(suscription.getColorHex()));
+								}
+								catch(Exception e)
+								{
+									holder.circleReceipt.setColorFilter(Color.parseColor(Common.COLOR_ACTION));
+									holder.txtReceipt.setTextColor(Color.parseColor(Common.COLOR_ACTION));
+								}
+							}
+						}
 					}
 				}
 			}

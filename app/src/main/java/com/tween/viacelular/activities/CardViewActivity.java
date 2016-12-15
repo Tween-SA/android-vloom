@@ -227,6 +227,7 @@ public class CardViewActivity extends AppCompatActivity
 					Utils.tintColorScreen(this, Common.COLOR_ACTION);
 				}
 
+				Utils.ampliarAreaTouch(ibBack);
 				ibBack.setOnClickListener(new View.OnClickListener()
 				{
 					@Override

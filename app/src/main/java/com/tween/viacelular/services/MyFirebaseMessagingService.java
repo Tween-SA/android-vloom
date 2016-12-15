@@ -32,9 +32,7 @@ import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
-
 import org.json.JSONArray;
-
 import java.util.Map;
 import io.realm.Realm;
 
@@ -122,6 +120,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 						else
 						{
 							push.putString(Common.KEY_TYPE, context.getString(R.string.notification));
+						}
+					}
+
+					if(push.getString(Common.KEY_TYPE) != null)
+					{
+						if(push.getString(Common.KEY_TYPE).equals("Vloom.io"))
+						{
+							push.putString(Common.KEY_TYPE, context.getString(R.string.app_name));
 						}
 					}
 

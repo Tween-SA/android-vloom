@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -265,6 +264,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 
 						Utils.tintColorScreen(this, color);
 						collapsingToolbarLayout.setStatusBarScrimColor(Color.parseColor(color));
+						Utils.ampliarAreaTouch(ibBack);
 						ibBack.setOnClickListener(new View.OnClickListener()
 						{
 							@Override

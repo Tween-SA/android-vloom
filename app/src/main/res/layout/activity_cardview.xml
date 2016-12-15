@@ -13,10 +13,17 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_below="@+id/toolBarCardView"
+		android:layout_marginTop="4dp"
 		android:id="@+id/rlCardView">
+		<View
+			android:id="@+id/barInvisible"
+			android:layout_width="match_parent"
+			android:layout_height="16dp" />
 		<android.support.v7.widget.RecyclerView
 			android:id="@+id/rcwCard"
+			android:layout_below="@+id/barInvisible"
 			android:scrollbars="vertical"
+			android:layout_marginTop="16dp"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:visibility="gone" />
