@@ -7,7 +7,12 @@
 	android:layout_marginTop="4dp"
 	android:id="@+id/rlItem"
 	android:background="@color/background_company">
+	<FrameLayout
+		android:id="@+id/line"
+		android:layout_width="match_parent"
+		android:layout_height="16dp" />
 	<ImageView
+		android:layout_below="@+id/line"
 		android:contentDescription="@string/app_name"
 		android:id="@+id/iconSocial"
 		android:layout_width="20dp"
@@ -20,6 +25,7 @@
 		android:layout_marginEnd="10dp"
 		android:layout_alignParentStart="true" />
 	<TextView
+		android:layout_below="@+id/line"
 		android:id="@+id/twitterAccount"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -30,6 +36,7 @@
 		android:layout_toRightOf="@+id/iconSocial"
 		android:layout_toEndOf="@+id/iconSocial" />
 	<TextView
+		android:layout_below="@+id/line"
 		android:id="@+id/rowTime"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

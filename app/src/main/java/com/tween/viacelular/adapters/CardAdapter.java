@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -67,6 +68,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		private CardView		cardReceipt;
 		private CircleImageView	circleReceipt;
 		private TextView		txtReceipt;
+		private FrameLayout		line;
 
 		public ViewHolder(View itemView, int viewType)
 		{
@@ -75,6 +77,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 			rowTime		= (TextView) itemView.findViewById(R.id.rowTime);
 			txtTitle	= (TextView) itemView.findViewById(R.id.txtTitle);
 			txtContent	= (TextView) itemView.findViewById(R.id.txtContent);
+			line		= (FrameLayout) itemView.findViewById(R.id.line);
 			txtContent.setMovementMethod(LinkMovementMethod.getInstance());
 
 			//Procesar controles existentes para cada tipo de mensaje
@@ -223,6 +226,15 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 				if(item != null)
 				{
+					if(position == 0)
+					{
+						holder.line.setVisibility(FrameLayout.VISIBLE);
+					}
+					else
+					{
+						holder.line.setVisibility(FrameLayout.GONE);
+					}
+
 					//Agregado para prevenir companies sin color
 					String color = Common.COLOR_ACTION;
 
