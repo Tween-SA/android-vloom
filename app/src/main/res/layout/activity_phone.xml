@@ -65,6 +65,8 @@
 					android:hint="@string/phone"
 					android:layout_marginTop="20dp"
 					android:textColorHint="@color/gray"
+					android:maxLines="1"
+					android:imeOptions="actionSend"
 					android:inputType="phone" />
 			</android.support.design.widget.TextInputLayout>
 			<!-- Adaptación a Material Design Guidelines -->
@@ -74,7 +76,7 @@
 				android:minWidth="88dp"
 				android:layout_height="36dp"
 				android:text="@string/btn_continue"
-				android:textColor="@color/text"
+				android:textColor="@android:color/white"
 				android:textColorHint="@android:color/secondary_text_light"
 				android:textSize="14sp"
 				android:onClick="register"

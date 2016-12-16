@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -265,6 +264,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 
 						Utils.tintColorScreen(this, color);
 						collapsingToolbarLayout.setStatusBarScrimColor(Color.parseColor(color));
+						Utils.ampliarAreaTouch(ibBack);
 						ibBack.setOnClickListener(new View.OnClickListener()
 						{
 							@Override
@@ -285,11 +285,11 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							btnSuscribe.setText(getString(R.string.landing_suscribe));
 							if(Utils.isLightColor(color))
 							{
-								btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.text));
+								btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.white));
 							}
 							else
 							{
-								btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.black));
+								btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.white));
 							}
 						}
 					}
@@ -643,7 +643,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 
 						if(Utils.isLightColor(color))
 						{
-							btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.text));
+							btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.white));
 						}
 						else
 						{

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.method.LinkMovementMethod;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -84,6 +86,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		private ProgressProfileView	animOne;
 		private ProgressProfileView	animTwo;
 		private ProgressProfileView	animThree;
+		private CardView			cardReceipt;
+		private CircleImageView		circleReceipt;
+		private TextView			txtReceipt;
+		private FrameLayout			line;
 
 		public ViewHolder(View itemView, int viewType)
 		{
@@ -92,6 +98,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 			rowTime		= (TextView) itemView.findViewById(R.id.rowTime);
 			txtTitle	= (TextView) itemView.findViewById(R.id.txtTitle);
 			txtContent	= (TextView) itemView.findViewById(R.id.txtContent);
+			line		= (FrameLayout) itemView.findViewById(R.id.line);
 			txtContent.setMovementMethod(LinkMovementMethod.getInstance());
 
 			//Procesar controles existentes para cada tipo de mensaje
@@ -106,6 +113,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 				break;
 
 				case Message.KIND_INVOICE:
+					cardReceipt		= (CardView) itemView.findViewById(R.id.cardReceipt);
+					circleReceipt	= (CircleImageView) itemView.findViewById(R.id.circleReceipt);
+					txtReceipt		= (TextView) itemView.findViewById(R.id.txtReceipt);
+				break;
+
 				case Message.KIND_FILE_DOWNLOADABLE:
 				case Message.KIND_AUDIO:
 					btnDownload	= (Button) itemView.findViewById(R.id.btnDownload);
@@ -178,7 +190,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 				break;
 
 				case Message.KIND_INVOICE:
-					view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_download, parent, false);
+					view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_receipt, parent, false);
 				break;
 
 				case Message.KIND_FILE_DOWNLOADABLE:
@@ -247,6 +259,15 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 				if(item != null)
 				{
+					if(position == 0)
+					{
+						holder.line.setVisibility(FrameLayout.VISIBLE);
+					}
+					else
+					{
+						holder.line.setVisibility(FrameLayout.GONE);
+					}
+
 					//Agregado para prevenir companies sin color
 					String color = Common.COLOR_ACTION;
 
@@ -785,6 +806,43 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://chain.vloom.io/")));
 							}
 						});
+					}
+
+					//Nueva card para recepción de facturas
+					if(holder.cardReceipt != null)
+					{
+						holder.cardReceipt.setOnClickListener(new View.OnClickListener()
+						{
+							@Override
+							public void onClick(View view)
+							{
+								activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getLink())));
+							}
+						});
+
+						if(holder.circleReceipt != null && holder.txtReceipt != null)
+						{
+							//Agregado para detectar si el color es claro
+							if(Utils.isLightColor(color))
+							{
+								holder.circleReceipt.setColorFilter(Color.parseColor(Common.COLOR_ACCENT));
+								holder.txtReceipt.setTextColor(Color.parseColor(Common.COLOR_ACCENT));
+							}
+							else
+							{
+								//Agregado para evitar excepciones de tipo unknown color
+								try
+								{
+									holder.circleReceipt.setColorFilter(Color.parseColor(suscription.getColorHex()));
+									holder.txtReceipt.setTextColor(Color.parseColor(suscription.getColorHex()));
+								}
+								catch(Exception e)
+								{
+									holder.circleReceipt.setColorFilter(Color.parseColor(Common.COLOR_ACTION));
+									holder.txtReceipt.setTextColor(Color.parseColor(Common.COLOR_ACTION));
+								}
+							}
+						}
 					}
 				}
 			}

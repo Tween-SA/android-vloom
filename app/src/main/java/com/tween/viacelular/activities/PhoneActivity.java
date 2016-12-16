@@ -11,11 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -93,6 +95,20 @@ public class PhoneActivity extends AppCompatActivity
 					@Override
 					public void afterTextChanged(Editable s)
 					{
+					}
+				});
+				//Agregado para que el usuario no tenga que tocar el botón para continuar cuando el teclado se oculta
+				editPhone.setOnEditorActionListener(new TextView.OnEditorActionListener()
+				{
+					public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+					{
+						if(actionId == EditorInfo.IME_ACTION_SEND)
+						{
+							register(v);
+							return true;
+						}
+
+						return false;
 					}
 				});
 

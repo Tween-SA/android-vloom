@@ -123,6 +123,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 						}
 					}
 
+					if(push.getString(Common.KEY_TYPE) != null)
+					{
+						if(push.getString(Common.KEY_TYPE).equals("Vloom.io"))
+						{
+							push.putString(Common.KEY_TYPE, context.getString(R.string.app_name));
+						}
+					}
+
 					if(data.get(Message.KEY_PLAYLOAD) != null)
 					{
 						if(StringUtils.isEmpty(data.get(Message.KEY_PLAYLOAD).toString()))

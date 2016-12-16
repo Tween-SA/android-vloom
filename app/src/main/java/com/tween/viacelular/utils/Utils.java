@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -18,6 +19,7 @@ import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
+import android.view.TouchDelegate;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -909,6 +911,24 @@ public class Utils
 		}
 	}
 
+	public static void ampliarAreaTouch(final View btnMenu)
+	{
+		final View parent = (View) btnMenu.getParent();  // button: the view you want to enlarge hit area
+		parent.post(new Runnable()
+		{
+			public void run()
+			{
+				final Rect rect = new Rect();
+				btnMenu.getHitRect(rect);
+				rect.top -= 100; // increase top hit area
+				rect.left -= 100; // increase left hit area
+				rect.bottom += 100; // increase bottom hit area
+				rect.right += 100; // increase right hit area
+				parent.setTouchDelegate(new TouchDelegate(rect, btnMenu));
+			}
+		});
+	}
+
 	public static void setStyleSnackBar(Snackbar snackBar, Context context)
 	{
 		if(snackBar != null)
@@ -916,7 +936,7 @@ public class Utils
 			View snackbarView = snackBar.getView();
 			snackbarView.setBackgroundColor(ContextCompat.getColor(context, R.color.snack_gray));
 			TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-			textView.setTextColor(ContextCompat.getColor(context, R.color.text));
+			textView.setTextColor(ContextCompat.getColor(context, android.R.color.white));
 			snackBar.setActionTextColor(ContextCompat.getColor(context, R.color.action));
 			snackBar.show();
 		}

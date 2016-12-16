@@ -438,22 +438,25 @@ public class SettingsActivity extends AppCompatActivity
 					public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text)
 					{
 						Message message = new Message();
-						message.setCompanyId("561fa82c34dea37a1dc73905");
+						message.setCompanyId("561e659f34dea37a1dc7389f");
 						message.setKind(which);
 						message.setCreated(System.currentTimeMillis());
 
 						switch(which)
 						{
+							case Message.KIND_TEXT:
+								message.setMsg("COMPRA en VOYENBUS.COM/BUS TICKETS U$S49,56 Ctas.1 28/11/2016.Disp. 1/P $ 42.377,79 Neva $ 42.377,79. Descarga la app: https://goo.gl/9W6jN4");
+							break;
+
 							case Message.KIND_IMAGE:
 								message.setLink("http://i.blogs.es/d63bea/8538679708_906ab6a815_o/original.jpg");
 							break;
 
-							case Message.KIND_VIDEO:
-								message.setLink("https://www.youtube.com/watch?v=YXsHuj6SIVQ");
-								message.setLinkThumbnail("http://i.blogs.es/d63bea/8538679708_906ab6a815_o/original.jpg");
+							case Message.KIND_INVOICE:
+								message.setMsg("Servicio SMS de Tarjeta Nevada. Resumen a Pagar con vto. 10/12/2016. 1 P. $17731,76. Neva $0. SEUO");
+								message.setLink("https://apps.tarjetanevada.com.ar/ImpresionResumen/resumen?titular=28844711&periodo=1&server=resujava");
 							break;
 
-							case Message.KIND_INVOICE:
 							case Message.KIND_FILE_DOWNLOADABLE:
 								message.setLink("http://www.fiat.com.ar/Download.ashx?t=ModelDownload&i=2802");
 							break;
@@ -464,6 +467,11 @@ public class SettingsActivity extends AppCompatActivity
 
 							case Message.KIND_LINKMAP:
 								message.setLink("https://www.google.com.ar/maps/place/TweenCo+Work/@-32.867278,-68.853549,15z/data=!4m5!3m4!1s0x0:0xeee579b0091db087!8m2!3d-32.867278!4d-68.853549");
+							break;
+
+							case Message.KIND_VIDEO:
+								message.setLink("https://www.youtube.com/watch?v=YXsHuj6SIVQ");
+								message.setLinkThumbnail("http://i.blogs.es/d63bea/8538679708_906ab6a815_o/original.jpg");
 							break;
 
 							case Message.KIND_TWITTER:

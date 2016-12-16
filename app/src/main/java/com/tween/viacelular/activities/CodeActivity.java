@@ -15,11 +15,13 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,7 +73,6 @@ public class CodeActivity extends AppCompatActivity
 				setSupportActionBar(toolBar);
 				toolBar.setNavigationIcon(R.drawable.back);
 				btnFreePass.setVisibility(Button.GONE);
-
 				toolBar.setNavigationOnClickListener(new View.OnClickListener()
 				{
 					@Override
@@ -141,6 +142,7 @@ public class CodeActivity extends AppCompatActivity
 					@Override
 					public void beforeTextChanged(CharSequence s, int start, int count, int after)
 					{
+						//TODO Mejora aplicar contador de caracteres para detectar si se termino de colocar los 4 digitos y validar automáticamente similar a la nueva app Galicia
 						inputCode.setErrorEnabled(false);
 						enableNextStep();
 					}
@@ -153,6 +155,21 @@ public class CodeActivity extends AppCompatActivity
 					@Override
 					public void afterTextChanged(Editable s)
 					{
+					}
+				});
+				//Agregado para que el usuario no tenga que tocar el botón para continuar cuando el teclado se oculta
+				editCode.setOnEditorActionListener(new TextView.OnEditorActionListener()
+				{
+					public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+					{
+						if(actionId == EditorInfo.IME_ACTION_SEND)
+						{
+							enableNextStep();
+							login(v);
+							return true;
+						}
+
+						return false;
 					}
 				});
 
