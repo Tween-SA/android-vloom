@@ -66,11 +66,9 @@ import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -252,6 +250,7 @@ public class CardViewActivity extends AppCompatActivity
 					Utils.tintColorScreen(this, Common.COLOR_ACTION);
 				}
 
+				Utils.ampliarAreaTouch(ibBack);
 				ibBack.setOnClickListener(new View.OnClickListener()
 				{
 					@Override

@@ -36,6 +36,8 @@
 				android:layout_height="wrap_content"
 				android:hint="@string/code"
 				android:inputType="number"
+				android:maxLines="1"
+				android:imeOptions="actionSend"
 				android:maxLength="4" />
 		</android.support.design.widget.TextInputLayout>
 		<TextView
@@ -55,7 +57,7 @@
 			android:minWidth="88dp"
 			android:layout_height="36dp"
 			android:text="@string/btn_continue"
-			android:textColor="@color/text"
+			android:textColor="@android:color/white"
 			android:textColorHint="@android:color/secondary_text_light"
 			android:textSize="14sp"
 			android:onClick="login"
@@ -75,7 +77,7 @@
 			android:minWidth="88dp"
 			android:layout_height="36dp"
 			android:text="@string/btn_skip"
-			android:textColor="@color/text"
+			android:textColor="@android:color/white"
 			android:textColorHint="@android:color/secondary_text_light"
 			android:textSize="14sp"
 			android:onClick="getFreePass"

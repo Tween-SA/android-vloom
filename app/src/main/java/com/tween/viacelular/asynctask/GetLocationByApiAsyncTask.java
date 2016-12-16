@@ -13,8 +13,6 @@ import com.tween.viacelular.utils.Common;
 import org.json.JSONObject;
 import io.realm.Realm;
 
-import io.realm.Realm;
-
 /**
  * Created by davidfigueroa on 15/6/16.
  */
