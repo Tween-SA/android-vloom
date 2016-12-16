@@ -104,8 +104,10 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(user != null)
 			{
+				System.out.println("user not null");
 				if(StringUtils.isIdMongo(user.getUserId()))
 				{
+					System.out.println("user is mongo");
 					String url			= ApiConnection.MODIFY_COMPANIES;
 					url					= url.replace(User.KEY_API, user.getUserId());
 					JSONArray jsonArray	= new JSONArray();
@@ -114,12 +116,15 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 
 					if(StringUtils.isNotEmpty(companyId))
 					{
+						System.out.println("companyId is not empty");
 						Suscription suscription			= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 
 						if(suscription != null)
 						{
+							System.out.println("company is not null");
 							if(StringUtils.isIdMongo(suscription.getCompanyId()))
 							{
+								System.out.println("company is not local");
 								JSONObject jsonObject	= new JSONObject();
 								jsonObject.put(Suscription.KEY_API, suscription.getCompanyId());
 								jsonObject.put(Suscription.KEY_SUSCRIBE, suscribe);
@@ -128,12 +133,18 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 							}
 							else
 							{
+								System.out.println("company is local");
 								localIds = localIds+"'"+suscription.getCompanyId()+"',";
 							}
+						}
+						else
+						{
+							System.out.println("company is null");
 						}
 					}
 					else
 					{
+						System.out.println("companyId is empty");
 						//Modificación por migración a Realm
 						RealmResults<Message> messages = realm.where(Message.class).distinct(Suscription.KEY_API);
 

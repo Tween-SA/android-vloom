@@ -142,6 +142,8 @@ public class Migration implements RealmMigration
 							message.addField(Message.KEY_TXID, String.class);
 							message.addField(Message.KEY_NOTE, String.class);
 							message.addField(Message.KEY_ATTACHED, String.class);
+							message.addField(Message.KEY_ATTACHEDTWO, String.class);
+							message.addField(Message.KEY_ATTACHEDTHREE, String.class);
 						}
 						else
 						{

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.tween.viacelular" xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest package="com.tween.viacelular" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 	<!-- Permissions, Ordanamiento de permisos y agregado del permiso para enviar sms -->
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -109,6 +110,11 @@
 			android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
 			android:label="@string/app_name"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+		<activity
+			android:name="com.tween.viacelular.activities.GalleryActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/Login"
+			android:windowSoftInputMode="adjustResize|stateHidden" />
 		<!-- Other things -->
 		<meta-data
 			android:name="com.google.android.gms.version"

@@ -436,7 +436,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 								//Modificación para delay en la descarga del logo de la Company
 								LogoAsyncTask task	= new LogoAsyncTask(context, false, image, context.getResources().getDisplayMetrics().density);
 								//TODO implementar callbacks para prevenir la suspención del UI por delay en la Asynctask
-								bmp					= task.execute().get();
+								bmp					= task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
 							}
 							catch(Exception e)
 							{
@@ -448,16 +448,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					}
 
 					notificationBuilder
-							.setSmallIcon(R.drawable.vc)
-							.setContentTitle(title)
-							.setContentText(contentText)
-							.setAutoCancel(true)
-							.setContentIntent(pendingIntent);
+						.setSmallIcon(R.drawable.vc)
+						.setContentTitle(title)
+						.setContentText(contentText)
+						.setAutoCancel(true)
+						.setContentIntent(pendingIntent);
 
 					if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
 					{
-						notificationBuilder.setCategory(Notification.CATEGORY_MESSAGE)
-								.setVisibility(Notification.VISIBILITY_PUBLIC);
+						notificationBuilder.setCategory(Notification.CATEGORY_MESSAGE).setVisibility(Notification.VISIBILITY_PUBLIC);
 					}
 
 					if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN)

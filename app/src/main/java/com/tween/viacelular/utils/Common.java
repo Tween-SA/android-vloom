@@ -25,7 +25,7 @@ public class Common
 	public static final int				CODE_LENGTH					= 4; //Longitud del código de verificación
 	public static final int				DAYS_UNTIL_PROMPT			= 3; //Días necesarios para lanzar dialog sugiriendo que se califique la app en Play Store
 	public static final int				PHONE_SCREEN				= 1; //Indica que se trata de la pantalla de ingreso en la que se pide el celular y país
-	public static final int				REALMDB_VERSION				= 14; //Indica el número de versión para la base de datos Realm que está usuando la app
+	public static final int				REALMDB_VERSION				= 15; //Indica el número de versión para la base de datos Realm que está usuando la app
 	public static final int				SPLASH_SCREEN				= 0; //Indica que se trata de la pantalla incial en la que arranca la app
 	public static final String			CODE_FORMAT					= "+00"; //Formato placeholder para el código de País
 	public static final String			COLOR_ACCENT				= "#00BCD4"; //Color de acento en String

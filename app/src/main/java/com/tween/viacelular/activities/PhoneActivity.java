@@ -3,6 +3,7 @@ package com.tween.viacelular.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
@@ -89,13 +90,11 @@ public class PhoneActivity extends AppCompatActivity
 					@Override
 					public void onTextChanged(CharSequence s, int start, int before, int count)
 					{
-
 					}
 
 					@Override
 					public void afterTextChanged(Editable s)
 					{
-
 					}
 				});
 				//Agregado para que el usuario no tenga que tocar el botón para continuar cuando el teclado se oculta
@@ -193,9 +192,8 @@ public class PhoneActivity extends AppCompatActivity
 				}
 			}
 
-			phone						= inputCountry.getText().toString() + phone;
-			RegisterPhoneAsyncTask task	= new RegisterPhoneAsyncTask(PhoneActivity.this, phone);
-			task.execute();
+			phone = inputCountry.getText().toString() + phone;
+			new RegisterPhoneAsyncTask(PhoneActivity.this, phone).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 		catch(Exception e)
 		{
