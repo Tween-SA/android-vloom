@@ -1,18 +1,22 @@
 package com.tween.viacelular.adapters;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -324,6 +328,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 						if(holder.ibOptions != null)
 						{
+							Utils.ampliarAreaTouch(holder.ibOptions, 100);
 							final String msgId = item.getMsgId();
 							holder.ibOptions.setOnClickListener(new View.OnClickListener()
 							{
@@ -494,6 +499,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 					if(holder.iconComent != null && holder.rlComment != null)
 					{
+						holder.ivEdit.setColorFilter(Color.parseColor(Common.COLOR_COMMENT));
 						holder.ivEdit.setOnClickListener(new View.OnClickListener()
 						{
 							@Override
@@ -555,9 +561,79 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							@Override
 							public void onClick(final View v)
 							{
+								final Dialog dialog			= new Dialog(activity, R.style.Popup);
+								dialog.setCancelable(false);
+								dialog.setContentView(R.layout.dialog_comment);
+								TextView txtTitle			= (TextView) dialog.findViewById(R.id.txtTitle);
+								ImageView ivClose			= (ImageView) dialog.findViewById(R.id.ivClose);
+								ivClose.setColorFilter(Color.parseColor(Common.COLOR_GRAY));
+								final EditText editComment	= (EditText) dialog.findViewById(R.id.editComment);
+								final TextView txtCount		= (TextView) dialog.findViewById(R.id.txtCount);
+								Button btnSave				= (Button) dialog.findViewById(R.id.btnSave);
+								btnSave.setOnClickListener(new View.OnClickListener()
+								{
+									@Override
+									public void onClick(View view)
+									{
+										if(StringUtils.isNotEmpty(editComment.getText().toString()))
+										{
+											Realm realm = Realm.getDefaultInstance();
+											realm.executeTransaction(new Realm.Transaction()
+											{
+												@Override
+												public void execute(Realm bgRealm)
+												{
+													Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, item.getMsgId()).findFirst();
+
+													if(message != null)
+													{
+														message.setNote(editComment.getText().toString());
+													}
+												}
+											});
+
+											holder.txtComment.setText(item.getNote());
+											Utils.showViewWithFade(holder.rlComment);
+											activity.attach(item.getMsgId());
+										}
+										else
+										{
+											dialog.dismiss();
+										}
+									}
+								});
+								ivClose.setOnClickListener(new View.OnClickListener()
+								{
+									@Override
+									public void onClick(View view)
+									{
+										dialog.dismiss();
+									}
+								});
+								editComment.addTextChangedListener(new TextWatcher()
+								{
+									@Override
+									public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
+									{
+										txtCount.setText(charSequence.length());
+									}
+
+									@Override
+									public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
+									{
+									}
+
+									@Override
+									public void afterTextChanged(Editable editable)
+									{
+									}
+								});
+
 								if(StringUtils.isNotEmpty(item.getNote()))
 								{
-									new MaterialDialog.Builder(activity).title("Editar comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
+									txtTitle.setText(activity.getString(R.string.enrich_commentheader));
+									txtCount.setText(item.getNote().length());
+									/*new MaterialDialog.Builder(activity).title("Editar comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
 									.input("Exprésate", item.getNote(), new MaterialDialog.InputCallback()
 									{
 										@Override
@@ -593,11 +669,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 												}
 											}
 										}
-									}).show();
+									}).show();*/
 								}
 								else
 								{
-									new MaterialDialog.Builder(activity).title("Añadir comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
+									txtTitle.setText(activity.getString(R.string.enrich_addcommentheader));
+									txtCount.setText("0");
+									/*new MaterialDialog.Builder(activity).title("Añadir comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
 									.input("Exprésate", item.getNote(), new MaterialDialog.InputCallback()
 									{
 										@Override
@@ -634,8 +712,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 												}
 											}
 										}
-									}).show();
+									}).show();*/
 								}
+
+								dialog.show();
 							}
 						});
 					}

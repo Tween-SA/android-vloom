@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">承認済み</string>
 	<string name="action_example">例</string>
@@ -33,6 +33,11 @@
 	<string name="email">メール</string>
 	<string name="empty_messages_text">受信したすべてのメッセージを削除します。</string>
 	<string name="empty_messages">メッセージを空にする</string>
+	<string name="enrich_addcommentheader">コメントを追加します</string><!-- after traslate -->
+	<string name="enrich_commentheader">コメントを編集</string><!-- after traslate -->
+	<string name="enrich_commenthint">コメントを書きます&#8230;</string><!-- after traslate -->
+	<string name="enrich_receipt">請求書</string><!-- after traslate -->
+	<string name="enrich_save">セーブ</string><!-- after traslate -->
 	<string name="error_upgrade">バックアップ中です。ご不便をおかけしております。</string>
 	<string name="feedback_error">コメントを入力してください</string>
 	<string name="feedback_issue">インシデントとして報告</string>

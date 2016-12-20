@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">Accepted</string>
@@ -34,6 +33,11 @@
 	<string name="email">Email</string>
 	<string name="empty_messages_text">You will delete all of the messages that you\'ve received.</string>
 	<string name="empty_messages">Empty messages</string>
+	<string name="enrich_addcommentheader">Add comment</string><!-- after traslate -->
+	<string name="enrich_commentheader">Edit comment</string><!-- after traslate -->
+	<string name="enrich_commenthint">Write a comment&#8230;</string><!-- after traslate -->
+	<string name="enrich_receipt">Invoice</string><!-- after traslate -->
+	<string name="enrich_save">SAVE</string><!-- after traslate -->
 	<string name="error_upgrade">We\'re back up. Apologies for the inconvenience.</string>
 	<string name="feedback_error">Please enter a comment</string>
 	<string name="feedback_issue">Report as incident</string>

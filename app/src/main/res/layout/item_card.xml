@@ -44,7 +44,7 @@
 				android:layout_alignParentTop="true"
 				android:layout_alignParentLeft="true"
 				android:layout_alignParentStart="true"
-				android:layout_marginTop="16dp"
+				android:layout_marginTop="6dp"
 				android:layout_marginBottom="10dp"
 				android:layout_marginRight="4dp"
 				android:layout_marginEnd="4dp"
@@ -58,7 +58,7 @@
 				android:layout_alignParentTop="true"
 				android:layout_toRightOf="@+id/iconPrice"
 				android:layout_toEndOf="@+id/iconPrice"
-				android:layout_marginTop="16dp"
+				android:layout_marginTop="6dp"
 				android:layout_marginBottom="10dp"
 				android:layout_marginRight="4dp"
 				android:layout_marginEnd="4dp"
@@ -146,11 +146,12 @@
 					android:id="@+id/txtComment"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="comentario"
+					android:text="@string/enrich_commenthint"
+					android:textColor="@color/gray"
 					android:layout_alignParentLeft="true"
-					android:layout_alignParentStart="true"
-					android:textColor="@android:color/white" />
+					android:layout_alignParentStart="true" />
 				<ImageView
+					android:contentDescription="@string/app_name"
 					android:id="@+id/ivEdit"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"

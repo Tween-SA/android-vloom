@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    card_view:cardCornerRadius="16dp"
+    card_view:cardBackgroundColor="@color/background_cards"
+    card_view:cardUseCompatPadding="false"
+    android:background="@android:color/transparent"
+    style="@style/Popup"
+    card_view:cardElevation="12dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:adjustViewBounds="true"
+            android:id="@+id/ivIcon"
+            android:src="@drawable/ic_comment_blue"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="42dp"
+            android:layout_marginStart="42dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enrich_commentheader"
+            android:textColor="@color/comment"
+            android:maxLines="1"
+            android:textSize="20sp"
+            tools:ignore="RelativeOverlap" />
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:adjustViewBounds="true"
+            android:id="@+id/ivClose"
+            android:src="@drawable/ic_clear_black_24dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <View
+            android:id="@+id/div"
+            android:background="@color/light_gray"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/ivIcon"
+            android:layout_marginTop="8dp" />
+        <EditText
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_below="@+id/div"
+            android:id="@+id/editComment"
+            android:hint="@string/enrich_commenthint"
+            android:textColor="@android:color/black"
+            android:inputType="textShortMessage"
+            android:imeOptions="actionSend"
+            android:layout_width="match_parent"
+            android:maxLength="160"
+            android:layout_height="wrap_content" />
+        <RelativeLayout
+            android:layout_alignParentBottom="true"
+            android:id="@+id/rlFooter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background_company">
+            <TextView
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/txtCount"
+                android:layout_marginTop="14dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:maxLength="3"
+                android:textColor="@color/gray"
+                android:textSize="15sp"
+                tools:ignore="HardcodedText" />
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/enrich_save"
+                android:textColor="@color/comment"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:textSize="15sp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:background="@android:color/transparent"
+                android:shadowColor="@android:color/transparent"
+                tools:ignore="RelativeOverlap" />
+        </RelativeLayout>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

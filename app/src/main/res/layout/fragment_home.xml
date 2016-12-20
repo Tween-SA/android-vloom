@@ -44,6 +44,7 @@
 				android:layout_alignLeft="@+id/txtTitle"
 				android:layout_alignStart="@+id/txtTitle"
 				android:layout_marginLeft="2dp"
+				android:layout_marginStart="2dp"
 				android:layout_alignRight="@+id/ivEmpty"
 				android:layout_alignEnd="@+id/ivEmpty"/>
 		</RelativeLayout>

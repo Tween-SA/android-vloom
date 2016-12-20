@@ -42,6 +42,7 @@
 			app:fabSize="mini"
 			android:layout_marginTop="2dp"
 			android:layout_marginLeft="10dp"
+			android:layout_marginStart="10dp"
 			android:visibility="visible"
 			android:clickable="true"
 			android:src="@drawable/ic_search_white_36dp" />
@@ -50,6 +51,7 @@
 			android:layout_width="220dp"
 			android:layout_below="@+id/divider"
 			android:layout_toRightOf="@+id/fab"
+			android:layout_toEndOf="@+id/fab"
 			android:layout_height="wrap_content"
 			android:hint="@string/seach"
 			android:textColorHint="@color/gray"

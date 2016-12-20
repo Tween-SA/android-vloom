@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">승인됨</string>
 	<string name="action_example">예시</string>
@@ -33,6 +33,11 @@
 	<string name="email">이메일</string>
 	<string name="empty_messages_text">수신 메시지를 모두 삭제합니다.</string>
 	<string name="empty_messages">빈 메시지</string>
+	<string name="enrich_addcommentheader">코멘트를 추가</string><!-- after traslate -->
+	<string name="enrich_commentheader">편집 주석</string><!-- after traslate -->
+	<string name="enrich_commenthint">댓글 쓰기&#8230;</string><!-- after traslate -->
+	<string name="enrich_receipt">송장</string><!-- after traslate -->
+	<string name="enrich_save">구하다</string><!-- after traslate -->
 	<string name="error_upgrade">백업 중입니다. 불편을 끼쳐 죄송합니다</string>
 	<string name="feedback_error">의견을 입력하세요</string>
 	<string name="feedback_issue">사고로 보고하기</string>

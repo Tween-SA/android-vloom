@@ -33,6 +33,11 @@
 	<string name="email">Correo electrónico</string>
 	<string name="empty_messages_text">Borrarás todos los mensajes que has recibido.</string>
 	<string name="empty_messages">Vaciar mensajes</string>
+	<string name="enrich_addcommentheader">Añadir comentario</string><!-- after traslate -->
+	<string name="enrich_commentheader">Editar comentario</string><!-- after traslate -->
+	<string name="enrich_commenthint">Escribe un comentario&#8230;</string><!-- after traslate -->
+	<string name="enrich_receipt">Factura</string><!-- after traslate -->
+	<string name="enrich_save">GUARDAR</string><!-- after traslate -->
 	<string name="error_upgrade">Ya estamos de vuelta sentimos las molestias ocasionadas</string>
 	<string name="feedback_error">Por favor, ingresa un comentario</string>
 	<string name="feedback_issue">Reportar como incidencia</string>
