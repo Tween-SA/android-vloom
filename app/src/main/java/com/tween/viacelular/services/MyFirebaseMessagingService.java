@@ -350,6 +350,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 
 				try
 				{
+					//Se asume añadida porque el user no la tenía para quitarla
+					blocked			= Common.BOOL_NO;
+					statusP			= Suscription.STATUS_ACTIVE;
 					CompanyAsyncTask task	= new CompanyAsyncTask(context, false, companyIdApi, countryCode);
 					task.setFlag(Common.BOOL_YES);
 					task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -520,7 +523,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					realm.commitTransaction();
 
 					//Agregado para notificar como spam al ser descartado
-					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
+					GoogleAnalytics.getInstance(context).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
 							.setLabel("Accion_user").build());
 					new ConfirmReadingAsyncTask(context, false, "", id, Message.STATUS_SPAM).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}

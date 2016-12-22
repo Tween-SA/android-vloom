@@ -2,6 +2,7 @@ package com.tween.viacelular.adapters;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -14,13 +15,17 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -45,6 +50,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
+import android.view.ViewGroup.LayoutParams;
 
 /**
  * Created by david.figueroa on 8/7/15.
@@ -94,6 +100,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		private CircleImageView		circleReceipt;
 		private TextView			txtReceipt;
 		private FrameLayout			line;
+		private PopupWindow			mPopupWindow;
+		private RelativeLayout		rlItem;
+		private View				customView;
 
 		public ViewHolder(View itemView, int viewType)
 		{
@@ -499,14 +508,30 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 					if(holder.iconComent != null && holder.rlComment != null)
 					{
+						//Primero ordenamos los controles antes de ir al popup
 						holder.ivEdit.setColorFilter(Color.parseColor(Common.COLOR_COMMENT));
+
+						if(StringUtils.isNotEmpty(item.getNote()))
+						{
+							holder.txtComment.setText(item.getNote());
+							holder.rlComment.setVisibility(LinearLayout.VISIBLE);
+							holder.ivEdit.setVisibility(ImageView.VISIBLE);
+						}
+						else
+						{
+							holder.txtComment.setText("");
+							holder.rlComment.setVisibility(LinearLayout.GONE);
+							holder.ivEdit.setVisibility(ImageView.GONE);
+						}
+
 						holder.ivEdit.setOnClickListener(new View.OnClickListener()
 						{
 							@Override
 							public void onClick(final View view)
 							{
-								new MaterialDialog.Builder(activity).title("Editar comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
-								.input("Exprésate", item.getNote(), new MaterialDialog.InputCallback()
+								System.out.println("Tocaste el ivEdit");
+								/*new MaterialDialog.Builder(activity).title(activity.getString(R.string.enrich_commentheader)).inputType(InputType.TYPE_CLASS_TEXT)
+										.cancelable(false).inputRange(0, 160).input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
 								{
 									@Override
 									public void onInput(MaterialDialog dialog, CharSequence input)
@@ -541,20 +566,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 											}
 										}
 									}
-								}).show();
+								}).show();*/
 							}
 						});
-
-						if(StringUtils.isNotEmpty(item.getNote()))
-						{
-							holder.txtComment.setText(item.getNote());
-							holder.rlComment.setVisibility(LinearLayout.VISIBLE);
-						}
-						else
-						{
-							holder.txtComment.setText("");
-							holder.rlComment.setVisibility(LinearLayout.GONE);
-						}
 
 						holder.iconComent.setOnClickListener(new View.OnClickListener()
 						{
@@ -615,7 +629,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 									@Override
 									public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
 									{
-										txtCount.setText(charSequence.length());
+										txtCount.setText(editComment.getText().toString().length());
 									}
 
 									@Override
@@ -629,11 +643,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 									}
 								});
 
-								if(StringUtils.isNotEmpty(item.getNote()))
+								/*if(StringUtils.isNotEmpty(item.getNote()))
 								{
 									txtTitle.setText(activity.getString(R.string.enrich_commentheader));
 									txtCount.setText(item.getNote().length());
-									/*new MaterialDialog.Builder(activity).title("Editar comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
+									new MaterialDialog.Builder(activity).title("Editar comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
 									.input("Exprésate", item.getNote(), new MaterialDialog.InputCallback()
 									{
 										@Override
@@ -669,13 +683,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 												}
 											}
 										}
-									}).show();*/
+									}).show();
 								}
 								else
 								{
 									txtTitle.setText(activity.getString(R.string.enrich_addcommentheader));
 									txtCount.setText("0");
-									/*new MaterialDialog.Builder(activity).title("Añadir comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
+									new MaterialDialog.Builder(activity).title("Añadir comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
 									.input("Exprésate", item.getNote(), new MaterialDialog.InputCallback()
 									{
 										@Override
@@ -712,10 +726,18 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 												}
 											}
 										}
-									}).show();*/
-								}
+									}).show();
+								}*/
 
 								dialog.show();
+								editComment.requestFocus();
+								Window window = dialog.getWindow();
+
+								if(window != null)
+								{
+									window.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+									window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+								}
 							}
 						});
 					}
