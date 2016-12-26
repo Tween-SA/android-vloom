@@ -1,26 +1,19 @@
 package com.tween.viacelular.adapters;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -50,7 +43,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
-import android.view.ViewGroup.LayoutParams;
 
 /**
  * Created by david.figueroa on 8/7/15.
@@ -508,30 +500,15 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 					if(holder.iconComent != null && holder.rlComment != null)
 					{
-						//Primero ordenamos los controles antes de ir al popup
 						holder.ivEdit.setColorFilter(Color.parseColor(Common.COLOR_COMMENT));
-
-						if(StringUtils.isNotEmpty(item.getNote()))
-						{
-							holder.txtComment.setText(item.getNote());
-							holder.rlComment.setVisibility(LinearLayout.VISIBLE);
-							holder.ivEdit.setVisibility(ImageView.VISIBLE);
-						}
-						else
-						{
-							holder.txtComment.setText("");
-							holder.rlComment.setVisibility(LinearLayout.GONE);
-							holder.ivEdit.setVisibility(ImageView.GONE);
-						}
-
 						holder.ivEdit.setOnClickListener(new View.OnClickListener()
 						{
 							@Override
 							public void onClick(final View view)
 							{
-								System.out.println("Tocaste el ivEdit");
-								/*new MaterialDialog.Builder(activity).title(activity.getString(R.string.enrich_commentheader)).inputType(InputType.TYPE_CLASS_TEXT)
-										.cancelable(false).inputRange(0, 160).input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
+								new MaterialDialog.Builder(activity).title(activity.getString(R.string.enrich_commentheader)).inputType(InputType.TYPE_CLASS_TEXT)
+								.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+								.input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
 								{
 									@Override
 									public void onInput(MaterialDialog dialog, CharSequence input)
@@ -566,89 +543,31 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 											}
 										}
 									}
-								}).show();*/
+								}).show();
 							}
 						});
+
+						if(StringUtils.isNotEmpty(item.getNote()))
+						{
+							holder.txtComment.setText(item.getNote());
+							holder.rlComment.setVisibility(LinearLayout.VISIBLE);
+						}
+						else
+						{
+							holder.txtComment.setText("");
+							holder.rlComment.setVisibility(LinearLayout.GONE);
+						}
 
 						holder.iconComent.setOnClickListener(new View.OnClickListener()
 						{
 							@Override
 							public void onClick(final View v)
 							{
-								final Dialog dialog			= new Dialog(activity, R.style.Popup);
-								dialog.setCancelable(false);
-								dialog.setContentView(R.layout.dialog_comment);
-								TextView txtTitle			= (TextView) dialog.findViewById(R.id.txtTitle);
-								ImageView ivClose			= (ImageView) dialog.findViewById(R.id.ivClose);
-								ivClose.setColorFilter(Color.parseColor(Common.COLOR_GRAY));
-								final EditText editComment	= (EditText) dialog.findViewById(R.id.editComment);
-								final TextView txtCount		= (TextView) dialog.findViewById(R.id.txtCount);
-								Button btnSave				= (Button) dialog.findViewById(R.id.btnSave);
-								btnSave.setOnClickListener(new View.OnClickListener()
+								if(StringUtils.isNotEmpty(item.getNote()))
 								{
-									@Override
-									public void onClick(View view)
-									{
-										if(StringUtils.isNotEmpty(editComment.getText().toString()))
-										{
-											Realm realm = Realm.getDefaultInstance();
-											realm.executeTransaction(new Realm.Transaction()
-											{
-												@Override
-												public void execute(Realm bgRealm)
-												{
-													Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, item.getMsgId()).findFirst();
-
-													if(message != null)
-													{
-														message.setNote(editComment.getText().toString());
-													}
-												}
-											});
-
-											holder.txtComment.setText(item.getNote());
-											Utils.showViewWithFade(holder.rlComment);
-											activity.attach(item.getMsgId());
-										}
-										else
-										{
-											dialog.dismiss();
-										}
-									}
-								});
-								ivClose.setOnClickListener(new View.OnClickListener()
-								{
-									@Override
-									public void onClick(View view)
-									{
-										dialog.dismiss();
-									}
-								});
-								editComment.addTextChangedListener(new TextWatcher()
-								{
-									@Override
-									public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
-									{
-										txtCount.setText(editComment.getText().toString().length());
-									}
-
-									@Override
-									public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
-									{
-									}
-
-									@Override
-									public void afterTextChanged(Editable editable)
-									{
-									}
-								});
-
-								/*if(StringUtils.isNotEmpty(item.getNote()))
-								{
-									txtTitle.setText(activity.getString(R.string.enrich_commentheader));
-									txtCount.setText(item.getNote().length());
-									new MaterialDialog.Builder(activity).title("Editar comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
-									.input("Exprésate", item.getNote(), new MaterialDialog.InputCallback()
+									new MaterialDialog.Builder(activity).title(activity.getString(R.string.enrich_commentheader)).inputType(InputType.TYPE_CLASS_TEXT)
+									.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+									.input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
 									{
 										@Override
 										public void onInput(MaterialDialog dialog, CharSequence input)
@@ -687,15 +606,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								}
 								else
 								{
-									txtTitle.setText(activity.getString(R.string.enrich_addcommentheader));
-									txtCount.setText("0");
-									new MaterialDialog.Builder(activity).title("Añadir comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
-									.input("Exprésate", item.getNote(), new MaterialDialog.InputCallback()
+									new MaterialDialog.Builder(activity).title(activity.getString(R.string.enrich_addcommentheader)).inputType(InputType.TYPE_CLASS_TEXT)
+									.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+									.input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
 									{
 										@Override
 										public void onInput(MaterialDialog dialog, CharSequence input)
 										{
-											System.out.println("input: "+input);
 											if(input != null)
 											{
 												if(input != "")
@@ -727,16 +644,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 											}
 										}
 									}).show();
-								}*/
-
-								dialog.show();
-								editComment.requestFocus();
-								Window window = dialog.getWindow();
-
-								if(window != null)
-								{
-									window.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-									window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 								}
 							}
 						});
@@ -746,8 +653,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					{
 						if(StringUtils.isNotEmpty(item.getAttached()) && StringUtils.isNotEmpty(item.getAttachedTwo()) && StringUtils.isNotEmpty(item.getAttachedThree()))
 						{
-							//TODO cambiar por nuevo icono
-							holder.iconAttach.setColorFilter(R.color.gray);
+							holder.iconAttach.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.photo_disabled));
+							holder.iconAttach.setEnabled(false);
+							holder.iconAttach.setOnClickListener(new View.OnClickListener()
+							{
+								@Override
+								public void onClick(View view)
+								{
+									Toast.makeText(activity, activity.getString(R.string.attach_limit), Toast.LENGTH_SHORT).show();
+								}
+							});
 						}
 						else
 						{
@@ -759,8 +674,15 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 									if(StringUtils.isNotEmpty(item.getAttached()) && StringUtils.isNotEmpty(item.getAttachedTwo()) && StringUtils.isNotEmpty(item.getAttachedThree()))
 									{
 										Toast.makeText(activity, activity.getString(R.string.attach_limit), Toast.LENGTH_SHORT).show();
-										//TODO cambiar por nuevo icono
-										holder.iconAttach.setColorFilter(R.color.gray);
+										holder.iconAttach.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.photo_disabled));
+										holder.iconAttach.setEnabled(false);
+										holder.iconAttach.setOnClickListener(new View.OnClickListener()
+										{
+											@Override
+											public void onClick(View view)
+											{
+											}
+										});
 									}
 									else
 									{

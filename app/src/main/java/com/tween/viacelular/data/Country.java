@@ -5,7 +5,6 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.utils.Common;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import io.realm.RealmObject;
 
 /**

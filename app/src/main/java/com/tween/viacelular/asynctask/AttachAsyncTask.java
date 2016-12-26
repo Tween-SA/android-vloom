@@ -5,23 +5,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.interfaces.CallBackListener;
-import com.tween.viacelular.models.Land;
-import com.tween.viacelular.models.Suscription;
-import com.tween.viacelular.models.SuscriptionHelper;
+import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 {
@@ -85,9 +77,16 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(user != null)
 			{
-				System.out.println("Hay user task...");
-				//JSONObject jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY, activity, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), ""));
-				result					= ApiConnection.OK;//ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
+				if(StringUtils.isNotEmpty(msgId))
+				{
+					Message message = realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+					if(message != null)
+					{
+						//JSONObject jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY, activity, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), ""));
+						result					= ApiConnection.OK;//ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
+					}
+				}
 			}
 		}
 		catch(Exception e)
@@ -121,15 +120,12 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 
 			System.out.println("onPostExecute task... result: "+result);
 			//Llamar al callback
-			if(result.equals(ApiConnection.OK))
-			{
-				listener.callBack();
-			}
-			else
+			if(!result.equals(ApiConnection.OK))
 			{
 				Toast.makeText(activity, result, Toast.LENGTH_SHORT).show();
 			}
 
+			listener.callBack();
 		}
 		catch(Exception e)
 		{
