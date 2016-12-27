@@ -120,7 +120,7 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 
 			System.out.println("onPostExecute task... result: "+result);
 			//Llamar al callback
-			if(!result.equals(ApiConnection.OK))
+			if(StringUtils.isNotEmpty(result) && !result.equals(ApiConnection.OK))
 			{
 				Toast.makeText(activity, result, Toast.LENGTH_SHORT).show();
 			}

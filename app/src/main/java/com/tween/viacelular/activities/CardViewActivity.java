@@ -26,6 +26,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.Explode;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,6 +40,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -62,11 +64,16 @@ import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.services.MyDownloadService;
+import com.tween.viacelular.services.MyUploadService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.Locale;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -99,6 +106,7 @@ public class CardViewActivity extends AppCompatActivity
 	private TextView				txtTitle;
 	private TextView				txtSubTitleCollapsed;
 	private Uri						tempUri;
+	private BroadcastReceiver mBroadcastReceiver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -400,7 +408,31 @@ public class CardViewActivity extends AppCompatActivity
 						byte[] data					= baos.toByteArray();
 
 						//Prueba de tamaño de imagen
-						BroadcastReceiver mBroadcastReceiver;
+						mBroadcastReceiver = new BroadcastReceiver()
+						{
+							@Override
+							public void onReceive(Context context, Intent intent)
+							{
+								System.out.println("onReceive:" + intent);
+
+								switch (intent.getAction()) {
+									case MyDownloadService.DOWNLOAD_COMPLETED:
+										// Get number of bytes downloaded
+										long numBytes = intent.getLongExtra(MyDownloadService.EXTRA_BYTES_DOWNLOADED, 0);
+										// Alert success
+										System.out.println(numBytes+" bytes downloaded complete in "+intent.getStringExtra(MyDownloadService.EXTRA_DOWNLOAD_PATH));
+										break;
+									case MyDownloadService.DOWNLOAD_ERROR:
+										// Alert failure
+										System.out.println("Failed to download from "+intent.getStringExtra(MyDownloadService.EXTRA_DOWNLOAD_PATH));
+										break;
+									case MyUploadService.UPLOAD_COMPLETED:
+									case MyUploadService.UPLOAD_ERROR:
+										//onUploadResultIntent(intent);
+										break;
+								}
+							}
+						};;
 						FirebaseAuth mAuth			= FirebaseAuth.getInstance();
 						FirebaseStorage storage		= FirebaseStorage.getInstance();
 						StorageReference storageRef	= storage.getReferenceFromUrl(ApiConnection.FIREBASE_STORAGE);
@@ -419,7 +451,7 @@ public class CardViewActivity extends AppCompatActivity
 						if(StringUtils.isNotEmpty(message.getAttached()) && StringUtils.isNotEmpty(message.getAttachedTwo()))
 						{
 							//Lastone
-							fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image3.png";
+							fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image3.jpg";
 							field		= 3;
 						}
 						else
@@ -427,13 +459,13 @@ public class CardViewActivity extends AppCompatActivity
 							if(StringUtils.isNotEmpty(message.getAttached()))
 							{
 								//Second
-								fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image2.png";
+								fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image2.jpg";
 								field		= 2;
 							}
 							else
 							{
 								//First
-								fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image1.png";
+								fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image1.jpg";
 								field		= 1;
 							}
 						}
