@@ -1,6 +1,5 @@
 package com.tween.viacelular.activities;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +17,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,7 +26,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.Explode;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -40,22 +39,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.CardAdapter;
 import com.tween.viacelular.asynctask.AttachAsyncTask;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
-import com.tween.viacelular.asynctask.LogoAsyncTask;
 import com.tween.viacelular.asynctask.SendIdentificationKeyAsyncTask;
 import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
@@ -69,11 +65,8 @@ import com.tween.viacelular.services.MyUploadService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.Locale;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -85,8 +78,8 @@ public class CardViewActivity extends AppCompatActivity
 	private RealmResults<Message>	notifications	= null;
 	private int						colorTitle		= Color.WHITE;
 	private int						colorSubTitle	= Color.LTGRAY;
-	private int						field			= 1;
 	private String					msgId			= "";
+	private Uri						mDownloadUrl	= null;
 	private RecyclerView			rcwCard;
 	private CardAdapter				mAdapter;
 	private CoordinatorLayout		Clayout;
@@ -106,7 +99,8 @@ public class CardViewActivity extends AppCompatActivity
 	private TextView				txtTitle;
 	private TextView				txtSubTitleCollapsed;
 	private Uri						tempUri;
-	private BroadcastReceiver mBroadcastReceiver;
+	private BroadcastReceiver		mBroadcastReceiver;
+	private FirebaseAuth			mAuth;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -148,6 +142,26 @@ public class CardViewActivity extends AppCompatActivity
 			toolBar.setTitle("");
 			toolBar.setSubtitle("");
 			setTitle("");
+
+			mAuth = FirebaseAuth.getInstance();
+
+			if(mAuth != null)
+			{
+				mAuth.signOut();
+				mAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>()
+				{
+					@Override
+					public void onComplete(@NonNull Task<AuthResult> task)
+					{
+						System.out.println("OnCompleteListener-signInAnonymously:isSuccessful: "+task.isSuccessful());
+
+						if(!task.isSuccessful())
+						{
+							System.out.println("OnCompleteListener-signInAnonymously:getException: "+task.getException());
+						}
+					}
+				});
+			}
 
 			if(Utils.checkSesion(this, Common.ANOTHER_SCREEN))
 			{
@@ -316,6 +330,40 @@ public class CardViewActivity extends AppCompatActivity
 					}
 				}
 			}
+
+			mBroadcastReceiver = new BroadcastReceiver()
+			{
+				@Override
+				public void onReceive(Context context, Intent intent)
+				{
+					System.out.println("onReceive:" + intent);
+
+					switch(intent.getAction())
+					{
+						case MyDownloadService.DOWNLOAD_COMPLETED:
+							// Get number of bytes downloaded
+							long numBytes = intent.getLongExtra(MyDownloadService.EXTRA_BYTES_DOWNLOADED, 0);
+							// Alert success
+							System.out.println(numBytes+" bytes downloaded complete in "+intent.getStringExtra(MyDownloadService.EXTRA_DOWNLOAD_PATH));
+						break;
+
+						case MyDownloadService.DOWNLOAD_ERROR:
+							// Alert failure
+							System.out.println("Failed to download from "+intent.getStringExtra(MyDownloadService.EXTRA_DOWNLOAD_PATH));
+						break;
+
+						case MyUploadService.UPLOAD_COMPLETED:
+						case MyUploadService.UPLOAD_ERROR:
+							System.out.println("upload:" + intent);
+							onUploadResultIntent(intent);
+						break;
+
+						default:
+							System.out.println("Default intent getAction: "+intent.getAction());
+						break;
+					}
+				}
+			};
 		}
 		catch(Exception e)
 		{
@@ -405,135 +453,10 @@ public class CardViewActivity extends AppCompatActivity
 					{
 						ByteArrayOutputStream baos	= new ByteArrayOutputStream();
 						bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-						byte[] data					= baos.toByteArray();
-
-						//Prueba de tamaño de imagen
-						mBroadcastReceiver = new BroadcastReceiver()
-						{
-							@Override
-							public void onReceive(Context context, Intent intent)
-							{
-								System.out.println("onReceive:" + intent);
-
-								switch (intent.getAction()) {
-									case MyDownloadService.DOWNLOAD_COMPLETED:
-										// Get number of bytes downloaded
-										long numBytes = intent.getLongExtra(MyDownloadService.EXTRA_BYTES_DOWNLOADED, 0);
-										// Alert success
-										System.out.println(numBytes+" bytes downloaded complete in "+intent.getStringExtra(MyDownloadService.EXTRA_DOWNLOAD_PATH));
-										break;
-									case MyDownloadService.DOWNLOAD_ERROR:
-										// Alert failure
-										System.out.println("Failed to download from "+intent.getStringExtra(MyDownloadService.EXTRA_DOWNLOAD_PATH));
-										break;
-									case MyUploadService.UPLOAD_COMPLETED:
-									case MyUploadService.UPLOAD_ERROR:
-										//onUploadResultIntent(intent);
-										break;
-								}
-							}
-						};;
-						FirebaseAuth mAuth			= FirebaseAuth.getInstance();
-						FirebaseStorage storage		= FirebaseStorage.getInstance();
-						StorageReference storageRef	= storage.getReferenceFromUrl(ApiConnection.FIREBASE_STORAGE);
-						//Directorio por mensaje
-						String fileName				= "";
-
-						if(StringUtils.isIdMongo(message.getMsgId()))
-						{
-							fileName = message.getMsgId();
-						}
-						else
-						{
-							fileName = String.valueOf(System.currentTimeMillis());
-						}
-
-						if(StringUtils.isNotEmpty(message.getAttached()) && StringUtils.isNotEmpty(message.getAttachedTwo()))
-						{
-							//Lastone
-							fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image3.jpg";
-							field		= 3;
-						}
-						else
-						{
-							if(StringUtils.isNotEmpty(message.getAttached()))
-							{
-								//Second
-								fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image2.jpg";
-								field		= 2;
-							}
-							else
-							{
-								//First
-								fileName	= ApiConnection.FIREBASE_CHILD+"/"+fileName+"/image1.jpg";
-								field		= 1;
-							}
-						}
-
-						StorageReference imagesRef	= storageRef.child(fileName);
-						UploadTask uploadTask		= imagesRef.putBytes(data);
-						final Activity activity		= this;
-						uploadTask.addOnFailureListener(new OnFailureListener()
-						{
-							@Override
-							public void onFailure(@NonNull Exception exception)
-							{
-								System.out.println("CardViewActivity:onActivityResult:onFailure - Exception: " + exception);
-								// Handle unsuccessful uploads
-							}
-						}).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
-						{
-							@Override
-							public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-							{
-								try
-								{
-									// taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-									final Uri downloadUrl	= taskSnapshot.getDownloadUrl();
-									System.out.println("onSuccess uri: "+downloadUrl.toString());
-									new LogoAsyncTask(activity, false, downloadUrl.toString(), -1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-									Realm realm		= Realm.getDefaultInstance();
-
-									realm.executeTransaction(new Realm.Transaction()
-									{
-										@Override
-										public void execute(Realm bgRealm)
-										{
-											Message message	= bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
-
-											if(message != null)
-											{
-												switch(field)
-												{
-													case 1:
-														message.setAttached(downloadUrl.toString());
-													break;
-
-													case 2:
-														message.setAttachedTwo(downloadUrl.toString());
-													break;
-
-													case 3:
-														message.setAttachedThree(downloadUrl.toString());
-													break;
-												}
-											}
-
-											attach(msgId);
-										}
-									});
-								}
-								catch(Exception e)
-								{
-									System.out.println("CardViewActivity:onActivityResult:onSuccess - Exception: " + e);
-
-									if(Common.DEBUG)
-									{
-										e.printStackTrace();
-									}
-								}
-							}
-						});
+						updateUI(mAuth.getCurrentUser());
+						mDownloadUrl				= null;
+						startService(	new Intent(this, MyUploadService.class).putExtra(MyUploadService.EXTRA_FILE_URI, tempUri).putExtra(Common.KEY_ID, msgId)
+										.setAction(MyUploadService.ACTION_UPLOAD));
 					}
 				}
 			}
@@ -546,6 +469,57 @@ public class CardViewActivity extends AppCompatActivity
 			{
 				e.printStackTrace();
 			}
+		}
+	}
+
+	private void onUploadResultIntent(Intent intent)
+	{
+		try
+		{
+			System.out.println("onUploadResultIntent");
+			// Got a new intent from MyUploadService with a success or failure
+			mDownloadUrl = intent.getParcelableExtra(MyUploadService.EXTRA_DOWNLOAD_URL);
+			tempUri = intent.getParcelableExtra(MyUploadService.EXTRA_FILE_URI);
+			System.out.println("updateUI");
+			updateUI(mAuth.getCurrentUser());
+			//Refresh screen
+			System.out.println("redirect");
+			Intent intentRefresh = new Intent(this, CardViewActivity.class);
+			intentRefresh.putExtra(Common.KEY_ID, companyId);
+			startActivity(intentRefresh);
+			finish();
+		}
+		catch(Exception e)
+		{
+			System.out.println("CardViewActivity:onUploadResultIntent - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void updateUI(FirebaseUser user)
+	{
+		// Signed in or Signed out
+		if(user != null)
+		{
+			System.out.println("User not null");
+		}
+		else
+		{
+			System.out.println("User null");
+		}
+
+		// Download URL and Download button
+		if(mDownloadUrl != null)
+		{
+			System.out.println("DownloadUrl: "+mDownloadUrl.toString());
+		}
+		else
+		{
+			System.out.println("DownloadUrl null");
 		}
 	}
 
@@ -1553,5 +1527,25 @@ public class CardViewActivity extends AppCompatActivity
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+		updateUI(mAuth.getCurrentUser());
+
+		// Register receiver for uploads and downloads
+		LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+		manager.registerReceiver(mBroadcastReceiver, MyDownloadService.getIntentFilter());
+		manager.registerReceiver(mBroadcastReceiver, MyUploadService.getIntentFilter());
+	}
+
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+		// Unregister download receiver
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
 	}
 }

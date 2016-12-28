@@ -1,56 +1,41 @@
 package com.tween.viacelular.services;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.tween.viacelular.R;
-import com.tween.viacelular.activities.CardViewActivity;
+import com.tween.viacelular.models.Message;
+import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.StringUtils;
+import io.realm.Realm;
 
 /**
  * Created by David on 27/12/2016.
  */
-
-public abstract class MyUploadService extends MyBaseTaskService
+public class MyUploadService extends MyBaseTaskService
 {
-	private static final String TAG = "MyUploadService";
-	private static final int NOTIF_ID_DOWNLOAD = 0;
-
-	/** Intent Actions **/
-	public static final String ACTION_UPLOAD = "action_upload";
-	public static final String UPLOAD_COMPLETED = "upload_completed";
-	public static final String UPLOAD_ERROR = "upload_error";
-
-	/** Intent Extras **/
-	public static final String EXTRA_FILE_URI = "extra_file_uri";
-	public static final String EXTRA_DOWNLOAD_URL = "extra_download_url";
-
-	// [START declare_ref]
-	private StorageReference mStorageRef;
-	// [END declare_ref]
+	private static final String	TAG					= "MyUploadService";
+	public static final String	ACTION_UPLOAD		= "action_upload";
+	public static final String	UPLOAD_COMPLETED	= "upload_completed";
+	public static final String	UPLOAD_ERROR		= "upload_error";
+	public static final String	EXTRA_FILE_URI		= "extra_file_uri";
+	public static final String	EXTRA_DOWNLOAD_URL	= "extra_download_url";
+	private StorageReference	mStorageRef;
+	private int					field				= 1;
 
 	@Override
 	public void onCreate()
 	{
 		super.onCreate();
-
-		// [START get_storage_ref]
 		mStorageRef = FirebaseStorage.getInstance().getReference();
-		// [END get_storage_ref]
 	}
 
 	@Nullable
@@ -63,70 +48,117 @@ public abstract class MyUploadService extends MyBaseTaskService
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
-		Log.d(TAG, "onStartCommand:" + intent + ":" + startId);
-
 		if(ACTION_UPLOAD.equals(intent.getAction()))
 		{
-			Uri fileUri = intent.getParcelableExtra(EXTRA_FILE_URI);
-			uploadFromUri(fileUri);
+			Uri fileUri	= intent.getParcelableExtra(EXTRA_FILE_URI);
+			String id	= intent.getStringExtra(Common.KEY_ID);
+			uploadFromUri(fileUri, id);
 		}
 
 		return START_REDELIVER_INTENT;
 	}
 
 	// [START upload_from_uri]
-	private void uploadFromUri(final Uri fileUri)
+	private void uploadFromUri(final Uri fileUri, final String id)
 	{
-		Log.d(TAG, "uploadFromUri:src:" + fileUri.toString());
+		try
+		{
+			final Realm realm	= Realm.getDefaultInstance();
+			Message message		= realm.where(Message.class).equalTo(Message.KEY_API, id).findFirst();
+			String fileName		= id;
 
-		// [START_EXCLUDE]
-		taskStarted();
-		showUploadProgressNotification();
-		// [END_EXCLUDE]
-
-		// [START get_child_ref]
-		// Get a reference to store file at photos/<FILENAME>.jpg
-		final StorageReference photoRef = mStorageRef.child("photos").child(fileUri.getLastPathSegment());
-		// [END get_child_ref]
-
-		// Upload file to Firebase Storage
-		Log.d(TAG, "uploadFromUri:dst:" + photoRef.getPath());
-		photoRef.putFile(fileUri)
-			.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+			if(!StringUtils.isIdMongo(id))
 			{
-				@Override
-				public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-				{
-					// Upload succeeded
-					Log.d(TAG, "uploadFromUri:onSuccess");
+				fileName = String.valueOf(System.currentTimeMillis());
+			}
 
-					// Get the public download URL
-					Uri downloadUri = taskSnapshot.getMetadata().getDownloadUrl();
-
-					// [START_EXCLUDE]
-					broadcastUploadFinished(downloadUri, fileUri);
-					showUploadFinishedNotification(downloadUri, fileUri);
-					taskCompleted();
-					// [END_EXCLUDE]
-				}
-			})
-			.addOnFailureListener(new OnFailureListener()
+			if(message != null)
 			{
-				@Override
-				public void onFailure(@NonNull Exception exception)
+				if(StringUtils.isNotEmpty(message.getAttached()) && StringUtils.isNotEmpty(message.getAttachedTwo()))
 				{
-					// Upload failed
-					Log.w(TAG, "uploadFromUri:onFailure", exception);
-
-					// [START_EXCLUDE]
-					broadcastUploadFinished(null, fileUri);
-					showUploadFinishedNotification(null, fileUri);
-					taskCompleted();
-					// [END_EXCLUDE]
+					//Lastone
+					fileName	+= "/image3";
+					field		= 3;
 				}
-			});
+				else
+				{
+					if(StringUtils.isNotEmpty(message.getAttached()))
+					{
+						//Second
+						fileName	+= "/image2";
+						field		= 2;
+					}
+					else
+					{
+						//First
+						fileName	+= "/image1";
+						field		= 1;
+					}
+				}
+
+				taskStarted();
+				final StorageReference photoRef = mStorageRef.child(ApiConnection.FIREBASE_CHILD).child(fileName);
+				photoRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+				{
+					@Override
+					public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+					{
+						Uri downloadUri = taskSnapshot.getMetadata().getDownloadUrl();
+						final String downloadUrl = downloadUri.toString();
+
+						//Persist url in Message
+						realm.executeTransaction(new Realm.Transaction()
+						{
+							@Override
+							public void execute(Realm bgRealm)
+							{
+								Message message	= bgRealm.where(Message.class).equalTo(Message.KEY_API, id).findFirst();
+
+								if(message != null)
+								{
+									switch(field)
+									{
+										case 1:
+											message.setAttached(downloadUrl);
+										break;
+
+										case 2:
+											message.setAttachedTwo(downloadUrl);
+										break;
+
+										case 3:
+											message.setAttachedThree(downloadUrl);
+										break;
+									}
+								}
+							}
+						});
+
+						broadcastUploadFinished(downloadUri, fileUri);
+						taskCompleted();
+					}
+				})
+				.addOnFailureListener(new OnFailureListener()
+				{
+					@Override
+					public void onFailure(@NonNull Exception exception)
+					{
+						broadcastUploadFinished(null, fileUri);
+						taskCompleted();
+					}
+				});
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println(TAG+":onOptionsItemSelected - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
 	}
-	// [END upload_from_uri]
 
 	/**
 	 * Broadcast finished upload (success or failure).
@@ -138,51 +170,6 @@ public abstract class MyUploadService extends MyBaseTaskService
 		String action = success ? UPLOAD_COMPLETED : UPLOAD_ERROR;
 		Intent broadcast = new Intent(action).putExtra(EXTRA_DOWNLOAD_URL, downloadUrl).putExtra(EXTRA_FILE_URI, fileUri);
 		return LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcast);
-	}
-
-	/**
-	 * Show a notification for a finished upload.
-	 */
-	private void showUploadFinishedNotification(@Nullable Uri downloadUrl, @Nullable Uri fileUri)
-	{
-		// Make Intent to MainActivity
-		Intent intent = new Intent(this, CardViewActivity.class).putExtra(EXTRA_DOWNLOAD_URL, downloadUrl).putExtra(EXTRA_FILE_URI, fileUri)
-			.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-		// Make PendingIntent for notification
-		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* requestCode */, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-		// Set message and icon based on success or failure
-		boolean success = downloadUrl != null;
-		String message = success ? "Upload finished" : "Upload failed";
-		int icon = success ? R.drawable.ic_check_white_24dp : R.drawable.ic_error_white_24dp;
-
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-			.setSmallIcon(icon)
-			.setContentTitle(getString(R.string.app_name))
-			.setContentText(message)
-			.setAutoCancel(true)
-			.setContentIntent(pendingIntent);
-
-		NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		manager.notify(NOTIF_ID_DOWNLOAD, builder.build());
-	}
-
-	/**
-	 * Show notification with an indeterminate upload progress bar.
-	 */
-	private void showUploadProgressNotification()
-	{
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-			.setSmallIcon(R.drawable.ic_file_upload_white_24dp)
-			.setContentTitle(getString(R.string.app_name))
-			.setContentText("Uploading...")
-			.setProgress(0, 0, true)
-			.setOngoing(true)
-			.setAutoCancel(false);
-
-		NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		manager.notify(NOTIF_ID_DOWNLOAD, builder.build());
 	}
 
 	public static IntentFilter getIntentFilter()
