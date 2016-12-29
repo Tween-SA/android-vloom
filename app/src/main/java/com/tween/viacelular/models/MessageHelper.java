@@ -50,6 +50,11 @@ public abstract class MessageHelper
 			System.out.println("Message - socialShares: " + message.getSocialShares());
 			System.out.println("Message - socialAccount: " + message.getSocialAccount());
 			System.out.println("Message - socialName: " + message.getSocialName());
+			System.out.println("Message - txid: " + message.getTxid());
+			System.out.println("Message - note: " + message.getNote());
+			System.out.println("Message - attached: " + message.getAttached());
+			System.out.println("Message - attachedTwo: " + message.getAttachedTwo());
+			System.out.println("Message - attachedThree: " + message.getAttachedThree());
 		}
 		else
 		{

@@ -46,7 +46,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.CardAdapter;
@@ -380,19 +379,16 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			System.out.println("attach in activity");
 			new AttachAsyncTask(this, false, id, new CallBackListener()
 			{
 				@Override
 				public void callBack()
 				{
-					System.out.println("callBack in activity");
 					runOnUiThread(new Runnable()
 					{
 						@Override
 						public void run()
 						{
-							System.out.println("está ejecutando el runOnUiThread in activity");
 							refresh(false);
 						}
 					});
@@ -453,7 +449,6 @@ public class CardViewActivity extends AppCompatActivity
 					{
 						ByteArrayOutputStream baos	= new ByteArrayOutputStream();
 						bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-						updateUI(mAuth.getCurrentUser());
 						mDownloadUrl				= null;
 						startService(	new Intent(this, MyUploadService.class).putExtra(MyUploadService.EXTRA_FILE_URI, tempUri).putExtra(Common.KEY_ID, msgId)
 										.setAction(MyUploadService.ACTION_UPLOAD));
@@ -476,14 +471,8 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			System.out.println("onUploadResultIntent");
-			// Got a new intent from MyUploadService with a success or failure
 			mDownloadUrl = intent.getParcelableExtra(MyUploadService.EXTRA_DOWNLOAD_URL);
 			tempUri = intent.getParcelableExtra(MyUploadService.EXTRA_FILE_URI);
-			System.out.println("updateUI");
-			updateUI(mAuth.getCurrentUser());
-			//Refresh screen
-			System.out.println("redirect");
 			Intent intentRefresh = new Intent(this, CardViewActivity.class);
 			intentRefresh.putExtra(Common.KEY_ID, companyId);
 			startActivity(intentRefresh);
@@ -497,29 +486,6 @@ public class CardViewActivity extends AppCompatActivity
 			{
 				e.printStackTrace();
 			}
-		}
-	}
-
-	private void updateUI(FirebaseUser user)
-	{
-		// Signed in or Signed out
-		if(user != null)
-		{
-			System.out.println("User not null");
-		}
-		else
-		{
-			System.out.println("User null");
-		}
-
-		// Download URL and Download button
-		if(mDownloadUrl != null)
-		{
-			System.out.println("DownloadUrl: "+mDownloadUrl.toString());
-		}
-		else
-		{
-			System.out.println("DownloadUrl null");
 		}
 	}
 
@@ -1533,9 +1499,6 @@ public class CardViewActivity extends AppCompatActivity
 	public void onStart()
 	{
 		super.onStart();
-		updateUI(mAuth.getCurrentUser());
-
-		// Register receiver for uploads and downloads
 		LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
 		manager.registerReceiver(mBroadcastReceiver, MyDownloadService.getIntentFilter());
 		manager.registerReceiver(mBroadcastReceiver, MyUploadService.getIntentFilter());

@@ -9,8 +9,8 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 public class Common
 {
 	public static DisplayImageOptions	DEFAULT_OPTIONS				= null; //Opciones para la carga de logos
-	public static final boolean			APP_TEST					= true; //En true desbloquea funciones de alpha para simular push, sms, enviar DB, entre otras
-	public static final boolean			DEBUG						= true; //En true desbloquea la impresión de trackers y variables para debug
+	public static final boolean			APP_TEST					= false; //En true desbloquea funciones de alpha para simular push, sms, enviar DB, entre otras
+	public static final boolean			DEBUG						= false; //En true desbloquea la impresión de trackers y variables para debug
 	public static final boolean			DEBUGDB						= false; //En true desbloquea la impresión de consultas en la db para debug
 	public static final double			DENSITY_HDPI				= 1.5; //Indica que se trata de un dispositivo con una resolución menor a HD
 	public static final double			DENSITY_XHDPI				= 2.0; //Indica que se trata de un dispositivo con una resolución HD
@@ -42,6 +42,11 @@ public class Common
 	public static final String			KEY_DESCRIPTION				= "description";
 	public static final String			KEY_DISPLAYNAME				= "displayName";
 	public static final String			KEY_FIRSTTIME				= "firstTime";
+	public static final String			KEY_ENRICH					= "enrich";
+	public static final String			KEY_GEO						= "geolocalization";
+	public static final String			KEY_GEO_LAT					= "latitude";
+	public static final String			KEY_GEO_LON					= "longitude";
+	public static final String			KEY_GEO_SOURCE				= "source";
 	public static final String			KEY_ID						= "id";
 	public static final String			KEY_IDMONGO					= "_id";
 	public static final String			KEY_INFO					= "info";

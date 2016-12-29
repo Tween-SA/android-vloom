@@ -6,7 +6,6 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -21,16 +20,11 @@ import java.io.InputStream;
 public class MyDownloadService extends MyBaseTaskService
 {
 	private static final String TAG = "Storage#DownloadService";
-
-	/** Actions **/
 	public static final String ACTION_DOWNLOAD = "action_download";
 	public static final String DOWNLOAD_COMPLETED = "download_completed";
 	public static final String DOWNLOAD_ERROR = "download_error";
-
-	/** Extras **/
 	public static final String EXTRA_DOWNLOAD_PATH = "extra_download_path";
 	public static final String EXTRA_BYTES_DOWNLOADED = "extra_bytes_downloaded";
-
 	private StorageReference mStorageRef;
 
 	@Override
@@ -77,7 +71,6 @@ public class MyDownloadService extends MyBaseTaskService
 			@Override
 			public void onSuccess(StreamDownloadTask.TaskSnapshot taskSnapshot)
 			{
-				Log.d(TAG, "download:SUCCESS");
 				Intent broadcast = new Intent(DOWNLOAD_COMPLETED);
 				broadcast.putExtra(EXTRA_DOWNLOAD_PATH, downloadPath);
 				broadcast.putExtra(EXTRA_BYTES_DOWNLOADED, taskSnapshot.getTotalByteCount());

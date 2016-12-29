@@ -87,6 +87,8 @@ public class Message extends RealmObject
 	@Ignore
 	public static final String FLAGS_SMS			= "2";
 	@Ignore
+	public static final String FLAGS_PUSH_AND_SMS	= "3";
+	@Ignore
 	public static final String FLAGS_SMSCAP			= "4";
 	@Ignore
 	public static final String FLAGS_PUSHCAP		= "5";

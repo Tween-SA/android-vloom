@@ -264,6 +264,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 				if(item != null)
 				{
+					final String id = item.getMsgId();
+
 					if(position == 0)
 					{
 						holder.line.setVisibility(FrameLayout.VISIBLE);
@@ -522,23 +524,30 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 												if(StringUtils.isNotEmpty(comment))
 												{
 													Realm realm = Realm.getDefaultInstance();
-													realm.executeTransaction(new Realm.Transaction()
+													realm.executeTransactionAsync(new Realm.Transaction()
 													{
 														@Override
 														public void execute(Realm bgRealm)
 														{
-															Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, item.getMsgId()).findFirst();
+															Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, id).findFirst();
 
 															if(message != null)
 															{
 																message.setNote(comment);
 															}
 														}
+													}, new Realm.Transaction.OnSuccess()
+													{
+														@Override
+														public void onSuccess()
+														{
+															activity.attach(id);
+														}
 													});
 
 													holder.txtComment.setText(item.getNote());
 													Utils.showViewWithFade(holder.rlComment);
-													activity.attach(item.getMsgId());
+
 												}
 											}
 										}
@@ -581,23 +590,29 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 													if(StringUtils.isNotEmpty(comment))
 													{
 														Realm realm = Realm.getDefaultInstance();
-														realm.executeTransaction(new Realm.Transaction()
+														realm.executeTransactionAsync(new Realm.Transaction()
 														{
 															@Override
 															public void execute(Realm bgRealm)
 															{
-																Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, item.getMsgId()).findFirst();
+																Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, id).findFirst();
 
 																if(message != null)
 																{
 																	message.setNote(comment);
 																}
 															}
+														}, new Realm.Transaction.OnSuccess()
+														{
+															@Override
+															public void onSuccess()
+															{
+																activity.attach(id);
+															}
 														});
 
 														holder.txtComment.setText(item.getNote());
 														Utils.showViewWithFade(holder.rlComment);
-														activity.attach(item.getMsgId());
 													}
 												}
 											}
@@ -622,23 +637,29 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 													if(StringUtils.isNotEmpty(comment))
 													{
 														Realm realm = Realm.getDefaultInstance();
-														realm.executeTransaction(new Realm.Transaction()
+														realm.executeTransactionAsync(new Realm.Transaction()
 														{
 															@Override
 															public void execute(Realm bgRealm)
 															{
-																Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, item.getMsgId()).findFirst();
+																Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, id).findFirst();
 
 																if(message != null)
 																{
 																	message.setNote(comment);
 																}
 															}
+														}, new Realm.Transaction.OnSuccess()
+														{
+															@Override
+															public void onSuccess()
+															{
+																activity.attach(id);
+															}
 														});
 
 														holder.txtComment.setText(item.getNote());
 														Utils.showViewWithFade(holder.rlComment);
-														activity.attach(item.getMsgId());
 													}
 												}
 											}

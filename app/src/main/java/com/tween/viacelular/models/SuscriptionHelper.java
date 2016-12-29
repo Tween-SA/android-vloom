@@ -1051,6 +1051,9 @@ public abstract class SuscriptionHelper
 			System.out.println("Suscription - receive: " + suscription.getReceive());
 			System.out.println("Suscription - suscribe: " + suscription.getSuscribe());
 			System.out.println("Suscription - follower: " + suscription.getFollower());
+			System.out.println("Suscription - gray: " + suscription.getGray());
+			System.out.println("Suscription - lastSocialUpdated: " + suscription.getLastSocialUpdated());
+			System.out.println("Suscription - twitter: " + suscription.getTwitter());
 		}
 		else
 		{

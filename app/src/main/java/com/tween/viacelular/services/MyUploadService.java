@@ -3,6 +3,7 @@ package com.tween.viacelular.services;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.tween.viacelular.asynctask.AttachAsyncTask;
+import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -30,6 +33,8 @@ public class MyUploadService extends MyBaseTaskService
 	public static final String	EXTRA_DOWNLOAD_URL	= "extra_download_url";
 	private StorageReference	mStorageRef;
 	private int					field				= 1;
+	private Uri					fileUri;
+	private Uri					downloadUri;
 
 	@Override
 	public void onCreate()
@@ -50,7 +55,7 @@ public class MyUploadService extends MyBaseTaskService
 	{
 		if(ACTION_UPLOAD.equals(intent.getAction()))
 		{
-			Uri fileUri	= intent.getParcelableExtra(EXTRA_FILE_URI);
+			fileUri	= intent.getParcelableExtra(EXTRA_FILE_URI);
 			String id	= intent.getStringExtra(Common.KEY_ID);
 			uploadFromUri(fileUri, id);
 		}
@@ -103,11 +108,11 @@ public class MyUploadService extends MyBaseTaskService
 					@Override
 					public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
 					{
-						Uri downloadUri = taskSnapshot.getMetadata().getDownloadUrl();
+						downloadUri = taskSnapshot.getMetadata().getDownloadUrl();
 						final String downloadUrl = downloadUri.toString();
 
 						//Persist url in Message
-						realm.executeTransaction(new Realm.Transaction()
+						realm.executeTransactionAsync(new Realm.Transaction()
 						{
 							@Override
 							public void execute(Realm bgRealm)
@@ -132,10 +137,21 @@ public class MyUploadService extends MyBaseTaskService
 									}
 								}
 							}
+						}, new Realm.Transaction.OnSuccess()
+						{
+							@Override
+							public void onSuccess()
+							{
+								new AttachAsyncTask(getApplicationContext(), false, id, new CallBackListener()
+								{
+									@Override
+									public void callBack()
+									{
+										redirect();
+									}
+								}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+							}
 						});
-
-						broadcastUploadFinished(downloadUri, fileUri);
-						taskCompleted();
 					}
 				})
 				.addOnFailureListener(new OnFailureListener()
@@ -158,6 +174,12 @@ public class MyUploadService extends MyBaseTaskService
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void redirect()
+	{
+		broadcastUploadFinished(downloadUri, fileUri);
+		taskCompleted();
 	}
 
 	/**
