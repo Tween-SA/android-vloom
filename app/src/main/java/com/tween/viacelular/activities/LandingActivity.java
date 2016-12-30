@@ -264,7 +264,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 
 						Utils.tintColorScreen(this, color);
 						collapsingToolbarLayout.setStatusBarScrimColor(Color.parseColor(color));
-						Utils.ampliarAreaTouch(ibBack);
+						Utils.ampliarAreaTouch(ibBack, 150);
 						ibBack.setOnClickListener(new View.OnClickListener()
 						{
 							@Override

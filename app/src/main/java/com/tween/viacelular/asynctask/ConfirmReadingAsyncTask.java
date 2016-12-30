@@ -6,12 +6,12 @@ import android.os.AsyncTask;
 import android.os.Looper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.models.Migration;
-import com.tween.viacelular.models.SuscriptionHelper;
-import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
+import com.tween.viacelular.models.SuscriptionHelper;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
@@ -121,10 +121,10 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 						if(StringUtils.isNotEmpty(isp.getLat()) && StringUtils.isNotEmpty(isp.getLon()))
 						{
 							JSONObject geoJSON = new JSONObject();
-							geoJSON.put("latitude", isp.getLat());
-							geoJSON.put("longitude", isp.getLon());
-							geoJSON.put("source", ApiConnection.getNetwork(context));
-							jsonSend.put("geolocalization", geoJSON);
+							geoJSON.put(Common.KEY_GEO_LAT, isp.getLat());
+							geoJSON.put(Common.KEY_GEO_LON, isp.getLon());
+							geoJSON.put(Common.KEY_GEO_SOURCE, ApiConnection.getNetwork(context));
+							jsonSend.put(Common.KEY_GEO, geoJSON);
 						}
 					}
 
@@ -203,8 +203,8 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 						if(jsonArray.length() > 0)
 						{
-							JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""),
-																		jsonArray.toString()));
+							JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES, context, ApiConnection.METHOD_PUT,
+																		preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString()));
 							result					= ApiConnection.checkResponse(context, jsonResult);
 						}
 					}

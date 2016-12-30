@@ -372,7 +372,7 @@ public class SettingsActivity extends AppCompatActivity
 		{
 			//Modificación se traslado a Utils para invocarlo también desde IncomingSmsService
 			Message message = new Message();
-			message.setCompanyId("5669786d1b5c469e378a4c15");
+			message.setCompanyId("561e659f34dea37a1dc7389f");
 			message.setCountryCode(preferences.getString(Land.KEY_API, ""));
 			message.setCreated(System.currentTimeMillis());
 			Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), String.valueOf(MyFirebaseMessagingService.PUSH_NORMAL), message);
@@ -394,7 +394,7 @@ public class SettingsActivity extends AppCompatActivity
 		try
 		{
 			Message message = new Message();
-			message.setCompanyId("5699028c7669284157dc9153");
+			message.setCompanyId("561e659f34dea37a1dc7389f");
 			message.setCreated(System.currentTimeMillis());
 			Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), String.valueOf(MyFirebaseMessagingService.PUSH_WITHOUT_SOUND), message);
 		}

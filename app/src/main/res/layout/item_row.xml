@@ -13,6 +13,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingLeft="16dp"
+		android:paddingStart="16dp"
 		android:background="?android:attr/selectableItemBackground"
 		android:src="@drawable/notificaciones" />
 	<!-- Ajuste por lineamiento de Material Design -->
@@ -21,8 +22,10 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_toRightOf="@+id/rowIcon"
+		android:layout_toEndOf="@+id/rowIcon"
 		android:layout_centerVertical="true"
 		android:paddingLeft="10dp"
+		android:paddingStart="10dp"
 		android:paddingBottom="10dp"
 		android:text="@string/title_notifications"
 		android:textColor="@color/black"

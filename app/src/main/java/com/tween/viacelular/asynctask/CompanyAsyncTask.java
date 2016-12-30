@@ -5,13 +5,12 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import org.json.JSONException;
 import org.json.JSONObject;
-import io.realm.Realm;
 
 public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 {

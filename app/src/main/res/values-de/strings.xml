@@ -34,6 +34,11 @@
 	<string name="email">E-Mail</string>
 	<string name="empty_messages_text">Du bist im Begriff alle Nachrichten, die du erhalten hast, zu löschen.</string>
 	<string name="empty_messages">Nachrichten löschen</string>
+	<string name="enrich_addcommentheader">Kommentar hinzufügen</string><!-- after traslate -->
+	<string name="enrich_commentheader">Kommentar bearbeiten</string><!-- after traslate -->
+	<string name="enrich_commenthint">Schreibe einen Kommentar&#8230;</string><!-- after traslate -->
+	<string name="enrich_receipt">Rechnung</string><!-- after traslate -->
+	<string name="enrich_save">SPAREN</string><!-- after traslate -->
 	<string name="error_upgrade">Wir sind wieder zurück - bitte entschuldige die Unannehmlichkeiten</string>
 	<string name="feedback_error">Bitte gib einen Kommentar ein</string>
 	<string name="feedback_issue">Zwischenfall melden</string>

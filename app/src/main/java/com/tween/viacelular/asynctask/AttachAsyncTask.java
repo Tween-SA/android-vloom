@@ -1,39 +1,35 @@
 package com.tween.viacelular.asynctask;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.interfaces.CallBackListener;
-import com.tween.viacelular.models.Land;
+import com.tween.viacelular.models.Isp;
+import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
-import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
-
-import org.json.JSONException;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONObject;
-
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog		progress;
-	private Activity			activity;
+	private Context				context;
 	private boolean				displayDialog	= true;
 	private CallBackListener	listener;
 	private String				msgId;
 
-	public AttachAsyncTask(Activity activity, boolean displayDialog, String msgId, CallBackListener listener)
+	public AttachAsyncTask(Context context, boolean displayDialog, String msgId, CallBackListener listener)
 	{
-		this.activity		= activity;
+		this.context		= context;
 		this.displayDialog	= displayDialog;
 		this.listener		= listener;
 		this.msgId			= msgId;
@@ -53,7 +49,7 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 					}
 				}
 
-				progress = new MaterialDialog.Builder(activity)
+				progress = new MaterialDialog.Builder(context)
 					.title(R.string.progress_dialog)
 					.cancelable(false)
 					.content(R.string.please_wait)
@@ -80,14 +76,95 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 		{
 			//Modificaciones para contemplar migraciónd de db
 			Realm realm							= Realm.getDefaultInstance();
-			SharedPreferences preferences		= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			SharedPreferences preferences		= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			User user							= realm.where(User.class).findFirst();
 
 			if(user != null)
 			{
-				System.out.println("Hay user task...");
-				//JSONObject jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY, activity, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), ""));
-				result					= ApiConnection.OK;//ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
+				if(StringUtils.isNotEmpty(msgId))
+				{
+					Message message = realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+					MessageHelper.debugMessage(message);
+
+					if(message != null)
+					{
+						String companyId	= "";
+						String flags		= Message.FLAGS_SMSCAP;
+
+						if(StringUtils.isIdMongo(message.getCompanyId()))
+						{
+							companyId	= message.getCompanyId();
+							flags		= message.getFlags();
+						}
+						else
+						{
+							if(message.getFlags().equals(Message.FLAGS_PUSH) || message.getFlags().equals(Message.FLAGS_PUSH_AND_SMS))
+							{
+								flags = Message.FLAGS_PUSHCAP;
+							}
+						}
+
+						JSONObject jsonObject	= new JSONObject();
+						jsonObject.put(Common.KEY_TYPE, message.getType());
+						jsonObject.put(Message.KEY_MSG, StringUtils.sanitizeText(message.getMsg()));
+						jsonObject.put(Message.KEY_CHANNEL, Utils.getChannelSMS(context));
+						jsonObject.put(Common.KEY_STATUS, message.getStatus());
+						jsonObject.put(Suscription.KEY_API, companyId);
+						jsonObject.put(Message.KEY_CREATED, message.getCreated());
+						jsonObject.put(Message.KEY_DELETED, message.getDeleted());
+						jsonObject.put(Suscription.KEY_FROM, message.getChannel());
+						jsonObject.put(Message.KEY_TTD, 0);
+						jsonObject.put(Message.KEY_FLAGS, flags);
+						jsonObject.put(User.KEY_PHONE, user.getPhone().replace("+", ""));
+						jsonObject.put(Message.KEY_CAMPAIGNID, message.getCampaignId());
+						jsonObject.put(Message.KEY_LISTID, message.getListId());
+						Isp isp = realm.where(Isp.class).findFirst();
+
+						if(StringUtils.isIdMongo(message.getMsgId()))
+						{
+							jsonObject.put(Message.KEY_API, msgId);
+						}
+						else
+						{
+							jsonObject.put(Message.KEY_API, "");
+						}
+
+						//Geo info que hoy solamente se manda cuando se marca la recepción del mensaje
+						if(isp != null)
+						{
+							JSONObject geoJSON = new JSONObject();
+							geoJSON.put(Common.KEY_GEO_LAT, isp.getLat());
+							geoJSON.put(Common.KEY_GEO_LON, isp.getLon());
+							geoJSON.put(Common.KEY_GEO_SOURCE, ApiConnection.getNetwork(context));
+							jsonObject.put(Common.KEY_GEO, geoJSON);
+						}
+
+						//Enrich content generado por el usuario de la app
+						if(StringUtils.isNotEmpty(message.getNote()) || StringUtils.isNotEmpty(message.getAttached()))
+						{
+							JSONObject enrichJSON = new JSONObject();
+							enrichJSON.put(Message.KEY_NOTE, message.getNote());
+							enrichJSON.put(Message.KEY_ATTACHED, message.getAttached());
+							enrichJSON.put(Message.KEY_ATTACHEDTWO, message.getAttachedTwo());
+							enrichJSON.put(Message.KEY_ATTACHEDTHREE, message.getAttachedThree());
+							jsonObject.put(Common.KEY_ENRICH, enrichJSON);
+						}
+
+						//Adjuntos provinientes de la push
+						if(message.getKind() != Message.KIND_TEXT && StringUtils.isNotEmpty(message.getLink()))
+						{
+							JSONObject attachJSON = new JSONObject();
+							attachJSON.put(Common.KEY_TYPE, message.getKind());
+							attachJSON.put(Message.KEY_LINK, message.getLink());
+							attachJSON.put(Message.KEY_LINKTHUMB, message.getLinkThumbnail());
+							jsonObject.put(Message.KEY_ATTACHMENTS, attachJSON);
+						}
+
+						JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES+"/"+Common.KEY_ENRICH, context,
+																	ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonObject.toString()));
+						result					= ApiConnection.checkResponse(context, jsonResult);
+					}
+				}
 			}
 		}
 		catch(Exception e)
@@ -119,17 +196,13 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 				}
 			}
 
-			System.out.println("onPostExecute task... result: "+result);
 			//Llamar al callback
-			if(result.equals(ApiConnection.OK))
+			if(StringUtils.isNotEmpty(result) && !result.equals(ApiConnection.OK))
 			{
-				listener.callBack();
-			}
-			else
-			{
-				Toast.makeText(activity, result, Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
 			}
 
+			listener.callBack();
 		}
 		catch(Exception e)
 		{

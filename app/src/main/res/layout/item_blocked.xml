@@ -13,12 +13,14 @@
 		android:layout_width="50dp"
 		android:layout_height="50dp"
 		android:layout_marginLeft="20dp"
+		android:layout_marginStart="20dp"
 		android:src="@drawable/ic_launcher" />
 	<TextView
 		android:id="@+id/rowText"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingLeft="10dp"
+		android:paddingStart="10dp"
 		android:text="@string/app_name"
 		android:textColor="@color/black"
 		android:textAppearance="?android:attr/textAppearanceMedium"
@@ -30,6 +32,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:paddingLeft="10dp"
+		android:paddingStart="10dp"
 		android:text="@string/no_messages_card"
 		android:textColor="@color/gray"
 		android:textAppearance="?android:attr/textAppearanceSmall"

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">Accepté</string>
 	<string name="action_example">Exemple</string>
@@ -33,6 +33,11 @@
 	<string name="email">Adresse de courrier électronique</string>
 	<string name="empty_messages_text">Vous allez supprimer tous les messages que vous avez reçus.</string>
 	<string name="empty_messages">Éliminer les messages</string>
+	<string name="enrich_addcommentheader">Ajouter un commentaire</string><!-- after traslate -->
+	<string name="enrich_commentheader">Modifier un commentaire</string><!-- after traslate -->
+	<string name="enrich_commenthint">Ecrire un commentaire&#8230;</string><!-- after traslate -->
+	<string name="enrich_receipt">Facture d\'achat</string><!-- after traslate -->
+	<string name="enrich_save">GARDER</string><!-- after traslate -->
 	<string name="error_upgrade">Nous sommes de retour. Nous vous prions de bien vouloir nous excuser pour la gêne occasionnée.</string>
 	<string name="feedback_error">Veuillez écrire un commentaire</string>
 	<string name="feedback_issue">Signaler comme incidence</string>

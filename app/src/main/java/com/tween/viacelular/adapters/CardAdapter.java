@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -17,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -90,6 +92,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		private CircleImageView		circleReceipt;
 		private TextView			txtReceipt;
 		private FrameLayout			line;
+		private PopupWindow			mPopupWindow;
+		private RelativeLayout		rlItem;
+		private View				customView;
 
 		public ViewHolder(View itemView, int viewType)
 		{
@@ -259,6 +264,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 				if(item != null)
 				{
+					final String id = item.getMsgId();
+
 					if(position == 0)
 					{
 						holder.line.setVisibility(FrameLayout.VISIBLE);
@@ -324,6 +331,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 						if(holder.ibOptions != null)
 						{
+							Utils.ampliarAreaTouch(holder.ibOptions, 100);
 							final String msgId = item.getMsgId();
 							holder.ibOptions.setOnClickListener(new View.OnClickListener()
 							{
@@ -494,13 +502,15 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 					if(holder.iconComent != null && holder.rlComment != null)
 					{
+						holder.ivEdit.setColorFilter(Color.parseColor(Common.COLOR_COMMENT));
 						holder.ivEdit.setOnClickListener(new View.OnClickListener()
 						{
 							@Override
 							public void onClick(final View view)
 							{
-								new MaterialDialog.Builder(activity).title("Editar comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
-								.input("Exprésate", item.getNote(), new MaterialDialog.InputCallback()
+								new MaterialDialog.Builder(activity).title(activity.getString(R.string.enrich_commentheader)).inputType(InputType.TYPE_CLASS_TEXT)
+								.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+								.input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
 								{
 									@Override
 									public void onInput(MaterialDialog dialog, CharSequence input)
@@ -514,23 +524,30 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 												if(StringUtils.isNotEmpty(comment))
 												{
 													Realm realm = Realm.getDefaultInstance();
-													realm.executeTransaction(new Realm.Transaction()
+													realm.executeTransactionAsync(new Realm.Transaction()
 													{
 														@Override
 														public void execute(Realm bgRealm)
 														{
-															Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, item.getMsgId()).findFirst();
+															Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, id).findFirst();
 
 															if(message != null)
 															{
 																message.setNote(comment);
 															}
 														}
+													}, new Realm.Transaction.OnSuccess()
+													{
+														@Override
+														public void onSuccess()
+														{
+															activity.attach(id);
+														}
 													});
 
 													holder.txtComment.setText(item.getNote());
 													Utils.showViewWithFade(holder.rlComment);
-													activity.attach(item.getMsgId());
+
 												}
 											}
 										}
@@ -557,8 +574,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							{
 								if(StringUtils.isNotEmpty(item.getNote()))
 								{
-									new MaterialDialog.Builder(activity).title("Editar comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
-									.input("Exprésate", item.getNote(), new MaterialDialog.InputCallback()
+									new MaterialDialog.Builder(activity).title(activity.getString(R.string.enrich_commentheader)).inputType(InputType.TYPE_CLASS_TEXT)
+									.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+									.input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
 									{
 										@Override
 										public void onInput(MaterialDialog dialog, CharSequence input)
@@ -572,23 +590,29 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 													if(StringUtils.isNotEmpty(comment))
 													{
 														Realm realm = Realm.getDefaultInstance();
-														realm.executeTransaction(new Realm.Transaction()
+														realm.executeTransactionAsync(new Realm.Transaction()
 														{
 															@Override
 															public void execute(Realm bgRealm)
 															{
-																Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, item.getMsgId()).findFirst();
+																Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, id).findFirst();
 
 																if(message != null)
 																{
 																	message.setNote(comment);
 																}
 															}
+														}, new Realm.Transaction.OnSuccess()
+														{
+															@Override
+															public void onSuccess()
+															{
+																activity.attach(id);
+															}
 														});
 
 														holder.txtComment.setText(item.getNote());
 														Utils.showViewWithFade(holder.rlComment);
-														activity.attach(item.getMsgId());
 													}
 												}
 											}
@@ -597,13 +621,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								}
 								else
 								{
-									new MaterialDialog.Builder(activity).title("Añadir comentario").inputType(InputType.TYPE_CLASS_TEXT).cancelable(false).inputRange(0, 160)
-									.input("Exprésate", item.getNote(), new MaterialDialog.InputCallback()
+									new MaterialDialog.Builder(activity).title(activity.getString(R.string.enrich_addcommentheader)).inputType(InputType.TYPE_CLASS_TEXT)
+									.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+									.input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
 									{
 										@Override
 										public void onInput(MaterialDialog dialog, CharSequence input)
 										{
-											System.out.println("input: "+input);
 											if(input != null)
 											{
 												if(input != "")
@@ -613,23 +637,29 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 													if(StringUtils.isNotEmpty(comment))
 													{
 														Realm realm = Realm.getDefaultInstance();
-														realm.executeTransaction(new Realm.Transaction()
+														realm.executeTransactionAsync(new Realm.Transaction()
 														{
 															@Override
 															public void execute(Realm bgRealm)
 															{
-																Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, item.getMsgId()).findFirst();
+																Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, id).findFirst();
 
 																if(message != null)
 																{
 																	message.setNote(comment);
 																}
 															}
+														}, new Realm.Transaction.OnSuccess()
+														{
+															@Override
+															public void onSuccess()
+															{
+																activity.attach(id);
+															}
 														});
 
 														holder.txtComment.setText(item.getNote());
 														Utils.showViewWithFade(holder.rlComment);
-														activity.attach(item.getMsgId());
 													}
 												}
 											}
@@ -644,8 +674,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					{
 						if(StringUtils.isNotEmpty(item.getAttached()) && StringUtils.isNotEmpty(item.getAttachedTwo()) && StringUtils.isNotEmpty(item.getAttachedThree()))
 						{
-							//TODO cambiar por nuevo icono
-							holder.iconAttach.setColorFilter(R.color.gray);
+							holder.iconAttach.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.photo_disabled));
+							holder.iconAttach.setEnabled(false);
+							holder.iconAttach.setOnClickListener(new View.OnClickListener()
+							{
+								@Override
+								public void onClick(View view)
+								{
+									Toast.makeText(activity, activity.getString(R.string.attach_limit), Toast.LENGTH_SHORT).show();
+								}
+							});
 						}
 						else
 						{
@@ -657,8 +695,15 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 									if(StringUtils.isNotEmpty(item.getAttached()) && StringUtils.isNotEmpty(item.getAttachedTwo()) && StringUtils.isNotEmpty(item.getAttachedThree()))
 									{
 										Toast.makeText(activity, activity.getString(R.string.attach_limit), Toast.LENGTH_SHORT).show();
-										//TODO cambiar por nuevo icono
-										holder.iconAttach.setColorFilter(R.color.gray);
+										holder.iconAttach.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.photo_disabled));
+										holder.iconAttach.setEnabled(false);
+										holder.iconAttach.setOnClickListener(new View.OnClickListener()
+										{
+											@Override
+											public void onClick(View view)
+											{
+											}
+										});
 									}
 									else
 									{

@@ -3,9 +3,9 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	xmlns:app="http://schemas.android.com/tools"
 	android:layout_marginBottom="4dp"
 	android:layout_marginTop="4dp"
+	android:id="@+id/rlItem"
 	android:background="@color/background_company">
 	<FrameLayout
 		android:id="@+id/line"
@@ -44,7 +44,7 @@
 				android:layout_alignParentTop="true"
 				android:layout_alignParentLeft="true"
 				android:layout_alignParentStart="true"
-				android:layout_marginTop="16dp"
+				android:layout_marginTop="6dp"
 				android:layout_marginBottom="10dp"
 				android:layout_marginRight="4dp"
 				android:layout_marginEnd="4dp"
@@ -58,7 +58,7 @@
 				android:layout_alignParentTop="true"
 				android:layout_toRightOf="@+id/iconPrice"
 				android:layout_toEndOf="@+id/iconPrice"
-				android:layout_marginTop="16dp"
+				android:layout_marginTop="6dp"
 				android:layout_marginBottom="10dp"
 				android:layout_marginRight="4dp"
 				android:layout_marginEnd="4dp"
@@ -100,12 +100,13 @@
 				android:layout_height="wrap_content"
 				android:text="@string/you_have_text"
 				android:layout_marginTop="6dp"
+				android:layout_marginBottom="10dp"
 				android:textColor="@color/black"
 				android:layout_below="@+id/rowTime"
 				android:autoLink="web"
 				android:textSize="15sp"
 				android:lineSpacingExtra="4dp" />
-            <ImageView
+			<ImageView
 				android:id="@+id/iconCert"
 				android:layout_width="30dp"
 				android:layout_height="30dp"
@@ -127,7 +128,6 @@
 				android:src="@drawable/comment"
 				android:background="?android:attr/selectableItemBackground"
 				android:visibility="visible"
-				android:layout_marginTop="10dp"
 				android:layout_marginRight="10dp"
 				android:layout_marginEnd="10dp"
 				android:layout_alignParentLeft="true"
@@ -146,11 +146,12 @@
 					android:id="@+id/txtComment"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="comentario"
+					android:text="@string/enrich_commenthint"
+					android:textColor="@color/gray"
 					android:layout_alignParentLeft="true"
-					android:layout_alignParentStart="true"
-					android:textColor="@android:color/white" />
+					android:layout_alignParentStart="true" />
 				<ImageView
+					android:contentDescription="@string/app_name"
 					android:id="@+id/ivEdit"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -168,16 +169,15 @@
 				android:background="?android:attr/selectableItemBackground"
 				android:src="@drawable/photo"
 				android:visibility="visible"
-				android:layout_marginTop="10dp"
 				android:layout_centerVertical="true"
 				android:layout_toRightOf="@+id/iconComent"
 				android:layout_toEndOf="@+id/iconComent"
 				android:contentDescription="@string/landing_contact" />
 			<de.hdodenhof.circleimageview.CircleImageView
+				xmlns:app="http://schemas.android.com/apk/res-auto"
 				android:id="@+id/imgOne"
 				android:layout_width="40dp"
 				android:layout_height="40dp"
-				android:layout_marginTop="10dp"
 				android:layout_marginLeft="10dp"
 				android:layout_marginStart="10dp"
 				android:layout_below="@id/txtContent"
@@ -187,15 +187,15 @@
 				android:layout_toRightOf="@+id/iconAttach"
 				android:layout_toEndOf="@+id/iconAttach"
 				app:civ_border_width="0dp"
-				app:civ_border_color="@color/text"
+				app:civ_border_color="@android:color/white"
 				app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />
 			<com.kuassivi.view.ProgressProfileView
+				xmlns:app="http://schemas.android.com/apk/res-auto"
 				android:id="@+id/animOne"
 				android:layout_width="40dp"
 				android:layout_height="40dp"
 				android:adjustViewBounds="true"
 				android:fitsSystemWindows="false"
-				android:layout_marginTop="10dp"
 				android:layout_marginLeft="10dp"
 				android:layout_marginStart="10dp"
 				android:layout_below="@id/txtContent"
@@ -212,10 +212,10 @@
 				app:backgroundRingSize="1dp"
 				app:progressRingSize="2dp" />
 			<de.hdodenhof.circleimageview.CircleImageView
+				xmlns:app="http://schemas.android.com/apk/res-auto"
 				android:id="@+id/imgTwo"
 				android:layout_width="40dp"
 				android:layout_height="40dp"
-				android:layout_marginTop="10dp"
 				android:layout_marginLeft="4dp"
 				android:layout_marginStart="4dp"
 				android:layout_below="@id/txtContent"
@@ -225,15 +225,15 @@
 				android:layout_toRightOf="@+id/imgOne"
 				android:layout_toEndOf="@+id/imgOne"
 				app:civ_border_width="0dp"
-				app:civ_border_color="@color/text"
+				app:civ_border_color="@android:color/white"
 				app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />
 			<com.kuassivi.view.ProgressProfileView
+				xmlns:app="http://schemas.android.com/apk/res-auto"
 				android:id="@+id/animTwo"
 				android:layout_width="40dp"
 				android:layout_height="40dp"
 				android:adjustViewBounds="true"
 				android:fitsSystemWindows="false"
-				android:layout_marginTop="10dp"
 				android:layout_marginLeft="4dp"
 				android:layout_marginStart="4dp"
 				android:layout_below="@id/txtContent"
@@ -250,10 +250,10 @@
 				app:backgroundRingSize="1dp"
 				app:progressRingSize="2dp" />
 			<de.hdodenhof.circleimageview.CircleImageView
+				xmlns:app="http://schemas.android.com/apk/res-auto"
 				android:id="@+id/imgThree"
 				android:layout_width="40dp"
 				android:layout_height="40dp"
-				android:layout_marginTop="10dp"
 				android:layout_marginLeft="4dp"
 				android:layout_marginStart="4dp"
 				android:layout_below="@id/txtContent"
@@ -263,15 +263,15 @@
 				android:layout_toRightOf="@+id/imgTwo"
 				android:layout_toEndOf="@+id/imgTwo"
 				app:civ_border_width="0dp"
-				app:civ_border_color="@color/text"
+				app:civ_border_color="@android:color/white"
 				app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />
 			<com.kuassivi.view.ProgressProfileView
+				xmlns:app="http://schemas.android.com/apk/res-auto"
 				android:id="@+id/animThree"
 				android:layout_width="40dp"
 				android:layout_height="40dp"
 				android:adjustViewBounds="true"
 				android:fitsSystemWindows="false"
-				android:layout_marginTop="10dp"
 				android:layout_marginLeft="4dp"
 				android:layout_marginStart="4dp"
 				android:layout_below="@id/txtContent"
@@ -295,9 +295,9 @@
 				android:src="@drawable/certificate"
 				android:background="?android:attr/selectableItemBackground"
 				android:visibility="visible"
-				android:layout_marginTop="10dp"
 				android:layout_alignParentRight="true"
 				android:layout_alignParentEnd="true"
+				android:layout_centerVertical="true"
 				android:clickable="true"
 				android:contentDescription="@string/landing_contact" />
 		</RelativeLayout>

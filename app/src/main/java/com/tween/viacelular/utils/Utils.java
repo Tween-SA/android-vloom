@@ -911,7 +911,7 @@ public class Utils
 		}
 	}
 
-	public static void ampliarAreaTouch(final View btnMenu)
+	public static void ampliarAreaTouch(final View btnMenu, final int value)
 	{
 		final View parent = (View) btnMenu.getParent();  // button: the view you want to enlarge hit area
 		parent.post(new Runnable()
@@ -920,10 +920,10 @@ public class Utils
 			{
 				final Rect rect = new Rect();
 				btnMenu.getHitRect(rect);
-				rect.top -= 100; // increase top hit area
-				rect.left -= 100; // increase left hit area
-				rect.bottom += 100; // increase bottom hit area
-				rect.right += 100; // increase right hit area
+				rect.top -= value; // increase top hit area
+				rect.left -= value; // increase left hit area
+				rect.bottom += value; // increase bottom hit area
+				rect.right += value; // increase right hit area
 				parent.setTouchDelegate(new TouchDelegate(rect, btnMenu));
 			}
 		});

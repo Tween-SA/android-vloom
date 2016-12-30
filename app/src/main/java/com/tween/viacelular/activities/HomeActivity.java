@@ -25,11 +25,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ImageView;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.RecyclerAdapter;
 import com.tween.viacelular.adapters.RecyclerItemClickListener;
 import com.tween.viacelular.fragments.SwipeRefreshLayoutBasicFragment;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.AppRater;
 import com.tween.viacelular.utils.Common;
@@ -51,6 +51,7 @@ public class HomeActivity extends AppCompatActivity
 	{
 		try
 		{
+			Migration.getDB(this);
 			Realm realm = Realm.getDefaultInstance();
 
 			//Agregado para efecto de transición entre pantallas
