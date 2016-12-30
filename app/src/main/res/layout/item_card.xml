@@ -3,7 +3,6 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	xmlns:app="http://schemas.android.com/tools"
 	android:layout_marginBottom="4dp"
 	android:layout_marginTop="4dp"
 	android:id="@+id/rlItem"
@@ -175,6 +174,7 @@
 				android:layout_toEndOf="@+id/iconComent"
 				android:contentDescription="@string/landing_contact" />
 			<de.hdodenhof.circleimageview.CircleImageView
+				xmlns:app="http://schemas.android.com/apk/res-auto"
 				android:id="@+id/imgOne"
 				android:layout_width="40dp"
 				android:layout_height="40dp"
@@ -187,9 +187,10 @@
 				android:layout_toRightOf="@+id/iconAttach"
 				android:layout_toEndOf="@+id/iconAttach"
 				app:civ_border_width="0dp"
-				app:civ_border_color="@color/text"
+				app:civ_border_color="@android:color/white"
 				app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />
 			<com.kuassivi.view.ProgressProfileView
+				xmlns:app="http://schemas.android.com/apk/res-auto"
 				android:id="@+id/animOne"
 				android:layout_width="40dp"
 				android:layout_height="40dp"
@@ -211,6 +212,7 @@
 				app:backgroundRingSize="1dp"
 				app:progressRingSize="2dp" />
 			<de.hdodenhof.circleimageview.CircleImageView
+				xmlns:app="http://schemas.android.com/apk/res-auto"
 				android:id="@+id/imgTwo"
 				android:layout_width="40dp"
 				android:layout_height="40dp"
@@ -223,9 +225,10 @@
 				android:layout_toRightOf="@+id/imgOne"
 				android:layout_toEndOf="@+id/imgOne"
 				app:civ_border_width="0dp"
-				app:civ_border_color="@color/text"
+				app:civ_border_color="@android:color/white"
 				app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />
 			<com.kuassivi.view.ProgressProfileView
+				xmlns:app="http://schemas.android.com/apk/res-auto"
 				android:id="@+id/animTwo"
 				android:layout_width="40dp"
 				android:layout_height="40dp"
@@ -247,6 +250,7 @@
 				app:backgroundRingSize="1dp"
 				app:progressRingSize="2dp" />
 			<de.hdodenhof.circleimageview.CircleImageView
+				xmlns:app="http://schemas.android.com/apk/res-auto"
 				android:id="@+id/imgThree"
 				android:layout_width="40dp"
 				android:layout_height="40dp"
@@ -259,9 +263,10 @@
 				android:layout_toRightOf="@+id/imgTwo"
 				android:layout_toEndOf="@+id/imgTwo"
 				app:civ_border_width="0dp"
-				app:civ_border_color="@color/text"
+				app:civ_border_color="@android:color/white"
 				app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />
 			<com.kuassivi.view.ProgressProfileView
+				xmlns:app="http://schemas.android.com/apk/res-auto"
 				android:id="@+id/animThree"
 				android:layout_width="40dp"
 				android:layout_height="40dp"
