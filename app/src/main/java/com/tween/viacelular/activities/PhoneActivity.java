@@ -111,8 +111,6 @@ public class PhoneActivity extends AppCompatActivity
 						return false;
 					}
 				});
-
-				//Se movió la preselección de país y la carga del celular a onResume
 			}
 		}
 		catch(Exception e)
@@ -450,9 +448,29 @@ public class PhoneActivity extends AppCompatActivity
 					}
 				}
 
-				if(StringUtils.isNotEmpty(isp.getCountryCode()))
+				//Agregado para mover el selector si hay diferencia de ubicación
+				if(!isp.getCountryCode().equals(isp.getCountryNet()) && !isp.getCountryCode().equals(isp.getCountrySim()))
 				{
-					countryCode = isp.getCountryCode();
+					if(StringUtils.isNotEmpty(isp.getCountryNet()))
+					{
+						country		= realm.where(Land.class).equalTo(Land.KEY_ISOCODE, isp.getCountryNet()).findFirst().getName();
+						countryCode	= isp.getCountryNet();
+					}
+					else
+					{
+						if(StringUtils.isNotEmpty(isp.getCountrySim()))
+						{
+							country		= realm.where(Land.class).equalTo(Land.KEY_ISOCODE, isp.getCountrySim()).findFirst().getName();
+							countryCode	= isp.getCountrySim();
+						}
+						else
+						{
+							if(StringUtils.isNotEmpty(isp.getCountryCode()))
+							{
+								countryCode = isp.getCountryCode();
+							}
+						}
+					}
 				}
 			}
 
