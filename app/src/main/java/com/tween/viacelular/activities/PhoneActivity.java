@@ -453,15 +453,27 @@ public class PhoneActivity extends AppCompatActivity
 				{
 					if(StringUtils.isNotEmpty(isp.getCountryNet()))
 					{
-						country		= realm.where(Land.class).equalTo(Land.KEY_ISOCODE, isp.getCountryNet()).findFirst().getName();
-						countryCode	= isp.getCountryNet();
+						Land land = realm.where(Land.class).equalTo(Land.KEY_ISOCODE, isp.getCountryNet()).findFirst();
+
+						if(land != null)
+						{
+							country = land.getName();
+						}
+
+						countryCode = isp.getCountryNet();
 					}
 					else
 					{
 						if(StringUtils.isNotEmpty(isp.getCountrySim()))
 						{
-							country		= realm.where(Land.class).equalTo(Land.KEY_ISOCODE, isp.getCountrySim()).findFirst().getName();
-							countryCode	= isp.getCountrySim();
+							Land land = realm.where(Land.class).equalTo(Land.KEY_ISOCODE, isp.getCountrySim()).findFirst();
+
+							if(land != null)
+							{
+								country = land.getName();
+							}
+
+							countryCode = isp.getCountrySim();
 						}
 						else
 						{

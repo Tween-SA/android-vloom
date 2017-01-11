@@ -3,7 +3,6 @@ package com.tween.viacelular.asynctask;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.interfaces.CallBackListener;
@@ -214,11 +213,6 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 			}
 
 			//Llamar al callback
-			if(StringUtils.isNotEmpty(result) && !result.equals(ApiConnection.OK))
-			{
-				Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
-			}
-
 			listener.callBack();
 		}
 		catch(Exception e)

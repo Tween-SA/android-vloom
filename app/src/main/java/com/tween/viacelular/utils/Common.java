@@ -53,6 +53,7 @@ public class Common
 	public static final String			KEY_LAST_MSGID				= "lastMessageId";
 	public static final String			KEY_NAME					= "name";
 	public static final String			KEY_PREF					= "vcpref";
+	public static final String			KEY_PREF_ADDRESS			= "currentAddress"; // Clave de preferencia para guardar la dirección obtenida por geocoder
 	public static final String			KEY_PREF_CALLME				= "callme"; //Clave de preferencia para activar o desactivar llamadas
 	public static final String			KEY_PREF_CALLME_TIMES		= "callmeTimes"; //Clave de preferencia para contar llamadas solicitadas
 	public static final String			KEY_PREF_CAPTURED			= "captured"; //Clave de preferencia para indicar que al usuario ya se le procesaron los sms con éxito

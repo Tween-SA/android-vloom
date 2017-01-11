@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "newrelic"
 apply plugin: "realm-android"
+apply plugin: "io.fabric"
 
 def argVersionCode = 35;
 def argVersionName = "1.3.0";
@@ -48,6 +49,7 @@ repositories
 	{
 		dirs "libs"
 	}
+	maven {url "https://maven.fabric.io/public"}
 }
 
 buildscript
@@ -79,12 +81,18 @@ dependencies
 	compile "com.android.support:recyclerview-v7:25.1.0"
 	compile "com.android.support:support-v4:25.1.0"
 	compile "com.android.support:support-v13:25.1.0"
+	compile("com.crashlytics.sdk.android:crashlytics:2.6.5@aar")
+	{
+		transitive = true;
+	}
 	compile "com.facebook.android:facebook-android-sdk:4.14.0"
 	compile "com.kuassivi.view:progressprofile:1.+"
 	compile "com.google.android.gms:play-services-ads:10.0.1"
 	compile "com.google.android.gms:play-services-analytics:10.0.1"
 	compile "com.google.android.gms:play-services-gcm:10.0.1"
 	compile "com.google.android.gms:play-services-identity:10.0.1"
+	compile "com.google.android.gms:play-services-location:10.0.1"
+	compile "com.google.android.gms:play-services-maps:10.0.1"
 	compile "com.google.firebase:firebase-analytics:10.0.1"
 	compile "com.google.firebase:firebase-auth:10.0.1"
 	compile "com.google.firebase:firebase-messaging:10.0.1"

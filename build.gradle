@@ -6,6 +6,7 @@ buildscript
 	{
 		jcenter()
 		mavenCentral()
+		maven {url "https://maven.fabric.io/public"}
 	}
 	dependencies
 	{
@@ -13,6 +14,7 @@ buildscript
 		classpath "com.google.gms:google-services:3.0.0"
 		classpath "com.newrelic.agent.android:agent-gradle-plugin:5.6.1"
 		classpath "io.realm:realm-gradle-plugin:1.2.0"
+		classpath "io.fabric.tools:gradle:1.+"
 	}
 }
 
