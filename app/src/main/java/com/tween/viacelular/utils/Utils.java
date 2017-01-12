@@ -646,7 +646,10 @@ public class Utils
 			String androidVersion	= Build.VERSION.RELEASE + " (" + android.os.Build.VERSION.SDK_INT + ")";
 			String device			= Build.MANUFACTURER + " " + Build.MODEL;
 			String lang				= Locale.getDefault().getDisplayLanguage() + " (" + Locale.getDefault().getLanguage() + ")";
-			body					= context.getString(R.string.sub_send_stadistics) + " " + context.getString(R.string.send_mail_text) + context.getString(R.string.mail_date) + " " + DateUtils.getDateTimePhone() + context.getString(R.string.mail_version) + " " + version + "\n* DB: "+ db + context.getString(R.string.mail_android) + " " + androidVersion + context.getString(R.string.mail_device) + " " + device + context.getString(R.string.mail_lang) + " " + lang;
+			body					= context.getString(R.string.sub_send_stadistics) + " " + context.getString(R.string.send_mail_text)+context.getString(R.string.mail_date)
+										+ " " + DateUtils.getDateTimePhone() + context.getString(R.string.mail_version) + " " + version + "\n* DB: "+ db +
+										context.getString(R.string.mail_android) + " " + androidVersion + context.getString(R.string.mail_device) + " " + device
+										+context.getString(R.string.mail_lang) + " " + lang;
 		}
 		catch(Exception e)
 		{
@@ -837,7 +840,7 @@ public class Utils
 	 * Método para forzar ejecuciones al iniciar un update nuevo, se modifica si es necesario sino se omite
 	 * @param activity
 	 */
-	public static void upgradeApp(Activity activity)
+	private static void upgradeApp(Activity activity)
 	{
 		try
 		{

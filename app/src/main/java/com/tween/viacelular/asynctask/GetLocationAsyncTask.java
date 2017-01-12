@@ -21,6 +21,7 @@ import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.IspHelper;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Migration;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -129,7 +130,6 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 						}
 					}
 
-					System.out.print("Before gps Lat: "+jLat+" Lon: "+jLon);
 					//Mejora para obtener la ubicación en base al gps
 					Location location				= null;
 					String bestProvider				= null;
@@ -152,14 +152,35 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 							}
 							else
 							{
-								System.out.println("location is null with getBestProvider:getLastKnownLocation");
+								//Intentamos con los demás providers
+								List<String> providers = locationManager.getAllProviders();
+
+								if(providers.size() > 0)
+								{
+									for(String provider : providers)
+									{
+										location = locationManager.getLastKnownLocation(provider);
+
+										if(location != null)
+										{
+											if(Common.DEBUG)
+											{
+												System.out.println("Provider: "+provider+" Current Location Latitude: "+location.getLatitude()+" Longitude: "+location.getLongitude());
+											}
+
+											jLat		= String.valueOf(location.getLatitude());
+											jLon		= String.valueOf(location.getLongitude());
+											foundCoords	= true;
+											break;
+										}
+									}
+								}
 							}
 						}
 						else
 						{
+							//Intentamos con los demás providers
 							List<String> providers = locationManager.getAllProviders();
-
-							System.out.println("providers: "+providers.size());
 
 							if(providers.size() > 0)
 							{
@@ -179,20 +200,10 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 										foundCoords	= true;
 										break;
 									}
-									else
-									{
-										System.out.println("Provider: "+provider+" is null");
-									}
 								}
 							}
 						}
 					}
-					else
-					{
-						System.out.println("locationManager is null");
-					}
-
-					System.out.print("After gps Lat: "+jLat+" Lon: "+jLon);
 
 					jsonResult.put(Isp.KEY_LAT, jLat);
 					jsonResult.put(Isp.KEY_LON, jLon);
@@ -230,24 +241,29 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 								currentStreet += ", "+address.getCountryName();
 							}
 
-							System.out.println("currentStreet: "+currentStreet);
-
 							jsonResult.put(Land.KEY_API, address.getCountryCode());
 							jsonResult.put(Isp.KEY_COUNTRY, address.getCountryName());
 							jsonResult.put(Isp.KEY_CITY, address.getAdminArea());
 							SharedPreferences.Editor editor	= preferences.edit();
 							editor.putString(Common.KEY_PREF_ADDRESS, currentStreet);
-							editor.putString(Land.KEY_API, address.getCountryName());
+							editor.putString(Common.KEY_GEO_LAT, jLat);
+							editor.putString(Common.KEY_GEO_LON, jLon);
+							User user = realm.where(User.class).findFirst();
+
+							if(user != null)
+							{
+								editor.putString(Land.KEY_API, address.getCountryCode());
+							}
+							else
+							{
+								editor.putString(Land.KEY_API, address.getCountryName());
+							}
+
 							editor.apply();
 						}
 					}
 				}
-				else
-				{
-					System.out.println("No se dieron permisos");
-				}
 
-				System.out.println("JSON 2 parser: "+jsonResult.toString());
 				IspHelper.parseJSON(jsonResult, context, update);
 			}
 		}
@@ -354,13 +370,9 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 					matches = geoCoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
 				}
 
-				System.out.println("Matches: "+matches.toString());
-
 				if(!matches.isEmpty())
 				{
 					bestMatch = matches.get(0);
-					System.out.println("Best Match: "+bestMatch.toString());
-					System.out.println("Lat: "+bestMatch.getLatitude()+" Lon: "+bestMatch.getLongitude());
 				}
 			}
 		}

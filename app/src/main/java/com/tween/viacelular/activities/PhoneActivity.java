@@ -240,7 +240,7 @@ public class PhoneActivity extends AppCompatActivity
 					public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text)
 					{
 						view.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.action));
-						selectCountry(text.toString(), false);
+						selectCountry(text.toString());
 					}
 				}).show();
 		}
@@ -255,37 +255,37 @@ public class PhoneActivity extends AppCompatActivity
 		}
 	}
 
-	public void selectCountry(String lblCountry, boolean isCode)
+	public void selectCountry(String lblCountry)
 	{
 		try
 		{
 			if(StringUtils.isNotEmpty(lblCountry))
 			{
 				Realm realm						= Realm.getDefaultInstance();
-				Land country					= realm.where(Land.class).equalTo(Common.KEY_NAME, lblCountry.trim()).findFirst();
 				SharedPreferences preferences	= getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 				SharedPreferences.Editor editor	= preferences.edit();
 
-				if(country != null)
+				if(realm.where(Land.class).count() > 0)
 				{
-					btnCountry.setText(lblCountry);
-					//Modificación para evitar retratamiento del 9 en AR y CL
-					inputCountry.setText(country.getCode());
-					//Agregado para actualizar el país seleccionado
+					Land country = realm.where(Land.class).equalTo(Common.KEY_NAME, lblCountry.trim()).findFirst();
 
-					editor.putString(Land.KEY_API, country.getIsoCode());
-					editor.apply();
+					if(country != null)
+					{
+						btnCountry.setText(lblCountry);
+						//Modificación para evitar retratamiento del 9 en AR y CL
+						inputCountry.setText(country.getCode());
+						//Agregado para actualizar el país seleccionado
 
-					//Agregado para obtener dinámicamente la longitud a validar
-					minLenght		= Integer.valueOf(country.getMinLength());
-					maxLenght		= Integer.valueOf(country.getMaxLength());
-					format			= country.getFormat();
-					foundCountry	= true;
-				}
-				else
-				{
-					//Agregado para buscar país por isoCode en caso de que la api ip responda en otro idioma el país. Por ej: Spain
-					if(isCode)
+						editor.putString(Land.KEY_API, country.getIsoCode());
+						editor.apply();
+
+						//Agregado para obtener dinámicamente la longitud a validar
+						minLenght		= Integer.valueOf(country.getMinLength());
+						maxLenght		= Integer.valueOf(country.getMaxLength());
+						format			= country.getFormat();
+						foundCountry	= true;
+					}
+					else
 					{
 						country = realm.where(Land.class).equalTo(Land.KEY_ISOCODE, lblCountry.trim()).findFirst();
 
@@ -306,41 +306,41 @@ public class PhoneActivity extends AppCompatActivity
 							foundCountry	= true;
 						}
 					}
-					else
+				}
+				else
+				{
+					String[] arrayCountries	= getResources().getStringArray(R.array.countries);
+					String[] arrayCodes		= getResources().getStringArray(R.array.codes);
+					String[] arrayIsoCodes	= getResources().getStringArray(R.array.isoCodes);
+					//Placeholder agregado por si no se pudo procesar el json y la api tampoco devolvió data
+					String[] arrayFormats	= getResources().getStringArray(R.array.formats);
+					String[] arrayMinLength	= getResources().getStringArray(R.array.minLength);
+					String[] arrayMaxLength	= getResources().getStringArray(R.array.maxLength);
+
+					for(int i = 0; i < arrayCountries.length; i++)
 					{
-						String[] arrayCountries	= getResources().getStringArray(R.array.countries);
-						String[] arrayCodes		= getResources().getStringArray(R.array.codes);
-						String[] arrayIsoCodes	= getResources().getStringArray(R.array.isoCodes);
-						//Placeholder agregado por si no se pudo procesar el json y la api tampoco devolvió data
-						String[] arrayFormats	= getResources().getStringArray(R.array.formats);
-						String[] arrayMinLength	= getResources().getStringArray(R.array.minLength);
-						String[] arrayMaxLength	= getResources().getStringArray(R.array.maxLength);
-
-						for(int i = 0; i < arrayCountries.length; i++)
+						if(arrayCountries[i].equals(lblCountry))
 						{
-							if(arrayCountries[i].equals(lblCountry))
+							btnCountry.setText(lblCountry);
+							//Modificación para evitar retratamiento del 9 en AR y CL
+							inputCountry.setText(arrayCodes[i]);
+							preferences		= getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+							String phone	= preferences.getString(User.KEY_PHONE, "");
+
+							if(StringUtils.isNotEmpty(phone))
 							{
-								btnCountry.setText(lblCountry);
-								//Modificación para evitar retratamiento del 9 en AR y CL
-								inputCountry.setText(arrayCodes[i]);
-								preferences		= getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-								String phone	= preferences.getString(User.KEY_PHONE, "");
-
-								if(StringUtils.isNotEmpty(phone))
-								{
-									editPhone.setText(phone.replace(arrayCodes[i], ""));
-								}
-
-								editor.putString(Land.KEY_API, arrayIsoCodes[i]);
-								editor.apply();
-
-								//Agregado para obtener dinámicamente la longitud a validar
-								minLenght		= Integer.valueOf(arrayMinLength[i]);
-								maxLenght		= Integer.valueOf(arrayMaxLength[i]);
-								format			= arrayFormats[i];
-								foundCountry	= true;
-								break;
+								editPhone.setText(phone.replace(arrayCodes[i], ""));
 							}
+
+							editor.putString(Land.KEY_API, arrayIsoCodes[i]);
+							editor.apply();
+
+							//Agregado para obtener dinámicamente la longitud a validar
+							minLenght		= Integer.valueOf(arrayMinLength[i]);
+							maxLenght		= Integer.valueOf(arrayMaxLength[i]);
+							format			= arrayFormats[i];
+							foundCountry	= true;
+							break;
 						}
 					}
 				}
@@ -437,14 +437,6 @@ public class PhoneActivity extends AppCompatActivity
 						{
 							country = isp.getCountrySim();
 						}
-						else
-						{
-							//Agregado para recargar el país si el usuario vuelve a esta pantalla
-							if(StringUtils.isNotEmpty(preferences.getString(Land.KEY_API, "")))
-							{
-								country = preferences.getString(Land.KEY_API, "");
-							}
-						}
 					}
 				}
 
@@ -486,10 +478,16 @@ public class PhoneActivity extends AppCompatActivity
 				}
 			}
 
+			//Agregado para recargar el país si el usuario vuelve a esta pantalla
+			if(StringUtils.isNotEmpty(preferences.getString(Land.KEY_API, "")))
+			{
+				country = preferences.getString(Land.KEY_API, "");
+			}
+
 			//Agregado para corregir falla en preselección de país
 			if(StringUtils.isNotEmpty(country))
 			{
-				selectCountry(country, false);
+				selectCountry(country);
 			}
 			else
 			{
@@ -502,7 +500,7 @@ public class PhoneActivity extends AppCompatActivity
 						if(StringUtils.isNotEmpty(intent.getStringExtra(Land.KEY_API)))
 						{
 							country = intent.getStringExtra(Land.KEY_API);
-							selectCountry(country, false);
+							selectCountry(country);
 						}
 					}
 				}
@@ -510,12 +508,13 @@ public class PhoneActivity extends AppCompatActivity
 
 			if(!foundCountry)
 			{
-				selectCountry(countryCode, true);
+				selectCountry(countryCode);
 			}
 
-			if(StringUtils.isNotEmpty(preferences.getString(User.KEY_PHONE, "")) && StringUtils.isNotEmpty(inputCountry.getText().toString()) && StringUtils.isEmpty(editPhone.getText().toString()))
+			if(	StringUtils.isNotEmpty(preferences.getString(User.KEY_PHONE, "")) && StringUtils.isNotEmpty(inputCountry.getText().toString()) &&
+				StringUtils.isEmpty(editPhone.getText().toString()))
 			{
-				editPhone.setText(preferences.getString(User.KEY_PHONE, "").substring(inputCountry.getText().toString().length()));
+				editPhone.setText(preferences.getString(User.KEY_PHONE, "").replace("+", "").substring(inputCountry.getText().toString().replace("+", "").length()));
 			}
 
 			//Agregado para medición de descargas por Facebook
