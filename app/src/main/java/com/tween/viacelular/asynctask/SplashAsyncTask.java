@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Isp;
-import com.tween.viacelular.models.IspHelper;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
@@ -18,7 +18,7 @@ import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-import org.json.JSONObject;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -130,23 +130,6 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 				}
 
 				realm.commitTransaction();
-
-				Isp isp = realm.where(Isp.class).findFirst();
-
-				if(isp == null)
-				{
-					JSONObject jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.IP_API, activity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
-					result					= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
-
-					if(result.equals(ApiConnection.OK))
-					{
-						IspHelper.parseJSON(jsonResult.getJSONObject(Common.KEY_CONTENT), activity.getApplicationContext(), splashed);
-					}
-					else
-					{
-						IspHelper.parseJSON(null, activity.getApplicationContext(), splashed);
-					}
-				}
 			}
 			else
 			{

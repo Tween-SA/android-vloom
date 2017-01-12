@@ -3,7 +3,6 @@ package com.tween.viacelular.asynctask;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.interfaces.CallBackListener;
@@ -16,6 +15,7 @@ import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import io.realm.Realm;
 
@@ -145,8 +145,17 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 							JSONObject enrichJSON = new JSONObject();
 							enrichJSON.put(Message.KEY_NOTE, message.getNote());
 							enrichJSON.put(Message.KEY_ATTACHED, message.getAttached());
-							enrichJSON.put(Message.KEY_ATTACHEDTWO, message.getAttachedTwo());
-							enrichJSON.put(Message.KEY_ATTACHEDTHREE, message.getAttachedThree());
+
+							if(StringUtils.isNotEmpty(message.getAttachedTwo()))
+							{
+								enrichJSON.put(Message.KEY_ATTACHEDTWO, message.getAttachedTwo());
+							}
+
+							if(StringUtils.isNotEmpty(message.getAttachedThree()))
+							{
+								enrichJSON.put(Message.KEY_ATTACHEDTHREE, message.getAttachedThree());
+							}
+
 							jsonObject.put(Common.KEY_ENRICH, enrichJSON);
 						}
 
@@ -156,12 +165,19 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 							JSONObject attachJSON = new JSONObject();
 							attachJSON.put(Common.KEY_TYPE, message.getKind());
 							attachJSON.put(Message.KEY_LINK, message.getLink());
-							attachJSON.put(Message.KEY_LINKTHUMB, message.getLinkThumbnail());
-							jsonObject.put(Message.KEY_ATTACHMENTS, attachJSON);
+
+							if(StringUtils.isNotEmpty(message.getLinkThumbnail()))
+							{
+								attachJSON.put(Message.KEY_LINKTHUMB, message.getLinkThumbnail());
+							}
+
+							JSONArray array = new JSONArray();
+							array.put(attachJSON);
+							jsonObject.put(Message.KEY_ATTACHMENTS, array);
 						}
 
 						JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES+"/"+Common.KEY_ENRICH, context,
-																	ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonObject.toString()));
+																	ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), jsonObject.toString()));
 						result					= ApiConnection.checkResponse(context, jsonResult);
 					}
 				}
@@ -197,11 +213,6 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 			}
 
 			//Llamar al callback
-			if(StringUtils.isNotEmpty(result) && !result.equals(ApiConnection.OK))
-			{
-				Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
-			}
-
 			listener.callBack();
 		}
 		catch(Exception e)

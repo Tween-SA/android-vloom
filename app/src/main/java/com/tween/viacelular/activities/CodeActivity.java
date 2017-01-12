@@ -31,6 +31,8 @@ import com.tween.viacelular.asynctask.CheckCodeAsyncTask;
 import com.tween.viacelular.asynctask.CompaniesAsyncTask;
 import com.tween.viacelular.asynctask.RegisterPhoneAsyncTask;
 import com.tween.viacelular.models.Land;
+import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -85,14 +87,15 @@ public class CodeActivity extends AppCompatActivity
 
 				if(Common.API_LEVEL >= Build.VERSION_CODES.N)
 				{
-					txtRecive.setText(Html.fromHtml(txtRecive.getText().toString().replace("+000000000000", "<b>" + preferences.getString(User.KEY_PHONE, "") + "</b>"), Html.FROM_HTML_MODE_LEGACY));
+					txtRecive.setText(Html.fromHtml(txtRecive.getText().toString().replace("+000000000000", "<b>" + preferences.getString(User.KEY_PHONE, "") + "</b>"),
+													Html.FROM_HTML_MODE_LEGACY));
 				}
 				else
 				{
 					txtRecive.setText(Html.fromHtml(txtRecive.getText().toString().replace("+000000000000", "<b>" + preferences.getString(User.KEY_PHONE, "") + "</b>")));
 				}
 
-				String code = preferences.getString(Common.KEY_CODE, "");
+				final String code = preferences.getString(Common.KEY_CODE, "");
 
 				if(StringUtils.isNotEmpty(code))
 				{
@@ -103,7 +106,10 @@ public class CodeActivity extends AppCompatActivity
 				}
 				else
 				{
-					if(!preferences.getBoolean(Common.KEY_PREF_CAPTURED, false))
+					Realm realm = Realm.getDefaultInstance();
+
+					if(	!preferences.getBoolean(Common.KEY_PREF_CAPTURED, false) && realm.where(Suscription.class).count() == 0 &&
+						realm.where(Message.class).count() < 3)
 					{
 						new CompaniesAsyncTask(CodeActivity.this, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
@@ -148,6 +154,7 @@ public class CodeActivity extends AppCompatActivity
 					@Override
 					public void onTextChanged(CharSequence s, int start, int before, int count)
 					{
+						System.out.println("onTextChanged: "+s+" start: "+start+" before: "+before+" count: "+count);
 					}
 
 					@Override
@@ -445,8 +452,8 @@ public class CodeActivity extends AppCompatActivity
 		{
 			Window window = getWindow();
 
-			// Overriding the soft input mode of the Window so that the Send and Cancel buttons appear above the soft keyboard when either EditText field gains focus. We cache the mode in order to set it
-			// back to the original value when the Fragment is paused.
+			// Overriding the soft input mode of the Window so that the Send and Cancel buttons appear above the soft keyboard when either EditText field gains focus.
+			// We cache the mode in order to set it back to the original value when the Fragment is paused.
 			originalSoftInputMode = window.getAttributes().softInputMode;
 			window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 		}

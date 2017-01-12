@@ -150,11 +150,13 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 				jsonSend.put(User.KEY_GCMID, gcmId);
 				jsonSend.put(Common.KEY_INFO, info);
 
-				jsonResult = new JSONObject(ApiConnection.request(ApiConnection.USERS, activity, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+				jsonResult = new JSONObject(ApiConnection.request(ApiConnection.USERS, activity, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""),
+											jsonSend.toString()));
 			}
 			else
 			{
-				jsonResult = new JSONObject(ApiConnection.request(ApiConnection.CALLME, activity, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+				jsonResult = new JSONObject(ApiConnection.request(ApiConnection.CALLME, activity, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""),
+											jsonSend.toString()));
 			}
 
 			result = ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);

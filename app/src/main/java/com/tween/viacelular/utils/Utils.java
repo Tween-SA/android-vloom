@@ -33,10 +33,13 @@ import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.activities.PhoneActivity;
 import com.tween.viacelular.activities.SettingsActivity;
 import com.tween.viacelular.activities.SuscriptionsActivity;
+import com.tween.viacelular.asynctask.GetLocationAsyncTask;
 import com.tween.viacelular.asynctask.MigrationAsyncTask;
 import com.tween.viacelular.asynctask.SplashAsyncTask;
 import com.tween.viacelular.asynctask.UpdateUserAsyncTask;
 import com.tween.viacelular.data.DaoMaster;
+import com.tween.viacelular.interfaces.CallBackListener;
+import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
@@ -643,7 +646,10 @@ public class Utils
 			String androidVersion	= Build.VERSION.RELEASE + " (" + android.os.Build.VERSION.SDK_INT + ")";
 			String device			= Build.MANUFACTURER + " " + Build.MODEL;
 			String lang				= Locale.getDefault().getDisplayLanguage() + " (" + Locale.getDefault().getLanguage() + ")";
-			body					= context.getString(R.string.sub_send_stadistics) + " " + context.getString(R.string.send_mail_text) + context.getString(R.string.mail_date) + " " + DateUtils.getDateTimePhone() + context.getString(R.string.mail_version) + " " + version + "\n* DB: "+ db + context.getString(R.string.mail_android) + " " + androidVersion + context.getString(R.string.mail_device) + " " + device + context.getString(R.string.mail_lang) + " " + lang;
+			body					= context.getString(R.string.sub_send_stadistics) + " " + context.getString(R.string.send_mail_text)+context.getString(R.string.mail_date)
+										+ " " + DateUtils.getDateTimePhone() + context.getString(R.string.mail_version) + " " + version + "\n* DB: "+ db +
+										context.getString(R.string.mail_android) + " " + androidVersion + context.getString(R.string.mail_device) + " " + device
+										+context.getString(R.string.mail_lang) + " " + lang;
 		}
 		catch(Exception e)
 		{
@@ -834,7 +840,7 @@ public class Utils
 	 * Método para forzar ejecuciones al iniciar un update nuevo, se modifica si es necesario sino se omite
 	 * @param activity
 	 */
-	public static void upgradeApp(Activity activity)
+	private static void upgradeApp(Activity activity)
 	{
 		try
 		{
@@ -903,6 +909,69 @@ public class Utils
 		catch(Exception e)
 		{
 			System.out.println("Utils:upgradeApp - Exception: " + e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/***
+	 * Método para actualizar ubicación de usuario y países
+	 * @param activity
+	 */
+	public static void getLocation(final Activity activity)
+	{
+		try
+		{
+			//Agregado para actualizar coordenadas
+			Realm realm	= Realm.getDefaultInstance();
+			Isp isp		= realm.where(Isp.class).findFirst();
+
+			if(isp != null)
+			{
+				if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.HIGH_FREQUENCY))
+				{
+					new GetLocationAsyncTask(activity, false, true, new CallBackListener()
+					{
+						@Override
+						public void callBack()
+						{
+							activity.runOnUiThread(new Runnable()
+							{
+								@Override
+								public void run()
+								{
+									upgradeApp(activity);
+								}
+							});
+						}
+					}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
+			}
+			else
+			{
+				new GetLocationAsyncTask(activity, false, false, new CallBackListener()
+				{
+					@Override
+					public void callBack()
+					{
+						activity.runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								upgradeApp(activity);
+							}
+						});
+					}
+				}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("Utils:getLocation - Exception: " + e);
 
 			if(Common.DEBUG)
 			{

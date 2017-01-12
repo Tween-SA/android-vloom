@@ -675,7 +675,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 						if(StringUtils.isNotEmpty(item.getAttached()) && StringUtils.isNotEmpty(item.getAttachedTwo()) && StringUtils.isNotEmpty(item.getAttachedThree()))
 						{
 							holder.iconAttach.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.photo_disabled));
-							holder.iconAttach.setEnabled(false);
 							holder.iconAttach.setOnClickListener(new View.OnClickListener()
 							{
 								@Override
@@ -696,7 +695,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 									{
 										Toast.makeText(activity, activity.getString(R.string.attach_limit), Toast.LENGTH_SHORT).show();
 										holder.iconAttach.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.photo_disabled));
-										holder.iconAttach.setEnabled(false);
 										holder.iconAttach.setOnClickListener(new View.OnClickListener()
 										{
 											@Override

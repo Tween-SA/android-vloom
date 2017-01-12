@@ -90,7 +90,8 @@ public class SettingsActivity extends AppCompatActivity
 				setSupportActionBar(toolBar);
 				RecyclerView mRecyclerView		= (RecyclerView) findViewById(R.id.RecyclerView);
 				mRecyclerView.setHasFixedSize(true);
-				RecyclerView.Adapter mAdapter	= new RecyclerAdapter(	Utils.getMenu(getApplicationContext()), intentRecive.getIntExtra(Common.KEY_SECTION, RecyclerAdapter.SETTINGS_SELECTED),
+				RecyclerView.Adapter mAdapter	= new RecyclerAdapter(	Utils.getMenu(getApplicationContext()),
+																		intentRecive.getIntExtra(Common.KEY_SECTION, RecyclerAdapter.SETTINGS_SELECTED),
 																		ContextCompat.getColor(getApplicationContext(), R.color.accent), getApplicationContext());
 
 				mRecyclerView.setAdapter(mAdapter);
