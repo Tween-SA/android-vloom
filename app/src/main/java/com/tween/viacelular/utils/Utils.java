@@ -268,23 +268,33 @@ public class Utils
 				break;
 
 				case Common.CODE_SCREEN:
-					if(logged && checked)
+					if(!freePassOn)
 					{
-						intent	= new Intent(activity, HomeActivity.class);
-						intent.putExtra(Common.KEY_REFRESH, false);
-						activity.startActivity(intent);
-						activity.finish();
-						result	= false;
-					}
-					else
-					{
-						if(!logged)
+						if(logged && checked)
 						{
-							intent	= new Intent(activity, PhoneActivity.class);
+							intent	= new Intent(activity, HomeActivity.class);
+							intent.putExtra(Common.KEY_REFRESH, false);
 							activity.startActivity(intent);
 							activity.finish();
 							result	= false;
 						}
+						/*else
+						{
+							if(!logged)
+							{
+								intent	= new Intent(activity, PhoneActivity.class);
+								activity.startActivity(intent);
+								activity.finish();
+								result	= false;
+							}
+						}*/
+					}
+					else
+					{
+						intent	= new Intent(activity, HomeActivity.class);
+						activity.startActivity(intent);
+						activity.finish();
+						result	= false;
 					}
 				break;
 

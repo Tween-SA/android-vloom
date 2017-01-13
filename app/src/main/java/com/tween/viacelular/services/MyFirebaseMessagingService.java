@@ -19,7 +19,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.tween.viacelular.R;
-import com.tween.viacelular.activities.BlockedActivity;
+import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.asynctask.CompanyAsyncTask;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
@@ -413,7 +413,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 						//Rollback para autoañadir companies si no está añadida
 						if(!newClient && clientP.getFollower() == Common.BOOL_NO && clientP.getBlocked() == Common.BOOL_NO)
 						{
-							BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, false, clientP.getCompanyId(), false);
+							HomeActivity.modifySubscriptions(context, Common.BOOL_YES, false, clientP.getCompanyId(), false);
 						}
 					}
 					else

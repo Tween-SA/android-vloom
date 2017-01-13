@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.activities.BlockedActivity;
+import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.data.Company;
 import com.tween.viacelular.data.CompanyDao;
 import com.tween.viacelular.data.DaoMaster;
@@ -271,7 +271,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 	{
 		try
 		{
-			BlockedActivity.modifySubscriptions(activity, Common.BOOL_YES, true, "", false);
+			HomeActivity.modifySubscriptions(activity, Common.BOOL_YES, true, "", false);
 
 			//TODO Revisar y actualizar esto con cada nueva versión
 			SharedPreferences preferences	= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);

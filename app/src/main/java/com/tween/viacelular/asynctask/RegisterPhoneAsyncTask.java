@@ -167,11 +167,12 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 
 				if(jsonData != null)
 				{
+					SharedPreferences.Editor editor = preferences.edit();
+					editor.putString(User.FAKE_USER, jsonData.toString());
 					User userParsed = UserHelper.parseJSON(jsonData, false, null);
 
 					if(userParsed != null)
 					{
-						SharedPreferences.Editor editor = preferences.edit();
 						editor.putString(User.KEY_PHONE, phone);
 
 						if(StringUtils.isNotEmpty(userParsed.getUserId()))
@@ -184,7 +185,6 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 						//Agregado para resetear el contador de llamadas
 						editor.putBoolean(Common.KEY_PREF_CALLME, true);
 						editor.putInt(Common.KEY_PREF_CALLME_TIMES, 0);
-						editor.apply();
 						result = ApiConnection.OK;
 					}
 					else
@@ -194,6 +194,8 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 							result = activity.getString(R.string.response_invalid);
 						}
 					}
+
+					editor.apply();
 				}
 				else
 				{

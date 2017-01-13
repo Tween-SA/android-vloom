@@ -34,9 +34,13 @@ import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
+import com.tween.viacelular.models.UserHelper;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
+import org.json.JSONObject;
+
 import java.util.concurrent.TimeUnit;
 import io.realm.Realm;
 
@@ -116,29 +120,47 @@ public class CodeActivity extends AppCompatActivity
 				}
 
 				//Modificación para que el contador sea por 2 minutos, y que a los 3 minutos se aparezca el botón para pasar sin validar
-				countDownTimer = new CountDownTimer(120000, 1000)
-				{
-					public void onTick(long millisUntilFinished)
-					{
-						String timer	=	getString(R.string.timer_count);
-						String format	=	"" + String.format("%d:%02d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
-											TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
-						timer			=	timer.replace("0:00", format);
-						txtCount.setText(timer);
-						//Agregado para mostrar botón para saltar la verificación de código
-						if(firstRound && (TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) == 0))
-						{
-							btnFreePass.setVisibility(Button.VISIBLE);
-						}
-					}
+				boolean callme = preferences.getBoolean(Common.KEY_PREF_CALLME, true);
 
-					public void onFinish()
+				if(callme)
+				{
+					//Modificación para una vez completado el timer llamar directamente a la Api de llamada y quitar el cambio de botón
+					if(preferences.getInt(Common.KEY_PREF_CALLME_TIMES, 0) < 2)
 					{
-						txtCount.setText(getString(R.string.timer_count));
-						enableRetry();
-						firstRound = true;
+						countDownTimer = new CountDownTimer(120000, 1000)
+						{
+							public void onTick(long millisUntilFinished)
+							{
+								String timer	=	getString(R.string.timer_count);
+								String format	=	"" + String.format("%d:%02d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+										TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
+								timer			=	timer.replace("0:00", format);
+								txtCount.setText(timer);
+								//Agregado para mostrar botón para saltar la verificación de código
+								if(firstRound && (TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) == 0))
+								{
+									btnFreePass.setVisibility(Button.VISIBLE);
+								}
+							}
+
+							public void onFinish()
+							{
+								txtCount.setText(getString(R.string.timer_count));
+								enableRetry();
+								firstRound = true;
+							}
+						}.start();
 					}
-				}.start();
+					else
+					{
+						btnFreePass.setVisibility(Button.VISIBLE);
+					}
+				}
+				else
+				{
+					btnFreePass.setVisibility(Button.VISIBLE);
+				}
+
 
 				//Agregado para habilitar el botón luego de terminar de escribir en el input
 				editCode.addTextChangedListener(new TextWatcher()
@@ -146,7 +168,6 @@ public class CodeActivity extends AppCompatActivity
 					@Override
 					public void beforeTextChanged(CharSequence s, int start, int count, int after)
 					{
-						//TODO Mejora aplicar contador de caracteres para detectar si se termino de colocar los 4 digitos y validar automáticamente similar a la nueva app Galicia
 						inputCode.setErrorEnabled(false);
 						enableNextStep();
 					}
@@ -154,12 +175,16 @@ public class CodeActivity extends AppCompatActivity
 					@Override
 					public void onTextChanged(CharSequence s, int start, int before, int count)
 					{
-						System.out.println("onTextChanged: "+s+" start: "+start+" before: "+before+" count: "+count);
 					}
 
 					@Override
 					public void afterTextChanged(Editable s)
 					{
+						//Mejora para detectar si se termino de colocar los 4 digitos y validar automáticamente similar a la nueva app Galicia
+						if(s.toString().length() == 4)
+						{
+							login(null);
+						}
 					}
 				});
 				//Agregado para que el usuario no tenga que tocar el botón para continuar cuando el teclado se oculta
@@ -234,6 +259,14 @@ public class CodeActivity extends AppCompatActivity
 					new RegisterPhoneAsyncTask(CodeActivity.this, preferences.getString(User.KEY_PHONE, ""), false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					countDownTimer.start();
 				}
+				else
+				{
+					btnFreePass.setVisibility(Button.VISIBLE);
+				}
+			}
+			else
+			{
+				btnFreePass.setVisibility(Button.VISIBLE);
 			}
 		}
 		catch(Exception e)
@@ -266,24 +299,32 @@ public class CodeActivity extends AppCompatActivity
 			Realm realm	= Realm.getDefaultInstance();
 			User user	= realm.where(User.class).findFirst();
 
+			if(user == null)
+			{
+				//Crear usuario de mentira
+				user = UserHelper.parseJSON(new JSONObject(preferences.getString(User.FAKE_USER, "")), false, null);
+			}
+
 			if(user != null)
 			{
-				realm.beginTransaction();
+				final User userFinal = user;
 
-				if(user.getPhone().replace("+", "").equals("5492616333888"))
+				realm.executeTransaction(new Realm.Transaction()
 				{
-					user.setUserId(User.USERID);
-				}
-
-				user.setStatus(User.STATUS_INACTIVE);
-				realm.commitTransaction();
-				SharedPreferences.Editor editor	= preferences.edit();
-				editor.putBoolean(Common.KEY_PREF_CALLME, false);
-				editor.putBoolean(Common.KEY_PREF_LOGGED, true);
-				editor.putBoolean(Common.KEY_PREF_CHECKED, true);
-				editor.putBoolean(Common.KEY_PREF_FREEPASS, true);
-				editor.apply();
+					@Override
+					public void execute(Realm realm)
+					{
+						userFinal.setStatus(User.STATUS_INACTIVE);
+					}
+				});
 			}
+
+			SharedPreferences.Editor editor	= preferences.edit();
+			editor.putBoolean(Common.KEY_PREF_CALLME, false);
+			editor.putBoolean(Common.KEY_PREF_LOGGED, true);
+			editor.putBoolean(Common.KEY_PREF_CHECKED, true);
+			editor.putBoolean(Common.KEY_PREF_FREEPASS, true);
+			editor.apply();
 
 			if(progress.isShowing())
 			{

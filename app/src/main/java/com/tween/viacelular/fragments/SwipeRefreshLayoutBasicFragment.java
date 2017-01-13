@@ -20,11 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
-import com.tween.viacelular.activities.BlockedActivity;
 import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
@@ -40,8 +40,10 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -449,24 +451,26 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					if(Utils.reverseBool(company.getFollower()) == Common.BOOL_NO)
 					{
 						//Agregado para capturar evento en Google Analytics
-						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Bloquear")
-																														.setLabel("AccionUser").build());
+						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Company")
+																													.setAction("Bloquear")
+																													.setLabel("AccionUser").build());
 						snackBarText = context.getString(R.string.snack_blocked);
 					}
 					else
 					{
 						//Agregado para capturar evento en Google Analytics
-						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Agregar")
-																														.setLabel("AccionUser").build());
+						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Company")
+																													.setAction("Agregar")
+																													.setLabel("AccionUser").build());
 					}
 
-					BlockedActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(client.getFollower()), false, company.getCompanyId(), false);
+					HomeActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(client.getFollower()), false, company.getCompanyId(), false);
 					snackBar = Snackbar.make(clayout, snackBarText, Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
 						@Override
 						public void onClick(View v)
 						{
-							BlockedActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(company.getFollower()), false, companyId, false);
+							HomeActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(company.getFollower()), false, companyId, false);
 							refresh(false, false);
 						}
 					});

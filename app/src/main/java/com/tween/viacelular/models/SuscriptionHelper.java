@@ -276,12 +276,12 @@ public abstract class SuscriptionHelper
 													.findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 			realmResults.distinct(Suscription.KEY_API);
 
-			//Agregado para corregir que las companies se orden por creación de último mensaje
-			List<Message> messages = new LinkedList<>(realmResults);
-			Collections.sort(messages, new TimestampComparator());
-
-			if(messages.size() > 0)
+			if(realmResults.size() > 0)
 			{
+				//Agregado para corregir que las companies se orden por creación de último mensaje
+				List<Message> messages = new LinkedList<>(realmResults);
+				Collections.sort(messages, new TimestampComparator());
+
 				for(Message message: messages)
 				{
 					if(StringUtils.isIdMongo(message.getCompanyId()))
@@ -378,7 +378,7 @@ public abstract class SuscriptionHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("Susscription:parseList - Exception: " + e);
+			System.out.println("SusscriptionHelper:parseList - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
@@ -1011,7 +1011,7 @@ public abstract class SuscriptionHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("Suscription:parseEntity - Exception: " + e);
+			System.out.println("SuscriptionHelper:parseEntity - Exception: " + e);
 
 			if(Common.DEBUG)
 			{

@@ -74,12 +74,6 @@
 			android:windowSoftInputMode="adjustResize|stateHidden">
 		</activity>
 		<activity
-			android:name="com.tween.viacelular.activities.BlockedActivity"
-			android:label="@string/title_blocked"
-			android:screenOrientation="portrait"
-			android:windowSoftInputMode="adjustResize|stateHidden">
-		</activity>
-		<activity
 			android:name="com.tween.viacelular.activities.SettingsActivity"
 			android:label="@string/title_settings"
 			android:screenOrientation="portrait"
