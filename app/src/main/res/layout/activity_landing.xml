@@ -149,7 +149,6 @@
 						android:layout_height="36dp"
 						android:text="@string/landing_suscribe"
 						android:textColor="@color/black"
-						android:textColorHint="@android:color/secondary_text_light"
 						android:textSize="14sp"
 						android:onClick="suscribe"
 						android:background="@android:color/white"

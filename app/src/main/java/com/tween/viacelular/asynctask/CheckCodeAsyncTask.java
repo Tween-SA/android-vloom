@@ -134,7 +134,8 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 					setWasValidated(false);
 				}
 
-				jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.USERS, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+				jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""),
+												jsonSend.toString()));
 				result		= ApiConnection.checkResponse(context, jsonResult);
 			}
 			else
@@ -167,6 +168,7 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 								editor.putBoolean(Common.KEY_PREF_CALLME, false);
 								editor.putBoolean(Common.KEY_PREF_LOGGED, true);
 								editor.putBoolean(Common.KEY_PREF_CHECKED, true);
+								editor.putBoolean(Common.KEY_PREF_FREEPASS, false);
 								//Agregado para reducir frencuencia para actualizar usuario
 								editor.putLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
 								editor.apply();
@@ -207,8 +209,8 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 				jsonSend.put(User.KEY_PHONE, phone);
 				jsonSend.put(User.KEY_GCMID, gcmId);
 				jsonSend.put(Common.KEY_INFO, info);
-				jsonResult	= new JSONObject(ApiConnection.request(	ApiConnection.USERS+"/callbacks/welcome", context, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""),
-																	jsonSend.toString()));
+				jsonResult	= new JSONObject(ApiConnection.request(	ApiConnection.USERS+"/callbacks/welcome", context, ApiConnection.METHOD_POST,
+																	preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
 			}
 		}
 		catch(JSONException e)
@@ -277,12 +279,12 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 	}
 
 	//Agregados para diferenciar validación normal de validación posterior al ingreso
-	public boolean isWasValidated()
+	private boolean isWasValidated()
 	{
 		return wasValidated;
 	}
 
-	public void setWasValidated(final boolean wasValidated)
+	private void setWasValidated(final boolean wasValidated)
 	{
 		this.wasValidated = wasValidated;
 	}

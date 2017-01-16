@@ -235,8 +235,6 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							txtBigTitle.setTextColor(Color.BLACK);
 							txtSubTitle.setTextColor(Color.DKGRAY);
 							txtSubTitleCollapsed.setTextColor(Color.DKGRAY);
-							btnSuscribe.setTextColor(Color.WHITE);
-							btnSuscribe.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
 							ibBack.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_arrow_back_black_24dp));
 						}
 						else
@@ -283,14 +281,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 						else
 						{
 							btnSuscribe.setText(getString(R.string.landing_suscribe));
-							if(Utils.isLightColor(color))
-							{
-								btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.white));
-							}
-							else
-							{
-								btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.white));
-							}
+							btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.black));
 						}
 					}
 				}

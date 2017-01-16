@@ -3,7 +3,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:fitsSystemWindows="true"
-	tools:context="com.tween.viacelular.activities.PhoneActivity">
+	tools:context="com.tween.viacelular.activities.VerifyPhoneActivity">
 	<include
 		android:id="@+id/toolbarRegister"
 		layout="@layout/tool_bar" />
@@ -77,11 +77,9 @@
 					android:imeOptions="actionSend"
 					android:inputType="phone" />
 			</android.support.design.widget.TextInputLayout>
-			<!-- Adaptación a Material Design Guidelines -->
 			<Button
 				android:id="@+id/btnContinue"
-				android:layout_width="wrap_content"
-				android:minWidth="88dp"
+				android:layout_width="match_parent"
 				android:layout_height="36dp"
 				android:text="@string/btn_continue"
 				android:textColor="@android:color/white"

@@ -10,6 +10,49 @@
 		android:layout_height="wrap_content"
 		android:layout_below="@+id/toolBar">
 		<RelativeLayout
+			android:id="@+id/rlFreePass"
+			android:layout_centerHorizontal="true"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:layout_marginBottom="10dp"
+			android:layout_marginLeft="20dp"
+			android:layout_marginStart="20dp"
+			android:layout_marginRight="20dp"
+			android:layout_marginEnd="20dp"
+			android:background="@drawable/freepass">
+			<ImageView
+				android:id="@+id/ivFreePass"
+				android:layout_width="30dp"
+				android:layout_height="30dp"
+				android:layout_marginLeft="10dp"
+				android:layout_centerVertical="true"
+				android:layout_marginStart="10dp"
+				android:src="@drawable/ic_beenhere_white_36dp" />
+			<TextView
+				android:id="@+id/txtFreePassTitle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_toRightOf="@+id/ivFreePass"
+				android:layout_marginLeft="4dp"
+				android:layout_marginStart="4dp"
+				android:textStyle="bold"
+				android:layout_toEndOf="@+id/ivFreePass"
+				android:textColor="@android:color/white"
+				android:text="@string/verify_phone_warning" />
+			<TextView
+				android:layout_below="@+id/txtFreePassTitle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_toRightOf="@+id/ivFreePass"
+				android:layout_marginLeft="4dp"
+				android:layout_marginStart="4dp"
+				android:layout_toEndOf="@+id/ivFreePass"
+				android:textColor="@android:color/white"
+				android:text="@string/verify_phone_add" />
+		</RelativeLayout>
+		<RelativeLayout
+			android:layout_below="@+id/rlFreePass"
 			android:id="@+id/rlEmpty"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent">

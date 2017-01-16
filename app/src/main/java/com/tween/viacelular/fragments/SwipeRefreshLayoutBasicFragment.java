@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -40,18 +39,17 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
- * A basic sample that shows how to use {@link android.support.v4.widget.SwipeRefreshLayout} to add the 'swipe-to-refresh' gesture to a layout. In this sample, SwipeRefreshLayout contains a
- * scrollable {@link android.widget.ListView} as its only child.
+ * A basic sample that shows how to use {@link android.support.v4.widget.SwipeRefreshLayout} to add the 'swipe-to-refresh' gesture to a layout.
+ * In this sample, SwipeRefreshLayout contains a scrollable {@link android.widget.ListView} as its only child.
  *
- * <p>To provide an accessible way to trigger the refresh, this app also provides a refresh action item. <p>In this sample app, the refresh updates the ListView with a random set of new items.
+ * <p>To provide an accessible way to trigger the refresh, this app also provides a refresh action item.
+ * <p>In this sample app, the refresh updates the ListView with a random set of new items.
  * Created by davidfigueroa on 17/11/15.
  */
 public class SwipeRefreshLayoutBasicFragment extends Fragment
@@ -66,6 +64,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 	private HomeAdapter			adapter;
 	private HomeActivity		homeActivity;
 	private RelativeLayout		rlEmpty;
+	private RelativeLayout		rlFreePass;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -93,6 +92,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 		try
 		{
+			rlFreePass									= (RelativeLayout) view.findViewById(R.id.rlFreePass);
 			mSwipeRefreshLayout							= (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
 			mSwipeRefreshLayout.setColorSchemeResources(R.color.swipe_color_1, R.color.swipe_color_2, R.color.swipe_color_3, R.color.accent);
 			rcwHome										= (RecyclerView) view.findViewById(R.id.rcwHome);
@@ -100,6 +100,16 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			RecyclerView.LayoutManager mLayoutManager	= new LinearLayoutManager(getActivity());
 			rcwHome.setLayoutManager(mLayoutManager);
 			rlEmpty										= (RelativeLayout) view.findViewById(R.id.rlEmpty);
+			SharedPreferences preferences				= getHomeActivity().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+
+			if(preferences.getBoolean(Common.KEY_PREF_FREEPASS, false))
+			{
+				rlFreePass.setVisibility(RelativeLayout.VISIBLE);
+			}
+			else
+			{
+				rlFreePass.setVisibility(RelativeLayout.GONE);
+			}
 		}
 		catch(Exception e)
 		{
@@ -389,8 +399,8 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					else
 					{
 						//Agregado para capturar evento en Google Analytics
-						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Silenciar")
-																														.setLabel("AccionUser").build());
+						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company")
+																														.setAction("Silenciar").setLabel("AccionUser").build());
 						suscription.setSilenced(Common.BOOL_YES);
 					}
 
@@ -422,8 +432,8 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 				case IconOptionAdapter.OPTION_EMPTY:
 					//Agregado para capturar evento en Google Analytics
-					GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Vaciar")
-																													.setLabel("AccionUser").build());
+					GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company")
+																													.setAction("Vaciar").setLabel("AccionUser").build());
 					//Modificación para ejecutar proceso en background
 					if(StringUtils.isNotEmpty(companyId))
 					{
@@ -452,16 +462,14 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					{
 						//Agregado para capturar evento en Google Analytics
 						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Company")
-																													.setAction("Bloquear")
-																													.setLabel("AccionUser").build());
+																													.setAction("Bloquear").setLabel("AccionUser").build());
 						snackBarText = context.getString(R.string.snack_blocked);
 					}
 					else
 					{
 						//Agregado para capturar evento en Google Analytics
 						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Company")
-																													.setAction("Agregar")
-																													.setLabel("AccionUser").build());
+																													.setAction("Agregar").setLabel("AccionUser").build());
 					}
 
 					HomeActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(client.getFollower()), false, company.getCompanyId(), false);
@@ -633,8 +641,10 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 						{
 							for(Message message : messages)
 							{
-								Suscription client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(message.getChannel(), message.getMsg(),
-														homeActivity, country)).findFirst();
+								Suscription client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(	message.getChannel(),
+																																							message.getMsg(),
+																																							homeActivity, country))
+														.findFirst();
 
 								if(client != null)
 								{

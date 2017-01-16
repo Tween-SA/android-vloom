@@ -21,8 +21,8 @@
 			android:layout_height="wrap_content"
 			android:layout_marginTop="20dp"
 			android:layout_marginBottom="20dp"
-			android:text="@string/sent_sms"
-			android:textColor="@color/background_material_dark"
+			android:text="@string/verify_phone_code"
+			android:textColor="@color/text"
 			android:textSize="14sp" />
 		<android.support.design.widget.TextInputLayout
 			android:layout_width="match_parent"
@@ -47,7 +47,7 @@
 			android:layout_marginTop="10dp"
 			android:text="@string/timer_count"
 			android:layout_below="@+id/inputCode"
-			android:textColor="@color/background_material_dark"
+			android:textColor="@color/text"
 			android:textSize="13sp"
 			android:visibility="visible" />
 		<!-- Agregado para permitir pasar sin validar -->
