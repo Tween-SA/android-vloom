@@ -1,10 +1,12 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,8 +25,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.FacebookSdk;
 import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.RegisterPhoneAsyncTask;
 import com.tween.viacelular.models.Isp;
@@ -55,7 +57,6 @@ public class VerifyPhoneActivity extends AppCompatActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		//Agregado para capturar excepciones
 		try
 		{
 			super.onCreate(savedInstanceState);
@@ -68,60 +69,81 @@ public class VerifyPhoneActivity extends AppCompatActivity
 			editPhone		= (EditText) findViewById(R.id.editPhone);
 			inputPhone		= (TextInputLayout) findViewById(R.id.inputPhone);
 			setSupportActionBar(toolBar);
+			toolBar.setNavigationIcon(R.drawable.back);
 			Utils.tintColorScreen(this, Common.COLOR_ACTION);
-
-			if(Utils.checkSesion(this, Common.PHONE_SCREEN))
+			inputCountry.setText(Common.CODE_FORMAT);
+			//La importación de Country desde API se traslado al onPostExecute de SplashAsyncTask
+			inputPhone.setErrorEnabled(false);
+			toolBar.setNavigationOnClickListener(new View.OnClickListener()
 			{
-				inputCountry.setText(Common.CODE_FORMAT);
-				//La importación de Country desde API se traslado al onPostExecute de SplashAsyncTask
-				inputPhone.setErrorEnabled(false);
-
-				//Agregado para habilitar el botón luego de terminar de escribir en el input
-				editPhone.addTextChangedListener(new TextWatcher()
+				@Override
+				public void onClick(final View v)
 				{
-					@Override
-					public void beforeTextChanged(CharSequence s, int start, int count, int after)
-					{
-						inputPhone.setErrorEnabled(false);
-						btnContinue.setEnabled(true);
-						btnContinue.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.accent));
-					}
+					onBackPressed();
+				}
+			});
 
-					@Override
-					public void onTextChanged(CharSequence s, int start, int before, int count)
-					{
-					}
-
-					@Override
-					public void afterTextChanged(Editable s)
-					{
-					}
-				});
-				//Agregado para que el usuario no tenga que tocar el botón para continuar cuando el teclado se oculta
-				editPhone.setOnEditorActionListener(new TextView.OnEditorActionListener()
+			//Agregado para habilitar el botón luego de terminar de escribir en el input
+			editPhone.addTextChangedListener(new TextWatcher()
+			{
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count, int after)
 				{
-					public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
-					{
-						if(actionId == EditorInfo.IME_ACTION_SEND)
-						{
-							register(v);
-							return true;
-						}
+					inputPhone.setErrorEnabled(false);
+					btnContinue.setEnabled(true);
+					btnContinue.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.accent));
+				}
 
-						return false;
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before, int count)
+				{
+				}
+
+				@Override
+				public void afterTextChanged(Editable s)
+				{
+				}
+			});
+			//Agregado para que el usuario no tenga que tocar el botón para continuar cuando el teclado se oculta
+			editPhone.setOnEditorActionListener(new TextView.OnEditorActionListener()
+			{
+				public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+				{
+					if(actionId == EditorInfo.IME_ACTION_SEND)
+					{
+						register(v);
+						return true;
 					}
-				});
-			}
+
+					return false;
+				}
+			});
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:OnCreate - Exception: " + e);
+			System.out.println("VerifyPhoneActivity:OnCreate - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public void onBackPressed()
+	{
+		final Activity activity = this;
+		new MaterialDialog.Builder(this).title(R.string.title_activity_phone).content(R.string.verify_phone_missing).cancelable(false).positiveText(R.string.ok)
+			.negativeText(R.string.disagree).onPositive(new MaterialDialog.SingleButtonCallback()
+			{
+				@Override
+				public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
+				{
+					activity.finish();
+				}
+			})
+			.build().show();
 	}
 
 	@Override
@@ -138,7 +160,17 @@ public class VerifyPhoneActivity extends AppCompatActivity
 
 	public void register(View view)
 	{
-		registerMethod();
+		String confirm = getString(R.string.verify_phone_alert).replace("+0", inputCountry.getText().toString()+editPhone.getText().toString().trim());
+		new MaterialDialog.Builder(this).cancelable(false).positiveText(R.string.ok).negativeText(R.string.verify_phone_edit).content(confirm)
+			.onPositive(new MaterialDialog.SingleButtonCallback()
+			{
+				@Override
+				public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
+				{
+					registerMethod();
+				}
+			})
+			.build().show();
 	}
 
 	public boolean registerMethod()
@@ -191,11 +223,11 @@ public class VerifyPhoneActivity extends AppCompatActivity
 			}
 
 			phone = inputCountry.getText().toString() + phone;
-			new RegisterPhoneAsyncTask(VerifyPhoneActivity.this, phone).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			new RegisterPhoneAsyncTask(true, VerifyPhoneActivity.this, phone).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:register - Exception: " + e);
+			System.out.println("VerifyPhoneActivity:register - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
@@ -246,7 +278,7 @@ public class VerifyPhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:showCountries - Exception: " + e);
+			System.out.println("VerifyPhoneActivity:showCountries - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
@@ -360,7 +392,7 @@ public class VerifyPhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:selectCountry - Exception: " + e);
+			System.out.println("VerifyPhoneActivity:selectCountry - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
@@ -387,7 +419,7 @@ public class VerifyPhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:hideSoftKeyboard - Exception: " + e);
+			System.out.println("VerifyPhoneActivity:hideSoftKeyboard - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
@@ -516,27 +548,15 @@ public class VerifyPhoneActivity extends AppCompatActivity
 			{
 				editPhone.setText(preferences.getString(User.KEY_PHONE, "").replace("+", "").substring(inputCountry.getText().toString().replace("+", "").length()));
 			}
-
-			//Agregado para medición de descargas por Facebook
-			if(!Common.DEBUG)
-			{
-				FacebookSdk.sdkInitialize(getApplicationContext());
-			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:onResume - Exception: " + e);
+			System.out.println("VerifyPhoneActivity:onResume - Exception: " + e);
 
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
 			}
 		}
-	}
-
-	//Agregado para medición de descargas por Facebook
-	protected void onPause()
-	{
-		super.onPause();
 	}
 }

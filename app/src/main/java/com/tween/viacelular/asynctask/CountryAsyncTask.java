@@ -71,10 +71,15 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 		{
 			//Modificaciones para contemplar migración a Realm
 			Realm realm						= Realm.getDefaultInstance();
-			RealmResults<Land> countries	= realm.where(Land.class).findAll();
-			realm.beginTransaction();
-			countries.deleteAllFromRealm();
-			realm.commitTransaction();
+			final RealmResults<Land> countries	= realm.where(Land.class).findAll();
+			realm.executeTransaction(new Realm.Transaction()
+			{
+				@Override
+				public void execute(Realm realm)
+				{
+					countries.deleteAllFromRealm();
+				}
+			});
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			JSONObject jsonResult			= new JSONObject(	ApiConnection.request(ApiConnection.COUNTRIES, context, ApiConnection.METHOD_GET,
 																preferences.getString(Common.KEY_TOKEN, ""), ""));

@@ -210,7 +210,7 @@
 	<string name="verify_phone_code">Esperando para detectar automáticamente el SMS enviado al +000000000000</string><!-- after traslate -->
 	<string name="verify_phone_contact">Contactar a soporte</string><!-- after traslate -->
 	<string name="verify_phone_edit">Editar</string><!-- after traslate -->
-	<string name="verify_phone_missing">Si no verificas tu número tus empresas favoritas no podrán comunicarse contigo</string><!-- after traslate -->
+	<string name="verify_phone_missing">Si no verificas tu número, tus empresas favoritas no podrán comunicarse contigo</string><!-- after traslate -->
 	<string name="verify_phone_subtitle">Confirma tu país e introduce tu código de área seguido de tu número de teléfono móvil:</string><!-- after traslate -->
 	<string name="verify_phone_title">te enviará un SMS para verificar tu número de teléfono.</string><!-- after traslate -->
 	<string name="verify_phone_warning">Mantén tu cuenta segura</string><!-- after traslate -->

@@ -103,7 +103,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 					{
 						if(users.size() > 0)
 						{
-							com.tween.viacelular.models.User user = new com.tween.viacelular.models.User();
+							final com.tween.viacelular.models.User user = new com.tween.viacelular.models.User();
 							user.setUserId(users.get(0).getUserId());
 							user.setFirstName(users.get(0).getFirstName());
 							user.setLastName(users.get(0).getLastName());
@@ -115,9 +115,14 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 							user.setGcmId(users.get(0).getGcmId());
 							user.setStatus(users.get(0).getStatus());
 							user.setCountryCode(users.get(0).getCountryCode());
-							realm.beginTransaction();
-							realm.copyToRealmOrUpdate(user);
-							realm.commitTransaction();
+							realm.executeTransaction(new Realm.Transaction()
+							{
+								@Override
+								public void execute(Realm realm)
+								{
+									realm.copyToRealmOrUpdate(user);
+								}
+							});
 							countryCode	= users.get(0).getCountryCode();
 							phone		= users.get(0).getPhone().replace("+", "");
 						}
@@ -132,7 +137,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 					{
 						if(isps.size() > 0)
 						{
-							com.tween.viacelular.models.Isp isp = new com.tween.viacelular.models.Isp();
+							final com.tween.viacelular.models.Isp isp = new com.tween.viacelular.models.Isp();
 							isp.setQuery(isps.get(0).getQuery());
 							isp.setAs(isps.get(0).getAs());
 							isp.setStatus(isps.get(0).getStatus());
@@ -151,9 +156,14 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 							isp.setOperatorSim(isps.get(0).getOperatorSim());
 							isp.setCountryNet(isps.get(0).getCountryNet());
 							isp.setCountrySim(isps.get(0).getCountrySim());
-							realm.beginTransaction();
-							realm.copyToRealmOrUpdate(isp);
-							realm.commitTransaction();
+							realm.executeTransaction(new Realm.Transaction()
+							{
+								@Override
+								public void execute(Realm realm)
+								{
+									realm.copyToRealmOrUpdate(isp);
+								}
+							});
 						}
 					}
 				}
@@ -163,18 +173,25 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 				{
 					if(companyList.size() > 0)
 					{
-						for(Company existingCompany : companyList)
+						for(final Company existingCompany : companyList)
 						{
-							realm.beginTransaction();
-							Suscription suscription = new Suscription(	existingCompany.getCompanyId(), existingCompany.getName(), existingCompany.getCountryCode(), existingCompany.getIndustryCode(),
-																		existingCompany.getIndustry(), existingCompany.getType(), existingCompany.getImage(), existingCompany.getColorHex(),
-																		existingCompany.getFromNumbers(), existingCompany.getKeywords(), existingCompany.getUnsuscribe(), existingCompany.getUrl(),
-																		existingCompany.getPhone(), existingCompany.getMsgExamples(), existingCompany.getIdentificationKey(), existingCompany.getDataSent(),
-																		existingCompany.getIdentificationValue(), existingCompany.getAbout(), existingCompany.getStatus(), existingCompany.getSilenced(),
-																		existingCompany.getBlocked(), existingCompany.getEmail(), existingCompany.getReceive(), existingCompany.getSuscribe(),
-																		existingCompany.getFollower(), existingCompany.getGray(), "");
-							realm.copyToRealmOrUpdate(suscription);
-							realm.commitTransaction();
+							realm.executeTransaction(new Realm.Transaction()
+							{
+								@Override
+								public void execute(Realm realm)
+								{
+									Suscription suscription = new Suscription(	existingCompany.getCompanyId(), existingCompany.getName(), existingCompany.getCountryCode(),
+											existingCompany.getIndustryCode(), existingCompany.getIndustry(), existingCompany.getType(),
+											existingCompany.getImage(), existingCompany.getColorHex(), existingCompany.getFromNumbers(),
+											existingCompany.getKeywords(), existingCompany.getUnsuscribe(), existingCompany.getUrl(),
+											existingCompany.getPhone(), existingCompany.getMsgExamples(), existingCompany.getIdentificationKey(),
+											existingCompany.getDataSent(), existingCompany.getIdentificationValue(), existingCompany.getAbout(),
+											existingCompany.getStatus(), existingCompany.getSilenced(), existingCompany.getBlocked(),
+											existingCompany.getEmail(), existingCompany.getReceive(), existingCompany.getSuscribe(),
+											existingCompany.getFollower(), existingCompany.getGray(), "");
+									realm.copyToRealmOrUpdate(suscription);
+								}
+							});
 						}
 					}
 				}
@@ -191,7 +208,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 					{
 						if(allMessages.size() > 0)
 						{
-							for(Message message : allMessages)
+							for(final Message message : allMessages)
 							{
 								String companyId		= Suscription.COMPANY_ID_VC_MONGO;
 								Suscription suscription	= realm.where(Suscription.class)
@@ -203,43 +220,51 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 									companyId = suscription.getCompanyId();
 								}
 
-								realm.beginTransaction();
-								com.tween.viacelular.models.Message messageRealm = new com.tween.viacelular.models.Message();
-								messageRealm.setChannel(message.getChannel());
-								messageRealm.setCreated(message.getCreated());
-								messageRealm.setDeleted(message.getDeleted());
-								messageRealm.setFlags(message.getFlags());
-								messageRealm.setKind(com.tween.viacelular.models.Message.KIND_TEXT);
-								messageRealm.setCampaignId("");
-								messageRealm.setLink("");
-								messageRealm.setLinkThumbnail("");
-								messageRealm.setMsg(message.getMsg());
-								messageRealm.setMsgId(message.getMsgId());
-								messageRealm.setStatus(message.getStatus());
-								messageRealm.setSubMsg("");
-								messageRealm.setType(message.getType());
-								messageRealm.setCompanyId(companyId);
+								final String finalPhone = phone;
+								final String finalCountry = countryCode;
+								final String finalCompany = companyId;
+								realm.executeTransaction(new Realm.Transaction()
+								{
+									@Override
+									public void execute(Realm realm)
+									{
+										com.tween.viacelular.models.Message messageRealm = new com.tween.viacelular.models.Message();
+										messageRealm.setChannel(message.getChannel());
+										messageRealm.setCreated(message.getCreated());
+										messageRealm.setDeleted(message.getDeleted());
+										messageRealm.setFlags(message.getFlags());
+										messageRealm.setKind(com.tween.viacelular.models.Message.KIND_TEXT);
+										messageRealm.setCampaignId("");
+										messageRealm.setLink("");
+										messageRealm.setLinkThumbnail("");
+										messageRealm.setMsg(message.getMsg());
+										messageRealm.setMsgId(message.getMsgId());
+										messageRealm.setStatus(message.getStatus());
+										messageRealm.setSubMsg("");
+										messageRealm.setType(message.getType());
+										messageRealm.setCompanyId(finalCompany);
 
-								if(StringUtils.isNotEmpty(message.getPhone()))
-								{
-									messageRealm.setPhone(message.getPhone());
-								}
-								else
-								{
-									messageRealm.setPhone(phone);
-								}
+										if(StringUtils.isNotEmpty(message.getPhone()))
+										{
+											messageRealm.setPhone(message.getPhone());
+										}
+										else
+										{
+											messageRealm.setPhone(finalPhone);
+										}
 
-								if(StringUtils.isNotEmpty(message.getCountryCode()))
-								{
-									messageRealm.setCountryCode(message.getCountryCode());
-								}
-								else
-								{
-									messageRealm.setCountryCode(countryCode);
-								}
+										if(StringUtils.isNotEmpty(message.getCountryCode()))
+										{
+											messageRealm.setCountryCode(message.getCountryCode());
+										}
+										else
+										{
+											messageRealm.setCountryCode(finalCountry);
+										}
 
-								realm.copyToRealmOrUpdate(messageRealm);
-								realm.commitTransaction();
+										realm.copyToRealmOrUpdate(messageRealm);
+									}
+								});
 							}
 						}
 					}

@@ -107,12 +107,18 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(user != null)
 			{
+				final User userUpdate = user;
 				//Agregado para reemplazar el gcmId con el nuevo token
 				if(StringUtils.isNotEmpty(token))
 				{
-					realm.beginTransaction();
-					user.setGcmId(token);
-					realm.commitTransaction();
+					realm.executeTransaction(new Realm.Transaction()
+					{
+						@Override
+						public void execute(Realm realm)
+						{
+							userUpdate.setGcmId(token);
+						}
+					});
 				}
 
 				userId		= preferences.getString(User.KEY_API, user.getUserId());

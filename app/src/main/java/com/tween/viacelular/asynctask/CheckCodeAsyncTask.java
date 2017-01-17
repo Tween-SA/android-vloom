@@ -188,19 +188,24 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 			}
 
 			//Agregado para prevenir pérdida de email
-			user = realm.where(User.class).findFirst();
+			final User user2Save = realm.where(User.class).findFirst();
 
-			if(user != null)
+			if(user2Save != null)
 			{
-				if(StringUtils.isEmpty(user.getEmail()))
+				if(StringUtils.isEmpty(user2Save.getEmail()))
 				{
-					ConnectedAccount connectedAccount = realm.where(ConnectedAccount.class).equalTo(Common.KEY_TYPE, ConnectedAccount.TYPE_GOOGLE).findFirst();
+					final ConnectedAccount connectedAccount = realm.where(ConnectedAccount.class).equalTo(Common.KEY_TYPE, ConnectedAccount.TYPE_GOOGLE).findFirst();
 
 					if(connectedAccount != null)
 					{
-						realm.beginTransaction();
-						user.setEmail(connectedAccount.getName());
-						realm.commitTransaction();
+						realm.executeTransaction(new Realm.Transaction()
+						{
+							@Override
+							public void execute(Realm realm)
+							{
+								user2Save.setEmail(connectedAccount.getName());
+							}
+						});
 					}
 				}
 

@@ -75,15 +75,20 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 
 		try
 		{
-			Realm realm						= Realm.getDefaultInstance();
-			RealmResults<Message> messages	= realm.where(Message.class).equalTo(Common.KEY_TYPE, Message.TYPE_SMS).findAll();
-			User user						= realm.where(User.class).findFirst();
+			Realm realm								= Realm.getDefaultInstance();
+			final RealmResults<Message> messages	= realm.where(Message.class).equalTo(Common.KEY_TYPE, Message.TYPE_SMS).findAll();
+			User user								= realm.where(User.class).findFirst();
 
 			if(messages.size() > 0)
 			{
-				realm.beginTransaction();
-				messages.deleteAllFromRealm();
-				realm.commitTransaction();
+				realm.executeTransaction(new Realm.Transaction()
+				{
+					@Override
+					public void execute(Realm realm)
+					{
+						messages.deleteAllFromRealm();
+					}
+				});
 			}
 
 			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
@@ -163,7 +168,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 
 								if(notifications.size() == 0)
 								{
-									Message notification = new Message();
+									final Message notification = new Message();
 									notification.setMsg(body);
 
 									if(StringUtils.isNotEmpty(date_sent))
@@ -220,9 +225,14 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 									notification.setCountryCode(country);
 									notification.setFlags(Message.FLAGS_SMS);
 									notification.setPhone(preferences.getString(User.KEY_PHONE, ""));
-									realm.beginTransaction();
-									realm.copyToRealmOrUpdate(notification);
-									realm.commitTransaction();
+									realm.executeTransaction(new Realm.Transaction()
+									{
+										@Override
+										public void execute(Realm realm)
+										{
+											realm.copyToRealmOrUpdate(notification);
+										}
+									});
 								}
 							}
 						}

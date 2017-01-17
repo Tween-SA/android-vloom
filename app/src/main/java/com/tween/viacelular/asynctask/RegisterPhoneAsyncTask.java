@@ -10,6 +10,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CodeActivity;
+import com.tween.viacelular.activities.VerifyCodeActivity;
 import com.tween.viacelular.models.ConnectedAccount;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.User;
@@ -30,6 +31,7 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 	private Activity		activity;
 	private String			phone;
 	private boolean			needRedirect	= true;
+	private boolean			freePass		= false;
 
 	public RegisterPhoneAsyncTask(Activity activity, String phone)
 	{
@@ -42,6 +44,13 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 		this.activity		= activity;
 		this.phone			= phone;
 		this.needRedirect	= needRedirect;
+	}
+
+	public RegisterPhoneAsyncTask(boolean freePass, Activity activity, String phone)
+	{
+		this.freePass	= freePass;
+		this.activity	= activity;
+		this.phone		= phone;
 	}
 
 	protected void onPreExecute()
@@ -85,13 +94,18 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 		try
 		{
 			//Modificación para contemplar migración a Realm
-			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			Realm realm						= Realm.getDefaultInstance();
-			RealmResults<User> users		= realm.where(User.class).findAll();
-			String gcmId					= preferences.getString(User.KEY_GCMID, "");
-			realm.beginTransaction();
-			users.deleteAllFromRealm();
-			realm.commitTransaction();
+			SharedPreferences preferences		= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			Realm realm							= Realm.getDefaultInstance();
+			final RealmResults<User> users		= realm.where(User.class).findAll();
+			String gcmId						= preferences.getString(User.KEY_GCMID, "");
+			realm.executeTransaction(new Realm.Transaction()
+			{
+				@Override
+				public void execute(Realm realm)
+				{
+					users.deleteAllFromRealm();
+				}
+			});
 
 			if(StringUtils.isEmpty(gcmId))
 			{
@@ -241,15 +255,24 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 					}
 				}
 
-				if(result.equals(ApiConnection.OK))
+				if(result.equals(ApiConnection.OK) && freePass)
 				{
-					Intent intent = new Intent(activity.getApplicationContext(), CodeActivity.class);
+					Intent intent = new Intent(activity.getApplicationContext(), VerifyCodeActivity.class);
 					activity.startActivity(intent);
 					activity.finish();
 				}
 				else
 				{
-					Toast.makeText(activity.getApplicationContext(), result, Toast.LENGTH_LONG).show();
+					if(result.equals(ApiConnection.OK))
+					{
+						Intent intent = new Intent(activity.getApplicationContext(), CodeActivity.class);
+						activity.startActivity(intent);
+						activity.finish();
+					}
+					else
+					{
+						Toast.makeText(activity.getApplicationContext(), result, Toast.LENGTH_LONG).show();
+					}
 				}
 			}
 			else

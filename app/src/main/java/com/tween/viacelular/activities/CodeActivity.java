@@ -82,7 +82,7 @@ public class CodeActivity extends AppCompatActivity
 					@Override
 					public void onClick(final View v)
 					{
-						logout();
+						logout(v);
 					}
 				});
 
@@ -412,8 +412,7 @@ public class CodeActivity extends AppCompatActivity
 	{
 		try
 		{
-			hideSoftKeyboard();
-			logout();
+			logout(null);
 		}
 		catch(Exception e)
 		{
@@ -426,10 +425,11 @@ public class CodeActivity extends AppCompatActivity
 		}
 	}
 
-	public void logout()
+	public void logout(View view)
 	{
 		try
 		{
+			hideSoftKeyboard();
 			SharedPreferences.Editor editor	= preferences.edit();
 			editor.putBoolean(Common.KEY_PREF_LOGGED, false);
 			editor.putBoolean(Common.KEY_PREF_CHECKED, false);

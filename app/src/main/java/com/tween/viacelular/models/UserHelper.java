@@ -238,9 +238,15 @@ public abstract class UserHelper
 
 				if(user.getUserId().equals("1") && !checkSubscriptions)
 				{
-					realm.beginTransaction();
-					user.deleteFromRealm();
-					realm.commitTransaction();
+					final User userDelete = user;
+					realm.executeTransaction(new Realm.Transaction()
+					{
+						@Override
+						public void execute(Realm realm)
+						{
+							userDelete.deleteFromRealm();
+						}
+					});
 				}
 			}
 

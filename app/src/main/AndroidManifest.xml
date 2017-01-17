@@ -58,58 +58,54 @@
 		<activity
 			android:name="com.tween.viacelular.activities.PhoneActivity"
 			android:screenOrientation="portrait"
-			android:windowSoftInputMode="adjustResize|stateHidden">
-		</activity>
+			android:windowSoftInputMode="adjustResize|stateHidden" />
 		<activity
 			android:name="com.tween.viacelular.activities.VerifyPhoneActivity"
 			android:label="@string/title_activity_phone"
 			android:screenOrientation="portrait"
-			android:windowSoftInputMode="adjustResize|stateHidden">
-		</activity>
+			android:windowSoftInputMode="adjustResize|stateHidden" />
 		<activity
 			android:name="com.tween.viacelular.activities.CodeActivity"
 			android:label="@string/title_activity_code"
 			android:noHistory="true"
 			android:screenOrientation="portrait"
-			android:windowSoftInputMode="adjustResize|stateHidden">
-		</activity>
+			android:windowSoftInputMode="adjustResize|stateHidden" />
+		<activity
+			android:name="com.tween.viacelular.activities.VerifyCodeActivity"
+			android:label="@string/title_activity_code"
+			android:screenOrientation="portrait"
+			android:windowSoftInputMode="adjustResize|stateHidden" />
 		<activity
 			android:name="com.tween.viacelular.activities.HomeActivity"
 			android:label="@string/app_name"
 			android:screenOrientation="portrait"
-			android:windowSoftInputMode="adjustResize|stateHidden">
-		</activity>
+			android:windowSoftInputMode="adjustResize|stateHidden" />
 		<activity
 			android:name="com.tween.viacelular.activities.SettingsActivity"
 			android:label="@string/title_settings"
 			android:screenOrientation="portrait"
-			android:windowSoftInputMode="adjustResize|stateHidden">
-		</activity>
+			android:windowSoftInputMode="adjustResize|stateHidden" />
 		<activity
 			android:name="com.tween.viacelular.activities.CardViewActivity"
 			android:screenOrientation="portrait"
 			android:theme="@style/Company"
-			android:windowSoftInputMode="adjustResize|stateHidden">
-		</activity>
+			android:windowSoftInputMode="adjustResize|stateHidden" />
 		<activity
 			android:name="com.tween.viacelular.activities.LandingActivity"
 			android:screenOrientation="portrait"
 			android:theme="@style/Company"
-			android:windowSoftInputMode="adjustResize|stateHidden">
-		</activity>
+			android:windowSoftInputMode="adjustResize|stateHidden" />
 		<activity
 			android:name="com.tween.viacelular.activities.SuscriptionsActivity"
 			android:label="@string/title_companies"
 			android:screenOrientation="portrait"
 			android:theme="@style/Theme.MyTheme"
-			android:windowSoftInputMode="adjustPan|stateHidden">
-		</activity>
+			android:windowSoftInputMode="adjustPan|stateHidden" />
 		<activity
 			android:name="com.tween.viacelular.activities.SuggestionsActivity"
 			android:label="@string/app_name"
 			android:screenOrientation="portrait"
-			android:windowSoftInputMode="adjustResize|stateHidden">
-		</activity>
+			android:windowSoftInputMode="adjustResize|stateHidden" />
 		<activity
 			android:name="com.facebook.FacebookActivity"
 			android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"

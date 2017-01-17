@@ -20,12 +20,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.HomeActivity;
+import com.tween.viacelular.activities.VerifyPhoneActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
 import com.tween.viacelular.adapters.IconOptionAdapter;
 import com.tween.viacelular.asynctask.GetTweetsAsyncTask;
@@ -39,8 +41,10 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -105,6 +109,15 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			if(preferences.getBoolean(Common.KEY_PREF_FREEPASS, false))
 			{
 				rlFreePass.setVisibility(RelativeLayout.VISIBLE);
+				rlFreePass.setOnClickListener(new View.OnClickListener()
+				{
+					@Override
+					public void onClick(View view)
+					{
+						Intent intent = new Intent(getHomeActivity(), VerifyPhoneActivity.class);
+						getHomeActivity().startActivity(intent);
+					}
+				});
 			}
 			else
 			{
@@ -389,22 +402,25 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			switch(position)
 			{
 				case IconOptionAdapter.OPTION_SILENCED:
-					Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, company.getCompanyId()).findFirst();
-					realm.beginTransaction();
-
-					if(suscription.getSilenced() == Common.BOOL_YES)
+					final Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, company.getCompanyId()).findFirst();
+					realm.executeTransaction(new Realm.Transaction()
 					{
-						suscription.setSilenced(Common.BOOL_NO);
-					}
-					else
-					{
-						//Agregado para capturar evento en Google Analytics
-						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company")
-																														.setAction("Silenciar").setLabel("AccionUser").build());
-						suscription.setSilenced(Common.BOOL_YES);
-					}
-
-					realm.commitTransaction();
+						@Override
+						public void execute(Realm realm)
+						{
+							if(suscription.getSilenced() == Common.BOOL_YES)
+							{
+								suscription.setSilenced(Common.BOOL_NO);
+							}
+							else
+							{
+								//Agregado para capturar evento en Google Analytics
+								GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Company")
+										.setAction("Silenciar").setLabel("AccionUser").build());
+								suscription.setSilenced(Common.BOOL_YES);
+							}
+						}
+					});
 
 					snackBar = Snackbar.make(clayout, context.getString(R.string.snack_silence), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
@@ -412,19 +428,23 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 						public void onClick(View v)
 						{
 							Realm realm	= Realm.getDefaultInstance();
-							Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, company.getCompanyId()).findFirst();
-							realm.beginTransaction();
-
-							if(suscription.getSilenced() == Common.BOOL_YES)
+							final Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, company.getCompanyId()).findFirst();
+							realm.executeTransaction(new Realm.Transaction()
 							{
-								suscription.setSilenced(Common.BOOL_NO);
-							}
-							else
-							{
-								suscription.setSilenced(Common.BOOL_YES);
-							}
+								@Override
+								public void execute(Realm realm)
+								{
+									if(suscription.getSilenced() == Common.BOOL_YES)
+									{
+										suscription.setSilenced(Common.BOOL_NO);
+									}
+									else
+									{
+										suscription.setSilenced(Common.BOOL_YES);
+									}
+								}
+							});
 
-							realm.commitTransaction();
 							refresh(false, false);
 						}
 					});

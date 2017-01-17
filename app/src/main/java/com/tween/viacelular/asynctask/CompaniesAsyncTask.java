@@ -72,10 +72,15 @@ public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 			//Modificaciones para contemplar migraciónd de db
 			Realm realm							= Realm.getDefaultInstance();
 			SharedPreferences preferences		= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			RealmResults<Suscription> results	= realm.where(Suscription.class).findAll();
-			realm.beginTransaction();
-			results.deleteAllFromRealm();
-			realm.commitTransaction();
+			final RealmResults<Suscription> results	= realm.where(Suscription.class).findAll();
+			realm.executeTransaction(new Realm.Transaction()
+			{
+				@Override
+				public void execute(Realm realm)
+				{
+					results.deleteAllFromRealm();
+				}
+			});
 			String country						= "";
 			User user							= realm.where(User.class).findFirst();
 

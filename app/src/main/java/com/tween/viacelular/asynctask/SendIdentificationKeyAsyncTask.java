@@ -71,8 +71,8 @@ public class SendIdentificationKeyAsyncTask extends AsyncTask<Void, Void, String
 		try
 		{
 			//Modificaciones para contemplar migración a Realm
-			Realm realm				= Realm.getDefaultInstance();
-			Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+			Realm realm						= Realm.getDefaultInstance();
+			final Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 
 			if(StringUtils.isAlphanumeric(identificationValue) && suscription != null)
 			{
@@ -95,10 +95,15 @@ public class SendIdentificationKeyAsyncTask extends AsyncTask<Void, Void, String
 
 					//TODO Posteriormente debe haber un if procesando la respuesta de la api cuando esté disponible
 					result = ApiConnection.OK;
-					realm.beginTransaction();
-					suscription.setDataSent(Common.BOOL_YES);
-					suscription.setIdentificationValue(identificationValue);
-					realm.commitTransaction();
+					realm.executeTransaction(new Realm.Transaction()
+					{
+						@Override
+						public void execute(Realm realm)
+						{
+							suscription.setDataSent(Common.BOOL_YES);
+							suscription.setIdentificationValue(identificationValue);
+						}
+					});
 				}
 			}
 

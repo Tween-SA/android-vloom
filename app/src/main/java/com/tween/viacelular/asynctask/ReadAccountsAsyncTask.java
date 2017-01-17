@@ -80,18 +80,27 @@ public class ReadAccountsAsyncTask extends AsyncTask<Void, Void, Boolean>
 
 				if(accounts.length > 0)
 				{
-					SharedPreferences preferences			= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-					RealmResults<ConnectedAccount> results	= realm.where(ConnectedAccount.class).findAll();
-					realm.beginTransaction();
-					results.deleteAllFromRealm();
-					realm.commitTransaction();
-
-
-					for(Account account : accounts)
+					SharedPreferences preferences					= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+					final RealmResults<ConnectedAccount> results	= realm.where(ConnectedAccount.class).findAll();
+					realm.executeTransaction(new Realm.Transaction()
 					{
-						realm.beginTransaction();
-						realm.copyToRealmOrUpdate(new ConnectedAccount(account.name, account.type));
-						realm.commitTransaction();
+						@Override
+						public void execute(Realm realm)
+						{
+							results.deleteAllFromRealm();
+						}
+					});
+
+					for(final Account account : accounts)
+					{
+						realm.executeTransaction(new Realm.Transaction()
+						{
+							@Override
+							public void execute(Realm realm)
+							{
+								realm.copyToRealmOrUpdate(new ConnectedAccount(account.name, account.type));
+							}
+						});
 
 						if(account.type.equals(ConnectedAccount.TYPE_GOOGLE) && StringUtils.isEmpty(preferences.getString(User.KEY_EMAIL, "")))
 						{

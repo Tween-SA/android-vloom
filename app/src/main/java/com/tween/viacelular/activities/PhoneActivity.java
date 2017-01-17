@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.FacebookSdk;
 import com.tween.viacelular.R;
@@ -138,7 +141,17 @@ public class PhoneActivity extends AppCompatActivity
 
 	public void register(View view)
 	{
-		registerMethod();
+		String confirm = getString(R.string.verify_phone_alert).replace("+0", inputCountry.getText().toString()+editPhone.getText().toString().trim());
+		new MaterialDialog.Builder(this).cancelable(false).positiveText(R.string.ok).negativeText(R.string.verify_phone_edit).content(confirm)
+			.onPositive(new MaterialDialog.SingleButtonCallback()
+			{
+				@Override
+				public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
+				{
+					registerMethod();
+				}
+			})
+			.build().show();
 	}
 
 	public boolean registerMethod()
