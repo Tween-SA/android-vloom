@@ -279,7 +279,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					}
 
 					//Agregado para detectar si el color es claro
-					if(Utils.isLightColor(color))
+					if(Utils.isLightColor(color, activity))
 					{
 						holder.txtTitle.setTextColor(Color.BLACK);
 					}
@@ -342,7 +342,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 						{
 							if(item.getType().equals(Message.TYPE_SMS))
 							{
-								if(SuscriptionHelper.getTypeNumber(suscription, item.getChannel()).equals(Suscription.NUMBER_PAYOUT))
+								if(SuscriptionHelper.getTypeNumber(suscription, item.getChannel(), activity).equals(Suscription.NUMBER_PAYOUT))
 								{
 									holder.iconPrice.setVisibility(ImageView.VISIBLE);
 									holder.iconSMS.setVisibility(ImageView.GONE);
@@ -541,7 +541,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 													});
 
 													holder.txtComment.setText(item.getNote());
-													Utils.showViewWithFade(holder.rlComment);
+													Utils.showViewWithFade(holder.rlComment, activity);
 
 												}
 											}
@@ -607,7 +607,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 														});
 
 														holder.txtComment.setText(item.getNote());
-														Utils.showViewWithFade(holder.rlComment);
+														Utils.showViewWithFade(holder.rlComment, activity);
 													}
 												}
 											}
@@ -654,7 +654,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 														});
 
 														holder.txtComment.setText(item.getNote());
-														Utils.showViewWithFade(holder.rlComment);
+														Utils.showViewWithFade(holder.rlComment, activity);
 													}
 												}
 											}
@@ -709,7 +709,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 					if(holder.imgOne != null && holder.animOne != null && StringUtils.isNotEmpty(item.getAttached()))
 					{
-						Utils.showViewWithFade(holder.animOne);
+						Utils.showViewWithFade(holder.animOne, activity);
 						holder.animOne.setProgress(0);
 						holder.animOne.setProgress(20);
 						Picasso.with(activity).load(item.getAttached()).resize(100, 100).into(holder.imgOne, new Callback()
@@ -720,8 +720,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								holder.animOne.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
 								holder.animOne.setProgress(100);
 								holder.animOne.startAnimation();
-								Utils.hideViewWithFade(holder.animOne);
-								Utils.showViewWithFade(holder.imgOne);
+								Utils.hideViewWithFade(holder.animOne, activity);
+								Utils.showViewWithFade(holder.imgOne, activity);
 								holder.imgOne.setOnClickListener(new View.OnClickListener()
 								{
 									@Override
@@ -737,16 +737,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							@Override
 							public void onError()
 							{
-								Utils.hideViewWithFade(holder.animOne);
-								Utils.showViewWithFade(holder.imgOne);
+								Utils.hideViewWithFade(holder.animOne, activity);
+								Utils.showViewWithFade(holder.imgOne, activity);
 							}
 						});
 					}
 
 					if(holder.imgTwo != null && holder.animTwo != null && StringUtils.isNotEmpty(item.getAttachedTwo()))
 					{
-						Utils.showViewWithFade(holder.animOne);
-						Utils.showViewWithFade(holder.animTwo);
+						Utils.showViewWithFade(holder.animOne, activity);
+						Utils.showViewWithFade(holder.animTwo, activity);
 						holder.animOne.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
 						holder.animOne.setProgress(100);
 						holder.animOne.startAnimation();
@@ -760,9 +760,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								holder.animTwo.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
 								holder.animTwo.setProgress(100);
 								holder.animTwo.startAnimation();
-								Utils.hideViewWithFade(holder.animTwo);
-								Utils.hideViewWithFade(holder.animOne);
-								Utils.showViewWithFade(holder.imgTwo);
+								Utils.hideViewWithFade(holder.animTwo, activity);
+								Utils.hideViewWithFade(holder.animOne, activity);
+								Utils.showViewWithFade(holder.imgTwo, activity);
 								holder.imgTwo.setOnClickListener(new View.OnClickListener()
 								{
 									@Override
@@ -778,18 +778,18 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							@Override
 							public void onError()
 							{
-								Utils.hideViewWithFade(holder.animTwo);
-								Utils.hideViewWithFade(holder.animOne);
-								Utils.showViewWithFade(holder.imgTwo);
+								Utils.hideViewWithFade(holder.animTwo, activity);
+								Utils.hideViewWithFade(holder.animOne, activity);
+								Utils.showViewWithFade(holder.imgTwo, activity);
 							}
 						});
 					}
 
 					if(holder.imgThree != null && holder.animThree != null && StringUtils.isNotEmpty(item.getAttachedThree()))
 					{
-						Utils.showViewWithFade(holder.animOne);
-						Utils.showViewWithFade(holder.animTwo);
-						Utils.showViewWithFade(holder.animThree);
+						Utils.showViewWithFade(holder.animOne, activity);
+						Utils.showViewWithFade(holder.animTwo, activity);
+						Utils.showViewWithFade(holder.animThree, activity);
 						holder.animOne.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
 						holder.animOne.setProgress(100);
 						holder.animOne.startAnimation();
@@ -807,10 +807,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								holder.animThree.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
 								holder.animThree.setProgress(100);
 								holder.animThree.startAnimation();
-								Utils.hideViewWithFade(holder.animThree);
-								Utils.hideViewWithFade(holder.animTwo);
-								Utils.hideViewWithFade(holder.animOne);
-								Utils.showViewWithFade(holder.imgThree);
+								Utils.hideViewWithFade(holder.animThree, activity);
+								Utils.hideViewWithFade(holder.animTwo, activity);
+								Utils.hideViewWithFade(holder.animOne, activity);
+								Utils.showViewWithFade(holder.imgThree, activity);
 								holder.imgThree.setOnClickListener(new View.OnClickListener()
 								{
 									@Override
@@ -826,10 +826,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							@Override
 							public void onError()
 							{
-								Utils.hideViewWithFade(holder.animThree);
-								Utils.hideViewWithFade(holder.animTwo);
-								Utils.hideViewWithFade(holder.animOne);
-								Utils.showViewWithFade(holder.imgThree);
+								Utils.hideViewWithFade(holder.animThree, activity);
+								Utils.hideViewWithFade(holder.animTwo, activity);
+								Utils.hideViewWithFade(holder.animOne, activity);
+								Utils.showViewWithFade(holder.imgThree, activity);
 							}
 						});
 					}
@@ -861,7 +861,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 						if(holder.circleReceipt != null && holder.txtReceipt != null)
 						{
 							//Agregado para detectar si el color es claro
-							if(Utils.isLightColor(color))
+							if(Utils.isLightColor(color, activity))
 							{
 								holder.circleReceipt.setColorFilter(Color.parseColor(Common.COLOR_ACCENT));
 								holder.txtReceipt.setTextColor(Color.parseColor(Common.COLOR_ACCENT));

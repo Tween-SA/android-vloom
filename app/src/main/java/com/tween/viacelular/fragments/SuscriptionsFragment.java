@@ -121,12 +121,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsFragment:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsFragment:onResume - Exception:", e);
 		}
 
 		return view;
@@ -199,12 +194,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsFragment:onStickyHeaderOffsetChanged - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsFragment:populateList - Exception:", e);
 		}
 	}
 
@@ -238,12 +228,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsFragment:onStickyHeaderOffsetChanged - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsFragment:onStickyHeaderOffsetChanged - Exception:", e);
 		}
 	}
 
@@ -277,12 +262,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsFragment:enableFilter - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsFragment:enableFilter - Exception:", e);
 		}
 	}
 
@@ -316,12 +296,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsFragment:disableFilter - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsFragment:disableFilter - Exception:", e);
 		}
 	}
 
@@ -353,7 +328,6 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		try
 		{
 			activityContext.getWindow().setSoftInputMode(originalSoftInputMode);
-
 			// Hide keyboard when paused.
 			View currentFocusView = activityContext.getCurrentFocus();
 
@@ -365,12 +339,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		}
 		catch(Exception e)
 		{
-			System.out.println("FeedbackActivity:hideSoftKeyboard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsFragment:hideSoftKeyboard - Exception:", e);
 		}
 	}
 
@@ -394,12 +363,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		}
 		catch(Exception e)
 		{
-			System.out.println("FeedbackActivity:hideSoftKeyboard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsFragment:showSoftKeyboard - Exception:", e);
 		}
 	}
 }

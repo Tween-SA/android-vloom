@@ -22,6 +22,7 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import java.util.List;
 import io.realm.Realm;
 
@@ -64,12 +65,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("MigrationAsyncTask:onPreExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "MigrationAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -275,12 +271,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("MigrationAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "MigrationAsyncTask:doInBackground - Exception:", e);
 		}
 		finally
 		{
@@ -323,12 +314,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("MigrationAsyncTask:onPostExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "MigrationAsyncTask:onPostExecute - Exception:", e);
 		}
 
 		super.onPostExecute(result);

@@ -15,6 +15,7 @@ import com.tween.viacelular.models.ConnectedAccount;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -57,12 +58,7 @@ public class ReadAccountsAsyncTask extends AsyncTask<Void, Void, Boolean>
 		}
 		catch(Exception e)
 		{
-			System.out.println("ReadAccountsAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "ReadAccountsAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -127,12 +123,7 @@ public class ReadAccountsAsyncTask extends AsyncTask<Void, Void, Boolean>
 		}
 		catch(Exception e)
 		{
-			System.out.println("ReadAccountsAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "ReadAccountsAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return false;

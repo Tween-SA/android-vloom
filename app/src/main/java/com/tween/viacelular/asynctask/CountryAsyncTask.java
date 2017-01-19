@@ -10,6 +10,7 @@ import com.tween.viacelular.models.LandHelper;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,12 +54,7 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CountryAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "CountryAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -104,7 +100,7 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 							if(arrayKey.length() > 0)
 							{
 								result		= ApiConnection.OK;
-								LandHelper.parseList(arrayKey);
+								LandHelper.parseList(arrayKey, context);
 								parseLocal	= false;
 							}
 						}
@@ -122,7 +118,7 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 					jsonData	= new JSONObject(json);
 					arrayKey	= jsonData.getJSONArray(Common.KEY_DATA);
 					result		= ApiConnection.OK;
-					LandHelper.parseList(arrayKey);
+					LandHelper.parseList(arrayKey, context);
 				}
 				else
 				{
@@ -143,21 +139,11 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(JSONException e)
 		{
-			System.out.println("CountryAsyncTask - JSONException: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "CountryAsyncTask:doInBackground - JSONException:", e);
 		}
 		catch(Exception e)
 		{
-			System.out.println("CountryAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "CountryAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;

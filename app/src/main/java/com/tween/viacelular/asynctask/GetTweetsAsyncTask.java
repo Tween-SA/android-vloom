@@ -15,6 +15,7 @@ import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -65,12 +66,7 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("GetTweetsAsyncTask:onPreExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "GetTweetsAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -135,12 +131,7 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 								}
 								catch(ParseException e)
 								{
-									System.out.println("GetTweetsAsyncTask:doInBackground:parseDate - Exception: " + e);
-
-									if(Common.DEBUG)
-									{
-										e.printStackTrace();
-									}
+									Utils.logError(context, "GetTweetsAsyncTask:doInBackground:parseDate - ParseException:", e);
 								}
 
 								message.setSocialDate(dateText.replace("dd/mm/yyyy", sdf.format(date2)));
@@ -179,12 +170,7 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("GetTweetsAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "GetTweetsAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;

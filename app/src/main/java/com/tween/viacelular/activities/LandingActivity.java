@@ -223,7 +223,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							color = Common.COLOR_ACTION;
 						}
 
-						if(Utils.isLightColor(color))
+						if(Utils.isLightColor(color, this))
 						{
 							toolBar.setTitleTextColor(Color.BLACK);
 							collapsingToolbarLayout.setCollapsedTitleTextColor(Color.BLACK);
@@ -592,7 +592,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 						//Modificación para no redirigir al suscribir si no se necesita la identificación, en este caso actualizamos el layout
 						btnSuscribe.setText(getString(R.string.landing_suscribe));
 
-						if(Utils.isLightColor(color))
+						if(Utils.isLightColor(color, this))
 						{
 							btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.white));
 						}

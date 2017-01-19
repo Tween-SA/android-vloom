@@ -77,12 +77,7 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("RegisterPhoneAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "RegisterPhoneAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -219,21 +214,11 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(JSONException e)
 		{
-			System.out.println("RegisterPhoneAsyncTask - JSONException: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "RegisterPhoneAsyncTask:doInBackground - JSONException:", e);
 		}
 		catch(Exception e)
 		{
-			System.out.println("RegisterPhoneAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "RegisterPhoneAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
@@ -293,12 +278,7 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("RegisterPhoneAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "RegisterPhoneAsyncTask:onPostExecute - Exception:", e);
 		}
 
 		super.onPostExecute(result);

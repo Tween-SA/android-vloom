@@ -68,12 +68,7 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "SplashAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -136,19 +131,14 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 			}
 			else
 			{
-				MessageHelper.updateCountry(preferences.getString(Land.KEY_API, ""));
+				MessageHelper.updateCountry(preferences.getString(Land.KEY_API, ""), activity);
 			}
 
 			result = ApiConnection.OK;
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "SplashAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
@@ -174,12 +164,7 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "SplashAsyncTask:onPostExecute - Exception:", e);
 		}
 
 		super.onPostExecute(result);

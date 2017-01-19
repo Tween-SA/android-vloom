@@ -7,6 +7,7 @@ import android.os.Looper;
 import com.tween.viacelular.asynctask.CompanyAsyncTask;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import io.realm.Realm;
@@ -376,7 +377,7 @@ public abstract class UserHelper
 
 				if(StringUtils.isNotEmpty(ids2Add) || StringUtils.isNotEmpty(ids2Remove))
 				{
-					new UpdateSubscriptions(ids2Add, ids2Remove).start();
+					new UpdateSubscriptions(ids2Add, ids2Remove, context).start();
 				}
 			}
 
@@ -398,12 +399,7 @@ public abstract class UserHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("UserHelper:parseJSON - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "UserHelper:parseJSON - Exception:", e);
 		}
 
 		return user;
@@ -435,11 +431,13 @@ public abstract class UserHelper
 	{
 		private String	added;
 		private String	removed;
+		private Context context;
 
-		public UpdateSubscriptions(String added, String removed)
+		public UpdateSubscriptions(String added, String removed, Context context)
 		{
 			this.added		= added;
 			this.removed	= removed;
+			this.context    = context;
 		}
 
 		public void start()
@@ -489,12 +487,7 @@ public abstract class UserHelper
 			}
 			catch(Exception e)
 			{
-				System.out.println("UpdateSuscriptionsAsyncTask:UpdateCompany:start - Exception: " + e);
-
-				if(Common.DEBUG)
-				{
-					e.printStackTrace();
-				}
+				Utils.logError(context, "UserHelper:UpdateCompany:start - Exception:", e);
 			}
 		}
 	}

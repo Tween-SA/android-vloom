@@ -11,6 +11,7 @@ import com.tween.viacelular.data.Country;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -67,17 +68,19 @@ public abstract class MessageHelper
 	 * @param companyId
 	 * @param flag
 	 */
-	public static void emptyCompany(String companyId, int flag)
+	public static void emptyCompany(String companyId, int flag, Context context)
 	{
 		class DeleteMessages extends Thread
 		{
 			private String	companyId;
 			private int		flag;
+			private Context context;
 
-			private DeleteMessages(String companyId, int flag)
+			private DeleteMessages(String companyId, int flag, Context context)
 			{
 				this.companyId	= companyId;
 				this.flag		= flag;
+				this.context    = context;
 			}
 
 			public void start()
@@ -107,17 +110,12 @@ public abstract class MessageHelper
 				}
 				catch(Exception e)
 				{
-					System.out.println("MessageHelper:DeleteMessages:start - Exception: " + e);
-
-					if(Common.DEBUG)
-					{
-						e.printStackTrace();
-					}
+					Utils.logError(context, "MessageHelper:DeleteMessages:start - Exception:", e);
 				}
 			}
 		}
 
-		DeleteMessages task = new DeleteMessages(companyId, flag);
+		DeleteMessages task = new DeleteMessages(companyId, flag, context);
 		task.start();
 	}
 
@@ -126,18 +124,20 @@ public abstract class MessageHelper
 	 * @param companyId
 	 * @param newCompanyId
 	 */
-	public static boolean groupMessages(String companyId, String newCompanyId)
+	public static boolean groupMessages(String companyId, String newCompanyId, Context context)
 	{
 		class GroupMessages extends Thread
 		{
 			private String	companyId;
 			private String	newCompanyId;
 			private boolean	modify;
+			private Context context;
 
-			private GroupMessages(String companyId, String newCompanyId)
+			private GroupMessages(String companyId, String newCompanyId, Context context)
 			{
 				this.companyId		= companyId;
 				this.newCompanyId	= newCompanyId;
+				this.context        = context;
 			}
 
 			public void start()
@@ -176,12 +176,7 @@ public abstract class MessageHelper
 				}
 				catch(Exception e)
 				{
-					System.out.println("MessageHelper:groupMessages:start - Exception: " + e);
-
-					if(Common.DEBUG)
-					{
-						e.printStackTrace();
-					}
+					Utils.logError(context, "MessageHelper:groupMessages:start - Exception:", e);
 				}
 			}
 
@@ -196,7 +191,7 @@ public abstract class MessageHelper
 			}
 		}
 
-		GroupMessages task = new GroupMessages(companyId, newCompanyId);
+		GroupMessages task = new GroupMessages(companyId, newCompanyId, context);
 		task.start();
 		return task.isModify();
 	}
@@ -204,15 +199,17 @@ public abstract class MessageHelper
 	/**
 	 * Actualiza el countryCode de todos los mensajes que no tengan uno asignado
 	 */
-	public static void updateCountry(String country)
+	public static void updateCountry(String country, Context context)
 	{
 		class UpdateCountry extends Thread
 		{
 			private String country;
+			private Context context;
 
-			private UpdateCountry(String country)
+			private UpdateCountry(String country, Context context)
 			{
 				this.country = country;
+				this.context = context;
 			}
 
 			public void start()
@@ -243,12 +240,7 @@ public abstract class MessageHelper
 				}
 				catch(Exception e)
 				{
-					System.out.println("MessageHelper:UpdateCountry:start - Exception: " + e);
-
-					if(Common.DEBUG)
-					{
-						e.printStackTrace();
-					}
+					Utils.logError(context, "MessageHelper:UpdateCountry:start - Exception:", e);
 				}
 			}
 		}
@@ -260,8 +252,7 @@ public abstract class MessageHelper
 
 		if(StringUtils.isNotEmpty(country) && results.size() > 0)
 		{
-			UpdateCountry task = new UpdateCountry(country);
-			task.start();
+			new UpdateCountry(country, context).start();
 		}
 	}
 
@@ -400,7 +391,7 @@ public abstract class MessageHelper
 			else
 			{
 				if(	companyId.equals(Suscription.COMPANY_ID_VC) || companyId.equals(Suscription.COMPANY_ID_VC_LONG) || companyId.equals(Suscription.COMPANY_ID_VC_MONGOOLD) ||
-						companyId.equals(Suscription.COMPANY_ID_WEBVC))
+					companyId.equals(Suscription.COMPANY_ID_WEBVC))
 				{
 					companyId = Suscription.COMPANY_ID_VC_MONGO;
 				}
@@ -534,12 +525,7 @@ public abstract class MessageHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("MessageHelper:savePush - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "MessageHelper:savePush - Exception:", e);
 		}
 	}
 }

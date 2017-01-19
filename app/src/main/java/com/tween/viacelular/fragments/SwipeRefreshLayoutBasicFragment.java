@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -41,10 +40,8 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -80,12 +77,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshBasicFragment:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:onCreate - Exception:", e);
 		}
 	}
 
@@ -126,12 +118,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshBasicFragment:onCreateView - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:onCreateView - Exception:", e);
 		}
 
 		return view;
@@ -194,12 +181,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshBasicFragment:onViewCreated - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:onViewCreated - Exception:", e);
 		}
 	}
 
@@ -233,12 +215,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshLayoutBasicFragment:onOptionsItemSelected - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:onOptionsItemSelected - Exception:", e);
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -279,12 +256,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshBasicFragment:initiateRefresh - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:initiateRefresh - Exception:", e);
 		}
 	}
 
@@ -308,12 +280,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshLayoutBasicFragment:showMenu - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:showMenu - Exception:", e);
 		}
 	}
 
@@ -336,7 +303,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 							if(suscription.getLastSocialUpdated() != null)
 							{
 								//Solamente se pide una vez al día
-								if(DateUtils.needUpdate(suscription.getLastSocialUpdated(), DateUtils.DAY_MILLIS))
+								if(DateUtils.needUpdate(suscription.getLastSocialUpdated(), DateUtils.DAY_MILLIS, homeActivity))
 								{
 									new GetTweetsAsyncTask(getActivity(), false, companyId).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 								}
@@ -380,12 +347,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshLayoutBasicFragment:redirectCard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:redirectCard - Exception:", e);
 		}
 	}
 
@@ -457,7 +419,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					//Modificación para ejecutar proceso en background
 					if(StringUtils.isNotEmpty(companyId))
 					{
-						MessageHelper.emptyCompany(companyId, Common.BOOL_YES);
+						MessageHelper.emptyCompany(companyId, Common.BOOL_YES, homeActivity);
 					}
 
 					snackBar = Snackbar.make(clayout, context.getString(R.string.snack_empty), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
@@ -468,7 +430,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 							//Modificación para ejecutar proceso en background
 							if(StringUtils.isNotEmpty(companyId))
 							{
-								MessageHelper.emptyCompany(companyId, Common.BOOL_NO);
+								MessageHelper.emptyCompany(companyId, Common.BOOL_NO, homeActivity);
 							}
 							refresh(false, false);
 						}
@@ -511,12 +473,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshLayoutBasicFragment:dispatchMenu - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:dispatchMenu - Exception:", e);
 		}
 	}
 
@@ -535,12 +492,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshLayoutBasicFragment:refresh - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:refresh - Exception:", e);
 		}
 	}
 
@@ -586,12 +538,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshBasicFragment:initiateRefresh - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:initiateRefresh - Exception:", e);
 		}
 
 		mSwipeRefreshLayout.setRefreshing(false);
@@ -673,7 +620,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 									if(!companyId.equals(phantom.getCompanyId()) && StringUtils.isIdMongo(companyId))
 									{
 										//Actualizar los mensajes
-										MessageHelper.groupMessages(phantom.getCompanyId(), companyId);
+										MessageHelper.groupMessages(phantom.getCompanyId(), companyId, homeActivity);
 									}
 								}
 							}
@@ -683,12 +630,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			}
 			catch(Exception e)
 			{
-				System.out.println("SwipeRefreshLayoutBasicFragment:RefreshCompanyTask:doInBackground - Exception: " + e);
-
-				if(Common.DEBUG)
-				{
-					e.printStackTrace();
-				}
+				Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:RefreshCompanyTask:doInBackground - Exception:", e);
 			}
 
 			return idsList;
@@ -705,12 +647,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			}
 			catch(Exception e)
 			{
-				System.out.println("SwipeRefreshLayoutBasicFragment:RefreshCompanyTask:onPostExecute - Exception: " + e);
-
-				if(Common.DEBUG)
-				{
-					e.printStackTrace();
-				}
+				Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:RefreshCompanyTask:onPostExecute - Exception:", e);
 			}
 		}
 	}

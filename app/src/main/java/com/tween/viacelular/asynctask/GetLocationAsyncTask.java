@@ -25,6 +25,7 @@ import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONObject;
 import java.util.List;
 import io.realm.Realm;
@@ -74,12 +75,7 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 		}
 		catch(Exception e)
 		{
-			System.out.println("GetLocationAsyncTask:onPreExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "GetLocationAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -269,12 +265,7 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 		}
 		catch(Exception e)
 		{
-			System.out.println("GetLocationAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "GetLocationAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
@@ -303,12 +294,7 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 		}
 		catch(Exception e)
 		{
-			System.out.println("GetLocationAsyncTask:onPostExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "GetLocationAsyncTask:onPostExecute - Exception:", e);
 		}
 
 		super.onPostExecute(result);
@@ -378,12 +364,7 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 		}
 		catch(Exception e)
 		{
-			System.out.println("GetLocationAsyncTask:useGeoCoder - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "GetLocationAsyncTask:useGeoCoder - Exception:", e);
 		}
 
 		return bestMatch;

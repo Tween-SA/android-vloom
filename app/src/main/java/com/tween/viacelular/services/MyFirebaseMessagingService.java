@@ -32,6 +32,7 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONArray;
 import java.util.Map;
 import io.realm.Realm;
@@ -282,12 +283,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 		}
 		catch(Exception e)
 		{
-			System.out.println("MyFirebaseMessagingService:onMessageReceived - Exception: "+e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "MyFirebaseMessagingService:sendNotification:onMessageReceived - Exception:", e);
 		}
 	}
 
@@ -359,7 +355,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 				}
 				catch(Exception e)
 				{
-					System.out.println("MyFirebaseMessagingService:sendNotification:getCompanyByApi - Exception: " + e);
+					Utils.logError(context, "MyFirebaseMessagingService:sendNotification:getCompanyByApi - Exception:", e);
 				}
 			}
 
@@ -448,7 +444,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 							}
 							catch(Exception e)
 							{
-								System.out.println("MyFirebaseMessagingService:sendNotification:getImageWithPicasso - Exception: " + e);
+								Utils.logError(context, "MyFirebaseMessagingService:sendNotification:getImageWithPicasso - Exception:", e);
 							}
 						}
 
@@ -498,7 +494,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 						}
 						catch(Exception e)
 						{
-							System.out.println("MyFirebaseMessagingService:sendNotification:getImageWithPicasso - Exception: " + e);
+							Utils.logError(context, "MyFirebaseMessagingService:sendNotification:getImageWithPicasso - Exception:", e);
 						}
 					}
 				}
@@ -512,7 +508,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					}
 					catch(Exception e)
 					{
-						System.out.println("MyFirebaseMessagingService:sendNotification:ConfirmReading - Exception: " + e);
+						Utils.logError(context, "MyFirebaseMessagingService:sendNotification:ConfirmReading - Exception:", e);
 					}
 				}
 				//Reload Home if it's running
@@ -541,12 +537,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 		}
 		catch(Exception e)
 		{
-			System.out.println("MyFirebaseMessagingService:sendNotification - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "MyFirebaseMessagingService:sendNotification - Exception:", e);
 		}
 	}
 
@@ -573,12 +564,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 		}
 		catch(Exception e)
 		{
-			System.out.println("MyFirebaseMessagingService:onOldPush - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "MyFirebaseMessagingService:onOldPush - Exception:", e);
 		}
 	}
 

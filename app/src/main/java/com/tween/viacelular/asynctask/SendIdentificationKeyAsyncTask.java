@@ -10,6 +10,7 @@ import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import io.realm.Realm;
@@ -54,12 +55,7 @@ public class SendIdentificationKeyAsyncTask extends AsyncTask<Void, Void, String
 		}
 		catch(Exception e)
 		{
-			System.out.println("SendIdentificationKeyAsyncTask:onPreExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "RegisterPhoneAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -120,12 +116,7 @@ public class SendIdentificationKeyAsyncTask extends AsyncTask<Void, Void, String
 		}
 		catch(Exception e)
 		{
-			System.out.println("SendIdentificationKeyAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "RegisterPhoneAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;

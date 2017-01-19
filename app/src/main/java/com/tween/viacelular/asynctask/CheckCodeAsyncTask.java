@@ -14,6 +14,7 @@ import com.tween.viacelular.models.UserHelper;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Locale;
@@ -67,12 +68,7 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CheckCodeAsyncTask:onPreExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CheckCodeAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -220,21 +216,11 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(JSONException e)
 		{
-			System.out.println("CheckCodeAsyncTask:doInBackground - JSONException: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CheckCodeAsyncTask:doInBackground - JSONException:", e);
 		}
 		catch(Exception e)
 		{
-			System.out.println("CheckCodeAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CheckCodeAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
@@ -272,12 +258,7 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CheckCodeAsyncTask:onPostExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CheckCodeAsyncTask:onPostExecute - Exception:", e);
 		}
 
 		super.onPostExecute(result);

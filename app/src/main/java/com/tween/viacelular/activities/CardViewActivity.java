@@ -1,5 +1,6 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -185,7 +186,7 @@ public class CardViewActivity extends AppCompatActivity
 						}
 
 						//Agregado para detectar si el color es claro
-						if(Utils.isLightColor(color))
+						if(Utils.isLightColor(color, this))
 						{
 							colorTitle		= Color.BLACK;
 							colorSubTitle	= Color.DKGRAY;
@@ -603,7 +604,7 @@ public class CardViewActivity extends AppCompatActivity
 			realm.beginTransaction();
 			suscription.setGray(Common.BOOL_YES);
 			realm.commitTransaction();
-			Utils.hideViewWithFade(cardSuscribe);
+			Utils.hideViewWithFade(cardSuscribe, this);
 			txtTitle.setTextColor(Utils.adjustAlpha(colorTitle, Common.ALPHA_FOR_BLOCKS));
 			txtSubTitleCollapsed.setTextColor(Utils.adjustAlpha(colorSubTitle, Common.ALPHA_FOR_BLOCKS));
 			toolBar.setBackgroundColor(Color.parseColor(Common.COLOR_BLOCKED));
@@ -638,7 +639,7 @@ public class CardViewActivity extends AppCompatActivity
 					suscription.setReceive(Common.BOOL_YES);
 				}
 			});
-			Utils.hideViewWithFade(cardPayout);
+			Utils.hideViewWithFade(cardPayout, this);
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 			if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -664,8 +665,8 @@ public class CardViewActivity extends AppCompatActivity
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			HomeActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, false);
-			Utils.hideViewWithFade(cardPayout);
-			Utils.hideViewWithFade(cardSuscribe);
+			Utils.hideViewWithFade(cardPayout, this);
+			Utils.hideViewWithFade(cardSuscribe, this);
 
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -825,7 +826,8 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			Handler handler	= new android.os.Handler();
+			final Activity context	= this;
+			Handler handler			= new android.os.Handler();
 			handler.post(new Runnable()
 			{
 				public void run()
@@ -868,7 +870,7 @@ public class CardViewActivity extends AppCompatActivity
 
 								if(suscription != null)
 								{
-									if(SuscriptionHelper.isRevenue(suscription.getCompanyId()))
+									if(SuscriptionHelper.isRevenue(suscription.getCompanyId(), context))
 									{
 										if(suscription.getReceive() != Common.BOOL_YES)
 										{
@@ -959,13 +961,13 @@ public class CardViewActivity extends AppCompatActivity
 
 								if(idViewFather == cardPayout.getId())
 								{
-									Utils.showViewWithFade(cardPayout);
+									Utils.showViewWithFade(cardPayout, context);
 								}
 								else
 								{
 									if(idViewFather == cardSuscribe.getId())
 									{
-										Utils.showViewWithFade(cardSuscribe);
+										Utils.showViewWithFade(cardSuscribe, context);
 									}
 								}
 							}
@@ -981,7 +983,7 @@ public class CardViewActivity extends AppCompatActivity
 							{
 								rlEmpty.setVisibility(RelativeLayout.GONE);
 								rcwCard.setVisibility(RecyclerView.GONE);
-								Utils.showViewWithFade(cardForm);
+								Utils.showViewWithFade(cardForm, context);
 								inputCode.setErrorEnabled(false);
 								inputCode.setHint(suscription.getIdentificationKey());
 								String title = getString(R.string.landing_card_form_text1) + " " + suscription.getIdentificationKey() + " " + getString(R.string.landing_card_form_text2);
@@ -1022,7 +1024,7 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			Utils.hideViewWithFade(cardForm);
+			Utils.hideViewWithFade(cardForm, this);
 
 			if(StringUtils.isAlphanumeric(editCode.getText().toString()))
 			{
@@ -1031,16 +1033,16 @@ public class CardViewActivity extends AppCompatActivity
 
 				if(task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get().equals(ApiConnection.OK))
 				{
-					Utils.showViewWithFade(cardOk);
+					Utils.showViewWithFade(cardOk, this);
 				}
 				else
 				{
-					Utils.showViewWithFade(cardRetry);
+					Utils.showViewWithFade(cardRetry, this);
 				}
 			}
 			else
 			{
-				Utils.showViewWithFade(cardRetry);
+				Utils.showViewWithFade(cardRetry, this);
 				inputCode.setErrorEnabled(true);
 				inputCode.setError(getString(R.string.code_alphanumeric));
 			}
@@ -1056,7 +1058,7 @@ public class CardViewActivity extends AppCompatActivity
 		try
 		{
 			inputCode.setErrorEnabled(false);
-			Utils.hideViewWithFade(cardRetry);
+			Utils.hideViewWithFade(cardRetry, this);
 			sendData(view);
 		}
 		catch(Exception e)
@@ -1069,11 +1071,11 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			Utils.hideViewWithFade(cardForm);
-			Utils.hideViewWithFade(cardOk);
-			Utils.hideViewWithFade(cardRetry);
-			Utils.hideViewWithFade(cardPayout);
-			Utils.hideViewWithFade(cardSuscribe);
+			Utils.hideViewWithFade(cardForm, this);
+			Utils.hideViewWithFade(cardOk, this);
+			Utils.hideViewWithFade(cardRetry, this);
+			Utils.hideViewWithFade(cardPayout, this);
+			Utils.hideViewWithFade(cardSuscribe, this);
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 			if(notifications != null)
@@ -1130,8 +1132,8 @@ public class CardViewActivity extends AppCompatActivity
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			HomeActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, false);
-			Utils.hideViewWithFade(cardPayout);
-			Utils.hideViewWithFade(cardSuscribe);
+			Utils.hideViewWithFade(cardPayout, this);
+			Utils.hideViewWithFade(cardSuscribe, this);
 			txtTitle.setTextColor(colorTitle);
 			txtSubTitleCollapsed.setTextColor(colorSubTitle);
 			toolBar.setBackgroundColor(Color.parseColor(suscription.getColorHex()));
@@ -1149,7 +1151,7 @@ public class CardViewActivity extends AppCompatActivity
 			{
 				rlEmpty.setVisibility(RelativeLayout.GONE);
 				rcwCard.setVisibility(RecyclerView.GONE);
-				Utils.showViewWithFade(cardForm);
+				Utils.showViewWithFade(cardForm, this);
 				inputCode.setErrorEnabled(false);
 				inputCode.setHint(suscription.getIdentificationKey());
 				String title = getString(R.string.landing_card_form_text1) + " " + suscription.getIdentificationKey() + " " + getString(R.string.landing_card_form_text2);
@@ -1209,8 +1211,9 @@ public class CardViewActivity extends AppCompatActivity
 		try
 		{
 			hideSoftKeyboard();
-			Realm realm	= Realm.getDefaultInstance();
-			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+			Realm realm					= Realm.getDefaultInstance();
+			suscription				= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+			final Activity activity	= this;
 
 			if(suscription != null)
 			{
@@ -1291,7 +1294,7 @@ public class CardViewActivity extends AppCompatActivity
 					//Modificación para ejecutar proceso en background
 					if(StringUtils.isNotEmpty(companyId))
 					{
-						MessageHelper.emptyCompany(companyId, Common.BOOL_YES);
+						MessageHelper.emptyCompany(companyId, Common.BOOL_YES, activity);
 					}
 
 					refresh(true);
@@ -1303,7 +1306,7 @@ public class CardViewActivity extends AppCompatActivity
 							//Modificación para ejecutar proceso en background
 							if(StringUtils.isNotEmpty(companyId))
 							{
-								MessageHelper.emptyCompany(companyId, Common.BOOL_NO);
+								MessageHelper.emptyCompany(companyId, Common.BOOL_NO, activity);
 							}
 
 							refresh(false);
