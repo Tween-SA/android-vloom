@@ -38,9 +38,7 @@ import com.tween.viacelular.models.UserHelper;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import org.json.JSONObject;
-
 import java.util.concurrent.TimeUnit;
 import io.realm.Realm;
 
@@ -210,12 +208,7 @@ public class CodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -236,12 +229,7 @@ public class CodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:enableNextStep - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":enableNextStep - Exception:", e);
 		}
 	}
 
@@ -271,12 +259,7 @@ public class CodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:enableRetry - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":enableRetry - Exception:", e);
 		}
 	}
 
@@ -338,12 +321,7 @@ public class CodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:getFreePass - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":getFreePass - Exception:", e);
 		}
 	}
 
@@ -386,12 +364,7 @@ public class CodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:login - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":login - Exception:", e);
 		}
 	}
 
@@ -416,12 +389,7 @@ public class CodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onBackPressed - Exception:", e);
 		}
 	}
 
@@ -444,12 +412,7 @@ public class CodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:logout - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":logout - Exception:", e);
 		}
 	}
 
@@ -473,12 +436,7 @@ public class CodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:hideSoftKeyboard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":hideSoftKeyboard - Exception:", e);
 		}
 	}
 
@@ -500,12 +458,7 @@ public class CodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 }

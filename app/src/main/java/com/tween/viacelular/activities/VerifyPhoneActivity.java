@@ -121,12 +121,7 @@ public class VerifyPhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("VerifyPhoneActivity:OnCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -227,12 +222,7 @@ public class VerifyPhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("VerifyPhoneActivity:register - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":register - Exception:", e);
 		}
 
 		return true;
@@ -278,12 +268,7 @@ public class VerifyPhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("VerifyPhoneActivity:showCountries - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":showCountries - Exception:", e);
 		}
 	}
 
@@ -392,12 +377,7 @@ public class VerifyPhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("VerifyPhoneActivity:selectCountry - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":selectCountry - Exception:", e);
 		}
 	}
 
@@ -419,12 +399,7 @@ public class VerifyPhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("VerifyPhoneActivity:hideSoftKeyboard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":hideSoftKeyboard - Exception:", e);
 		}
 	}
 
@@ -551,12 +526,7 @@ public class VerifyPhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("VerifyPhoneActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 }

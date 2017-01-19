@@ -241,12 +241,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardAdapter:onCreateViewHolder - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CardAdapter:onCreateViewHolder - Exception:", e);
 		}
 
 		return null;
@@ -892,12 +887,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardAdapter:onBindViewHolder - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CardAdapter:onBindViewHolder - Exception:", e);
 		}
 	}
 

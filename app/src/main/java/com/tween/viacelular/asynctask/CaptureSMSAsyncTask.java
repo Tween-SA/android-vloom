@@ -20,6 +20,7 @@ import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -59,12 +60,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CaptureSMSAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CaptureSMSAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -250,12 +246,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CaptureSMSAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CaptureSMSAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
@@ -282,12 +273,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CaptureSMSAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CaptureSMSAsyncTask:onPostExecute - Exception:", e);
 		}
 
 		super.onPostExecute(result);

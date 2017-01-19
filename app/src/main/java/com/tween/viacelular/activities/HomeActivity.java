@@ -164,12 +164,7 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("HomeActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -211,12 +206,7 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("HomeActivity:modifySubscriptions - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "HomeActivity:modifySubscriptions - Exception:", e);
 		}
 	}
 
@@ -296,12 +286,7 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("HomeActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 
@@ -329,12 +314,7 @@ public class HomeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("HomeActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onBackPressed - Exception:", e);
 		}
 	}
 }

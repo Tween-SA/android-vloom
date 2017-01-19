@@ -141,7 +141,6 @@ public class CardViewActivity extends AppCompatActivity
 			toolBar.setTitle("");
 			toolBar.setSubtitle("");
 			setTitle("");
-
 			mAuth = FirebaseAuth.getInstance();
 
 			if(mAuth != null)
@@ -152,8 +151,6 @@ public class CardViewActivity extends AppCompatActivity
 					@Override
 					public void onComplete(@NonNull Task<AuthResult> task)
 					{
-						System.out.println("OnCompleteListener-signInAnonymously:isSuccessful: "+task.isSuccessful());
-
 						if(!task.isSuccessful())
 						{
 							System.out.println("OnCompleteListener-signInAnonymously:getException: "+task.getException());
@@ -336,8 +333,6 @@ public class CardViewActivity extends AppCompatActivity
 				@Override
 				public void onReceive(Context context, Intent intent)
 				{
-					System.out.println("onReceive:" + intent);
-
 					switch(intent.getAction())
 					{
 						case MyDownloadService.DOWNLOAD_COMPLETED:
@@ -367,12 +362,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -398,12 +388,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:attach - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":attach - Exception:", e);
 		}
 	}
 
@@ -421,12 +406,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:callCamera - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":callCamera - Exception:", e);
 		}
 	}
 
@@ -459,12 +439,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onActivityResult - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onActivityResult - Exception:", e);
 		}
 	}
 
@@ -481,12 +456,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onUploadResultIntent - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onUploadResultIntent - Exception:", e);
 		}
 	}
 
@@ -504,12 +474,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:goToSettings - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":goToSettings - Exception:", e);
 		}
 	}
 	
@@ -523,12 +488,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onCreateOptionsMenu - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreateOptionsMenu - Exception:", e);
 		}
 
 		return super.onCreateOptionsMenu(menu);
@@ -595,12 +555,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onPrepareOptionsMenu - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onPrepareOptionsMenu - Exception:", e);
 		}
 
 		return super.onPrepareOptionsMenu(menu);
@@ -635,12 +590,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:showOptionsCard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":showOptionsCard - Exception:", e);
 		}
 	}
 
@@ -670,12 +620,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:becomeGray - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":becomeGray - Exception:", e);
 		}
 	}
 
@@ -705,12 +650,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:continueCompany - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":continueCompany - Exception:", e);
 		}
 	}
 
@@ -745,12 +685,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:blockCompany - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":blockCompany - Exception:", e);
 		}
 	}
 
@@ -882,12 +817,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:dispatchMenu - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":dispatchMenu - Exception:", e);
 		}
 	}
 
@@ -1084,12 +1014,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:refresh - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":refresh - Exception:", e);
 		}
 	}
 
@@ -1122,12 +1047,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:sendData - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":sendData - Exception:", e);
 		}
 	}
 
@@ -1141,12 +1061,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:sendAgain - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":sendAgain - Exception:", e);
 		}
 	}
 
@@ -1201,12 +1116,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:byeCard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":byeCard - Exception:", e);
 		}
 	}
 
@@ -1268,12 +1178,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:suscribeCompany - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":suscribeCompany - Exception:", e);
 		}
 	}
 
@@ -1294,12 +1199,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:enableNextStep - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":enableNextStep - Exception:", e);
 		}
 	}
 	
@@ -1450,12 +1350,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onOptionsItemSelected - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onOptionsItemSelected - Exception:", e);
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -1480,12 +1375,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onBackPressed - Exception:", e);
 		}
 	}
 
@@ -1509,12 +1399,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:hideSoftKeyboard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":hideSoftKeyboard - Exception:", e);
 		}
 	}
 
@@ -1541,12 +1426,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 
@@ -1554,9 +1434,16 @@ public class CardViewActivity extends AppCompatActivity
 	public void onStart()
 	{
 		super.onStart();
-		LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
-		manager.registerReceiver(mBroadcastReceiver, MyDownloadService.getIntentFilter());
-		manager.registerReceiver(mBroadcastReceiver, MyUploadService.getIntentFilter());
+		try
+		{
+			LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+			manager.registerReceiver(mBroadcastReceiver, MyDownloadService.getIntentFilter());
+			manager.registerReceiver(mBroadcastReceiver, MyUploadService.getIntentFilter());
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":onStart - Exception:", e);
+		}
 	}
 
 	@Override
@@ -1564,6 +1451,13 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		super.onStop();
 		// Unregister download receiver
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+		try
+		{
+			LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":onStop - Exception:", e);
+		}
 	}
 }

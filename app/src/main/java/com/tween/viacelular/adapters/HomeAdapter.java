@@ -90,12 +90,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 		}
 		catch(Exception e)
 		{
-			System.out.println("HomeAdapter:onCreateViewHolder - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity.getContext(), "HomeAdapter:onCreateViewHolder - Exception:", e);
 		}
 
 		return null;
@@ -303,12 +298,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 		}
 		catch(Exception e)
 		{
-			System.out.println("HomeAdapter:onBindViewHolder - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity.getContext(), "HomeAdapter:onBindViewHolder - Exception:", e);
 		}
 	}
 

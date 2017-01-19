@@ -159,12 +159,7 @@ public class VerifyCodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("VerifyCodeActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -185,12 +180,7 @@ public class VerifyCodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("VerifyCodeActivity:enableNextStep - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":enableNextStep - Exception:", e);
 		}
 	}
 
@@ -212,12 +202,7 @@ public class VerifyCodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("VerifyCodeActivity:enableRetry - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":enableRetry - Exception:", e);
 		}
 	}
 
@@ -260,12 +245,7 @@ public class VerifyCodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("VerifyCodeActivity:login - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":login - Exception:", e);
 		}
 	}
 
@@ -290,12 +270,7 @@ public class VerifyCodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("VerifyCodeActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onBackPressed - Exception:", e);
 		}
 	}
 
@@ -318,12 +293,7 @@ public class VerifyCodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("VerifyCodeActivity:logout - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":logout - Exception:", e);
 		}
 	}
 
@@ -347,12 +317,7 @@ public class VerifyCodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("VerifyCodeActivity:hideSoftKeyboard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":hideSoftKeyboard - Exception:", e);
 		}
 	}
 
@@ -374,12 +339,7 @@ public class VerifyCodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("VerifyCodeActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 }

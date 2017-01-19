@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -45,6 +47,7 @@ import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -57,6 +60,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 
 /**
@@ -182,6 +187,37 @@ public class Utils
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Registra forzadamente una Excepción en Crashlytics
+	 * @param context
+	 * @param referenceName
+     * @param e
+     */
+	public static void logError(Context context, String referenceName, Exception e)
+	{
+		try
+		{
+			Fabric.with(context, new Crashlytics());
+			Crashlytics.getInstance();
+			Crashlytics.logException(e);
+			System.out.println(referenceName+" "+e);
+
+			if(Common.DEBUG)
+			{
+				e.printStackTrace();
+			}
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Utils:logError - Exception: "+ex);
+
+			if(Common.DEBUG)
+			{
+				ex.printStackTrace();
 			}
 		}
 	}
@@ -782,6 +818,7 @@ public class Utils
 			}
 			catch(Exception e)
 			{
+
 				FileWriter fichero;
 				PrintWriter pw;
 

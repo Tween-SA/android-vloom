@@ -24,7 +24,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.FacebookSdk;
@@ -118,12 +117,7 @@ public class PhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:OnCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":OnCreate - Exception:", e);
 		}
 	}
 
@@ -208,12 +202,7 @@ public class PhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:register - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":register - Exception:", e);
 		}
 
 		return true;
@@ -259,12 +248,7 @@ public class PhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:showCountries - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":showCountries - Exception:", e);
 		}
 	}
 
@@ -373,12 +357,7 @@ public class PhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:selectCountry - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":selectCountry - Exception:", e);
 		}
 	}
 
@@ -400,12 +379,7 @@ public class PhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:hideSoftKeyboard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":hideSoftKeyboard - Exception:", e);
 		}
 	}
 
@@ -538,12 +512,7 @@ public class PhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 

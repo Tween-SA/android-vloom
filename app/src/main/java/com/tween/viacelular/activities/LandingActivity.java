@@ -104,7 +104,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			}
 
 			setSupportActionBar(toolBar);
-			startAlphaAnimation(txtTitle, 0, View.INVISIBLE);
+			startAlphaAnimation(txtTitle, 0, View.INVISIBLE, this);
 
 			if(txtUrl != null)
 			{
@@ -342,12 +342,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:OnCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -376,12 +371,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:goTo - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":goTo - Exception:", e);
 		}
 	}
 
@@ -396,12 +386,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:viewCards - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":viewCards - Exception:", e);
 		}
 	}
 
@@ -428,12 +413,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onBackPressed - Exception:", e);
 		}
 	}
 
@@ -455,12 +435,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:onOffsetChanged - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onOffsetChanged - Exception:", e);
 		}
 	}
 
@@ -472,7 +447,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			{
 				if(!mIsTheTitleVisible)
 				{
-					startAlphaAnimation(txtTitle, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+					startAlphaAnimation(txtTitle, ALPHA_ANIMATIONS_DURATION, View.VISIBLE, this);
 					mIsTheTitleVisible = true;
 				}
 			}
@@ -480,19 +455,14 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			{
 				if(mIsTheTitleVisible)
 				{
-					startAlphaAnimation(txtTitle, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+					startAlphaAnimation(txtTitle, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE, this);
 					mIsTheTitleVisible = false;
 				}
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:handleToolbarTitleVisibility - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":handleToolbarTitleVisibility - Exception:", e);
 		}
 	}
 
@@ -507,7 +477,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 				if(mIsTheTitleContainerVisible)
 				{
 					//Al achicar la barra
-					startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+					startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE, this);
 					mIsTheTitleContainerVisible = false;
 					//Mostrar toolBar
 					circleView.setVisibility(CircleImageView.VISIBLE);
@@ -533,7 +503,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 				if(!mIsTheTitleContainerVisible)
 				{
 					//Al expandir la barra
-					startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+					startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.VISIBLE, this);
 					mIsTheTitleContainerVisible = true;
 					//Ocultar toolBar
 					circleView.setVisibility(CircleImageView.GONE);
@@ -557,16 +527,11 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:handleAlphaOnTitle - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":handleAlphaOnTitle - Exception:", e);
 		}
 	}
 
-	public static void startAlphaAnimation(View v, long duration, int visibility)
+	public static void startAlphaAnimation(View v, long duration, int visibility, Context context)
 	{
 		try
 		{
@@ -577,12 +542,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:onOffsetChanged - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "LandingActivity:onOffsetChanged - Exception:", e);
 		}
 	}
 
@@ -646,12 +606,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:onOffsetChanged - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onOffsetChanged - Exception:", e);
 		}
 	}
 }

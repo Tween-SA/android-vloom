@@ -176,12 +176,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 
@@ -214,12 +209,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:goBusiness - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":goBusiness - Exception:", e);
 		}
 
 		finish();
@@ -290,12 +280,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:checkSilence - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":checkSilence - Exception:", e);
 		}
 	}
 
@@ -320,12 +305,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:checkStatistics - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":checkStatistics - Exception:", e);
 		}
 	}
 
@@ -338,12 +318,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:backup - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":backup - Exception:", e);
 		}
 	}
 
@@ -358,12 +333,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:reImport - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":reImport - Exception:", e);
 		}
 	}
 
@@ -380,12 +350,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:sendPush - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":sendPush - Exception:", e);
 		}
 	}
 
@@ -401,12 +366,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:sendPushSMS - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":sendPushSMS - Exception:", e);
 		}
 	}
 
@@ -493,12 +453,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:sendMediaPush - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":sendMediaPush - Exception:", e);
 		}
 	}
 
@@ -546,12 +501,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:sendSimilSMS - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":sendSimilSMS - Exception:", e);
 		}
 	}
 
@@ -573,12 +523,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:logout - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":logout - Exception:", e);
 		}
 	}
 
@@ -615,12 +560,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:silenceUp - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":silenceUp - Exception:", e);
 		}
 	}
 
@@ -645,12 +585,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:goContact - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":goContact - Exception:", e);
 		}
 	}
 	
@@ -678,12 +613,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onBackPressed - Exception:", e);
 		}
 	}
 
@@ -725,12 +655,7 @@ public class SettingsActivity extends AppCompatActivity
 			}
 			catch(Exception e)
 			{
-				System.out.println("SettingsActivity:UpdateSilence:start - Exception: " + e);
-
-				if(Common.DEBUG)
-				{
-					e.printStackTrace();
-				}
+				Utils.logError(getApplicationContext(), "SettingsActivity:UpdateSilence:start - Exception:", e);
 			}
 		}
 	}

@@ -48,12 +48,7 @@ public class SuggestionsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuggestionsActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -66,12 +61,7 @@ public class SuggestionsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuggestionsActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onBackPressed - Exception:", e);
 		}
 	}
 
@@ -87,12 +77,7 @@ public class SuggestionsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuggestionsActivity:begin - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":begin - Exception:", e);
 		}
 	}
 }
