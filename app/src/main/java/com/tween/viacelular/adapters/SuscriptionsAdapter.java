@@ -98,12 +98,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsAdapter:getSectionLetters - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsAdapter:getSectionLetters - Exception:", e);
 		}
 
 		return sections;
@@ -127,12 +122,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsAdapter:getSectionLetters - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsAdapter:getSectionLetters - Exception:", e);
 		}
 
 		return letters;
@@ -232,12 +222,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsAdapter:getView - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsAdapter:getView - Exception:", e);
 		}
 
 		return convertView;
@@ -283,12 +268,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsAdapter:getHeaderView - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsAdapter:getHeaderView - Exception:", e);
 		}
 
 		return convertView;
@@ -321,12 +301,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsAdapter:getHeaderId - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsAdapter:getHeaderId - Exception:", e);
 		}
 
 		return id;
@@ -380,12 +355,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsAdapter:getSectionForPosition - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsAdapter:getSectionForPosition - Exception:", e);
 		}
 
 		return 0;
@@ -486,13 +456,11 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 	private void addItem(int position, Suscription model)
 	{
 		suscriptions.add(position, model);
-		//notifyItemInserted(position);
 	}
 
 	private void moveItem(int fromPosition, int toPosition)
 	{
 		final Suscription model = suscriptions.remove(fromPosition);
 		suscriptions.add(toPosition, model);
-		//notifyItemMoved(fromPosition, toPosition);
 	}
 }

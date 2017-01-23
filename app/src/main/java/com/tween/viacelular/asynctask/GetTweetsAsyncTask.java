@@ -15,6 +15,7 @@ import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -65,12 +66,7 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("GetTweetsAsyncTask:onPreExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "GetTweetsAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -92,7 +88,7 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 					String url						= ApiConnection.COMPANIES_SOCIAL.replace(Suscription.KEY_API, companyId)+"/"+user.getUserId();
 					JSONObject jsonResult			= new JSONObject(ApiConnection.request(url, context, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
 					result							= ApiConnection.checkResponse(context, jsonResult);
-					Suscription suscription			= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+					final Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 					int notificationId				= preferences.getInt(Common.KEY_LAST_MSGID, 0);
 					String dateText					= context.getString(R.string.social_date);
 
@@ -104,7 +100,7 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 							{
 								String date		= jsonResult.getJSONObject(Common.KEY_CONTENT).getJSONObject(Common.KEY_DATA).getString("date");
 								notificationId	= notificationId+1;
-								Message message	= new Message();
+								final Message message	= new Message();
 								message.setMsgId(String.valueOf(notificationId));
 								message.setMsg(jsonResult.getJSONObject(Common.KEY_CONTENT).getJSONObject(Common.KEY_DATA).getString("tweet"));
 								message.setCompanyId(suscription.getCompanyId());
@@ -135,19 +131,19 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 								}
 								catch(ParseException e)
 								{
-									System.out.println("GetTweetsAsyncTask:doInBackground:parseDate - Exception: " + e);
-
-									if(Common.DEBUG)
-									{
-										e.printStackTrace();
-									}
+									Utils.logError(context, "GetTweetsAsyncTask:doInBackground:parseDate - ParseException:", e);
 								}
 
 								message.setSocialDate(dateText.replace("dd/mm/yyyy", sdf.format(date2)));
-								realm.beginTransaction();
-								realm.copyToRealmOrUpdate(message);
-								suscription.setLastSocialUpdated(System.currentTimeMillis());
-								realm.commitTransaction();
+								realm.executeTransaction(new Realm.Transaction()
+								{
+									@Override
+									public void execute(Realm realm)
+									{
+										realm.copyToRealmOrUpdate(message);
+										suscription.setLastSocialUpdated(System.currentTimeMillis());
+									}
+								});
 								SharedPreferences.Editor editor = preferences.edit();
 								editor.putInt(Common.KEY_LAST_MSGID, notificationId);
 								editor.apply();
@@ -174,12 +170,7 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("GetTweetsAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "GetTweetsAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;

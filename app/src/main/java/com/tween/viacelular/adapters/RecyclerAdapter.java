@@ -15,6 +15,7 @@ import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import io.realm.Realm;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder>
@@ -32,6 +33,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 	private int					selected;
 	private int					color;
 	private String				phone;
+	private Context				context;
 
 	public static class ViewHolder extends RecyclerView.ViewHolder
 	{
@@ -119,15 +121,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 			this.selected	= selected;
 			this.color		= color;
 			this.phone		= phone;
+			this.context	= context;
 		}
 		catch(Exception e)
 		{
-			System.out.println("RecyclerAdapter:constructor - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "RecyclerAdapter.ViewHolder:constructor - Exception:", e);
 		}
 	}
 
@@ -152,12 +150,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 		}
 		catch(Exception e)
 		{
-			System.out.println("RecyclerAdapter.ViewHolder:onCreateViewHolder - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "RecyclerAdapter.ViewHolder:onCreateViewHolder - Exception:", e);
 		}
 
 		return null;
@@ -237,12 +230,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 		}
 		catch(Exception e)
 		{
-			System.out.println("RecyclerAdapter:onBindViewHolder - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "RecyclerAdapter:onBindViewHolder - Exception:", e);
 		}
 	}
 

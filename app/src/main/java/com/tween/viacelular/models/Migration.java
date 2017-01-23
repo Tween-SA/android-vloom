@@ -51,12 +51,11 @@ public class Migration implements RealmMigration
 		}
 		catch(Exception e)
 		{
-			System.out.println(Migration.class.getName()+":getDB - Exception: " + e);
+			Utils.logError(context, Migration.class.getName()+":getDB - Exception:", e);
 
 			if(Common.DEBUG)
 			{
-				e.printStackTrace();
-				Utils.writeStringInFile(Migration.class.getName()+":getDB - Exception: " + e, "");
+				Utils.writeStringInFile(Migration.class.getName()+":getDB - Exception: " + e, "", context);
 			}
 		}
 	}
@@ -172,7 +171,7 @@ public class Migration implements RealmMigration
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
-				Utils.writeStringInFile(Migration.class.getName()+":migrate - Exception: " + e, "");
+				Utils.writeStringInFile(Migration.class.getName()+":migrate - Exception: " + e, "", null);
 			}
 		}
 	}

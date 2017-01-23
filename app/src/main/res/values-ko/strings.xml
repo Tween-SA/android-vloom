@@ -204,6 +204,17 @@
 	<string name="upgrade_text">우리는 귀하의 정보를 업데이트</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">확인 중&#8230;</string>
+	<string name="verify_phone_add">전화 번호 추가</string><!-- after traslate -->
+	<string name="verify_phone_alert">우리는 숫자 0이를 마우스 오른쪽 단추로되어 있는지 확인합니다 또는 당신이 그것을 변경하려면?</string><!-- after traslate -->
+	<string name="verify_phone_back">반환</string><!-- after traslate -->
+	<string name="verify_phone_code">자동 000,000,000,000로 전송 된 SMS를 검출하도록 대기</string><!-- after traslate -->
+	<string name="verify_phone_contact">연락 지원</string><!-- after traslate -->
+	<string name="verify_phone_edit">편집</string><!-- after traslate -->
+	<string name="verify_phone_missing">당신이 당신의 번호를 확인하지 않으면, 당신의 마음에 드는 기업은 당신과 통신 할 수 없습니다</string><!-- after traslate -->
+	<string name="verify_phone_subtitle">국가를 확인하고 지역 번호 휴대 전화 번호 뒤에 입력 :</string><!-- after traslate -->
+	<string name="verify_phone_title">당신의 전화 번호를 확인하기 위해 SMS를 보낼 것입니다.</string><!-- after traslate -->
+	<string name="verify_phone_warning">계정 보안 유지</string><!-- after traslate -->
+	<string name="verify_phone_wrong">¿ 잘못된 번호?</string><!-- after traslate -->
 	<string name="version_settins">안드로이드 v용</string>
 	<string name="week">주</string>
 	<string name="weeks">주</string>

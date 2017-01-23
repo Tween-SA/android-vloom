@@ -55,12 +55,7 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("ConnectApiSMSAsyncTask:onPreExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ConnectApiSMSAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -171,12 +166,7 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("ConnectApiSMSAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ConnectApiSMSAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;

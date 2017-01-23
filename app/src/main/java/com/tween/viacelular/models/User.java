@@ -56,6 +56,8 @@ public class User extends RealmObject
 	public static final String USERID				= "55f30078c9a75d9abcc30207";
 	@Ignore
 	public static final String FAKE_GCMID_EMULATOR	= "fT7ge95a-6k:APA91bFJWoP5dXfXFW-UEih-OppYAtMBnBnw1lVuiyCk8q-yFXtS1nI2UXqTtdCNU5gynjXGuFBUgX-hEdjbw_7xlcaH4gZWioWFCa_DjnDdHgUbtz267EEQ6tNKhcYU1Gw-HbCNpSIz";
+	@Ignore
+	public static final String FAKE_USER			= "userFake";
 
 	public User()
 	{

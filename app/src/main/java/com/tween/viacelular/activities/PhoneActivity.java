@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,8 +24,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.FacebookSdk;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.RegisterPhoneAsyncTask;
 import com.tween.viacelular.models.Isp;
@@ -115,30 +119,52 @@ public class PhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:OnCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":OnCreate - Exception:", e);
 		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
+		getMenuInflater().inflate(R.menu.menu_support, menu);
 		return true;
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		try
+		{
+			if(item.getItemId() == R.id.action_support)
+			{
+				GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("Contacto")
+					.setLabel("AccionUser").build());
+				Utils.sendContactMail(PhoneActivity.this);
+
+				return true;
+			}
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":onOptionsItemSelected - Exception:", e);
+		}
+
 		return super.onOptionsItemSelected(item);
 	}
 
 	public void register(View view)
 	{
-		registerMethod();
+		String confirm = getString(R.string.verify_phone_alert).replace("+0", inputCountry.getText().toString()+editPhone.getText().toString().trim());
+		new MaterialDialog.Builder(this).cancelable(false).positiveText(R.string.ok).negativeText(R.string.verify_phone_edit).content(confirm)
+			.onPositive(new MaterialDialog.SingleButtonCallback()
+			{
+				@Override
+				public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
+				{
+					registerMethod();
+				}
+			})
+			.build().show();
 	}
 
 	public boolean registerMethod()
@@ -195,12 +221,7 @@ public class PhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:register - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":register - Exception:", e);
 		}
 
 		return true;
@@ -246,12 +267,7 @@ public class PhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:showCountries - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":showCountries - Exception:", e);
 		}
 	}
 
@@ -360,12 +376,7 @@ public class PhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:selectCountry - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":selectCountry - Exception:", e);
 		}
 	}
 
@@ -387,12 +398,7 @@ public class PhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:hideSoftKeyboard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":hideSoftKeyboard - Exception:", e);
 		}
 	}
 
@@ -525,12 +531,7 @@ public class PhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 

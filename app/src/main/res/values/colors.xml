@@ -19,4 +19,5 @@
 	<color name="background_cards">#FAFAFA</color>
 	<color name="background_company">#EEEEEE</color>
 	<color name="background_receipt">#F3F3F3</color>
+	<color name="text">#ff303030</color>
 </resources>

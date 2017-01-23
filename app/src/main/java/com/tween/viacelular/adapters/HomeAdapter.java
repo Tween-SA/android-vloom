@@ -90,12 +90,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 		}
 		catch(Exception e)
 		{
-			System.out.println("HomeAdapter:onCreateViewHolder - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity.getContext(), "HomeAdapter:onCreateViewHolder - Exception:", e);
 		}
 
 		return null;
@@ -222,7 +217,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 								.buildRound(String.valueOf(unread), Color.parseColor(Common.COLOR_ACCENT));
 							holder.count.setImageDrawable(drawableCount);
 
-							if(SuscriptionHelper.getTypeNumber(item, countNotif.get(0).getChannel()).equals(Suscription.NUMBER_PAYOUT))
+							if(SuscriptionHelper.getTypeNumber(item, countNotif.get(0).getChannel(), activity.getContext()).equals(Suscription.NUMBER_PAYOUT))
 							{
 								holder.price.setVisibility(ImageView.VISIBLE);
 								holder.silence.setVisibility(ImageView.GONE);
@@ -248,7 +243,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 							holder.silence.setVisibility(ImageView.GONE);
 							holder.price.setVisibility(ImageView.GONE);
 
-							if(SuscriptionHelper.getTypeNumber(item, countNotif.get(0).getChannel()).equals(Suscription.NUMBER_PAYOUT))
+							if(SuscriptionHelper.getTypeNumber(item, countNotif.get(0).getChannel(), activity.getContext()).equals(Suscription.NUMBER_PAYOUT))
 							{
 								holder.bigPrice.setVisibility(ImageView.VISIBLE);
 								holder.bigSilence.setVisibility(ImageView.GONE);
@@ -303,12 +298,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 		}
 		catch(Exception e)
 		{
-			System.out.println("HomeAdapter:onBindViewHolder - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity.getContext(), "HomeAdapter:onBindViewHolder - Exception:", e);
 		}
 	}
 

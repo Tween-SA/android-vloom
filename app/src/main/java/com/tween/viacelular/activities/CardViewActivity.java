@@ -1,9 +1,11 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -141,7 +143,6 @@ public class CardViewActivity extends AppCompatActivity
 			toolBar.setTitle("");
 			toolBar.setSubtitle("");
 			setTitle("");
-
 			mAuth = FirebaseAuth.getInstance();
 
 			if(mAuth != null)
@@ -152,8 +153,6 @@ public class CardViewActivity extends AppCompatActivity
 					@Override
 					public void onComplete(@NonNull Task<AuthResult> task)
 					{
-						System.out.println("OnCompleteListener-signInAnonymously:isSuccessful: "+task.isSuccessful());
-
 						if(!task.isSuccessful())
 						{
 							System.out.println("OnCompleteListener-signInAnonymously:getException: "+task.getException());
@@ -170,6 +169,7 @@ public class CardViewActivity extends AppCompatActivity
 
 				if(intentRecive != null)
 				{
+					System.out.println("Intent CArd extras: "+intentRecive.getExtras().toString());
 					//Modificaciones para migrar entidad Company completa a Realm
 					companyId	= intentRecive.getStringExtra(Common.KEY_ID);
 					suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
@@ -187,7 +187,7 @@ public class CardViewActivity extends AppCompatActivity
 						}
 
 						//Agregado para detectar si el color es claro
-						if(Utils.isLightColor(color))
+						if(Utils.isLightColor(color, this))
 						{
 							colorTitle		= Color.BLACK;
 							colorSubTitle	= Color.DKGRAY;
@@ -295,7 +295,7 @@ public class CardViewActivity extends AppCompatActivity
 
 					if(unread > 0)
 					{
-						new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, "", Message.STATUS_READ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+						new ConfirmReadingAsyncTask(false, companyId, "", Message.STATUS_READ, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 
 					//Validaciones para mostrar o no campos según disponibilidad de datos
@@ -335,8 +335,6 @@ public class CardViewActivity extends AppCompatActivity
 				@Override
 				public void onReceive(Context context, Intent intent)
 				{
-					System.out.println("onReceive:" + intent);
-
 					switch(intent.getAction())
 					{
 						case MyDownloadService.DOWNLOAD_COMPLETED:
@@ -366,12 +364,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -397,12 +390,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:attach - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":attach - Exception:", e);
 		}
 	}
 
@@ -420,12 +408,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:callCamera - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":callCamera - Exception:", e);
 		}
 	}
 
@@ -438,7 +421,12 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			if(resultCode == RESULT_OK)
 			{
-				Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), tempUri);//(Bitmap) intent.getExtras().get("data");
+				//Nueva forma para reducir procesamiento de imagen
+				BitmapFactory.Options options	= new BitmapFactory.Options();
+				options.inScaled				= false;
+				options.inDither				= false;
+				options.inPreferredConfig		= Bitmap.Config.ARGB_8888;
+				Bitmap bitmap					= BitmapFactory.decodeFile(tempUri.getPath(), options);
 
 				if(bitmap != null)
 				{
@@ -458,12 +446,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onActivityResult - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onActivityResult - Exception:", e);
 		}
 	}
 
@@ -480,12 +463,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onUploadResultIntent - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onUploadResultIntent - Exception:", e);
 		}
 	}
 
@@ -503,12 +481,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:goToSettings - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":goToSettings - Exception:", e);
 		}
 	}
 	
@@ -522,12 +495,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onCreateOptionsMenu - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreateOptionsMenu - Exception:", e);
 		}
 
 		return super.onCreateOptionsMenu(menu);
@@ -594,12 +562,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onPrepareOptionsMenu - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onPrepareOptionsMenu - Exception:", e);
 		}
 
 		return super.onPrepareOptionsMenu(menu);
@@ -634,12 +597,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:showOptionsCard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":showOptionsCard - Exception:", e);
 		}
 	}
 
@@ -652,7 +610,7 @@ public class CardViewActivity extends AppCompatActivity
 			realm.beginTransaction();
 			suscription.setGray(Common.BOOL_YES);
 			realm.commitTransaction();
-			Utils.hideViewWithFade(cardSuscribe);
+			Utils.hideViewWithFade(cardSuscribe, this);
 			txtTitle.setTextColor(Utils.adjustAlpha(colorTitle, Common.ALPHA_FOR_BLOCKS));
 			txtSubTitleCollapsed.setTextColor(Utils.adjustAlpha(colorSubTitle, Common.ALPHA_FOR_BLOCKS));
 			toolBar.setBackgroundColor(Color.parseColor(Common.COLOR_BLOCKED));
@@ -669,12 +627,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:becomeGray - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":becomeGray - Exception:", e);
 		}
 	}
 
@@ -684,11 +637,15 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			realm.beginTransaction();
-			suscription.setReceive(Common.BOOL_YES);
-			realm.commitTransaction();
-			Utils.hideViewWithFade(cardPayout);
-
+			realm.executeTransaction(new Realm.Transaction()
+			{
+				@Override
+				public void execute(Realm realm)
+				{
+					suscription.setReceive(Common.BOOL_YES);
+				}
+			});
+			Utils.hideViewWithFade(cardPayout, this);
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 			if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -700,12 +657,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:continueCompany - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":continueCompany - Exception:", e);
 		}
 	}
 
@@ -718,9 +670,9 @@ public class CardViewActivity extends AppCompatActivity
 																							.setLabel("AccionUser").build());
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, false);
-			Utils.hideViewWithFade(cardPayout);
-			Utils.hideViewWithFade(cardSuscribe);
+			HomeActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, false);
+			Utils.hideViewWithFade(cardPayout, this);
+			Utils.hideViewWithFade(cardSuscribe, this);
 
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -740,12 +692,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:blockCompany - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":blockCompany - Exception:", e);
 		}
 	}
 
@@ -757,6 +704,7 @@ public class CardViewActivity extends AppCompatActivity
 			suscription					= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			Snackbar snackBar			= null;
 			final Message notification	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+			final Activity activity		= this;
 
 			switch(position)
 			{
@@ -775,10 +723,15 @@ public class CardViewActivity extends AppCompatActivity
 					//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
 																									.setLabel("Accion_user").build());
-					realm.beginTransaction();
-					notification.setStatus(Message.STATUS_SPAM);
-					realm.commitTransaction();
-					new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_SPAM).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					realm.executeTransaction(new Realm.Transaction()
+					{
+						@Override
+						public void execute(Realm realm)
+						{
+							notification.setStatus(Message.STATUS_SPAM);
+						}
+					});
+					new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_SPAM, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 					snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
@@ -786,11 +739,16 @@ public class CardViewActivity extends AppCompatActivity
 						public void onClick(View v)
 						{
 							Realm realm = Realm.getDefaultInstance();
-							realm.beginTransaction();
-							notification.setStatus(Message.STATUS_READ);
-							realm.commitTransaction();
+							realm.executeTransaction(new Realm.Transaction()
+							{
+								@Override
+								public void execute(Realm realm)
+								{
+									notification.setStatus(Message.STATUS_READ);
+								}
+							});
 							refresh(false);
-							new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_READ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+							new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 						}
 					});
 				break;
@@ -799,10 +757,15 @@ public class CardViewActivity extends AppCompatActivity
 					//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Social").setAction("Marcarspam")
 																									.setLabel("Accion_user").build());
-					realm.beginTransaction();
-					notification.setStatus(Message.STATUS_SPAM);
-					realm.commitTransaction();
-					new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_SPAM).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					realm.executeTransaction(new Realm.Transaction()
+					{
+						@Override
+						public void execute(Realm realm)
+						{
+							notification.setStatus(Message.STATUS_SPAM);
+						}
+					});
+					new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_SPAM, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 					snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
@@ -810,11 +773,16 @@ public class CardViewActivity extends AppCompatActivity
 						public void onClick(View v)
 						{
 							Realm realm = Realm.getDefaultInstance();
-							realm.beginTransaction();
-							notification.setStatus(Message.STATUS_READ);
-							realm.commitTransaction();
+							realm.executeTransaction(new Realm.Transaction()
+							{
+								@Override
+								public void execute(Realm realm)
+								{
+									notification.setStatus(Message.STATUS_READ);
+								}
+							});
 							refresh(false);
-							new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_READ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+							new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 						}
 					});
 					break;
@@ -823,18 +791,28 @@ public class CardViewActivity extends AppCompatActivity
 					//Agregado para capturar evento en Google Analytics
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Borrar")
 																									.setLabel("Accion_user").build());
-					realm.beginTransaction();
-					notification.setDeleted(Common.BOOL_YES);
-					realm.commitTransaction();
+					realm.executeTransaction(new Realm.Transaction()
+					{
+						@Override
+						public void execute(Realm realm)
+						{
+							notification.setDeleted(Common.BOOL_YES);
+						}
+					});
 					snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_deleted), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
 						@Override
 						public void onClick(View v)
 						{
 							Realm realm = Realm.getDefaultInstance();
-							realm.beginTransaction();
-							notification.setDeleted(Common.BOOL_NO);
-							realm.commitTransaction();
+							realm.executeTransaction(new Realm.Transaction()
+							{
+								@Override
+								public void execute(Realm realm)
+								{
+									notification.setDeleted(Common.BOOL_NO);
+								}
+							});
 							refresh(false);
 						}
 					});
@@ -847,12 +825,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:dispatchMenu - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":dispatchMenu - Exception:", e);
 		}
 	}
 
@@ -860,7 +833,8 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			Handler handler	= new android.os.Handler();
+			final Activity context	= this;
+			Handler handler			= new android.os.Handler();
 			handler.post(new Runnable()
 			{
 				public void run()
@@ -903,7 +877,7 @@ public class CardViewActivity extends AppCompatActivity
 
 								if(suscription != null)
 								{
-									if(SuscriptionHelper.isRevenue(suscription.getCompanyId()))
+									if(SuscriptionHelper.isRevenue(suscription.getCompanyId(), context))
 									{
 										if(suscription.getReceive() != Common.BOOL_YES)
 										{
@@ -994,13 +968,13 @@ public class CardViewActivity extends AppCompatActivity
 
 								if(idViewFather == cardPayout.getId())
 								{
-									Utils.showViewWithFade(cardPayout);
+									Utils.showViewWithFade(cardPayout, context);
 								}
 								else
 								{
 									if(idViewFather == cardSuscribe.getId())
 									{
-										Utils.showViewWithFade(cardSuscribe);
+										Utils.showViewWithFade(cardSuscribe, context);
 									}
 								}
 							}
@@ -1016,7 +990,7 @@ public class CardViewActivity extends AppCompatActivity
 							{
 								rlEmpty.setVisibility(RelativeLayout.GONE);
 								rcwCard.setVisibility(RecyclerView.GONE);
-								Utils.showViewWithFade(cardForm);
+								Utils.showViewWithFade(cardForm, context);
 								inputCode.setErrorEnabled(false);
 								inputCode.setHint(suscription.getIdentificationKey());
 								String title = getString(R.string.landing_card_form_text1) + " " + suscription.getIdentificationKey() + " " + getString(R.string.landing_card_form_text2);
@@ -1049,12 +1023,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:refresh - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":refresh - Exception:", e);
 		}
 	}
 
@@ -1062,7 +1031,7 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			Utils.hideViewWithFade(cardForm);
+			Utils.hideViewWithFade(cardForm, this);
 
 			if(StringUtils.isAlphanumeric(editCode.getText().toString()))
 			{
@@ -1071,28 +1040,23 @@ public class CardViewActivity extends AppCompatActivity
 
 				if(task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get().equals(ApiConnection.OK))
 				{
-					Utils.showViewWithFade(cardOk);
+					Utils.showViewWithFade(cardOk, this);
 				}
 				else
 				{
-					Utils.showViewWithFade(cardRetry);
+					Utils.showViewWithFade(cardRetry, this);
 				}
 			}
 			else
 			{
-				Utils.showViewWithFade(cardRetry);
+				Utils.showViewWithFade(cardRetry, this);
 				inputCode.setErrorEnabled(true);
 				inputCode.setError(getString(R.string.code_alphanumeric));
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:sendData - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":sendData - Exception:", e);
 		}
 	}
 
@@ -1101,17 +1065,12 @@ public class CardViewActivity extends AppCompatActivity
 		try
 		{
 			inputCode.setErrorEnabled(false);
-			Utils.hideViewWithFade(cardRetry);
+			Utils.hideViewWithFade(cardRetry, this);
 			sendData(view);
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:sendAgain - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":sendAgain - Exception:", e);
 		}
 	}
 
@@ -1119,11 +1078,11 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			Utils.hideViewWithFade(cardForm);
-			Utils.hideViewWithFade(cardOk);
-			Utils.hideViewWithFade(cardRetry);
-			Utils.hideViewWithFade(cardPayout);
-			Utils.hideViewWithFade(cardSuscribe);
+			Utils.hideViewWithFade(cardForm, this);
+			Utils.hideViewWithFade(cardOk, this);
+			Utils.hideViewWithFade(cardRetry, this);
+			Utils.hideViewWithFade(cardPayout, this);
+			Utils.hideViewWithFade(cardSuscribe, this);
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 			if(notifications != null)
@@ -1166,12 +1125,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:byeCard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":byeCard - Exception:", e);
 		}
 	}
 
@@ -1184,9 +1138,9 @@ public class CardViewActivity extends AppCompatActivity
 																							.setLabel("AccionUser").build());
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, false);
-			Utils.hideViewWithFade(cardPayout);
-			Utils.hideViewWithFade(cardSuscribe);
+			HomeActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, false);
+			Utils.hideViewWithFade(cardPayout, this);
+			Utils.hideViewWithFade(cardSuscribe, this);
 			txtTitle.setTextColor(colorTitle);
 			txtSubTitleCollapsed.setTextColor(colorSubTitle);
 			toolBar.setBackgroundColor(Color.parseColor(suscription.getColorHex()));
@@ -1204,7 +1158,7 @@ public class CardViewActivity extends AppCompatActivity
 			{
 				rlEmpty.setVisibility(RelativeLayout.GONE);
 				rcwCard.setVisibility(RecyclerView.GONE);
-				Utils.showViewWithFade(cardForm);
+				Utils.showViewWithFade(cardForm, this);
 				inputCode.setErrorEnabled(false);
 				inputCode.setHint(suscription.getIdentificationKey());
 				String title = getString(R.string.landing_card_form_text1) + " " + suscription.getIdentificationKey() + " " + getString(R.string.landing_card_form_text2);
@@ -1233,12 +1187,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:suscribeCompany - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":suscribeCompany - Exception:", e);
 		}
 	}
 
@@ -1259,12 +1208,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:enableNextStep - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":enableNextStep - Exception:", e);
 		}
 	}
 	
@@ -1274,8 +1218,9 @@ public class CardViewActivity extends AppCompatActivity
 		try
 		{
 			hideSoftKeyboard();
-			Realm realm	= Realm.getDefaultInstance();
-			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+			Realm realm					= Realm.getDefaultInstance();
+			suscription				= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+			final Activity activity	= this;
 
 			if(suscription != null)
 			{
@@ -1286,9 +1231,14 @@ public class CardViewActivity extends AppCompatActivity
 					//Agregado para capturar evento en Google Analytics
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("SilenciarInCompany")
 																									.setLabel("AccionUser").build());
-					realm.beginTransaction();
-					suscription.setSilenced(Utils.reverseBool(suscription.getSilenced()));
-					realm.commitTransaction();
+					realm.executeTransaction(new Realm.Transaction()
+					{
+						@Override
+						public void execute(Realm realm)
+						{
+							suscription.setSilenced(Utils.reverseBool(suscription.getSilenced()));
+						}
+					});
 					refresh(false);
 					snackBar = Snackbar.make(Clayout, getString(R.string.snack_silence), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
@@ -1297,9 +1247,14 @@ public class CardViewActivity extends AppCompatActivity
 						{
 							Realm realm	= Realm.getDefaultInstance();
 							suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-							realm.beginTransaction();
-							suscription.setSilenced(Utils.reverseBool(suscription.getSilenced()));
-							realm.commitTransaction();
+							realm.executeTransaction(new Realm.Transaction()
+							{
+								@Override
+								public void execute(Realm realm)
+								{
+									suscription.setSilenced(Utils.reverseBool(suscription.getSilenced()));
+								}
+							});
 							refresh(false);
 						}
 					});
@@ -1308,9 +1263,14 @@ public class CardViewActivity extends AppCompatActivity
 				//Agregado para desactivar silencio
 				if(item.toString().equals(getString(R.string.activate_notif)))
 				{
-					realm.beginTransaction();
-					suscription.setSilenced(Utils.reverseBool(suscription.getSilenced()));
-					realm.commitTransaction();
+					realm.executeTransaction(new Realm.Transaction()
+					{
+						@Override
+						public void execute(Realm realm)
+						{
+							suscription.setSilenced(Utils.reverseBool(suscription.getSilenced()));
+						}
+					});
 					refresh(false);
 					snackBar = Snackbar.make(Clayout, getString(R.string.snack_unsilence), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
@@ -1319,9 +1279,14 @@ public class CardViewActivity extends AppCompatActivity
 						{
 							Realm realm	= Realm.getDefaultInstance();
 							suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-							realm.beginTransaction();
-							suscription.setSilenced(Utils.reverseBool(suscription.getSilenced()));
-							realm.commitTransaction();
+							realm.executeTransaction(new Realm.Transaction()
+							{
+								@Override
+								public void execute(Realm realm)
+								{
+									suscription.setSilenced(Utils.reverseBool(suscription.getSilenced()));
+								}
+							});
 							refresh(false);
 						}
 					});
@@ -1336,7 +1301,7 @@ public class CardViewActivity extends AppCompatActivity
 					//Modificación para ejecutar proceso en background
 					if(StringUtils.isNotEmpty(companyId))
 					{
-						MessageHelper.emptyCompany(companyId, Common.BOOL_YES);
+						MessageHelper.emptyCompany(companyId, Common.BOOL_YES, activity);
 					}
 
 					refresh(true);
@@ -1348,7 +1313,7 @@ public class CardViewActivity extends AppCompatActivity
 							//Modificación para ejecutar proceso en background
 							if(StringUtils.isNotEmpty(companyId))
 							{
-								MessageHelper.emptyCompany(companyId, Common.BOOL_NO);
+								MessageHelper.emptyCompany(companyId, Common.BOOL_NO, activity);
 							}
 
 							refresh(false);
@@ -1362,7 +1327,7 @@ public class CardViewActivity extends AppCompatActivity
 					//Agregado para capturar evento en Google Analytics
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("BloquearInCompany")
 																									.setLabel("AccionUser").build());
-					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, false);
+					HomeActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, false);
 					Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
 					intent.putExtra(Common.KEY_ID, companyId);
 					intent.putExtra(Suscription.KEY_BLOCKED, Common.BOOL_YES);
@@ -1377,7 +1342,7 @@ public class CardViewActivity extends AppCompatActivity
 					//Agregado para capturar evento en Google Analytics
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("AgregarInCompany")
 																									.setLabel("AccionUser").build());
-					BlockedActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, false);
+					HomeActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_YES, false, companyId, false);
 					txtTitle.setTextColor(colorTitle);
 					txtSubTitleCollapsed.setTextColor(colorSubTitle);
 					toolBar.setBackgroundColor(Color.parseColor(suscription.getColorHex()));
@@ -1395,12 +1360,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onOptionsItemSelected - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onOptionsItemSelected - Exception:", e);
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -1425,12 +1385,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onBackPressed - Exception:", e);
 		}
 	}
 
@@ -1454,12 +1409,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:hideSoftKeyboard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":hideSoftKeyboard - Exception:", e);
 		}
 	}
 
@@ -1486,12 +1436,7 @@ public class CardViewActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CardViewActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 
@@ -1499,9 +1444,16 @@ public class CardViewActivity extends AppCompatActivity
 	public void onStart()
 	{
 		super.onStart();
-		LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
-		manager.registerReceiver(mBroadcastReceiver, MyDownloadService.getIntentFilter());
-		manager.registerReceiver(mBroadcastReceiver, MyUploadService.getIntentFilter());
+		try
+		{
+			LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+			manager.registerReceiver(mBroadcastReceiver, MyDownloadService.getIntentFilter());
+			manager.registerReceiver(mBroadcastReceiver, MyUploadService.getIntentFilter());
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":onStart - Exception:", e);
+		}
 	}
 
 	@Override
@@ -1509,6 +1461,13 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		super.onStop();
 		// Unregister download receiver
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+		try
+		{
+			LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":onStop - Exception:", e);
+		}
 	}
 }

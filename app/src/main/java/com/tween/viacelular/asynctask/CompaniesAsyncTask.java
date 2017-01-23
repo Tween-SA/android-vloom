@@ -13,6 +13,7 @@ import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import io.realm.Realm;
@@ -54,11 +55,7 @@ public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CompaniesAsyncTask:onPreExecute - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CompaniesAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -72,10 +69,15 @@ public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 			//Modificaciones para contemplar migraciónd de db
 			Realm realm							= Realm.getDefaultInstance();
 			SharedPreferences preferences		= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			RealmResults<Suscription> results	= realm.where(Suscription.class).findAll();
-			realm.beginTransaction();
-			results.deleteAllFromRealm();
-			realm.commitTransaction();
+			final RealmResults<Suscription> results	= realm.where(Suscription.class).findAll();
+			realm.executeTransaction(new Realm.Transaction()
+			{
+				@Override
+				public void execute(Realm realm)
+				{
+					results.deleteAllFromRealm();
+				}
+			});
 			String country						= "";
 			User user							= realm.where(User.class).findFirst();
 
@@ -128,21 +130,11 @@ public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(JSONException e)
 		{
-			System.out.println("CompaniesAsyncTask:doInBackground - JSONException: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CompaniesAsyncTask:doInBackground - JSONException:", e);
 		}
 		catch(Exception e)
 		{
-			System.out.println("CompaniesAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CompaniesAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
@@ -169,12 +161,7 @@ public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CompaniesAsyncTask:onPostExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CompaniesAsyncTask:onPostExecute - Exception:", e);
 		}
 
 		super.onPostExecute(result);

@@ -18,6 +18,7 @@ import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import io.realm.Realm;
 
 /**
@@ -25,7 +26,6 @@ import io.realm.Realm;
  */
 public class MyUploadService extends MyBaseTaskService
 {
-	private static final String	TAG					= "MyUploadService";
 	public static final String	ACTION_UPLOAD		= "action_upload";
 	public static final String	UPLOAD_COMPLETED	= "upload_completed";
 	public static final String	UPLOAD_ERROR		= "upload_error";
@@ -167,12 +167,7 @@ public class MyUploadService extends MyBaseTaskService
 		}
 		catch(Exception e)
 		{
-			System.out.println(TAG+":onOptionsItemSelected - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(null, "MyUploadService:onOptionsItemSelected - Exception:", e);
 		}
 	}
 

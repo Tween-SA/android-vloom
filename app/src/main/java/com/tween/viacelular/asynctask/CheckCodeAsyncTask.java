@@ -14,6 +14,7 @@ import com.tween.viacelular.models.UserHelper;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Locale;
@@ -67,12 +68,7 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CheckCodeAsyncTask:onPreExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CheckCodeAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -134,7 +130,8 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 					setWasValidated(false);
 				}
 
-				jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.USERS, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+				jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""),
+												jsonSend.toString()));
 				result		= ApiConnection.checkResponse(context, jsonResult);
 			}
 			else
@@ -167,6 +164,7 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 								editor.putBoolean(Common.KEY_PREF_CALLME, false);
 								editor.putBoolean(Common.KEY_PREF_LOGGED, true);
 								editor.putBoolean(Common.KEY_PREF_CHECKED, true);
+								editor.putBoolean(Common.KEY_PREF_FREEPASS, false);
 								//Agregado para reducir frencuencia para actualizar usuario
 								editor.putLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
 								editor.apply();
@@ -186,19 +184,24 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 			}
 
 			//Agregado para prevenir pérdida de email
-			user = realm.where(User.class).findFirst();
+			final User user2Save = realm.where(User.class).findFirst();
 
-			if(user != null)
+			if(user2Save != null)
 			{
-				if(StringUtils.isEmpty(user.getEmail()))
+				if(StringUtils.isEmpty(user2Save.getEmail()))
 				{
-					ConnectedAccount connectedAccount = realm.where(ConnectedAccount.class).equalTo(Common.KEY_TYPE, ConnectedAccount.TYPE_GOOGLE).findFirst();
+					final ConnectedAccount connectedAccount = realm.where(ConnectedAccount.class).equalTo(Common.KEY_TYPE, ConnectedAccount.TYPE_GOOGLE).findFirst();
 
 					if(connectedAccount != null)
 					{
-						realm.beginTransaction();
-						user.setEmail(connectedAccount.getName());
-						realm.commitTransaction();
+						realm.executeTransaction(new Realm.Transaction()
+						{
+							@Override
+							public void execute(Realm realm)
+							{
+								user2Save.setEmail(connectedAccount.getName());
+							}
+						});
 					}
 				}
 
@@ -207,27 +210,17 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 				jsonSend.put(User.KEY_PHONE, phone);
 				jsonSend.put(User.KEY_GCMID, gcmId);
 				jsonSend.put(Common.KEY_INFO, info);
-				jsonResult	= new JSONObject(ApiConnection.request(	ApiConnection.USERS+"/callbacks/welcome", context, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""),
-																	jsonSend.toString()));
+				jsonResult	= new JSONObject(ApiConnection.request(	ApiConnection.USERS+"/callbacks/welcome", context, ApiConnection.METHOD_POST,
+																	preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
 			}
 		}
 		catch(JSONException e)
 		{
-			System.out.println("CheckCodeAsyncTask:doInBackground - JSONException: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CheckCodeAsyncTask:doInBackground - JSONException:", e);
 		}
 		catch(Exception e)
 		{
-			System.out.println("CheckCodeAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CheckCodeAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
@@ -265,24 +258,19 @@ public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CheckCodeAsyncTask:onPostExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CheckCodeAsyncTask:onPostExecute - Exception:", e);
 		}
 
 		super.onPostExecute(result);
 	}
 
 	//Agregados para diferenciar validación normal de validación posterior al ingreso
-	public boolean isWasValidated()
+	private boolean isWasValidated()
 	{
 		return wasValidated;
 	}
 
-	public void setWasValidated(final boolean wasValidated)
+	private void setWasValidated(final boolean wasValidated)
 	{
 		this.wasValidated = wasValidated;
 	}

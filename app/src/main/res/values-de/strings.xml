@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><resources xmlns:tools="http://schemas.android.com/tools"
-                                                 xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">Angenommen</string>
 	<string name="action_example">Beispiel</string>
@@ -205,6 +204,17 @@
 	<string name="upgrade_text">Wir aktualisieren Ihre Informationen</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">Überprüfen&#8230;</string>
+	<string name="verify_phone_add">Fügen Sie Ihre Telefonnummer</string><!-- after traslate -->
+	<string name="verify_phone_alert">Wir werden überprüfen, die Zahl +0 Ist es richtig, oder Sie wollen es ändern?</string><!-- after traslate -->
+	<string name="verify_phone_back">Rückkehr</string><!-- after traslate -->
+	<string name="verify_phone_code">Warten, um automatisch die SMS erkennen an +000000000000 gesendet</string><!-- after traslate -->
+	<string name="verify_phone_contact">Kontakt Unterstützung</string><!-- after traslate -->
+	<string name="verify_phone_edit">Bearbeiten</string><!-- after traslate -->
+	<string name="verify_phone_missing">Wenn Sie nicht Ihre Nummer zu überprüfen, Ihre Lieblings-Unternehmen können nicht mit Ihnen zu kommunizieren</string><!-- after traslate -->
+	<string name="verify_phone_subtitle">Bestätigen Sie Ihr Land und geben Sie Ihre Vorwahl von Ihrem Mobiltelefonnummer ein:</string><!-- after traslate -->
+	<string name="verify_phone_title">wird ein SMS senden Sie Ihre Telefonnummer zu überprüfen.</string><!-- after traslate -->
+	<string name="verify_phone_warning">Schützen Sie Ihr Konto</string><!-- after traslate -->
+	<string name="verify_phone_wrong">¿Falsche Nummer?</string><!-- after traslate -->
 	<string name="version_settins">für Android v</string>
 	<string name="week">Woche</string>
 	<string name="weeks">Wochen</string>

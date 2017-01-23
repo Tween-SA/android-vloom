@@ -14,6 +14,7 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 
 public class LogoAsyncTask extends AsyncTask<Void, Void, Bitmap>
 {
@@ -56,11 +57,7 @@ public class LogoAsyncTask extends AsyncTask<Void, Void, Bitmap>
 		}
 		catch(Exception e)
 		{
-			System.out.println("LogoAsyncTask:onPreExecute - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "LogoAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -124,7 +121,6 @@ public class LogoAsyncTask extends AsyncTask<Void, Void, Bitmap>
 					@Override
 					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
 					{
-						System.out.println("onLoadingComplete: "+urlLogo);
 						result = loadedImage;
 					}
 				});
@@ -147,12 +143,7 @@ public class LogoAsyncTask extends AsyncTask<Void, Void, Bitmap>
 		}
 		catch(Exception e)
 		{
-			System.out.println("LogoAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "LogoAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;

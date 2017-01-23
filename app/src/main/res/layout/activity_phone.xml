@@ -20,13 +20,21 @@
 			android:paddingTop="@dimen/activity_horizontal_margin"
 			android:id="@+id/rlPhone">
 			<TextView
+				android:id="@+id/txtInfo"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/verify_phone_subtitle"
+				android:layout_alignParentTop="true"
+				android:textColor="@color/text"
+				android:textSize="14sp" />
+			<TextView
+				android:layout_below="@+id/txtInfo"
 				android:id="@+id/txtCountry"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="20dp"
 				android:text="@string/country"
 				android:textColor="@color/gray"
-				android:layout_alignParentTop="true"
 				android:textSize="12sp" />
 			<Button
 				android:id="@+id/btnCountry"
@@ -48,7 +56,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:textColor="@color/background_material_dark" />
+				android:textColor="@color/text" />
 			<android.support.design.widget.TextInputLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"

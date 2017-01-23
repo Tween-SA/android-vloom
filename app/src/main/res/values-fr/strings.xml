@@ -204,6 +204,17 @@
 	<string name="upgrade_text">Nous mettons à jour vos informations</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">Vérification en cours&#8230;</string>
+	<string name="verify_phone_add">Ajouter votre numéro de téléphone</string><!-- after traslate -->
+	<string name="verify_phone_alert">Nous allons vérifier le nombre +0 Est-il juste ou si vous voulez changer?</string><!-- after traslate -->
+	<string name="verify_phone_back">Revenir</string><!-- after traslate -->
+	<string name="verify_phone_code">En attente de détecter automatiquement le SMS envoyé à +000000000000</string><!-- after traslate -->
+	<string name="verify_phone_contact">Contacter le support</string><!-- after traslate -->
+	<string name="verify_phone_edit">Éditer</string><!-- after traslate -->
+	<string name="verify_phone_missing">Si vous ne vérifiez pas votre numéro, vos entreprises préférées ne peuvent pas communiquer avec vous</string><!-- after traslate -->
+	<string name="verify_phone_subtitle">Confirmez votre pays et entrez votre indicatif régional suivi de votre numéro de téléphone mobile:</string><!-- after traslate -->
+	<string name="verify_phone_title">va envoyer un SMS pour vérifier votre numéro de téléphone.</string><!-- after traslate -->
+	<string name="verify_phone_warning">Gardez votre compte sécurisé</string><!-- after traslate -->
+	<string name="verify_phone_wrong">¿Mauvais numéro?</string><!-- after traslate -->
 	<string name="version_settins">pour Android v</string>
 	<string name="week">semaine</string>
 	<string name="weeks">semaines</string>

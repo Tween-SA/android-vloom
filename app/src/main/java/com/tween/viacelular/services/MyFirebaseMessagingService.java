@@ -19,7 +19,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.tween.viacelular.R;
-import com.tween.viacelular.activities.BlockedActivity;
+import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.asynctask.CompanyAsyncTask;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
@@ -32,6 +32,7 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONArray;
 import java.util.Map;
 import io.realm.Realm;
@@ -282,12 +283,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 		}
 		catch(Exception e)
 		{
-			System.out.println("MyFirebaseMessagingService:onMessageReceived - Exception: "+e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "MyFirebaseMessagingService:sendNotification:onMessageReceived - Exception:", e);
 		}
 	}
 
@@ -303,19 +299,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 	{
 		try
 		{
-			boolean silenced	= preferences.getBoolean(Suscription.KEY_SILENCED, false);
-			int silencedChannel	= Common.BOOL_YES;
-			int blocked			= Common.BOOL_YES;
-			int statusP			= Suscription.STATUS_BLOCKED;
-			String title		= context.getString(R.string.app_name);
+			boolean silenced		= preferences.getBoolean(Suscription.KEY_SILENCED, false);
+			int silencedChannel		= Common.BOOL_YES;
+			int blocked				= Common.BOOL_YES;
+			int statusP				= Suscription.STATUS_BLOCKED;
+			String title			= context.getString(R.string.app_name);
 			Suscription clientP;
-			String image		= "";
-			Bitmap bmp			= BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
-			Realm realm			= Realm.getDefaultInstance();
-			Message message		= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+			String image			= "";
+			Bitmap bmp				= BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+			Realm realm				= Realm.getDefaultInstance();
+			final Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
 			String companyIdApi;
 			String contentText;
-			boolean newClient	= false;
+			boolean newClient		= false;
 
 			if(message != null)
 			{
@@ -359,7 +355,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 				}
 				catch(Exception e)
 				{
-					System.out.println("MyFirebaseMessagingService:sendNotification:getCompanyByApi - Exception: " + e);
+					Utils.logError(context, "MyFirebaseMessagingService:sendNotification:getCompanyByApi - Exception:", e);
 				}
 			}
 
@@ -388,9 +384,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 				{
 					if(message != null)
 					{
-						realm.beginTransaction();
-						realm.copyToRealmOrUpdate(message);
-						realm.commitTransaction();
+						realm.executeTransaction(new Realm.Transaction()
+						{
+							@Override
+							public void execute(Realm realm)
+							{
+								realm.copyToRealmOrUpdate(message);
+							}
+						});
 					}
 				}
 				else
@@ -413,7 +414,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 						//Rollback para autoañadir companies si no está añadida
 						if(!newClient && clientP.getFollower() == Common.BOOL_NO && clientP.getBlocked() == Common.BOOL_NO)
 						{
-							BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, false, clientP.getCompanyId(), false);
+							HomeActivity.modifySubscriptions(context, Common.BOOL_YES, false, clientP.getCompanyId(), false);
 						}
 					}
 					else
@@ -443,7 +444,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 							}
 							catch(Exception e)
 							{
-								System.out.println("MyFirebaseMessagingService:sendNotification:getImageWithPicasso - Exception: " + e);
+								Utils.logError(context, "MyFirebaseMessagingService:sendNotification:getImageWithPicasso - Exception:", e);
 							}
 						}
 
@@ -493,7 +494,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 						}
 						catch(Exception e)
 						{
-							System.out.println("MyFirebaseMessagingService:sendNotification:getImageWithPicasso - Exception: " + e);
+							Utils.logError(context, "MyFirebaseMessagingService:sendNotification:getImageWithPicasso - Exception:", e);
 						}
 					}
 				}
@@ -507,7 +508,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					}
 					catch(Exception e)
 					{
-						System.out.println("MyFirebaseMessagingService:sendNotification:ConfirmReading - Exception: " + e);
+						Utils.logError(context, "MyFirebaseMessagingService:sendNotification:ConfirmReading - Exception:", e);
 					}
 				}
 				//Reload Home if it's running
@@ -518,9 +519,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 				{
 					String id = message.getMsgId();
 					//Agregado para no mostrar mensajes descartados por bloqueo
-					realm.beginTransaction();
-					message.setStatus(Message.STATUS_SPAM);
-					realm.commitTransaction();
+					realm.executeTransaction(new Realm.Transaction()
+					{
+						@Override
+						public void execute(Realm realm)
+						{
+							message.setStatus(Message.STATUS_SPAM);
+						}
+					});
 
 					//Agregado para notificar como spam al ser descartado
 					GoogleAnalytics.getInstance(context).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
@@ -531,12 +537,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 		}
 		catch(Exception e)
 		{
-			System.out.println("MyFirebaseMessagingService:sendNotification - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "MyFirebaseMessagingService:sendNotification - Exception:", e);
 		}
 	}
 
@@ -563,12 +564,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 		}
 		catch(Exception e)
 		{
-			System.out.println("MyFirebaseMessagingService:onOldPush - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "MyFirebaseMessagingService:onOldPush - Exception:", e);
 		}
 	}
 

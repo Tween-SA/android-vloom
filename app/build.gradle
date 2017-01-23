@@ -81,7 +81,7 @@ dependencies
 	compile "com.android.support:recyclerview-v7:25.1.0"
 	compile "com.android.support:support-v4:25.1.0"
 	compile "com.android.support:support-v13:25.1.0"
-	compile("com.crashlytics.sdk.android:crashlytics:2.6.5@aar")
+	compile("com.crashlytics.sdk.android:crashlytics:2.6.6@aar")
 	{
 		transitive = true;
 	}

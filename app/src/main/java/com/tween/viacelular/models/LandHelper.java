@@ -3,6 +3,7 @@ package com.tween.viacelular.models;
 import android.content.Context;
 import com.tween.viacelular.R;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import io.realm.Realm;
@@ -29,7 +30,7 @@ public abstract class LandHelper
 		}
 	}
 
-	public static void parseList(JSONArray jsonArray)
+	public static void parseList(JSONArray jsonArray, Context context)
 	{
 		try
 		{
@@ -112,11 +113,7 @@ public abstract class LandHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("Land - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "Land:parseJSON - Exception:", e);
 		}
 	}
 

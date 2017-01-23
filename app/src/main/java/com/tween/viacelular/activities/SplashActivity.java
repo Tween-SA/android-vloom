@@ -156,12 +156,7 @@ public class SplashActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -175,12 +170,7 @@ public class SplashActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashActivity:onRequestPermissionsResult - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onRequestPermissionsResult - Exception:", e);
 		}
 	}
 
@@ -268,12 +258,7 @@ public class SplashActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashActivity:checkPlayServices - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":checkPlayServices - Exception:", e);
 		}
 
 		return true;
@@ -311,12 +296,7 @@ public class SplashActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 
@@ -330,12 +310,7 @@ public class SplashActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashActivity:onPause - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onPause - Exception:", e);
 		}
 	}
 }

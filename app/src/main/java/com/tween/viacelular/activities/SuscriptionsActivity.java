@@ -66,12 +66,7 @@ public class SuscriptionsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -102,12 +97,7 @@ public class SuscriptionsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 
@@ -154,12 +144,7 @@ public class SuscriptionsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsActivity:updateMenu - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":updateMenu - Exception:", e);
 		}
 	}
 
@@ -182,12 +167,7 @@ public class SuscriptionsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsActivity:redirectLanding - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "SuscriptionsActivity:redirectLanding - Exception:", e);
 		}
 	}
 

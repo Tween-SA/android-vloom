@@ -59,11 +59,7 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("AttachAsyncTask:onPreExecute - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "AttachAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -176,21 +172,24 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 							jsonObject.put(Message.KEY_ATTACHMENTS, array);
 						}
 
-						JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES+"/"+Common.KEY_ENRICH, context,
-																	ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), jsonObject.toString()));
-						result					= ApiConnection.checkResponse(context, jsonResult);
+						result = ApiConnection.request(ApiConnection.MESSAGES+"/"+Common.KEY_ENRICH, context, ApiConnection.METHOD_POST,
+									preferences.getString(Common.KEY_TOKEN, ""), jsonObject.toString());
+
+						if(result != null)
+						{
+							if(result.trim().startsWith("{"))
+							{
+								JSONObject jsonResult	= new JSONObject(result);
+								result					= ApiConnection.checkResponse(context, jsonResult);
+							}
+						}
 					}
 				}
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("AttachAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "AttachAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
@@ -217,12 +216,7 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("AttachAsyncTask:onPostExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "AttachAsyncTask:onPostExecute - Exception:", e);
 		}
 
 		super.onPostExecute(result);

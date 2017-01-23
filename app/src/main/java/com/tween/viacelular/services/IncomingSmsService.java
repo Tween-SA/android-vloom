@@ -243,12 +243,7 @@ public class IncomingSmsService extends BroadcastReceiver
 		}
 		catch(Exception e)
 		{
-			System.out.println("IncomingSmsService:onReceive - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "IncomingSmsService:onReceive - Exception:", e);
 		}
 	}
 
@@ -272,23 +267,23 @@ public class IncomingSmsService extends BroadcastReceiver
 					{
 						case Activity.RESULT_OK:
 							System.out.println("SMS sent");
-							break;
+						break;
 
 						case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
 							System.out.println("Generic failure");
-							break;
+						break;
 
 						case SmsManager.RESULT_ERROR_NO_SERVICE:
 							System.out.println("No service");
-							break;
+						break;
 
 						case SmsManager.RESULT_ERROR_NULL_PDU:
 							System.out.println("Null PDU");
-							break;
+						break;
 
 						case SmsManager.RESULT_ERROR_RADIO_OFF:
 							System.out.println("Radio off");
-							break;
+						break;
 					}
 				}
 			}, new IntentFilter("SMS_SENT"));
@@ -303,11 +298,11 @@ public class IncomingSmsService extends BroadcastReceiver
 					{
 						case Activity.RESULT_OK:
 							System.out.println("SMS delivered");
-							break;
+						break;
 
 						case Activity.RESULT_CANCELED:
 							System.out.println("SMS not delivered");
-							break;
+						break;
 					}
 				}
 			};
@@ -319,12 +314,7 @@ public class IncomingSmsService extends BroadcastReceiver
 		}
 		catch(Exception e)
 		{
-			System.out.println("IncomingSmsService:sendSMS - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "IncomingSmsService:sendSMS - Exception:", e);
 		}
 	}
 }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Isp;
@@ -18,7 +17,6 @@ import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -70,12 +68,7 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "SplashAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -98,10 +91,10 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 				editor.apply();
 
 				//Agregado para migrar a objeto Realm Message
-				Realm realm							= Realm.getDefaultInstance();
-				RealmResults<Isp> ispRealmResults	= realm.where(Isp.class).findAll();
-				User user							= realm.where(User.class).findFirst();
-				String country						= preferences.getString(Land.KEY_API, "");
+				Realm realm								= Realm.getDefaultInstance();
+				final RealmResults<Isp> ispRealmResults	= realm.where(Isp.class).findAll();
+				User user								= realm.where(User.class).findFirst();
+				String country							= preferences.getString(Land.KEY_API, "");
 
 				//Agregado para incorporar país en "push" iniciales
 				if(user != null)
@@ -112,40 +105,40 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 					}
 				}
 
-				realm.beginTransaction();
-				Message messageRealm = new Message(	"1", activity.getString(R.string.welcome_notification), activity.getString(R.string.welcome_text), activity.getString(R.string.app_name),
-													Message.STATUS_RECEIVE, "", country, Message.FLAGS_PUSH, System.currentTimeMillis(), Common.BOOL_NO, Message.KIND_TEXT, "", "", "", "",
-													"", Suscription.COMPANY_ID_VC_MONGO);
-				Message messageRealm1 = new Message(	"2", activity.getString(R.string.you_have), activity.getString(R.string.you_have_text), activity.getString(R.string.app_name),
-														Message.STATUS_RECEIVE, "", country, Message.FLAGS_PUSH, System.currentTimeMillis(), Common.BOOL_NO, Message.KIND_TEXT, "", "", "",
-														"", "", Suscription.COMPANY_ID_VC_MONGO);
-				realm.copyToRealmOrUpdate(messageRealm);
-				realm.copyToRealmOrUpdate(messageRealm1);
-				ispRealmResults.deleteAllFromRealm();
-				Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, Suscription.COMPANY_ID_VC_MONGO).findFirst();
-
-				if(suscription != null)
+				final String finalCountry = country;
+				realm.executeTransaction(new Realm.Transaction()
 				{
-					suscription.getMessages().add(messageRealm);
-				}
+					@Override
+					public void execute(Realm realm)
+					{
+						Message messageRealm = new Message(	"1", activity.getString(R.string.welcome_notification), activity.getString(R.string.welcome_text),
+															activity.getString(R.string.app_name), Message.STATUS_RECEIVE, "", finalCountry, Message.FLAGS_PUSH,
+															System.currentTimeMillis(), Common.BOOL_NO, Message.KIND_TEXT, "", "", "", "", "", Suscription.COMPANY_ID_VC_MONGO);
+						Message messageRealm1 = new Message("2", activity.getString(R.string.you_have), activity.getString(R.string.you_have_text),
+															activity.getString(R.string.app_name), Message.STATUS_RECEIVE, "", finalCountry, Message.FLAGS_PUSH,
+															System.currentTimeMillis(), Common.BOOL_NO, Message.KIND_TEXT, "", "", "", "", "", Suscription.COMPANY_ID_VC_MONGO);
+						realm.copyToRealmOrUpdate(messageRealm);
+						realm.copyToRealmOrUpdate(messageRealm1);
+						ispRealmResults.deleteAllFromRealm();
+						Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, Suscription.COMPANY_ID_VC_MONGO).findFirst();
 
-				realm.commitTransaction();
+						if(suscription != null)
+						{
+							suscription.getMessages().add(messageRealm);
+						}
+					}
+				});
 			}
 			else
 			{
-				MessageHelper.updateCountry(preferences.getString(Land.KEY_API, ""));
+				MessageHelper.updateCountry(preferences.getString(Land.KEY_API, ""), activity);
 			}
 
 			result = ApiConnection.OK;
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "SplashAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
@@ -171,12 +164,7 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "SplashAsyncTask:onPostExecute - Exception:", e);
 		}
 
 		super.onPostExecute(result);

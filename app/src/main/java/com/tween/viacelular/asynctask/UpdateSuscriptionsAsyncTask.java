@@ -81,12 +81,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("UpdateSuscriptionsAsyncTask:onPreExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "UpdateSuscriptionsAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -97,7 +92,6 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 
 		try
 		{
-			System.out.println("do");
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			Realm realm						= Realm.getDefaultInstance();
 			User user						= realm.where(User.class).equalTo(User.KEY_API, preferences.getString(User.KEY_API, "")).findFirst();
@@ -207,12 +201,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("UpdateSuscriptionsAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "UpdateSuscriptionsAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
@@ -223,7 +212,6 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 	{
 		try
 		{
-			System.out.println("post");
 			if(displayDialog)
 			{
 				if(progress != null)
@@ -269,12 +257,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("UpdateSuscriptionsAsyncTask:onPostExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "UpdateSuscriptionsAsyncTask:onPostExecute - Exception:", e);
 		}
 	}
 
@@ -292,13 +275,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("UpdateSuscriptionsAsyncTask:modifySubscriptions - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-
+			Utils.logError(activity, "UpdateSuscriptionsAsyncTask:modifySubscriptions - Exception:", e);
 			result = false;
 		}
 
@@ -356,12 +333,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 			}
 			catch(Exception e)
 			{
-				System.out.println("UpdateSuscriptionsAsyncTask:UpdateCompany:start - Exception: " + e);
-
-				if(Common.DEBUG)
-				{
-					e.printStackTrace();
-				}
+				Utils.logError(activity, "UpdateSuscriptionsAsyncTask:UpdateCompany:start - Exception:", e);
 			}
 		}
 	}

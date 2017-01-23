@@ -4,6 +4,7 @@ import android.content.Context;
 import android.telephony.TelephonyManager;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONObject;
 import io.realm.Realm;
 
@@ -299,12 +300,7 @@ public abstract class IspHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("Isp:parseJSON - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "Isp:parseJSON - Exception:", e);
 		}
 	}
 }

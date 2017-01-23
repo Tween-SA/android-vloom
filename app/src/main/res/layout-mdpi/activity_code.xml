@@ -17,13 +17,31 @@
 		android:layout_below="@+id/toolbarRegister">
 		<TextView
 			android:id="@+id/txtRecive"
-			android:layout_width="match_parent"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="20dp"
+			android:layout_marginTop="10dp"
 			android:layout_marginBottom="20dp"
-			android:text="@string/sent_sms"
-			android:textColor="@color/background_material_dark"
+			android:text="@string/verify_phone_code"
+			android:textColor="@color/text"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentStart="true"
 			android:textSize="14sp" />
+		<Button
+			android:id="@+id/btnWrong"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="28dp"
+			android:layout_marginRight="190dp"
+			android:layout_marginEnd="190dp"
+			android:text="@string/verify_phone_wrong"
+			android:onClick="logout"
+			android:textColor="@color/accent"
+			android:background="@android:color/transparent"
+			android:shadowColor="@android:color/transparent"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:layout_alignParentRight="true"
+			android:layout_alignParentEnd="true"
+			android:gravity="left" />
 		<android.support.design.widget.TextInputLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -47,7 +65,7 @@
 			android:layout_marginTop="10dp"
 			android:text="@string/timer_count"
 			android:layout_below="@+id/inputCode"
-			android:textColor="@color/background_material_dark"
+			android:textColor="@color/text"
 			android:textSize="13sp"
 			android:visibility="visible" />
 		<!-- Agregado para permitir pasar sin validar -->

@@ -9,6 +9,7 @@ import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -119,7 +120,7 @@ public abstract class SuscriptionHelper
 
 				if(client != null)
 				{
-					if(hasNumber(client, addressee))
+					if(hasNumber(client, addressee, context))
 					{
 						correct = true;
 					}
@@ -146,12 +147,7 @@ public abstract class SuscriptionHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionHelper:classifySubscription - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "SuscriptionHelper:classifySubscription - Exception:", e);
 		}
 
 		return companyId;
@@ -212,7 +208,7 @@ public abstract class SuscriptionHelper
 				//Agregado para limitar frecuencia de actualización
 				long tsUpated = preferences.getLong(Common.KEY_PREF_TSCOMPANIES, System.currentTimeMillis());
 
-				if(DateUtils.needUpdate(tsUpated, DateUtils.VERYHIGH_FREQUENCY) && ApiConnection.checkInternet(activity))
+				if(DateUtils.needUpdate(tsUpated, DateUtils.VERYHIGH_FREQUENCY, activity) && ApiConnection.checkInternet(activity))
 				{
 					jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET,
 													preferences.getString(Common.KEY_TOKEN, ""), ""));
@@ -237,12 +233,7 @@ public abstract class SuscriptionHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionHelper:updateCompanies - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "SuscriptionHelper:updateCompanies - Exception:", e);
 		}
 
 		if(companies.size() > 0)
@@ -276,12 +267,12 @@ public abstract class SuscriptionHelper
 													.findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 			realmResults.distinct(Suscription.KEY_API);
 
-			//Agregado para corregir que las companies se orden por creación de último mensaje
-			List<Message> messages = new LinkedList<>(realmResults);
-			Collections.sort(messages, new TimestampComparator());
-
-			if(messages.size() > 0)
+			if(realmResults.size() > 0)
 			{
+				//Agregado para corregir que las companies se orden por creación de último mensaje
+				List<Message> messages = new LinkedList<>(realmResults);
+				Collections.sort(messages, new TimestampComparator());
+
 				for(Message message: messages)
 				{
 					if(StringUtils.isIdMongo(message.getCompanyId()))
@@ -308,12 +299,7 @@ public abstract class SuscriptionHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionHelper:getList - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "SuscriptionHelper:getList - Exception:", e);
 		}
 
 		return companies;
@@ -378,12 +364,7 @@ public abstract class SuscriptionHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("Susscription:parseList - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "SuscriptionHelper:parseList - Exception:", e);
 		}
 	}
 
@@ -1011,12 +992,7 @@ public abstract class SuscriptionHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("Suscription:parseEntity - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "SuscriptionHelper:parseEntity - Exception:", e);
 		}
 
 		return company;
@@ -1066,7 +1042,7 @@ public abstract class SuscriptionHelper
 	 * @param companyId
 	 * @return boolean
 	 */
-	public static boolean isRevenue(String companyId)
+	public static boolean isRevenue(String companyId, Context context)
 	{
 		try
 		{
@@ -1083,7 +1059,7 @@ public abstract class SuscriptionHelper
 					//Agregado para corregir formato de campo
 					if(StringUtils.removeSpacesJSON(suscription.getFromNumbers()).contains("\"" + message.getChannel().replace("+", "") + "\""))
 					{
-						if(getTypeNumber(suscription, "\"" + message.getChannel().replace("+", "") + "\"").equals(Suscription.NUMBER_PAYOUT))
+						if(getTypeNumber(suscription, "\"" + message.getChannel().replace("+", "") + "\"", context).equals(Suscription.NUMBER_PAYOUT))
 						{
 							return true;
 						}
@@ -1093,12 +1069,7 @@ public abstract class SuscriptionHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionHelper:isRevenue - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "SuscriptionHelper:isRevenue - Exception:", e);
 		}
 
 		return false;
@@ -1110,11 +1081,11 @@ public abstract class SuscriptionHelper
 	 * @param number
 	 * @return String
 	 */
-	public static String getTypeNumber(Suscription suscription, String number)
+	public static String getTypeNumber(Suscription suscription, String number, Context context)
 	{
 		try
 		{
-			if(hasNumber(suscription, number))
+			if(hasNumber(suscription, number, context))
 			{
 				JSONArray jsonArray = new JSONArray(StringUtils.removeSpacesJSON(suscription.getFromNumbers()));
 
@@ -1144,12 +1115,7 @@ public abstract class SuscriptionHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionHelper:getTypeNumber - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "SuscriptionHelper:getTypeNumber - Exception:", e);
 		}
 
 		return "";
@@ -1161,7 +1127,7 @@ public abstract class SuscriptionHelper
 	 * @param number
 	 * @return boolean
 	 */
-	private static boolean hasNumber(Suscription suscription, String number)
+	private static boolean hasNumber(Suscription suscription, String number, Context context)
 	{
 		try
 		{
@@ -1186,12 +1152,7 @@ public abstract class SuscriptionHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionHelper:hasNumber - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "SuscriptionHelper:hasNumber - Exception:", e);
 		}
 
 		return false;
@@ -1203,7 +1164,7 @@ public abstract class SuscriptionHelper
 	 * @param messages
 	 * @return String
 	 */
-	public static String searchUnsuscribeNumber(Suscription suscription, RealmResults<Message> messages)
+	public static String searchUnsuscribeNumber(Suscription suscription, RealmResults<Message> messages, Context context)
 	{
 		String result = "";
 		//En primer instancia nos fijamos el fromNumbers
@@ -1279,12 +1240,7 @@ public abstract class SuscriptionHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionHelper:searchUnsuscribeNumber - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "SuscriptionHelper:searchUnsuscribeNumber - Exception:", e);
 		}
 
 		return result;
@@ -1300,17 +1256,24 @@ public abstract class SuscriptionHelper
 	{
 		String result = context.getString(android.R.string.cancel).toUpperCase();
 
-		if(StringUtils.isNotEmpty(suscription.getUnsuscribe().trim()))
+		try
 		{
-			String[] method = suscription.getUnsuscribe().trim().split(",");
-
-			if(StringUtils.isValidUnsuscribe(method))
+			if(StringUtils.isNotEmpty(suscription.getUnsuscribe().trim()))
 			{
-				if(StringUtils.isNotEmpty(method[1].trim()))
+				String[] method = suscription.getUnsuscribe().trim().split(",");
+
+				if(StringUtils.isValidUnsuscribe(method))
 				{
-					result = method[1].trim();
+					if(StringUtils.isNotEmpty(method[1].trim()))
+					{
+						result = method[1].trim();
+					}
 				}
 			}
+		}
+		catch(Exception e)
+		{
+			Utils.logError(context, "SuscriptionHelper:searchUnsuscribeMessage - Exception:", e);
 		}
 
 		return result;
@@ -1321,7 +1284,7 @@ public abstract class SuscriptionHelper
 	 * @param number
 	 * @return RealmResults<Suscription> Lista de companies
 	 */
-	public static RealmResults<Suscription> getCompanyByNumber(String number)
+	public static RealmResults<Suscription> getCompanyByNumber(String number, Context context)
 	{
 		RealmResults<Suscription> companies	= null;
 
@@ -1332,12 +1295,7 @@ public abstract class SuscriptionHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionHelper:getCompanyByNumber - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "SuscriptionHelper:getCompanyByNumber - Exception:", e);
 		}
 
 		return companies;
@@ -1387,19 +1345,14 @@ public abstract class SuscriptionHelper
 			}
 
 			client.setCompanyId(String.valueOf(System.currentTimeMillis())); //Generamos el nuevo id con timestamp para evitar duplicados
-			client.setFromNumbers(addNumber(fewness, Suscription.NUMBER_FREE, client));
+			client.setFromNumbers(addNumber(fewness, Suscription.NUMBER_FREE, client, context));
 			realm.beginTransaction();
 			realm.insert(client);
 			realm.commitTransaction();
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionHelper:createPhantom - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "SuscriptionHelper:createPhantom - Exception:", e);
 		}
 
 		return client;
@@ -1412,7 +1365,7 @@ public abstract class SuscriptionHelper
 	 * @param suscription
 	 * @return String
 	 */
-	private static String addNumber(String number, String type, Suscription suscription)
+	private static String addNumber(String number, String type, Suscription suscription, Context context)
 	{
 		String fromNumbers = StringUtils.removeSpacesJSON(suscription.getFromNumbers());
 
@@ -1424,7 +1377,7 @@ public abstract class SuscriptionHelper
 			}
 			else
 			{
-				if(!hasNumber(suscription, number))
+				if(!hasNumber(suscription, number, context))
 				{
 					fromNumbers = fromNumbers.replace("]", ",")+ "{\"from\":\"" + number.replace("+", "") + "\",\"type\":\"" + type + "\"}]";
 				}
@@ -1432,12 +1385,7 @@ public abstract class SuscriptionHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionHelper:addNumber - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "SuscriptionHelper:addNumber - Exception:", e);
 		}
 
 		return fromNumbers;

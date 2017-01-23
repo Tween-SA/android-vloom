@@ -10,6 +10,7 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -49,7 +50,7 @@ public class ApiConnection
 	 * "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
 	 * "https://private-29fe84-davidfigueroa.apiary-mock.com/v1/"; //Development Apiary Private
 	 */
-	private static final String SERVERP					= "https://dev.vloom.io/v1/";
+	private static final String SERVERP					= "https://api.vloom.io/v1/";
 	public static final String IP_API					= "http://ip-api.com/json";
 	public static final String COMPANIES				= SERVERP+"companies";
 	public static final String COUNTRIES				= SERVERP+"countries?locale="+Locale.getDefault().getLanguage();
@@ -101,12 +102,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:checkInternet - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:checkInternet - Exception:", e);
 		}
 
 		return result;
@@ -135,12 +131,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:getNetwork - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:getNetwork - Exception:", e);
 		}
 
 		return network;
@@ -166,12 +157,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:loadJSONFromAsset - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:loadJSONFromAsset - Exception:", e);
 		}
 
 		return json;
@@ -269,7 +255,7 @@ public class ApiConnection
 
 				if(stream != null)
 				{
-					result = convertInputStreamToString(stream);
+					result = convertInputStreamToString(stream, context);
 				}
 
 				result = StringUtils.removeSpacesJSON(result);
@@ -283,11 +269,7 @@ public class ApiConnection
 			}
 			catch(Exception e)
 			{
-				System.out.println("ApiConnection:request - Exception: " + e);
-				if(Common.DEBUG)
-				{
-					e.printStackTrace();
-				}
+				Utils.logError(context, "ApiConnection:request - Exception:", e);
 			}
 		}
 
@@ -349,7 +331,7 @@ public class ApiConnection
 		return result;
 	}
 
-	private static String convertInputStreamToString(InputStream inputStream)
+	private static String convertInputStreamToString(InputStream inputStream, Context context)
 	{
 		String result = "";
 		try
@@ -366,12 +348,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:convertInputStreamToString - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:convertInputStreamToString - Exception:", e);
 		}
 
 		return result;
@@ -459,12 +436,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:checkResponse - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:checkResponse - Exception:", e);
 		}
 
 		return result;

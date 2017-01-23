@@ -15,6 +15,7 @@ import com.tween.viacelular.models.UserHelper;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONObject;
 import java.util.Locale;
 import io.realm.Realm;
@@ -43,8 +44,6 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 	{
 		try
 		{
-			System.out.println("pre UpdateUserTask");
-
 			if(displayDialog)
 			{
 				if(progress != null)
@@ -67,12 +66,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("UpdateUserAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "UpdateSuscriptionsAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -107,12 +101,18 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(user != null)
 			{
+				final User userUpdate = user;
 				//Agregado para reemplazar el gcmId con el nuevo token
 				if(StringUtils.isNotEmpty(token))
 				{
-					realm.beginTransaction();
-					user.setGcmId(token);
-					realm.commitTransaction();
+					realm.executeTransaction(new Realm.Transaction()
+					{
+						@Override
+						public void execute(Realm realm)
+						{
+							userUpdate.setGcmId(token);
+						}
+					});
 				}
 
 				userId		= preferences.getString(User.KEY_API, user.getUserId());
@@ -233,7 +233,6 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 				}
 			}
 
-			System.out.println("do redirect");
 			if(!displayDialog && useGet && !usePut && StringUtils.isEmpty(token) && StringUtils.isIdMongo(userId))
 			{
 				//Redirige a la pantalla home al terminar
@@ -258,12 +257,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("UpdateUserAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "UpdateSuscriptionsAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;

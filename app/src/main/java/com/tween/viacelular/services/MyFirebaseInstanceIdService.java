@@ -7,6 +7,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.tween.viacelular.asynctask.UpdateUserAsyncTask;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.Utils;
 
 /**
  * Created by davidfigueroa on 1/8/16.
@@ -38,12 +39,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService
 		}
 		catch(Exception e)
 		{
-			System.out.println("MyFirebaseInstanceIdService:onTokenRefresh - Exception: "+e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(null, "MyFirebaseInstanceIdService:onTokenRefresh - Exception:", e);
 		}
 	}
 
@@ -56,12 +52,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService
 		}
 		catch(Exception e)
 		{
-			System.out.println("MyFirebaseInstanceIdService:sendRegistrationToServer - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "MyFirebaseInstanceIdService:sendRegistrationToServer - Exception:", e);
 		}
 	}
 }

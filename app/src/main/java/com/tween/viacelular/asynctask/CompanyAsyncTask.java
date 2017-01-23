@@ -9,6 +9,7 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,11 +54,7 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CompanyAsyncTask:onPreExecute - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "CompanyAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -96,27 +93,17 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(JSONException e)
 		{
-			System.out.println("CompanyAsyncTask:doInBackground - JSONException: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "CompanyAsyncTask:doInBackground - JSONException:", e);
 		}
 		catch(Exception e)
 		{
-			System.out.println("CompanyAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "CompanyAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return companyId;
 	}
 
-	public int getFlag()
+	private int getFlag()
 	{
 		return flag;
 	}

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.Utils;
 import io.realm.Realm;
 
 /**
@@ -113,12 +114,7 @@ public class IconOptionAdapter extends BaseAdapter
 		}
 		catch(Exception e)
 		{
-			System.out.println("IconOptionAdapter:getView - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(mContext, "IconOptionAdapter:getView - Exception:", e);
 		}
 
 		return convertView;

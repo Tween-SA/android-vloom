@@ -44,7 +44,7 @@ public class AppRater
 			{
 				System.out.println("dateNow: " + dateNow.get(Calendar.DATE) + "/" + (dateNow.get(Calendar.MONTH) + 1) + "/" + dateNow.get(Calendar.YEAR) + " " + dateNow.get(Calendar.HOUR) + ":" + dateNow.get(Calendar.MINUTE) + ":" + dateNow.get(Calendar.SECOND));
 				System.out.println("dateResult: " + dateResult.get(Calendar.DATE) + "/" + (dateResult.get(Calendar.MONTH) + 1) + "/" + dateResult.get(Calendar.YEAR) + " " + dateResult.get(Calendar.HOUR) + ":" + dateResult.get(Calendar.MINUTE) + ":" + dateResult.get(Calendar.SECOND));
-				System.out.println("date FirstLaunch: " + DateUtils.getDateFromTs(dateFirstLaunch) + " delay: " + delayTimes);
+				System.out.println("date FirstLaunch: " + DateUtils.getDateFromTs(dateFirstLaunch, context) + " delay: " + delayTimes);
 				System.out.println("condition: " + (dateNow.compareTo(dateResult) >= 0));
 			}
 
@@ -62,11 +62,7 @@ public class AppRater
 		}
 		catch(Exception e)
 		{
-			System.out.println("AppRater:launchApp - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "AppRater:launchApp - Exception:", e);
 		}
 
 		return result;
@@ -88,11 +84,7 @@ public class AppRater
 		}
 		catch(Exception e)
 		{
-			System.out.println("AppRater:rateApp - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "AppRater:rateApp - Exception:", e);
 		}
 	}
 
@@ -149,11 +141,7 @@ public class AppRater
 		}
 		catch(Exception e)
 		{
-			System.out.println("AppRater:delayRateApp - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "AppRater:delayRateApp - Exception:", e);
 		}
 	}
 }
