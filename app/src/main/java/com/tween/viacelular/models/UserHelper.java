@@ -239,13 +239,17 @@ public abstract class UserHelper
 
 				if(user.getUserId().equals("1") && !checkSubscriptions)
 				{
-					final User userDelete = user;
 					realm.executeTransaction(new Realm.Transaction()
 					{
 						@Override
 						public void execute(Realm realm)
 						{
-							userDelete.deleteFromRealm();
+							User userDelete = realm.where(User.class).equalTo(User.KEY_API, "1").findFirst();
+
+							if(userDelete != null)
+							{
+								userDelete.deleteFromRealm();
+							}
 						}
 					});
 				}

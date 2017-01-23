@@ -1,5 +1,6 @@
 package com.tween.viacelular.asynctask;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -27,6 +28,7 @@ import io.realm.RealmResults;
 public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;
+	private Activity		activity;
 	private Context			context;
 	private boolean			displayDialog	= false;
 	private String			companyId		= "";
@@ -35,7 +37,18 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 	public ConfirmReadingAsyncTask(Context context, boolean displayDialog, String companyId, String msgId, int status)
 	{
+		this.activity		= null;
 		this.context		= context;
+		this.displayDialog	= displayDialog;
+		this.companyId		= companyId;
+		this.msgId			= msgId;
+		this.status			= status;
+	}
+
+	public ConfirmReadingAsyncTask(boolean displayDialog, String companyId, String msgId, int status, Activity activity)
+	{
+		this.activity		= activity;
+		this.context		= null;
 		this.displayDialog	= displayDialog;
 		this.companyId		= companyId;
 		this.msgId			= msgId;
@@ -46,6 +59,11 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 	{
 		try
 		{
+			if(context == null)
+			{
+				context = activity;
+			}
+
 			if(displayDialog)
 			{
 				if(progress != null)
@@ -72,11 +90,11 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 				Realm realm	= Realm.getDefaultInstance();
 				Isp isp		= realm.where(Isp.class).findFirst();
 
-				if(isp != null)
+				if(isp != null && activity != null)
 				{
 					if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.MEAN_FREQUENCY, context))
 					{
-						new GetLocationAsyncTask(context, false, true, null).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+						new GetLocationAsyncTask(activity, false, true, null).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 				}
 			}

@@ -1,6 +1,7 @@
 package com.tween.viacelular.asynctask;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -36,12 +37,12 @@ import io.realm.Realm;
 public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implements LocationListener
 {
 	private MaterialDialog		progress;
-	private Context				context;
+	private Activity			context;
 	private boolean				displayDialog	= false;
 	private boolean				update			= false;
 	private CallBackListener	listener;
 
-	public GetLocationAsyncTask(final Context context, final boolean displayDialog, final boolean update, CallBackListener listener)
+	public GetLocationAsyncTask(final Activity context, final boolean displayDialog, final boolean update, CallBackListener listener)
 	{
 		this.context		= context;
 		this.displayDialog	= displayDialog;
@@ -336,7 +337,7 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 		}
 	}
 
-	public static Address useGeoCoder(final Context context, final LatLng latLng, final String street)
+	public static Address useGeoCoder(final Activity context, final LatLng latLng, final String street)
 	{
 		Address bestMatch	= null;
 

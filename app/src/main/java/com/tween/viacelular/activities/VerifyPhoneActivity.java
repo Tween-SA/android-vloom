@@ -27,6 +27,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.RegisterPhoneAsyncTask;
 import com.tween.viacelular.models.Isp;
@@ -144,12 +146,29 @@ public class VerifyPhoneActivity extends AppCompatActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
+		getMenuInflater().inflate(R.menu.menu_support, menu);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		try
+		{
+			if(item.getItemId() == R.id.action_support)
+			{
+				GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("Contacto")
+					.setLabel("AccionUser").build());
+				Utils.sendContactMail(VerifyPhoneActivity.this);
+
+				return true;
+			}
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":onOptionsItemSelected - Exception:", e);
+		}
+
 		return super.onOptionsItemSelected(item);
 	}
 

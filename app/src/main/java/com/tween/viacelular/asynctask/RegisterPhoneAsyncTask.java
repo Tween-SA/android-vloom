@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CodeActivity;
@@ -22,6 +23,7 @@ import com.tween.viacelular.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Locale;
+import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -149,6 +151,11 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 			//Agregado para enviar Sistema Operativo
 			info.put("os", "android");
 			info.put("countryLanguage", Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
+
+			//Agregado para trackear datos del usuario en Fabric
+			Fabric.with(activity, new Crashlytics());
+			Crashlytics.setUserEmail(email);
+			Crashlytics.setUserIdentifier(phone);
 
 			//TODO Probablemente en algún momento sea necesario agregar la info del device del usuario
 			jsonSend.put(User.KEY_PHONE, phone);

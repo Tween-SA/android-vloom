@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -294,7 +295,7 @@ public class CardViewActivity extends AppCompatActivity
 
 					if(unread > 0)
 					{
-						new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, "", Message.STATUS_READ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+						new ConfirmReadingAsyncTask(false, companyId, "", Message.STATUS_READ, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 
 					//Validaciones para mostrar o no campos según disponibilidad de datos
@@ -420,7 +421,12 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			if(resultCode == RESULT_OK)
 			{
-				Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), tempUri);//(Bitmap) intent.getExtras().get("data");
+				//Nueva forma para reducir procesamiento de imagen
+				BitmapFactory.Options options	= new BitmapFactory.Options();
+				options.inScaled				= false;
+				options.inDither				= false;
+				options.inPreferredConfig		= Bitmap.Config.ARGB_8888;
+				Bitmap bitmap					= BitmapFactory.decodeFile(tempUri.getPath(), options);
 
 				if(bitmap != null)
 				{
@@ -698,6 +704,7 @@ public class CardViewActivity extends AppCompatActivity
 			suscription					= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			Snackbar snackBar			= null;
 			final Message notification	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+			final Activity activity		= this;
 
 			switch(position)
 			{
@@ -724,7 +731,7 @@ public class CardViewActivity extends AppCompatActivity
 							notification.setStatus(Message.STATUS_SPAM);
 						}
 					});
-					new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_SPAM).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_SPAM, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 					snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
@@ -741,7 +748,7 @@ public class CardViewActivity extends AppCompatActivity
 								}
 							});
 							refresh(false);
-							new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_READ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+							new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 						}
 					});
 				break;
@@ -758,7 +765,7 @@ public class CardViewActivity extends AppCompatActivity
 							notification.setStatus(Message.STATUS_SPAM);
 						}
 					});
-					new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_SPAM).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_SPAM, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 					snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
@@ -775,7 +782,7 @@ public class CardViewActivity extends AppCompatActivity
 								}
 							});
 							refresh(false);
-							new ConfirmReadingAsyncTask(getApplicationContext(), false, companyId, notification.getMsgId(), Message.STATUS_READ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+							new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 						}
 					});
 					break;

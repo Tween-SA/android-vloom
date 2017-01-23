@@ -25,6 +25,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.CheckCodeAsyncTask;
 import com.tween.viacelular.asynctask.RegisterPhoneAsyncTask;
@@ -252,12 +254,29 @@ public class VerifyCodeActivity extends AppCompatActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
+		getMenuInflater().inflate(R.menu.menu_support, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		try
+		{
+			if(item.getItemId() == R.id.action_support)
+			{
+				GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("Contacto")
+					.setLabel("AccionUser").build());
+				Utils.sendContactMail(VerifyCodeActivity.this);
+
+				return true;
+			}
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":onOptionsItemSelected - Exception:", e);
+		}
+
 		return super.onOptionsItemSelected(item);
 	}
 
