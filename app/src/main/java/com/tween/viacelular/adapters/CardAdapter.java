@@ -23,6 +23,7 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -39,6 +40,7 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -232,6 +234,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_social_image, parent, false);
 				break;
 
+				case Message.KIND_NOTE:
+					view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_note, parent, false);
+				break;
+
 				default:
 					view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent, false);
 				break;
@@ -261,13 +267,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 				{
 					final String id = item.getMsgId();
 
-					if(position == 0)
+					if(holder.line != null)
 					{
-						holder.line.setVisibility(FrameLayout.VISIBLE);
-					}
-					else
-					{
-						holder.line.setVisibility(FrameLayout.GONE);
+						if(position == 0)
+						{
+							holder.line.setVisibility(FrameLayout.VISIBLE);
+						}
+						else
+						{
+							holder.line.setVisibility(FrameLayout.GONE);
+						}
 					}
 
 					//Agregado para prevenir companies sin color

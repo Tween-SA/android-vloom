@@ -71,6 +71,8 @@ public class Message extends RealmObject
 	@Ignore
 	public static final int KIND_FACEBOOK_IMAGE		= 12; //La push es un post de Facebook que contiene una imagen
 	@Ignore
+	public static final int KIND_NOTE				= 13; //La notificación es una nota generada desde la app
+	@Ignore
 	public static final int STATUS_RECEIVE			= 3;
 	@Ignore
 	public static final int STATUS_READ				= 4;

@@ -26,6 +26,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.transition.Explode;
 import android.view.Menu;
@@ -169,7 +170,6 @@ public class CardViewActivity extends AppCompatActivity
 
 				if(intentRecive != null)
 				{
-					System.out.println("Intent CArd extras: "+intentRecive.getExtras().toString());
 					//Modificaciones para migrar entidad Company completa a Realm
 					companyId	= intentRecive.getStringExtra(Common.KEY_ID);
 					suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
@@ -366,6 +366,47 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
+	}
+
+	public void createNote(View view)
+	{
+		final Activity activity = this;
+		new MaterialDialog.Builder(this).title(getString(R.string.enrich_commentheader)).inputType(InputType.TYPE_CLASS_TEXT)
+				.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+				.input(getString(R.string.enrich_commenthint), "", new MaterialDialog.InputCallback()
+				{
+					@Override
+					public void onInput(MaterialDialog dialog, CharSequence input)
+					{
+						if(input != null)
+						{
+							if(input != "")
+							{
+								final String comment = input.toString();
+
+								if(StringUtils.isNotEmpty(comment))
+								{
+									final Realm realm = Realm.getDefaultInstance();
+									realm.executeTransactionAsync(new Realm.Transaction()
+									{
+										@Override
+										public void execute(Realm bgRealm)
+										{
+											realm.copyToRealmOrUpdate(MessageHelper.getNewNote(comment, companyId, activity));
+										}
+									}, new Realm.Transaction.OnSuccess()
+									{
+										@Override
+										public void onSuccess()
+										{
+											refresh(false);
+										}
+									});
+								}
+							}
+						}
+					}
+				}).show();
 	}
 
 	public void attach(String id)

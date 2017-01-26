@@ -64,6 +64,27 @@ public abstract class MessageHelper
 	}
 
 	/**
+	 * Genera un nuevo objeto de Mensaje para representar una nota propia del usuario
+	 * @param note
+	 * @param companyId
+	 * @param context
+	 * @return Message
+	 */
+	public static Message getNewNote(String note, String companyId, Context context)
+	{
+		SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+		int notificationId				= preferences.getInt(Common.KEY_LAST_MSGID, 0);
+		notificationId					= notificationId+1;
+		String type = "";
+		SharedPreferences.Editor editor	= preferences.edit();
+		editor.putInt(Common.KEY_LAST_MSGID, notificationId);
+		editor.apply();
+
+		return new Message(	String.valueOf(notificationId), type, note, "", Message.STATUS_READ, preferences.getString(User.KEY_API, ""),
+							preferences.getString(Land.KEY_API, ""), Message.FLAGS_PUSHCAP, System.currentTimeMillis(), Common.BOOL_NO, Message.KIND_NOTE, "", "", "", "", "", companyId);
+	}
+
+	/**
 	 * Marca todos los mensajes de una Suscription como eliminados. (Vacía la Company)
 	 * @param companyId
 	 * @param flag
@@ -80,7 +101,7 @@ public abstract class MessageHelper
 			{
 				this.companyId	= companyId;
 				this.flag		= flag;
-				this.context    = context;
+				this.context	= context;
 			}
 
 			public void start()
@@ -137,7 +158,7 @@ public abstract class MessageHelper
 			{
 				this.companyId		= companyId;
 				this.newCompanyId	= newCompanyId;
-				this.context        = context;
+				this.context		= context;
 			}
 
 			public void start()
@@ -513,8 +534,8 @@ public abstract class MessageHelper
 				/**
 				 * Production applications would usually process the message here.
 				 * Eg: - Syncing with server.
-				 *     - Store message in local database.
-				 *     - Update UI.
+				 *	 - Store message in local database.
+				 *	 - Update UI.
 				 */
 
 				/**

@@ -63,7 +63,7 @@ public class CodeActivity extends AppCompatActivity
 		{
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.activity_code);
-			preferences = getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			preferences = getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 
 			if(Utils.checkSesion(this, Common.CODE_SCREEN))
 			{

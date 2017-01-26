@@ -18,83 +18,83 @@ import io.realm.Realm;
  */
 public class GalleryActivity extends AppCompatActivity
 {
-    CarouselView carouselView;
-    private String msgId = "";
+	CarouselView carouselView;
+	private String msgId = "";
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gallery);
-        carouselView = (CarouselView) findViewById(R.id.carouselView);
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_gallery);
+		carouselView = (CarouselView) findViewById(R.id.carouselView);
 
-        if(getIntent() != null)
-        {
-            msgId = getIntent().getStringExtra(Common.KEY_ID);
-        }
+		if(getIntent() != null)
+		{
+			msgId = getIntent().getStringExtra(Common.KEY_ID);
+		}
 
-        if(StringUtils.isNotEmpty(msgId))
-        {
-            Realm realm = Realm.getDefaultInstance();
-            final Message message = realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
-            int pages = 0;
+		if(StringUtils.isNotEmpty(msgId))
+		{
+			Realm realm = Realm.getDefaultInstance();
+			final Message message = realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+			int pages = 0;
 
-            if(message != null)
-            {
-                if(StringUtils.isNotEmpty(message.getAttached()) && StringUtils.isNotEmpty(message.getAttachedTwo()) && StringUtils.isNotEmpty(message.getAttachedThree()))
-                {
-                    pages = 3;
-                }
-                else
-                {
-                    if(StringUtils.isNotEmpty(message.getAttached()) && StringUtils.isNotEmpty(message.getAttachedTwo()))
-                    {
-                        pages = 2;
-                    }
-                    else
-                    {
-                        if(StringUtils.isNotEmpty(message.getAttached()))
-                        {
-                            pages = 1;
-                        }
-                    }
-                }
+			if(message != null)
+			{
+				if(StringUtils.isNotEmpty(message.getAttached()) && StringUtils.isNotEmpty(message.getAttachedTwo()) && StringUtils.isNotEmpty(message.getAttachedThree()))
+				{
+					pages = 3;
+				}
+				else
+				{
+					if(StringUtils.isNotEmpty(message.getAttached()) && StringUtils.isNotEmpty(message.getAttachedTwo()))
+					{
+						pages = 2;
+					}
+					else
+					{
+						if(StringUtils.isNotEmpty(message.getAttached()))
+						{
+							pages = 1;
+						}
+					}
+				}
 
-                carouselView.setPageCount(pages);
-                carouselView.setSlideInterval(1000000000);
-                carouselView.stopCarousel();
-                final Activity activity = this;
+				carouselView.setPageCount(pages);
+				carouselView.setSlideInterval(1000000000);
+				carouselView.stopCarousel();
+				final Activity activity = this;
 
-                if(pages > 0)
-                {
-                    carouselView.setImageListener(new ImageListener()
-                    {
-                        @Override
-                        public void setImageForPosition(int position, ImageView imageView)
-                        {
-                            System.out.println("for position: "+position);
-                            switch(position)
-                            {
-                                case 0:
-                                    Picasso.with(activity).load(message.getAttached()).placeholder(R.drawable.splash).into(imageView);
-                                break;
+				if(pages > 0)
+				{
+					carouselView.setImageListener(new ImageListener()
+					{
+						@Override
+						public void setImageForPosition(int position, ImageView imageView)
+						{
+							System.out.println("for position: "+position);
+							switch(position)
+							{
+								case 0:
+									Picasso.with(activity).load(message.getAttached()).placeholder(R.drawable.splash).into(imageView);
+								break;
 
-                                case 1:
-                                    Picasso.with(activity).load(message.getAttachedTwo()).placeholder(R.drawable.splash).into(imageView);
-                                break;
+								case 1:
+									Picasso.with(activity).load(message.getAttachedTwo()).placeholder(R.drawable.splash).into(imageView);
+								break;
 
-                                case 2:
-                                    Picasso.with(activity).load(message.getAttachedThree()).placeholder(R.drawable.splash).into(imageView);
-                                break;
+								case 2:
+									Picasso.with(activity).load(message.getAttachedThree()).placeholder(R.drawable.splash).into(imageView);
+								break;
 
-                                default:
-                                    Picasso.with(activity).load(R.drawable.splash).placeholder(R.drawable.splash).into(imageView);
-                                break;
-                            }
-                        }
-                    });
-                }
-            }
-        }
-    }
+								default:
+									Picasso.with(activity).load(R.drawable.splash).placeholder(R.drawable.splash).into(imageView);
+								break;
+							}
+						}
+					});
+				}
+			}
+		}
+	}
 }
