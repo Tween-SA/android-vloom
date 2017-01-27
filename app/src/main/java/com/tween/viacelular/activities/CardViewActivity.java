@@ -370,10 +370,12 @@ public class CardViewActivity extends AppCompatActivity
 
 	public void createNote(View view)
 	{
-		final Activity activity = this;
-		new MaterialDialog.Builder(this).title(getString(R.string.enrich_commentheader)).inputType(InputType.TYPE_CLASS_TEXT)
+		try
+		{
+			final Activity activity = this;
+			new MaterialDialog.Builder(this).title(getString(R.string.enrich_addnoteheader)).inputType(InputType.TYPE_CLASS_TEXT)
 				.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
-				.input(getString(R.string.enrich_commenthint), "", new MaterialDialog.InputCallback()
+				.input(getString(R.string.enrich_notehint), "", new MaterialDialog.InputCallback()
 				{
 					@Override
 					public void onInput(MaterialDialog dialog, CharSequence input)
@@ -407,6 +409,11 @@ public class CardViewActivity extends AppCompatActivity
 						}
 					}
 				}).show();
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":createNote - Exception:", e);
+		}
 	}
 
 	public void attach(String id)

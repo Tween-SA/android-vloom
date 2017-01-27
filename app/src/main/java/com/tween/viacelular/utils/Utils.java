@@ -19,11 +19,13 @@ import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 import android.view.TouchDelegate;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -46,6 +48,7 @@ import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -58,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 
@@ -988,6 +992,58 @@ public class Utils
 		{
 			logError(context, "Utils:showViewWithFade - Exception:", e);
 		}
+	}
+
+	/**
+	 * Muestra la resolución y categoría de la pantalla que tiene el dispositivo usado
+	 * @param context
+     */
+	public static void showResolutionDevice(Context context)
+	{
+		DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+		String category = "4K";
+		//Densidad de pantalla: 1.5 objeto: DisplayMetrics{density=1.5, width=480, height=800, scaledDensity=1.5, xdpi=160.42105, ydpi=160.0} dpi 240
+		if(displayMetrics.densityDpi <= 120)
+		{
+			category = "LDPI";
+		}
+		else
+		{
+			if(displayMetrics.densityDpi <= 160)
+			{
+				category = "MDPI";
+			}
+			else
+			{
+				if(displayMetrics.densityDpi <= 240)
+				{
+					category = "HDPI";
+				}
+				else
+				{
+					if(displayMetrics.densityDpi <= 320)
+					{
+						category = "XHDPI";
+					}
+					else
+					{
+						if(displayMetrics.densityDpi <= 480)
+						{
+							category = "XXHDPI";
+						}
+						else
+						{
+							if(displayMetrics.densityDpi <= 640)
+							{
+								category = "XXXHDPI";
+							}
+						}
+					}
+				}
+			}
+		}
+
+		System.out.println("Pantalla: " +category+" "+displayMetrics.widthPixels+"x"+displayMetrics.heightPixels+" ("+displayMetrics.density+" o "+displayMetrics.densityDpi+" dpi)");
 	}
 
 	/**

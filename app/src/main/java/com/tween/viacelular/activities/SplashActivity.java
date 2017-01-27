@@ -79,7 +79,7 @@ public class SplashActivity extends AppCompatActivity
 			else
 			{
 				//Para saber qué tipo de pantalla es cuando estamos en debug
-				System.out.println("Densidad de pantalla: " + getResources().getDisplayMetrics().density);
+				Utils.showResolutionDevice(this);
 			}
 
 			//Revisar si hay alguna preferencia que indique si estuvo logueado

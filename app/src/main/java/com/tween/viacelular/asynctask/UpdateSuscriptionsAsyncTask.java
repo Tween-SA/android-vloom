@@ -76,7 +76,6 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 					.content(R.string.landing_card_loading_text)
 					.progress(true, 0)
 					.show();
-				System.out.println("pre");
 			}
 		}
 		catch(Exception e)

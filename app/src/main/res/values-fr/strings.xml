@@ -36,6 +36,9 @@
 	<string name="enrich_addcommentheader">Ajouter un commentaire</string><!-- after traslate -->
 	<string name="enrich_commentheader">Modifier un commentaire</string><!-- after traslate -->
 	<string name="enrich_commenthint">Ecrire un commentaire&#8230;</string><!-- after traslate -->
+	<string name="enrich_addnoteheader">Ajouter une note</string><!-- after traslate -->
+	<string name="enrich_noteheader">Éditer note</string><!-- after traslate -->
+	<string name="enrich_notehint">Écrire une note&#8230;</string><!-- after traslate -->
 	<string name="enrich_receipt">Facture d\'achat</string><!-- after traslate -->
 	<string name="enrich_save">GARDER</string><!-- after traslate -->
 	<string name="error_upgrade">Nous sommes de retour. Nous vous prions de bien vouloir nous excuser pour la gêne occasionnée.</string>

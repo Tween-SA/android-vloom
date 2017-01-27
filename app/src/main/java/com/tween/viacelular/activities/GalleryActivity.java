@@ -72,7 +72,6 @@ public class GalleryActivity extends AppCompatActivity
 						@Override
 						public void setImageForPosition(int position, ImageView imageView)
 						{
-							System.out.println("for position: "+position);
 							switch(position)
 							{
 								case 0:

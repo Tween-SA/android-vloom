@@ -36,6 +36,9 @@
 	<string name="enrich_addcommentheader">Aggiungi commento</string><!-- after traslate -->
 	<string name="enrich_commentheader">Modifica commento</string><!-- after traslate -->
 	<string name="enrich_commenthint">Scrivi un commento&#8230;</string><!-- after traslate -->
+	<string name="enrich_addnoteheader">Aggiungere nota</string><!-- after traslate -->
+	<string name="enrich_noteheader">Modifica nota</string><!-- after traslate -->
+	<string name="enrich_notehint">Scrivi una nota&#8230;</string><!-- after traslate -->
 	<string name="enrich_receipt">Fattura</string><!-- after traslate -->
 	<string name="enrich_save">SALVARE</string><!-- after traslate -->
 	<string name="error_upgrade">Siamo tornati. Ci scusiamo per l\'inconveniente</string>

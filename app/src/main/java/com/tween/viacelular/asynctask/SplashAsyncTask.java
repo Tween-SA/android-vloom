@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
@@ -18,7 +17,6 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 {
@@ -91,10 +89,9 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 				editor.apply();
 
 				//Agregado para migrar a objeto Realm Message
-				Realm realm								= Realm.getDefaultInstance();
-				final RealmResults<Isp> ispRealmResults	= realm.where(Isp.class).findAll();
-				User user								= realm.where(User.class).findFirst();
-				String country							= preferences.getString(Land.KEY_API, "");
+				Realm realm		= Realm.getDefaultInstance();
+				User user		= realm.where(User.class).findFirst();
+				String country	= preferences.getString(Land.KEY_API, "");
 
 				//Agregado para incorporar país en "push" iniciales
 				if(user != null)
@@ -119,7 +116,6 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 															System.currentTimeMillis(), Common.BOOL_NO, Message.KIND_TEXT, "", "", "", "", "", Suscription.COMPANY_ID_VC_MONGO);
 						realm.copyToRealmOrUpdate(messageRealm);
 						realm.copyToRealmOrUpdate(messageRealm1);
-						ispRealmResults.deleteAllFromRealm();
 						Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, Suscription.COMPANY_ID_VC_MONGO).findFirst();
 
 						if(suscription != null)
