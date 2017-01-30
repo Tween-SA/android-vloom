@@ -75,12 +75,10 @@ public abstract class MessageHelper
 		SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 		int notificationId				= preferences.getInt(Common.KEY_LAST_MSGID, 0);
 		notificationId					= notificationId+1;
-		String type = "";
 		SharedPreferences.Editor editor	= preferences.edit();
 		editor.putInt(Common.KEY_LAST_MSGID, notificationId);
 		editor.apply();
-
-		return new Message(	String.valueOf(notificationId), type, note, "", Message.STATUS_READ, preferences.getString(User.KEY_API, ""),
+		return new Message(	String.valueOf(notificationId), context.getString(R.string.enrich_notetype), note, "", Message.STATUS_READ, preferences.getString(User.KEY_API, ""),
 							preferences.getString(Land.KEY_API, ""), Message.FLAGS_PUSHCAP, System.currentTimeMillis(), Common.BOOL_NO, Message.KIND_NOTE, "", "", "", "", "", companyId);
 	}
 

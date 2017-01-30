@@ -80,7 +80,7 @@ public class CardViewActivity extends AppCompatActivity
 	private RealmResults<Message>	notifications	= null;
 	private int						colorTitle		= Color.WHITE;
 	private int						colorSubTitle	= Color.LTGRAY;
-	private String					msgId			= "";
+	public String					msgId			= "";
 	private Uri						mDownloadUrl	= null;
 	private RecyclerView			rcwCard;
 	private CardAdapter				mAdapter;
@@ -368,47 +368,116 @@ public class CardViewActivity extends AppCompatActivity
 		}
 	}
 
+	public void onCreateNote(final String msgId)
+	{
+		try
+		{
+			final Activity activity	= this;
+			String txtNote			= "";
+
+			if(StringUtils.isNotEmpty(msgId))
+			{
+				final Realm realm	= Realm.getDefaultInstance();
+				Message message		= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+				if(message != null)
+				{
+					txtNote = message.getMsg();
+					new MaterialDialog.Builder(this).title(getString(R.string.enrich_noteheader)).inputType(InputType.TYPE_CLASS_TEXT)
+						.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+						.input(getString(R.string.enrich_notehint), txtNote, new MaterialDialog.InputCallback()
+						{
+							@Override
+							public void onInput(MaterialDialog dialog, CharSequence input)
+							{
+								if(input != null)
+								{
+									if(input != "")
+									{
+										final String comment = input.toString();
+
+										if(StringUtils.isNotEmpty(comment))
+										{
+											final Realm realm = Realm.getDefaultInstance();
+											realm.executeTransactionAsync(new Realm.Transaction()
+											{
+												@Override
+												public void execute(Realm bgRealm)
+												{
+													Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+													message.setMsg(comment);
+													message.setCreated(System.currentTimeMillis());
+												}
+											}, new Realm.Transaction.OnSuccess()
+											{
+												@Override
+												public void onSuccess()
+												{
+													refresh(false);
+												}
+											});
+											realm.close();
+										}
+									}
+								}
+							}
+						}).show();
+				}
+
+				realm.close();
+			}
+			else
+			{
+				new MaterialDialog.Builder(this).title(getString(R.string.enrich_addnoteheader)).inputType(InputType.TYPE_CLASS_TEXT)
+					.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+					.input(getString(R.string.enrich_notehint), txtNote, new MaterialDialog.InputCallback()
+					{
+						@Override
+						public void onInput(MaterialDialog dialog, CharSequence input)
+						{
+							if(input != null)
+							{
+								if(input != "")
+								{
+									final String comment = input.toString();
+
+									if(StringUtils.isNotEmpty(comment))
+									{
+										final Realm realm = Realm.getDefaultInstance();
+										realm.executeTransactionAsync(new Realm.Transaction()
+										{
+											@Override
+											public void execute(Realm bgRealm)
+											{
+												bgRealm.copyToRealmOrUpdate(MessageHelper.getNewNote(comment, companyId, activity));
+											}
+										}, new Realm.Transaction.OnSuccess()
+										{
+											@Override
+											public void onSuccess()
+											{
+												refresh(false);
+											}
+										});
+										realm.close();
+									}
+								}
+							}
+						}
+					}).show();
+			}
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":onCreateNote - Exception:", e);
+		}
+	}
+
 	public void createNote(View view)
 	{
 		try
 		{
-			final Activity activity = this;
-			new MaterialDialog.Builder(this).title(getString(R.string.enrich_addnoteheader)).inputType(InputType.TYPE_CLASS_TEXT)
-				.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
-				.input(getString(R.string.enrich_notehint), "", new MaterialDialog.InputCallback()
-				{
-					@Override
-					public void onInput(MaterialDialog dialog, CharSequence input)
-					{
-						if(input != null)
-						{
-							if(input != "")
-							{
-								final String comment = input.toString();
-
-								if(StringUtils.isNotEmpty(comment))
-								{
-									final Realm realm = Realm.getDefaultInstance();
-									realm.executeTransactionAsync(new Realm.Transaction()
-									{
-										@Override
-										public void execute(Realm bgRealm)
-										{
-											realm.copyToRealmOrUpdate(MessageHelper.getNewNote(comment, companyId, activity));
-										}
-									}, new Realm.Transaction.OnSuccess()
-									{
-										@Override
-										public void onSuccess()
-										{
-											refresh(false);
-										}
-									});
-								}
-							}
-						}
-					}
-				}).show();
+			onCreateNote(null);
 		}
 		catch(Exception e)
 		{
@@ -620,15 +689,22 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			int items = R.array.optionsCard;
-			Realm realm = Realm.getDefaultInstance();
-			Message message = realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+			int items		= R.array.optionsCard;
+			Realm realm		= Realm.getDefaultInstance();
+			Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
 
 			if(message != null)
 			{
 				if(message.getKind() == Message.KIND_TWITTER)
 				{
 					items = R.array.optionsCardSocial;
+				}
+				else
+				{
+					if(message.getKind() == Message.KIND_NOTE)
+					{
+						items = R.array.optionsNote;
+					}
 				}
 			}
 
@@ -768,37 +844,45 @@ public class CardViewActivity extends AppCompatActivity
 				break;
 
 				case CardAdapter.OPTION_BLOCK:
-					//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
-					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
-																									.setLabel("Accion_user").build());
-					realm.executeTransaction(new Realm.Transaction()
+					//Diferenciamos si se trata de una nota para ir al editar
+					if(notification.getKind() == Message.KIND_NOTE)
 					{
-						@Override
-						public void execute(Realm realm)
-						{
-							notification.setStatus(Message.STATUS_SPAM);
-						}
-					});
-					new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_SPAM, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-					snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
+						onCreateNote(notification.getMsgId());
+					}
+					else
 					{
-						@Override
-						public void onClick(View v)
+						//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
+						GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
+								.setLabel("Accion_user").build());
+						realm.executeTransaction(new Realm.Transaction()
 						{
-							Realm realm = Realm.getDefaultInstance();
-							realm.executeTransaction(new Realm.Transaction()
+							@Override
+							public void execute(Realm realm)
 							{
-								@Override
-								public void execute(Realm realm)
+								notification.setStatus(Message.STATUS_SPAM);
+							}
+						});
+						new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_SPAM, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+						snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
+						{
+							@Override
+							public void onClick(View v)
+							{
+								Realm realm = Realm.getDefaultInstance();
+								realm.executeTransaction(new Realm.Transaction()
 								{
-									notification.setStatus(Message.STATUS_READ);
-								}
-							});
-							refresh(false);
-							new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-						}
-					});
+									@Override
+									public void execute(Realm realm)
+									{
+										notification.setStatus(Message.STATUS_READ);
+									}
+								});
+								refresh(false);
+								new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+							}
+						});
+					}
 				break;
 
 				case CardAdapter.OPTION_DISMISS:

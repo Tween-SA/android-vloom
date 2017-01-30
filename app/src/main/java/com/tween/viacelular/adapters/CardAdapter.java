@@ -23,7 +23,6 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -40,7 +39,6 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -168,6 +166,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					animOne		= (ProgressProfileView) itemView.findViewById(R.id.animOne);
 					animTwo		= (ProgressProfileView) itemView.findViewById(R.id.animTwo);
 					animThree	= (ProgressProfileView) itemView.findViewById(R.id.animThree);
+					cardReceipt	= (CardView) itemView.findViewById(R.id.cardView);
 				break;
 			}
 		}
@@ -490,7 +489,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 					if(item.getKind() == Message.KIND_TWITTER)
 					{
-						holder.socialAccount.setText(item.getSocialAccount());
+						//Redesign by me for social's cards
+						String time				= DateUtils.getTimeFromTs(item.getCreated(), activity.getApplicationContext());
+						String socialAccount	= item.getSocialAccount();
+
+						if(StringUtils.isNotEmpty(time))
+						{
+							socialAccount += " - "+time;
+						}
+
+						holder.socialAccount.setText(socialAccount);
 						holder.socialDate.setText(item.getSocialDate());
 						holder.txtContent.setOnClickListener(new View.OnClickListener()
 						{
@@ -856,7 +864,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					}
 
 					//Nueva card para recepción de facturas
-					if(holder.cardReceipt != null)
+					if(holder.cardReceipt != null && item.getKind() == Message.KIND_INVOICE)
 					{
 						holder.cardReceipt.setOnClickListener(new View.OnClickListener()
 						{
@@ -889,6 +897,22 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 									holder.txtReceipt.setTextColor(Color.parseColor(Common.COLOR_ACTION));
 								}
 							}
+						}
+					}
+					else
+					{
+						//Para nuevo editar con longpress para las notas
+						if(holder.cardReceipt != null && item.getKind() == Message.KIND_NOTE)
+						{
+							holder.cardReceipt.setOnLongClickListener(new View.OnLongClickListener()
+							{
+								@Override
+								public boolean onLongClick(View view)
+								{
+									activity.onCreateNote(item.getMsgId());
+									return false;
+								}
+							});
 						}
 					}
 				}

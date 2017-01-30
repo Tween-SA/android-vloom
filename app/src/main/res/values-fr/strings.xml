@@ -39,6 +39,7 @@
 	<string name="enrich_addnoteheader">Ajouter une note</string><!-- after traslate -->
 	<string name="enrich_noteheader">Éditer note</string><!-- after traslate -->
 	<string name="enrich_notehint">Écrire une note&#8230;</string><!-- after traslate -->
+	<string name="enrich_notetype">Note personnelle</string><!-- after traslate -->
 	<string name="enrich_receipt">Facture d\'achat</string><!-- after traslate -->
 	<string name="enrich_save">GARDER</string><!-- after traslate -->
 	<string name="error_upgrade">Nous sommes de retour. Nous vous prions de bien vouloir nous excuser pour la gêne occasionnée.</string>
@@ -283,4 +284,9 @@
 		<item>Vider les messages</item>
 		<item>Me désabonner</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>Partager</item>
+		<item>Éditer</item>
+		<item>Éliminer</item>
+	</string-array><!-- after traslate -->
 </resources>

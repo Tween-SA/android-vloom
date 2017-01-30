@@ -39,6 +39,7 @@
 	<string name="enrich_addnoteheader">메모 추가</string><!-- after traslate -->
 	<string name="enrich_noteheader">편집 노트</string><!-- after traslate -->
 	<string name="enrich_notehint">메모를 작성&#8230;</string><!-- after traslate -->
+	<string name="enrich_notetype">개인 노트</string><!-- after traslate -->
 	<string name="enrich_receipt">송장</string><!-- after traslate -->
 	<string name="enrich_save">구하다</string><!-- after traslate -->
 	<string name="error_upgrade">백업 중입니다. 불편을 끼쳐 죄송합니다</string>
@@ -283,4 +284,9 @@
 		<item>빈 메시지</item>
 		<item>탈퇴</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>공유하기</item>
+		<item>편집</item>
+		<item>제거하기</item>
+	</string-array><!-- after traslate -->
 </resources>

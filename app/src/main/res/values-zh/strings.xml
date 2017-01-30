@@ -39,6 +39,7 @@
 	<string name="enrich_addnoteheader">添加备注</string><!-- after traslate -->
 	<string name="enrich_noteheader">编辑笔记</string><!-- after traslate -->
 	<string name="enrich_notehint">写笔记&#8230;</string><!-- after traslate -->
+	<string name="enrich_notetype">个人笔记</string><!-- after traslate -->
 	<string name="enrich_receipt">发票</string><!-- after traslate -->
 	<string name="enrich_save">保存</string><!-- after traslate -->
 	<string name="error_upgrade">我们已备份。很抱歉，给您造成不便</string>
@@ -283,4 +284,9 @@
 		<item>空消息</item>
 		<item>退订</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>分享</item>
+		<item>编辑</item>
+		<item>删除</item>
+	</string-array><!-- after traslate -->
 </resources>
