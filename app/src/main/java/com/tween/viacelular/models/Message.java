@@ -43,6 +43,9 @@ public class Message extends RealmObject
 	private String	attached;
 	private String	attachedTwo;
 	private String	attachedThree;
+	private String	uri;
+	private String	uriTwo;
+	private String	uriThree;
 
 	@Ignore
 	public static final int KIND_TEXT				= 0; //La push contiene únicamente texto, clase de push por defecto
@@ -105,13 +108,19 @@ public class Message extends RealmObject
 	@Ignore
 	public static final String KEY_NOTE				= "note";
 	@Ignore
-	public static final String KEY_ATTACHED			= "attached";
-	@Ignore
 	public static final String KEY_ATTACHMENTS		= "attachments";
+	@Ignore
+	public static final String KEY_ATTACHED			= "attached";
 	@Ignore
 	public static final String KEY_ATTACHEDTWO		= "attachedTwo";
 	@Ignore
 	public static final String KEY_ATTACHEDTHREE	= "attachedThree";
+	@Ignore
+	public static final String KEY_URI				= "uri";
+	@Ignore
+	public static final String KEY_URITWO			= "uriTwo";
+	@Ignore
+	public static final String KEY_URITHREE			= "uriThree";
 	@Ignore
 	public static final String KEY_SUBMSG			= "subMsg";
 	@Ignore
@@ -466,5 +475,35 @@ public class Message extends RealmObject
 	public void setAttachedThree(final String attachedThree)
 	{
 		this.attachedThree = attachedThree;
+	}
+
+	public String getUri()
+	{
+		return uri;
+	}
+
+	public void setUri(String uri)
+	{
+		this.uri = uri;
+	}
+
+	public String getUriTwo()
+	{
+		return uriTwo;
+	}
+
+	public void setUriTwo(String uriTwo)
+	{
+		this.uriTwo = uriTwo;
+	}
+
+	public String getUriThree()
+	{
+		return uriThree;
+	}
+
+	public void setUriThree(String uriThree)
+	{
+		this.uriThree = uriThree;
 	}
 }

@@ -101,10 +101,11 @@ public class IncomingSmsService extends BroadcastReceiver
 							}
 
 							//Agregado para prevenir las consultas si no se otorgo sessión para el dao
-							Realm realm = Realm.getDefaultInstance();
-							RealmResults<Message> notifications = realm.where(Message.class).equalTo(Message.KEY_CHANNEL, address).equalTo(Common.KEY_TYPE, Message.TYPE_SMS)
+							Realm realm							= Realm.getDefaultInstance();
+							RealmResults<Message> notifications	= realm.where(Message.class).equalTo(Message.KEY_CHANNEL, address).equalTo(Common.KEY_TYPE, Message.TYPE_SMS)
 																	.equalTo(Message.KEY_CREATED, Long.valueOf(date)).findAll();
 
+							System.out.println("notifications: "+notifications.size());
 							if(notifications.size() == 0)
 							{
 								if(	StringUtils.isPhoneNumber(address) || message.contains(Message.SMS_CODE) || message.contains(Message.SMS_CODE_ES) || message.contains(Message.SMS_CODE_NEW) ||
@@ -221,6 +222,7 @@ public class IncomingSmsService extends BroadcastReceiver
 						}
 					}
 
+					System.out.println("code: "+code);
 					if(StringUtils.isNotEmpty(code))
 					{
 						if(StringUtils.isValidCode(code))

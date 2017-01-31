@@ -20,7 +20,6 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="10dp"
-			android:layout_marginBottom="20dp"
 			android:text="@string/verify_phone_code"
 			android:textColor="@color/text"
 			android:layout_alignParentLeft="true"
@@ -29,22 +28,20 @@
 		<Button
 			android:id="@+id/btnWrong"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="26dp"
+			android:layout_height="30dp"
 			android:text="@string/verify_phone_wrong"
 			android:onClick="logout"
 			android:textColor="@color/accent"
 			android:background="@android:color/transparent"
 			android:shadowColor="@android:color/transparent"
 			android:textAppearance="?android:attr/textAppearanceSmall"
-			android:layout_alignParentRight="true"
-			android:layout_alignParentEnd="true"
+			android:layout_below="@+id/txtRecive"
 			android:gravity="left" />
 		<android.support.design.widget.TextInputLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:id="@+id/inputCode"
-			android:layout_below="@id/txtRecive">
+			android:layout_below="@id/btnWrong">
 			<EditText
 				android:id="@+id/editCode"
 				android:layout_marginTop="20dp"

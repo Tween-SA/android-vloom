@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
@@ -35,25 +36,25 @@ public class GalleryActivity extends AppCompatActivity
 
 		if(StringUtils.isNotEmpty(msgId))
 		{
-			Realm realm = Realm.getDefaultInstance();
-			final Message message = realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
-			int pages = 0;
+			Realm realm				= Realm.getDefaultInstance();
+			final Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+			int pages				= 0;
 
 			if(message != null)
 			{
-				if(StringUtils.isNotEmpty(message.getAttached()) && StringUtils.isNotEmpty(message.getAttachedTwo()) && StringUtils.isNotEmpty(message.getAttachedThree()))
+				if(StringUtils.isNotEmpty(message.getUri()) && StringUtils.isNotEmpty(message.getUriTwo()) && StringUtils.isNotEmpty(message.getUriThree()))
 				{
 					pages = 3;
 				}
 				else
 				{
-					if(StringUtils.isNotEmpty(message.getAttached()) && StringUtils.isNotEmpty(message.getAttachedTwo()))
+					if(StringUtils.isNotEmpty(message.getUri()) && StringUtils.isNotEmpty(message.getUriTwo()))
 					{
 						pages = 2;
 					}
 					else
 					{
-						if(StringUtils.isNotEmpty(message.getAttached()))
+						if(StringUtils.isNotEmpty(message.getUri()))
 						{
 							pages = 1;
 						}
@@ -70,20 +71,56 @@ public class GalleryActivity extends AppCompatActivity
 					carouselView.setImageListener(new ImageListener()
 					{
 						@Override
-						public void setImageForPosition(int position, ImageView imageView)
+						public void setImageForPosition(int position, final ImageView imageView)
 						{
 							switch(position)
 							{
 								case 0:
-									Picasso.with(activity).load(message.getAttached()).placeholder(R.drawable.splash).into(imageView);
+									Picasso.with(activity).load(message.getUri()).placeholder(R.drawable.splash).into(imageView, new Callback()
+									{
+										@Override
+										public void onSuccess()
+										{
+										}
+
+										@Override
+										public void onError()
+										{
+											Picasso.with(activity).load(message.getAttached()).placeholder(R.drawable.splash).into(imageView);
+										}
+									});
 								break;
 
 								case 1:
-									Picasso.with(activity).load(message.getAttachedTwo()).placeholder(R.drawable.splash).into(imageView);
+									Picasso.with(activity).load(message.getUriTwo()).placeholder(R.drawable.splash).into(imageView, new Callback()
+									{
+										@Override
+										public void onSuccess()
+										{
+										}
+
+										@Override
+										public void onError()
+										{
+											Picasso.with(activity).load(message.getAttachedTwo()).placeholder(R.drawable.splash).into(imageView);
+										}
+									});
 								break;
 
 								case 2:
-									Picasso.with(activity).load(message.getAttachedThree()).placeholder(R.drawable.splash).into(imageView);
+									Picasso.with(activity).load(message.getUriThree()).placeholder(R.drawable.splash).into(imageView, new Callback()
+									{
+										@Override
+										public void onSuccess()
+										{
+										}
+
+										@Override
+										public void onError()
+										{
+											Picasso.with(activity).load(message.getAttachedThree()).placeholder(R.drawable.splash).into(imageView);
+										}
+									});
 								break;
 
 								default:

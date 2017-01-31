@@ -108,8 +108,8 @@ public class MyUploadService extends MyBaseTaskService
 					@Override
 					public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
 					{
-						downloadUri = taskSnapshot.getMetadata().getDownloadUrl();
-						final String downloadUrl = downloadUri.toString();
+						downloadUri					= taskSnapshot.getMetadata().getDownloadUrl();
+						final String downloadUrl	= downloadUri.toString();
 
 						//Persist url in Message
 						realm.executeTransactionAsync(new Realm.Transaction()
@@ -125,14 +125,17 @@ public class MyUploadService extends MyBaseTaskService
 									{
 										case 1:
 											message.setAttached(downloadUrl);
+											message.setUri(fileUri.toString());
 										break;
 
 										case 2:
 											message.setAttachedTwo(downloadUrl);
+											message.setUriTwo(fileUri.toString());
 										break;
 
 										case 3:
 											message.setAttachedThree(downloadUrl);
+											message.setUriThree(fileUri.toString());
 										break;
 									}
 								}

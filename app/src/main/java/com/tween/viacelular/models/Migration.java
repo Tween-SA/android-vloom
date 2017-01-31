@@ -132,17 +132,11 @@ public class Migration implements RealmMigration
 
 						if(message != null)
 						{
-							message.addField(Message.KEY_SOCIALID, String.class);
-							message.addField(Message.KEY_SOCIALDATE, String.class);
-							message.addField(Message.KEY_SOCIALLIKES, int.class);
-							message.addField(Message.KEY_SOCIALSHARES, int.class);
-							message.addField(Message.KEY_SOCIALACCOUNT, String.class);
-							message.addField(Message.KEY_SOCIALNAME, String.class);
-							message.addField(Message.KEY_TXID, String.class);
-							message.addField(Message.KEY_NOTE, String.class);
-							message.addField(Message.KEY_ATTACHED, String.class);
 							message.addField(Message.KEY_ATTACHEDTWO, String.class);
 							message.addField(Message.KEY_ATTACHEDTHREE, String.class);
+							message.addField(Message.KEY_URI, String.class);
+							message.addField(Message.KEY_URITWO, String.class);
+							message.addField(Message.KEY_URITHREE, String.class);
 						}
 						else
 						{

@@ -684,7 +684,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 					if(holder.iconAttach != null)
 					{
-						if(StringUtils.isNotEmpty(item.getAttached()) && StringUtils.isNotEmpty(item.getAttachedTwo()) && StringUtils.isNotEmpty(item.getAttachedThree()))
+						if(StringUtils.isNotEmpty(item.getUri()) && StringUtils.isNotEmpty(item.getUriTwo()) && StringUtils.isNotEmpty(item.getUriThree()))
 						{
 							holder.iconAttach.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.photo_disabled));
 							holder.iconAttach.setOnClickListener(new View.OnClickListener()
@@ -703,7 +703,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								@Override
 								public void onClick(final View v)
 								{
-									if(StringUtils.isNotEmpty(item.getAttached()) && StringUtils.isNotEmpty(item.getAttachedTwo()) && StringUtils.isNotEmpty(item.getAttachedThree()))
+									if(StringUtils.isNotEmpty(item.getUri()) && StringUtils.isNotEmpty(item.getUriTwo()) && StringUtils.isNotEmpty(item.getUriThree()))
 									{
 										Toast.makeText(activity, activity.getString(R.string.attach_limit), Toast.LENGTH_SHORT).show();
 										holder.iconAttach.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.photo_disabled));
@@ -724,12 +724,12 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 						}
 					}
 
-					if(holder.imgOne != null && holder.animOne != null && StringUtils.isNotEmpty(item.getAttached()))
+					if(holder.imgOne != null && holder.animOne != null && StringUtils.isNotEmpty(item.getUri()))
 					{
 						Utils.showViewWithFade(holder.animOne, activity);
 						holder.animOne.setProgress(0);
 						holder.animOne.setProgress(20);
-						Picasso.with(activity).load(item.getAttached()).resize(100, 100).into(holder.imgOne, new Callback()
+						Picasso.with(activity).load(item.getUri()).resize(100, 100).into(holder.imgOne, new Callback()
 						{
 							@Override
 							public void onSuccess()
@@ -756,6 +756,39 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							{
 								Utils.hideViewWithFade(holder.animOne, activity);
 								Utils.showViewWithFade(holder.imgOne, activity);
+								//Reintentamos con el link de la imagen
+								Utils.showViewWithFade(holder.animOne, activity);
+								holder.animOne.setProgress(0);
+								holder.animOne.setProgress(20);
+								Picasso.with(activity).load(item.getAttached()).resize(100, 100).into(holder.imgOne, new Callback()
+								{
+									@Override
+									public void onSuccess()
+									{
+										holder.animOne.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+										holder.animOne.setProgress(100);
+										holder.animOne.startAnimation();
+										Utils.hideViewWithFade(holder.animOne, activity);
+										Utils.showViewWithFade(holder.imgOne, activity);
+										holder.imgOne.setOnClickListener(new View.OnClickListener()
+										{
+											@Override
+											public void onClick(View view)
+											{
+												Intent intent = new Intent(activity, GalleryActivity.class);
+												intent.putExtra(Common.KEY_ID, item.getMsgId());
+												activity.startActivity(intent);
+											}
+										});
+									}
+
+									@Override
+									public void onError()
+									{
+										Utils.hideViewWithFade(holder.animOne, activity);
+										Utils.showViewWithFade(holder.imgOne, activity);
+									}
+								});
 							}
 						});
 					}
@@ -769,7 +802,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 						holder.animOne.startAnimation();
 						holder.animTwo.setProgress(0);
 						holder.animTwo.setProgress(20);
-						Picasso.with(activity).load(item.getAttachedTwo()).resize(100, 100).into(holder.imgTwo, new Callback()
+						Picasso.with(activity).load(item.getUriTwo()).resize(100, 100).into(holder.imgTwo, new Callback()
 						{
 							@Override
 							public void onSuccess()
@@ -798,6 +831,45 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								Utils.hideViewWithFade(holder.animTwo, activity);
 								Utils.hideViewWithFade(holder.animOne, activity);
 								Utils.showViewWithFade(holder.imgTwo, activity);
+								//Reintentamos con el link de la imagen
+								Utils.showViewWithFade(holder.animOne, activity);
+								Utils.showViewWithFade(holder.animTwo, activity);
+								holder.animOne.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+								holder.animOne.setProgress(100);
+								holder.animOne.startAnimation();
+								holder.animTwo.setProgress(0);
+								holder.animTwo.setProgress(20);
+								Picasso.with(activity).load(item.getAttachedTwo()).resize(100, 100).into(holder.imgTwo, new Callback()
+								{
+									@Override
+									public void onSuccess()
+									{
+										holder.animTwo.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+										holder.animTwo.setProgress(100);
+										holder.animTwo.startAnimation();
+										Utils.hideViewWithFade(holder.animTwo, activity);
+										Utils.hideViewWithFade(holder.animOne, activity);
+										Utils.showViewWithFade(holder.imgTwo, activity);
+										holder.imgTwo.setOnClickListener(new View.OnClickListener()
+										{
+											@Override
+											public void onClick(View view)
+											{
+												Intent intent = new Intent(activity, GalleryActivity.class);
+												intent.putExtra(Common.KEY_ID, item.getMsgId());
+												activity.startActivity(intent);
+											}
+										});
+									}
+
+									@Override
+									public void onError()
+									{
+										Utils.hideViewWithFade(holder.animTwo, activity);
+										Utils.hideViewWithFade(holder.animOne, activity);
+										Utils.showViewWithFade(holder.imgTwo, activity);
+									}
+								});
 							}
 						});
 					}
@@ -815,8 +887,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 						holder.animTwo.startAnimation();
 						holder.animThree.setProgress(0);
 						holder.animThree.setProgress(20);
-
-						Picasso.with(activity).load(item.getAttachedThree()).resize(100, 100).into(holder.imgThree, new Callback()
+						Picasso.with(activity).load(item.getUriThree()).resize(100, 100).into(holder.imgThree, new Callback()
 						{
 							@Override
 							public void onSuccess()
@@ -847,6 +918,51 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								Utils.hideViewWithFade(holder.animTwo, activity);
 								Utils.hideViewWithFade(holder.animOne, activity);
 								Utils.showViewWithFade(holder.imgThree, activity);
+								//Reintentamos con el link de la imagen
+								Utils.showViewWithFade(holder.animOne, activity);
+								Utils.showViewWithFade(holder.animTwo, activity);
+								Utils.showViewWithFade(holder.animThree, activity);
+								holder.animOne.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+								holder.animOne.setProgress(100);
+								holder.animOne.startAnimation();
+								holder.animTwo.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+								holder.animTwo.setProgress(100);
+								holder.animTwo.startAnimation();
+								holder.animThree.setProgress(0);
+								holder.animThree.setProgress(20);
+								Picasso.with(activity).load(item.getAttachedThree()).resize(100, 100).into(holder.imgThree, new Callback()
+								{
+									@Override
+									public void onSuccess()
+									{
+										holder.animThree.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+										holder.animThree.setProgress(100);
+										holder.animThree.startAnimation();
+										Utils.hideViewWithFade(holder.animThree, activity);
+										Utils.hideViewWithFade(holder.animTwo, activity);
+										Utils.hideViewWithFade(holder.animOne, activity);
+										Utils.showViewWithFade(holder.imgThree, activity);
+										holder.imgThree.setOnClickListener(new View.OnClickListener()
+										{
+											@Override
+											public void onClick(View view)
+											{
+												Intent intent = new Intent(activity, GalleryActivity.class);
+												intent.putExtra(Common.KEY_ID, item.getMsgId());
+												activity.startActivity(intent);
+											}
+										});
+									}
+
+									@Override
+									public void onError()
+									{
+										Utils.hideViewWithFade(holder.animThree, activity);
+										Utils.hideViewWithFade(holder.animTwo, activity);
+										Utils.hideViewWithFade(holder.animOne, activity);
+										Utils.showViewWithFade(holder.imgThree, activity);
+									}
+								});
 							}
 						});
 					}

@@ -555,8 +555,41 @@ public class CardViewActivity extends AppCompatActivity
 						ByteArrayOutputStream baos	= new ByteArrayOutputStream();
 						bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 						mDownloadUrl				= null;
-						startService(	new Intent(this, MyUploadService.class).putExtra(MyUploadService.EXTRA_FILE_URI, tempUri).putExtra(Common.KEY_ID, msgId)
+						final Activity activity		= this;
+						realm.executeTransactionAsync(new Realm.Transaction()
+						{
+							@Override
+							public void execute(Realm bgRealm)
+							{
+								Message message	= bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+								//Actualizamos la uri primero para refrescar la vista mientras se sube la imagen
+								if(StringUtils.isNotEmpty(message.getUri()) && StringUtils.isNotEmpty(message.getUriTwo()))
+								{
+									message.setUriThree(tempUri.toString());
+								}
+								else
+								{
+									if(StringUtils.isNotEmpty(message.getUri()))
+									{
+										message.setUriTwo(tempUri.toString());
+									}
+									else
+									{
+										message.setUri(tempUri.toString());
+									}
+								}
+							}
+						}, new Realm.Transaction.OnSuccess()
+						{
+							@Override
+							public void onSuccess()
+							{
+								onUploadResultIntent(null);
+								activity.startService(new Intent(activity, MyUploadService.class).putExtra(MyUploadService.EXTRA_FILE_URI, tempUri).putExtra(Common.KEY_ID, msgId)
 										.setAction(MyUploadService.ACTION_UPLOAD));
+							}
+						});
 					}
 				}
 			}
@@ -571,8 +604,14 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			mDownloadUrl = intent.getParcelableExtra(MyUploadService.EXTRA_DOWNLOAD_URL);
-			tempUri = intent.getParcelableExtra(MyUploadService.EXTRA_FILE_URI);
+			System.out.println("onUploadResultIntent!");
+
+			if(intent != null)
+			{
+				mDownloadUrl	= intent.getParcelableExtra(MyUploadService.EXTRA_DOWNLOAD_URL);
+				tempUri			= intent.getParcelableExtra(MyUploadService.EXTRA_FILE_URI);
+			}
+
 			Intent intentRefresh = new Intent(this, CardViewActivity.class);
 			intentRefresh.putExtra(Common.KEY_ID, companyId);
 			startActivity(intentRefresh);

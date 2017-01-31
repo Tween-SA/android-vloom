@@ -56,6 +56,9 @@ public abstract class MessageHelper
 			System.out.println("Message - attached: " + message.getAttached());
 			System.out.println("Message - attachedTwo: " + message.getAttachedTwo());
 			System.out.println("Message - attachedThree: " + message.getAttachedThree());
+			System.out.println("Message - uri: " + message.getUri());
+			System.out.println("Message - uriTwo: " + message.getUriTwo());
+			System.out.println("Message - uriThree: " + message.getUriThree());
 		}
 		else
 		{
