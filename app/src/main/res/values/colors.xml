@@ -19,5 +19,9 @@
 	<color name="background_cards">#FAFAFA</color>
 	<color name="background_company">#EEEEEE</color>
 	<color name="background_receipt">#F3F3F3</color>
+	<color name="background_note">#FBF956</color>
+	<color name="background_note_header">#FFEA58</color>
+	<color name="text_note_header">#A96D30</color>
 	<color name="text">#ff303030</color>
+	<color name="photo">#FF2756</color>
 </resources>

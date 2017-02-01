@@ -39,16 +39,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 		public int				HolderId;
 		private RelativeLayout	rlClient;
 		private CircleImageView picture;
-		private TextView		title;
-		private TextView		subTitle;
-		private ImageView		count;
-		private ImageView		silence;
-		private TextView		rowTime;
-		private ImageView		bigSilence;
-		private ImageView		price;
-		private ImageView		bigPrice;
-		private ImageView		block;
-		private ImageView		bigBlock;
+		private TextView		title, subTitle, rowTime;
+		private ImageView		count, silence, bigSilence, price, bigPrice, block, bigBlock;
 
 		public ViewHolder(View view, int ViewType)
 		{

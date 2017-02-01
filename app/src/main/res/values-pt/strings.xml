@@ -36,6 +36,10 @@
 	<string name="enrich_addcommentheader">Adicionar comentário</string><!-- after traslate -->
 	<string name="enrich_commentheader">Editar comentário</string><!-- after traslate -->
 	<string name="enrich_commenthint">Escrever um comentário&#8230;</string><!-- after traslate -->
+	<string name="enrich_addnoteheader">Adicionar nota</string><!-- after traslate -->
+	<string name="enrich_noteheader">Editar nota</string><!-- after traslate -->
+	<string name="enrich_notehint">Escreva uma nota&#8230;</string><!-- after traslate -->
+	<string name="enrich_notetype">Nota pessoal</string><!-- after traslate -->
 	<string name="enrich_receipt">Fatura</string><!-- after traslate -->
 	<string name="enrich_save">SALVAR</string><!-- after traslate -->
 	<string name="error_upgrade">Estamos de volta e pedimos desculpas pelo inconveniente causado</string>
@@ -280,4 +284,9 @@
 		<item>Esvaziar mensagens</item>
 		<item>Cancelar assinatura</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>Compartilhar</item>
+		<item>Editar</item>
+		<item>Remover</item>
+	</string-array><!-- after traslate -->
 </resources>

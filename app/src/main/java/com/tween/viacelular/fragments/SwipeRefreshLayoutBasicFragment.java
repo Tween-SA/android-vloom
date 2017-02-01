@@ -63,7 +63,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 	private List<Suscription>	companies	= new ArrayList<>();
 	private CoordinatorLayout	clayout;
 	private HomeAdapter			adapter;
-	private HomeActivity		homeActivity;
+	private Activity			activity;
 	private RelativeLayout		rlEmpty;
 	private RelativeLayout		rlFreePass;
 
@@ -77,7 +77,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:onCreate - Exception:", e);
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:onCreate - Exception:", e);
 		}
 	}
 
@@ -118,7 +118,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:onCreateView - Exception:", e);
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:onCreateView - Exception:", e);
 		}
 
 		return view;
@@ -131,9 +131,9 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		{
 			super.onViewCreated(view, savedInstanceState);
 
-			if(homeActivity != null)
+			if(getHomeActivity() != null)
 			{
-				companies = SuscriptionHelper.getList(homeActivity);
+				companies = SuscriptionHelper.getList(getHomeActivity());
 			}
 
 			if(companies != null)
@@ -181,7 +181,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:onViewCreated - Exception:", e);
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:onViewCreated - Exception:", e);
 		}
 	}
 
@@ -215,7 +215,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:onOptionsItemSelected - Exception:", e);
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:onOptionsItemSelected - Exception:", e);
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -246,7 +246,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 				if(bringOut)
 				{
-					new RefreshCompanyTask(homeActivity, showDialog).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					new RefreshCompanyTask(getHomeActivity(), showDialog).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 				else
 				{
@@ -256,7 +256,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:initiateRefresh - Exception:", e);
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:initiateRefresh - Exception:", e);
 		}
 	}
 
@@ -280,7 +280,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:showMenu - Exception:", e);
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:showMenu - Exception:", e);
 		}
 	}
 
@@ -303,7 +303,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 							if(suscription.getLastSocialUpdated() != null)
 							{
 								//Solamente se pide una vez al día
-								if(DateUtils.needUpdate(suscription.getLastSocialUpdated(), DateUtils.DAY_MILLIS, homeActivity))
+								if(DateUtils.needUpdate(suscription.getLastSocialUpdated(), DateUtils.DAY_MILLIS, getHomeActivity()))
 								{
 									new GetTweetsAsyncTask(getActivity(), false, companyId).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 								}
@@ -347,7 +347,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:redirectCard - Exception:", e);
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:redirectCard - Exception:", e);
 		}
 	}
 
@@ -419,7 +419,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					//Modificación para ejecutar proceso en background
 					if(StringUtils.isNotEmpty(companyId))
 					{
-						MessageHelper.emptyCompany(companyId, Common.BOOL_YES, homeActivity);
+						MessageHelper.emptyCompany(companyId, Common.BOOL_YES, getHomeActivity());
 					}
 
 					snackBar = Snackbar.make(clayout, context.getString(R.string.snack_empty), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
@@ -430,7 +430,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 							//Modificación para ejecutar proceso en background
 							if(StringUtils.isNotEmpty(companyId))
 							{
-								MessageHelper.emptyCompany(companyId, Common.BOOL_NO, homeActivity);
+								MessageHelper.emptyCompany(companyId, Common.BOOL_NO, getHomeActivity());
 							}
 							refresh(false, false);
 						}
@@ -473,7 +473,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:dispatchMenu - Exception:", e);
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:dispatchMenu - Exception:", e);
 		}
 	}
 
@@ -492,7 +492,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:refresh - Exception:", e);
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:refresh - Exception:", e);
 		}
 	}
 
@@ -538,7 +538,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:initiateRefresh - Exception:", e);
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:initiateRefresh - Exception:", e);
 		}
 
 		mSwipeRefreshLayout.setRefreshing(false);
@@ -583,7 +583,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 				if(companyPhantom.size() > 0)
 				{
-					SharedPreferences preferences	= homeActivity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+					SharedPreferences preferences	= homeActivity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 					SharedPreferences.Editor editor	= preferences.edit();
 					User user						= realm.where(User.class).findFirst();
 					String country					= preferences.getString(Land.KEY_API, "");
@@ -610,7 +610,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 							{
 								Suscription client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(	message.getChannel(),
 																																							message.getMsg(),
-																																							homeActivity, country))
+																																							getHomeActivity(), country))
 														.findFirst();
 
 								if(client != null)
@@ -620,7 +620,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 									if(!companyId.equals(phantom.getCompanyId()) && StringUtils.isIdMongo(companyId))
 									{
 										//Actualizar los mensajes
-										MessageHelper.groupMessages(phantom.getCompanyId(), companyId, homeActivity);
+										MessageHelper.groupMessages(phantom.getCompanyId(), companyId, getHomeActivity());
 									}
 								}
 							}
@@ -630,7 +630,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			}
 			catch(Exception e)
 			{
-				Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:RefreshCompanyTask:doInBackground - Exception:", e);
+				Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:RefreshCompanyTask:doInBackground - Exception:", e);
 			}
 
 			return idsList;
@@ -647,7 +647,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			}
 			catch(Exception e)
 			{
-				Utils.logError(homeActivity, "SwipeRefreshLayoutBasicFragment:RefreshCompanyTask:onPostExecute - Exception:", e);
+				Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:RefreshCompanyTask:onPostExecute - Exception:", e);
 			}
 		}
 	}
@@ -662,13 +662,18 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		this.clayout = clayout;
 	}
 
-	public HomeActivity getHomeActivity()
+	public Activity getHomeActivity()
 	{
-		return homeActivity;
+		if(activity == null)
+		{
+			activity = getActivity();
+		}
+
+		return activity;
 	}
 
-	public void setHomeActivity(final HomeActivity homeActivity)
+	public void setHomeActivity(final Activity homeActivity)
 	{
-		this.homeActivity = homeActivity;
+		this.activity = homeActivity;
 	}
 }

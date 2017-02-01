@@ -25,7 +25,6 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
-import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -45,18 +44,12 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	private String				section								= "";
 	private String				color								= Common.COLOR_ACTION;
 	private LinearLayout		mTitleContainer;
-	private TextView			txtTitle;
+	private TextView			txtTitle, txtEmail, txtPhone, txtBigTitle, txtSubTitle, txtSubTitleCollapsed, txtAbout;
 	private Toolbar				toolBar;
-	private TextView			txtEmail;
-	private TextView			txtPhone;
 	private Context				context;
 	private CircleImageView		circleView;
 	private Button				btnSuscribe;
 	private ImageView			logo;
-	private TextView			txtBigTitle;
-	private TextView			txtSubTitle;
-	private TextView			txtSubTitleCollapsed;
-	private TextView			txtAbout;
 	private float				scale;
 
 	@Override
@@ -303,22 +296,10 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			//Agregado para replicar función de ir Cards como estaba en profile
 			if(suscription != null)
 			{
-				Realm realm		= Realm.getDefaultInstance();
-				long messages	= realm.where(Message.class).equalTo(Message.KEY_DELETED, Common.BOOL_NO).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
-									.equalTo(Suscription.KEY_API, suscription.getCompanyId()).count();
-
-				if(messages > 0)
-				{
-					dividerTitle.setVisibility(View.VISIBLE);
-					iconShowNotif.setVisibility(ImageView.VISIBLE);
-					txtShowNotif.setVisibility(TextView.VISIBLE);
-				}
-				else
-				{
-					dividerTitle.setVisibility(View.GONE);
-					iconShowNotif.setVisibility(ImageView.GONE);
-					txtShowNotif.setVisibility(TextView.GONE);
-				}
+				//Se deja siempre visible para ir a la pantalla cards
+				dividerTitle.setVisibility(View.VISIBLE);
+				iconShowNotif.setVisibility(ImageView.VISIBLE);
+				txtShowNotif.setVisibility(TextView.VISIBLE);
 
 				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()))
 				{

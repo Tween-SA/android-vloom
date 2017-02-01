@@ -18,7 +18,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -60,41 +59,17 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 	public static class ViewHolder extends RecyclerView.ViewHolder
 	{
 		public int					HolderId;
-		public ImageView			iconPrice;
-		public ImageView			iconSMS;
-		public TextView				rowTime;
-		public TextView				txtTitle;
-		public ImageView			ibOptions;
-		public TextView				txtContent;
+		public ImageView			iconPrice, iconSMS, ibOptions, iconDown, ivPicture, iconSocial, ivChain, iconComent, iconAttach, ivEdit;
+		public TextView				rowTime, txtTitle, txtContent, socialAccount, socialDate, txtComment, txtReceipt;
 		private View				dividerTitle;
-		private ImageView			iconDown;
-		private Button				btnDownload;
-		private ImageView			ivPicture;
-		private Button				btnView;
-		private Button				btnShare;
+		private Button				btnDownload, btnView, btnShare;
 		private RatingBar			ratingBar;
-		private ImageView			iconSocial;
-		private TextView			socialAccount;
-		private TextView			socialDate;
-		private ImageView			ivChain;
-		private ImageView			iconComent;
-		private ImageView			iconAttach;
 		private RelativeLayout		rlComment;
-		private TextView			txtComment;
-		private ImageView			ivEdit;
-		private CircleImageView		imgOne;
-		private CircleImageView		imgTwo;
-		private CircleImageView		imgThree;
-		private ProgressProfileView	animOne;
-		private ProgressProfileView	animTwo;
-		private ProgressProfileView	animThree;
+		private CircleImageView		imgOne, imgTwo, imgThree;
+		private ProgressProfileView	animOne, animTwo, animThree;
 		private CardView			cardReceipt;
 		private CircleImageView		circleReceipt;
-		private TextView			txtReceipt;
 		private FrameLayout			line;
-		private PopupWindow			mPopupWindow;
-		private RelativeLayout		rlItem;
-		private View				customView;
 
 		public ViewHolder(View itemView, int viewType)
 		{
@@ -166,6 +141,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					animOne		= (ProgressProfileView) itemView.findViewById(R.id.animOne);
 					animTwo		= (ProgressProfileView) itemView.findViewById(R.id.animTwo);
 					animThree	= (ProgressProfileView) itemView.findViewById(R.id.animThree);
+					cardReceipt	= (CardView) itemView.findViewById(R.id.cardView);
 				break;
 			}
 		}
@@ -232,6 +208,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card_social_image, parent, false);
 				break;
 
+				case Message.KIND_NOTE:
+					view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_note, parent, false);
+				break;
+
 				default:
 					view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent, false);
 				break;
@@ -261,13 +241,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 				{
 					final String id = item.getMsgId();
 
-					if(position == 0)
+					if(holder.line != null)
 					{
-						holder.line.setVisibility(FrameLayout.VISIBLE);
-					}
-					else
-					{
-						holder.line.setVisibility(FrameLayout.GONE);
+						if(position == 0)
+						{
+							holder.line.setVisibility(FrameLayout.VISIBLE);
+						}
+						else
+						{
+							holder.line.setVisibility(FrameLayout.GONE);
+						}
 					}
 
 					//Agregado para prevenir companies sin color
@@ -481,7 +464,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 					if(item.getKind() == Message.KIND_TWITTER)
 					{
-						holder.socialAccount.setText(item.getSocialAccount());
+						//Redesign by me for social's cards
+						String time				= DateUtils.getTimeFromTs(item.getCreated(), activity.getApplicationContext());
+						String socialAccount	= item.getSocialAccount();
+
+						if(StringUtils.isNotEmpty(time))
+						{
+							socialAccount += " - "+time;
+						}
+
+						holder.socialAccount.setText(socialAccount);
 						holder.socialDate.setText(item.getSocialDate());
 						holder.txtContent.setOnClickListener(new View.OnClickListener()
 						{
@@ -667,7 +659,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 					if(holder.iconAttach != null)
 					{
-						if(StringUtils.isNotEmpty(item.getAttached()) && StringUtils.isNotEmpty(item.getAttachedTwo()) && StringUtils.isNotEmpty(item.getAttachedThree()))
+						if(StringUtils.isNotEmpty(item.getUri()) && StringUtils.isNotEmpty(item.getUriTwo()) && StringUtils.isNotEmpty(item.getUriThree()))
 						{
 							holder.iconAttach.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.photo_disabled));
 							holder.iconAttach.setOnClickListener(new View.OnClickListener()
@@ -686,7 +678,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								@Override
 								public void onClick(final View v)
 								{
-									if(StringUtils.isNotEmpty(item.getAttached()) && StringUtils.isNotEmpty(item.getAttachedTwo()) && StringUtils.isNotEmpty(item.getAttachedThree()))
+									if(StringUtils.isNotEmpty(item.getUri()) && StringUtils.isNotEmpty(item.getUriTwo()) && StringUtils.isNotEmpty(item.getUriThree()))
 									{
 										Toast.makeText(activity, activity.getString(R.string.attach_limit), Toast.LENGTH_SHORT).show();
 										holder.iconAttach.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.photo_disabled));
@@ -707,12 +699,12 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 						}
 					}
 
-					if(holder.imgOne != null && holder.animOne != null && StringUtils.isNotEmpty(item.getAttached()))
+					if(holder.imgOne != null && holder.animOne != null && StringUtils.isNotEmpty(item.getUri()))
 					{
 						Utils.showViewWithFade(holder.animOne, activity);
 						holder.animOne.setProgress(0);
 						holder.animOne.setProgress(20);
-						Picasso.with(activity).load(item.getAttached()).resize(100, 100).into(holder.imgOne, new Callback()
+						Picasso.with(activity).load(item.getUri()).resize(100, 100).into(holder.imgOne, new Callback()
 						{
 							@Override
 							public void onSuccess()
@@ -739,6 +731,39 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							{
 								Utils.hideViewWithFade(holder.animOne, activity);
 								Utils.showViewWithFade(holder.imgOne, activity);
+								//Reintentamos con el link de la imagen
+								Utils.showViewWithFade(holder.animOne, activity);
+								holder.animOne.setProgress(0);
+								holder.animOne.setProgress(20);
+								Picasso.with(activity).load(item.getAttached()).resize(100, 100).into(holder.imgOne, new Callback()
+								{
+									@Override
+									public void onSuccess()
+									{
+										holder.animOne.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+										holder.animOne.setProgress(100);
+										holder.animOne.startAnimation();
+										Utils.hideViewWithFade(holder.animOne, activity);
+										Utils.showViewWithFade(holder.imgOne, activity);
+										holder.imgOne.setOnClickListener(new View.OnClickListener()
+										{
+											@Override
+											public void onClick(View view)
+											{
+												Intent intent = new Intent(activity, GalleryActivity.class);
+												intent.putExtra(Common.KEY_ID, item.getMsgId());
+												activity.startActivity(intent);
+											}
+										});
+									}
+
+									@Override
+									public void onError()
+									{
+										Utils.hideViewWithFade(holder.animOne, activity);
+										Utils.showViewWithFade(holder.imgOne, activity);
+									}
+								});
 							}
 						});
 					}
@@ -752,7 +777,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 						holder.animOne.startAnimation();
 						holder.animTwo.setProgress(0);
 						holder.animTwo.setProgress(20);
-						Picasso.with(activity).load(item.getAttachedTwo()).resize(100, 100).into(holder.imgTwo, new Callback()
+						Picasso.with(activity).load(item.getUriTwo()).resize(100, 100).into(holder.imgTwo, new Callback()
 						{
 							@Override
 							public void onSuccess()
@@ -781,6 +806,45 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								Utils.hideViewWithFade(holder.animTwo, activity);
 								Utils.hideViewWithFade(holder.animOne, activity);
 								Utils.showViewWithFade(holder.imgTwo, activity);
+								//Reintentamos con el link de la imagen
+								Utils.showViewWithFade(holder.animOne, activity);
+								Utils.showViewWithFade(holder.animTwo, activity);
+								holder.animOne.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+								holder.animOne.setProgress(100);
+								holder.animOne.startAnimation();
+								holder.animTwo.setProgress(0);
+								holder.animTwo.setProgress(20);
+								Picasso.with(activity).load(item.getAttachedTwo()).resize(100, 100).into(holder.imgTwo, new Callback()
+								{
+									@Override
+									public void onSuccess()
+									{
+										holder.animTwo.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+										holder.animTwo.setProgress(100);
+										holder.animTwo.startAnimation();
+										Utils.hideViewWithFade(holder.animTwo, activity);
+										Utils.hideViewWithFade(holder.animOne, activity);
+										Utils.showViewWithFade(holder.imgTwo, activity);
+										holder.imgTwo.setOnClickListener(new View.OnClickListener()
+										{
+											@Override
+											public void onClick(View view)
+											{
+												Intent intent = new Intent(activity, GalleryActivity.class);
+												intent.putExtra(Common.KEY_ID, item.getMsgId());
+												activity.startActivity(intent);
+											}
+										});
+									}
+
+									@Override
+									public void onError()
+									{
+										Utils.hideViewWithFade(holder.animTwo, activity);
+										Utils.hideViewWithFade(holder.animOne, activity);
+										Utils.showViewWithFade(holder.imgTwo, activity);
+									}
+								});
 							}
 						});
 					}
@@ -798,8 +862,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 						holder.animTwo.startAnimation();
 						holder.animThree.setProgress(0);
 						holder.animThree.setProgress(20);
-
-						Picasso.with(activity).load(item.getAttachedThree()).resize(100, 100).into(holder.imgThree, new Callback()
+						Picasso.with(activity).load(item.getUriThree()).resize(100, 100).into(holder.imgThree, new Callback()
 						{
 							@Override
 							public void onSuccess()
@@ -830,6 +893,51 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								Utils.hideViewWithFade(holder.animTwo, activity);
 								Utils.hideViewWithFade(holder.animOne, activity);
 								Utils.showViewWithFade(holder.imgThree, activity);
+								//Reintentamos con el link de la imagen
+								Utils.showViewWithFade(holder.animOne, activity);
+								Utils.showViewWithFade(holder.animTwo, activity);
+								Utils.showViewWithFade(holder.animThree, activity);
+								holder.animOne.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+								holder.animOne.setProgress(100);
+								holder.animOne.startAnimation();
+								holder.animTwo.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+								holder.animTwo.setProgress(100);
+								holder.animTwo.startAnimation();
+								holder.animThree.setProgress(0);
+								holder.animThree.setProgress(20);
+								Picasso.with(activity).load(item.getAttachedThree()).resize(100, 100).into(holder.imgThree, new Callback()
+								{
+									@Override
+									public void onSuccess()
+									{
+										holder.animThree.getAnimator().setInterpolator(new AccelerateDecelerateInterpolator());
+										holder.animThree.setProgress(100);
+										holder.animThree.startAnimation();
+										Utils.hideViewWithFade(holder.animThree, activity);
+										Utils.hideViewWithFade(holder.animTwo, activity);
+										Utils.hideViewWithFade(holder.animOne, activity);
+										Utils.showViewWithFade(holder.imgThree, activity);
+										holder.imgThree.setOnClickListener(new View.OnClickListener()
+										{
+											@Override
+											public void onClick(View view)
+											{
+												Intent intent = new Intent(activity, GalleryActivity.class);
+												intent.putExtra(Common.KEY_ID, item.getMsgId());
+												activity.startActivity(intent);
+											}
+										});
+									}
+
+									@Override
+									public void onError()
+									{
+										Utils.hideViewWithFade(holder.animThree, activity);
+										Utils.hideViewWithFade(holder.animTwo, activity);
+										Utils.hideViewWithFade(holder.animOne, activity);
+										Utils.showViewWithFade(holder.imgThree, activity);
+									}
+								});
 							}
 						});
 					}
@@ -847,7 +955,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					}
 
 					//Nueva card para recepción de facturas
-					if(holder.cardReceipt != null)
+					if(holder.cardReceipt != null && item.getKind() == Message.KIND_INVOICE)
 					{
 						holder.cardReceipt.setOnClickListener(new View.OnClickListener()
 						{
@@ -880,6 +988,22 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 									holder.txtReceipt.setTextColor(Color.parseColor(Common.COLOR_ACTION));
 								}
 							}
+						}
+					}
+					else
+					{
+						//Para nuevo editar con longpress para las notas
+						if(holder.cardReceipt != null && item.getKind() == Message.KIND_NOTE)
+						{
+							holder.cardReceipt.setOnLongClickListener(new View.OnLongClickListener()
+							{
+								@Override
+								public boolean onLongClick(View view)
+								{
+									activity.onCreateNote(item.getMsgId());
+									return false;
+								}
+							});
 						}
 					}
 				}

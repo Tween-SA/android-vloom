@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
@@ -26,6 +27,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.transition.Explode;
 import android.view.Menu;
@@ -35,6 +37,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -79,26 +83,23 @@ public class CardViewActivity extends AppCompatActivity
 	private RealmResults<Message>	notifications	= null;
 	private int						colorTitle		= Color.WHITE;
 	private int						colorSubTitle	= Color.LTGRAY;
-	private String					msgId			= "";
+	public String					msgId			= "";
 	private Uri						mDownloadUrl	= null;
+	private Boolean					isFabOpen		= false;
 	private RecyclerView			rcwCard;
 	private CardAdapter				mAdapter;
 	private CoordinatorLayout		Clayout;
-	private CardView				cardPayout;
-	private CardView				cardSuscribe;
-	private CardView				cardForm;
-	private CardView				cardOk;
-	private CardView				cardRetry;
+	private CardView				cardPayout, cardSuscribe, cardForm, cardOk, cardRetry;
 	private RelativeLayout			rlEmpty;
 	private EditText				editCode;
 	private TextInputLayout			inputCode;
 	private int						originalSoftInputMode;
 	private Button					btnContinueForm;
-	private TextView				txtSubTitleForm;
+	private FloatingActionButton	fabOpen,fabNote,fabPhoto;
+	private Animation				animOpen, animClose, animRotateForward, animRotateBackward;
+	private TextView				txtSubTitleForm, txtTitle, txtSubTitleCollapsed;
 	private String					companyId;
 	private Toolbar					toolBar;
-	private TextView				txtTitle;
-	private TextView				txtSubTitleCollapsed;
 	private Uri						tempUri;
 	private BroadcastReceiver		mBroadcastReceiver;
 	private FirebaseAuth			mAuth;
@@ -136,6 +137,13 @@ public class CardViewActivity extends AppCompatActivity
 			ImageView circleView						= (ImageView) findViewById(R.id.circleView);
 			txtTitle									= (TextView) findViewById(R.id.txtTitle);
 			txtSubTitleCollapsed						= (TextView) findViewById(R.id.txtSubTitleCollapsed);
+			fabOpen										= (FloatingActionButton) findViewById(R.id.fabOpen);
+			fabNote										= (FloatingActionButton) findViewById(R.id.fabNote);
+			fabPhoto									= (FloatingActionButton) findViewById(R.id.fabPhoto);
+			animOpen									= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+			animClose									= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+			animRotateForward							= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_forward);
+			animRotateBackward							= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
 			rcwCard.setHasFixedSize(true);
 			RecyclerView.LayoutManager mLayoutManager	= new LinearLayoutManager(this);
 			rcwCard.setLayoutManager(mLayoutManager);
@@ -169,7 +177,6 @@ public class CardViewActivity extends AppCompatActivity
 
 				if(intentRecive != null)
 				{
-					System.out.println("Intent CArd extras: "+intentRecive.getExtras().toString());
 					//Modificaciones para migrar entidad Company completa a Realm
 					companyId	= intentRecive.getStringExtra(Common.KEY_ID);
 					suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
@@ -368,6 +375,158 @@ public class CardViewActivity extends AppCompatActivity
 		}
 	}
 
+	public void onCreateNote(final String msgId)
+	{
+		try
+		{
+			final Activity activity	= this;
+			String txtNote			= "";
+
+			if(StringUtils.isNotEmpty(msgId))
+			{
+				final Realm realm	= Realm.getDefaultInstance();
+				Message message		= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+				if(message != null)
+				{
+					txtNote = message.getMsg();
+					new MaterialDialog.Builder(this).title(getString(R.string.enrich_noteheader)).inputType(InputType.TYPE_CLASS_TEXT)
+						.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+						.input(getString(R.string.enrich_notehint), txtNote, new MaterialDialog.InputCallback()
+						{
+							@Override
+							public void onInput(MaterialDialog dialog, CharSequence input)
+							{
+								if(input != null)
+								{
+									if(input != "")
+									{
+										final String comment = input.toString();
+
+										if(StringUtils.isNotEmpty(comment))
+										{
+											final Realm realm = Realm.getDefaultInstance();
+											realm.executeTransactionAsync(new Realm.Transaction()
+											{
+												@Override
+												public void execute(Realm bgRealm)
+												{
+													Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+													message.setMsg(comment);
+													message.setCreated(System.currentTimeMillis());
+												}
+											}, new Realm.Transaction.OnSuccess()
+											{
+												@Override
+												public void onSuccess()
+												{
+													refresh(false);
+												}
+											});
+											realm.close();
+										}
+									}
+								}
+							}
+						}).show();
+				}
+
+				realm.close();
+			}
+			else
+			{
+				new MaterialDialog.Builder(this).title(getString(R.string.enrich_addnoteheader)).inputType(InputType.TYPE_CLASS_TEXT)
+					.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+					.input(getString(R.string.enrich_notehint), txtNote, new MaterialDialog.InputCallback()
+					{
+						@Override
+						public void onInput(MaterialDialog dialog, CharSequence input)
+						{
+							if(input != null)
+							{
+								if(input != "")
+								{
+									final String comment = input.toString();
+
+									if(StringUtils.isNotEmpty(comment))
+									{
+										final Realm realm = Realm.getDefaultInstance();
+										realm.executeTransactionAsync(new Realm.Transaction()
+										{
+											@Override
+											public void execute(Realm bgRealm)
+											{
+												bgRealm.copyToRealmOrUpdate(MessageHelper.getNewNote(comment, companyId, activity));
+											}
+										}, new Realm.Transaction.OnSuccess()
+										{
+											@Override
+											public void onSuccess()
+											{
+												refresh(false);
+											}
+										});
+										realm.close();
+									}
+								}
+							}
+						}
+					}).show();
+			}
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":onCreateNote - Exception:", e);
+		}
+	}
+
+	public void createNoteWithPhoto(View view)
+	{
+		try
+		{
+			callCamera(null);
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":createNoteWithPhoto - Exception:", e);
+		}
+	}
+
+	public void createNote(View view)
+	{
+		try
+		{
+			animateFab(view);
+			onCreateNote(null);
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":createNote - Exception:", e);
+		}
+	}
+
+	public void animateFab(View view)
+	{
+		if(isFabOpen)
+		{
+			fabOpen.startAnimation(animRotateBackward);
+			fabNote.startAnimation(animClose);
+			fabPhoto.startAnimation(animClose);
+			fabNote.setClickable(false);
+			fabPhoto.setClickable(false);
+			isFabOpen = false;
+		}
+		else
+		{
+			fabOpen.startAnimation(animRotateForward);
+			fabNote.startAnimation(animOpen);
+			fabPhoto.startAnimation(animOpen);
+			fabNote.setClickable(true);
+			fabPhoto.setClickable(true);
+			isFabOpen = true;
+		}
+	}
+
 	public void attach(String id)
 	{
 		try
@@ -401,8 +560,17 @@ public class CardViewActivity extends AppCompatActivity
 			msgId				= id;
 			Intent cameraIntent	= new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 			File out			= Environment.getExternalStorageDirectory();
-			out					= new File(out, msgId);
-			tempUri				= Uri.fromFile(out);
+
+			if(StringUtils.isNotEmpty(id))
+			{
+				out = new File(out, id);
+			}
+			else
+			{
+				out = new File(out, String.valueOf(System.currentTimeMillis()));
+			}
+
+			tempUri = Uri.fromFile(out);
 			cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
 			startActivityForResult(cameraIntent, 0);
 		}
@@ -430,17 +598,77 @@ public class CardViewActivity extends AppCompatActivity
 
 				if(bitmap != null)
 				{
-					Realm realm		= Realm.getDefaultInstance();
-					Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+					Realm realm					= Realm.getDefaultInstance();
+					final Activity activity		= this;
+					ByteArrayOutputStream baos	= new ByteArrayOutputStream();
+					bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+					mDownloadUrl				= null;
 
-					if(message != null)
+					if(StringUtils.isNotEmpty(msgId))
 					{
-						ByteArrayOutputStream baos	= new ByteArrayOutputStream();
-						bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-						mDownloadUrl				= null;
-						startService(	new Intent(this, MyUploadService.class).putExtra(MyUploadService.EXTRA_FILE_URI, tempUri).putExtra(Common.KEY_ID, msgId)
-										.setAction(MyUploadService.ACTION_UPLOAD));
+						Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+						if(message != null)
+						{
+							realm.executeTransactionAsync(new Realm.Transaction()
+							{
+								@Override
+								public void execute(Realm bgRealm)
+								{
+									Message message	= bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+									//Actualizamos la uri primero para refrescar la vista mientras se sube la imagen
+									if(StringUtils.isNotEmpty(message.getUri()) && StringUtils.isNotEmpty(message.getUriTwo()))
+									{
+										message.setUriThree(tempUri.toString());
+									}
+									else
+									{
+										if(StringUtils.isNotEmpty(message.getUri()))
+										{
+											message.setUriTwo(tempUri.toString());
+										}
+										else
+										{
+											message.setUri(tempUri.toString());
+										}
+									}
+								}
+							}, new Realm.Transaction.OnSuccess()
+							{
+								@Override
+								public void onSuccess()
+								{
+									onUploadResultIntent(null);
+									activity.startService(new Intent(activity, MyUploadService.class).putExtra(MyUploadService.EXTRA_FILE_URI, tempUri).putExtra(Common.KEY_ID, msgId)
+											.setAction(MyUploadService.ACTION_UPLOAD));
+								}
+							});
+						}
 					}
+					else
+					{
+						//Se trata de una nota con imagen
+						realm.executeTransactionAsync(new Realm.Transaction()
+						{
+							@Override
+							public void execute(Realm bgRealm)
+							{
+								Message message = MessageHelper.getNewNote("", companyId, activity);
+								message.setUri(tempUri.toString());
+								bgRealm.copyToRealmOrUpdate(message);
+							}
+						}, new Realm.Transaction.OnSuccess()
+						{
+							@Override
+							public void onSuccess()
+							{
+								onUploadResultIntent(null);
+							}
+						});
+					}
+
+					realm.close();
 				}
 			}
 		}
@@ -454,8 +682,12 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			mDownloadUrl = intent.getParcelableExtra(MyUploadService.EXTRA_DOWNLOAD_URL);
-			tempUri = intent.getParcelableExtra(MyUploadService.EXTRA_FILE_URI);
+			if(intent != null)
+			{
+				mDownloadUrl	= intent.getParcelableExtra(MyUploadService.EXTRA_DOWNLOAD_URL);
+				tempUri			= intent.getParcelableExtra(MyUploadService.EXTRA_FILE_URI);
+			}
+
 			Intent intentRefresh = new Intent(this, CardViewActivity.class);
 			intentRefresh.putExtra(Common.KEY_ID, companyId);
 			startActivity(intentRefresh);
@@ -572,15 +804,22 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			int items = R.array.optionsCard;
-			Realm realm = Realm.getDefaultInstance();
-			Message message = realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+			int items		= R.array.optionsCard;
+			Realm realm		= Realm.getDefaultInstance();
+			Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
 
 			if(message != null)
 			{
 				if(message.getKind() == Message.KIND_TWITTER)
 				{
 					items = R.array.optionsCardSocial;
+				}
+				else
+				{
+					if(message.getKind() == Message.KIND_NOTE)
+					{
+						items = R.array.optionsNote;
+					}
 				}
 			}
 
@@ -720,37 +959,45 @@ public class CardViewActivity extends AppCompatActivity
 				break;
 
 				case CardAdapter.OPTION_BLOCK:
-					//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
-					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
-																									.setLabel("Accion_user").build());
-					realm.executeTransaction(new Realm.Transaction()
+					//Diferenciamos si se trata de una nota para ir al editar
+					if(notification.getKind() == Message.KIND_NOTE)
 					{
-						@Override
-						public void execute(Realm realm)
-						{
-							notification.setStatus(Message.STATUS_SPAM);
-						}
-					});
-					new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_SPAM, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-					snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
+						onCreateNote(notification.getMsgId());
+					}
+					else
 					{
-						@Override
-						public void onClick(View v)
+						//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
+						GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
+								.setLabel("Accion_user").build());
+						realm.executeTransaction(new Realm.Transaction()
 						{
-							Realm realm = Realm.getDefaultInstance();
-							realm.executeTransaction(new Realm.Transaction()
+							@Override
+							public void execute(Realm realm)
 							{
-								@Override
-								public void execute(Realm realm)
+								notification.setStatus(Message.STATUS_SPAM);
+							}
+						});
+						new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_SPAM, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+						snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
+						{
+							@Override
+							public void onClick(View v)
+							{
+								Realm realm = Realm.getDefaultInstance();
+								realm.executeTransaction(new Realm.Transaction()
 								{
-									notification.setStatus(Message.STATUS_READ);
-								}
-							});
-							refresh(false);
-							new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-						}
-					});
+									@Override
+									public void execute(Realm realm)
+									{
+										notification.setStatus(Message.STATUS_READ);
+									}
+								});
+								refresh(false);
+								new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+							}
+						});
+					}
 				break;
 
 				case CardAdapter.OPTION_DISMISS:

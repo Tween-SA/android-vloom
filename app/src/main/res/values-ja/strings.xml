@@ -36,6 +36,10 @@
 	<string name="enrich_addcommentheader">コメントを追加します</string><!-- after traslate -->
 	<string name="enrich_commentheader">コメントを編集</string><!-- after traslate -->
 	<string name="enrich_commenthint">コメントを書きます&#8230;</string><!-- after traslate -->
+	<string name="enrich_addnoteheader">メモを追加</string><!-- after traslate -->
+	<string name="enrich_noteheader">編集メモ</string><!-- after traslate -->
+	<string name="enrich_notehint">メモを書きます&#8230;</string><!-- after traslate -->
+	<string name="enrich_notetype">真筆</string><!-- after traslate -->
 	<string name="enrich_receipt">請求書</string><!-- after traslate -->
 	<string name="enrich_save">セーブ</string><!-- after traslate -->
 	<string name="error_upgrade">バックアップ中です。ご不便をおかけしております。</string>
@@ -280,4 +284,9 @@
 		<item>メッセージを空にする</item>
 		<item>登録解除</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>共有</item>
+		<item>編集</item>
+		<item>削除</item>
+	</string-array><!-- after traslate -->
 </resources>

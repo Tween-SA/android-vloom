@@ -106,7 +106,7 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 								message.setCompanyId(suscription.getCompanyId());
 								message.setChannel(suscription.getName());
 								message.setType(context.getString(R.string.social_high));
-								message.setStatus(Message.STATUS_RECEIVE);
+								message.setStatus(Message.STATUS_READ);
 								message.setPhone(preferences.getString(User.KEY_PHONE, ""));
 								message.setCountryCode(preferences.getString(Land.KEY_API, ""));
 								message.setFlags(Message.FLAGS_PUSH);

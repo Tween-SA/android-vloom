@@ -45,8 +45,7 @@ import io.realm.RealmResults;
 
 public class PhoneActivity extends AppCompatActivity
 {
-	private Button			btnCountry;
-	private Button			btnContinue;
+	private Button			btnCountry, btnContinue;
 	private TextView		inputCountry;
 	private EditText		editPhone;
 	private TextInputLayout	inputPhone;
@@ -115,6 +114,7 @@ public class PhoneActivity extends AppCompatActivity
 						return false;
 					}
 				});
+				preSelectCountry();
 			}
 		}
 		catch(Exception e)
@@ -414,9 +414,26 @@ public class PhoneActivity extends AppCompatActivity
 			Window window			= getWindow();
 			originalSoftInputMode	= window.getAttributes().softInputMode;
 			window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+			preSelectCountry();
 
+			//Agregado para medición de descargas por Facebook
+			if(!Common.DEBUG)
+			{
+				FacebookSdk.sdkInitialize(getApplicationContext());
+			}
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
+		}
+	}
+
+	public void preSelectCountry()
+	{
+		try
+		{
 			//Se movío este código aquí para ejectuarse al efectuar back desde CodeActivity y al reingresar a esta activity
-			SharedPreferences preferences	= getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			SharedPreferences preferences	= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 
 			//Preselección de Country en base a la api IP
 			Realm realm			= Realm.getDefaultInstance();
@@ -518,20 +535,14 @@ public class PhoneActivity extends AppCompatActivity
 			}
 
 			if(	StringUtils.isNotEmpty(preferences.getString(User.KEY_PHONE, "")) && StringUtils.isNotEmpty(inputCountry.getText().toString()) &&
-				StringUtils.isEmpty(editPhone.getText().toString()))
+					StringUtils.isEmpty(editPhone.getText().toString()))
 			{
 				editPhone.setText(preferences.getString(User.KEY_PHONE, "").replace("+", "").substring(inputCountry.getText().toString().replace("+", "").length()));
-			}
-
-			//Agregado para medición de descargas por Facebook
-			if(!Common.DEBUG)
-			{
-				FacebookSdk.sdkInitialize(getApplicationContext());
 			}
 		}
 		catch(Exception e)
 		{
-			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
+			Utils.logError(this, getLocalClassName()+":preSelectCountry - Exception:", e);
 		}
 	}
 

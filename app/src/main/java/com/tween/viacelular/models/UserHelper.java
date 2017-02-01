@@ -441,7 +441,7 @@ public abstract class UserHelper
 		{
 			this.added		= added;
 			this.removed	= removed;
-			this.context    = context;
+			this.context	= context;
 		}
 
 		public void start()
