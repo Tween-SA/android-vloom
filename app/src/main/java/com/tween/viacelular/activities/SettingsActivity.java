@@ -54,8 +54,7 @@ import io.realm.RealmResults;
 
 public class SettingsActivity extends AppCompatActivity
 {
-	private CheckBox			chkSilence;
-	private CheckBox			chkStatistics;
+	private CheckBox			chkSilence, chkStatistics;
 	public boolean				silenced		= false;
 	public boolean				sendStatistics	= false;
 	public Timer				timer;

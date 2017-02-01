@@ -23,4 +23,5 @@
 	<color name="background_note_header">#FFEA58</color>
 	<color name="text_note_header">#A96D30</color>
 	<color name="text">#ff303030</color>
+	<color name="photo">#FF2756</color>
 </resources>

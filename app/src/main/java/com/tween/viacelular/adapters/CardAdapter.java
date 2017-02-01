@@ -18,7 +18,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -60,41 +59,17 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 	public static class ViewHolder extends RecyclerView.ViewHolder
 	{
 		public int					HolderId;
-		public ImageView			iconPrice;
-		public ImageView			iconSMS;
-		public TextView				rowTime;
-		public TextView				txtTitle;
-		public ImageView			ibOptions;
-		public TextView				txtContent;
+		public ImageView			iconPrice, iconSMS, ibOptions, iconDown, ivPicture, iconSocial, ivChain, iconComent, iconAttach, ivEdit;
+		public TextView				rowTime, txtTitle, txtContent, socialAccount, socialDate, txtComment, txtReceipt;
 		private View				dividerTitle;
-		private ImageView			iconDown;
-		private Button				btnDownload;
-		private ImageView			ivPicture;
-		private Button				btnView;
-		private Button				btnShare;
+		private Button				btnDownload, btnView, btnShare;
 		private RatingBar			ratingBar;
-		private ImageView			iconSocial;
-		private TextView			socialAccount;
-		private TextView			socialDate;
-		private ImageView			ivChain;
-		private ImageView			iconComent;
-		private ImageView			iconAttach;
 		private RelativeLayout		rlComment;
-		private TextView			txtComment;
-		private ImageView			ivEdit;
-		private CircleImageView		imgOne;
-		private CircleImageView		imgTwo;
-		private CircleImageView		imgThree;
-		private ProgressProfileView	animOne;
-		private ProgressProfileView	animTwo;
-		private ProgressProfileView	animThree;
+		private CircleImageView		imgOne, imgTwo, imgThree;
+		private ProgressProfileView	animOne, animTwo, animThree;
 		private CardView			cardReceipt;
 		private CircleImageView		circleReceipt;
-		private TextView			txtReceipt;
 		private FrameLayout			line;
-		private PopupWindow			mPopupWindow;
-		private RelativeLayout		rlItem;
-		private View				customView;
 
 		public ViewHolder(View itemView, int viewType)
 		{

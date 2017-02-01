@@ -45,8 +45,7 @@ import io.realm.RealmResults;
 
 public class VerifyPhoneActivity extends AppCompatActivity
 {
-	private Button			btnCountry;
-	private Button			btnContinue;
+	private Button			btnCountry, btnContinue;
 	private TextView		inputCountry;
 	private EditText		editPhone;
 	private TextInputLayout	inputPhone;

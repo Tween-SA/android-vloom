@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
@@ -36,6 +37,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -82,24 +85,21 @@ public class CardViewActivity extends AppCompatActivity
 	private int						colorSubTitle	= Color.LTGRAY;
 	public String					msgId			= "";
 	private Uri						mDownloadUrl	= null;
+	private Boolean					isFabOpen		= false;
 	private RecyclerView			rcwCard;
 	private CardAdapter				mAdapter;
 	private CoordinatorLayout		Clayout;
-	private CardView				cardPayout;
-	private CardView				cardSuscribe;
-	private CardView				cardForm;
-	private CardView				cardOk;
-	private CardView				cardRetry;
+	private CardView				cardPayout, cardSuscribe, cardForm, cardOk, cardRetry;
 	private RelativeLayout			rlEmpty;
 	private EditText				editCode;
 	private TextInputLayout			inputCode;
 	private int						originalSoftInputMode;
 	private Button					btnContinueForm;
-	private TextView				txtSubTitleForm;
+	private FloatingActionButton	fabOpen,fabNote,fabPhoto;
+	private Animation				animOpen, animClose, animRotateForward, animRotateBackward;
+	private TextView				txtSubTitleForm, txtTitle, txtSubTitleCollapsed;
 	private String					companyId;
 	private Toolbar					toolBar;
-	private TextView				txtTitle;
-	private TextView				txtSubTitleCollapsed;
 	private Uri						tempUri;
 	private BroadcastReceiver		mBroadcastReceiver;
 	private FirebaseAuth			mAuth;
@@ -137,6 +137,13 @@ public class CardViewActivity extends AppCompatActivity
 			ImageView circleView						= (ImageView) findViewById(R.id.circleView);
 			txtTitle									= (TextView) findViewById(R.id.txtTitle);
 			txtSubTitleCollapsed						= (TextView) findViewById(R.id.txtSubTitleCollapsed);
+			fabOpen										= (FloatingActionButton) findViewById(R.id.fabOpen);
+			fabNote										= (FloatingActionButton) findViewById(R.id.fabNote);
+			fabPhoto									= (FloatingActionButton) findViewById(R.id.fabPhoto);
+			animOpen									= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+			animClose									= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+			animRotateForward							= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_forward);
+			animRotateBackward							= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
 			rcwCard.setHasFixedSize(true);
 			RecyclerView.LayoutManager mLayoutManager	= new LinearLayoutManager(this);
 			rcwCard.setLayoutManager(mLayoutManager);
@@ -473,15 +480,50 @@ public class CardViewActivity extends AppCompatActivity
 		}
 	}
 
+	public void createNoteWithPhoto(View view)
+	{
+		try
+		{
+			callCamera(null);
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":createNoteWithPhoto - Exception:", e);
+		}
+	}
+
 	public void createNote(View view)
 	{
 		try
 		{
+			animateFab(view);
 			onCreateNote(null);
 		}
 		catch(Exception e)
 		{
 			Utils.logError(this, getLocalClassName()+":createNote - Exception:", e);
+		}
+	}
+
+	public void animateFab(View view)
+	{
+		if(isFabOpen)
+		{
+			fabOpen.startAnimation(animRotateBackward);
+			fabNote.startAnimation(animClose);
+			fabPhoto.startAnimation(animClose);
+			fabNote.setClickable(false);
+			fabPhoto.setClickable(false);
+			isFabOpen = false;
+		}
+		else
+		{
+			fabOpen.startAnimation(animRotateForward);
+			fabNote.startAnimation(animOpen);
+			fabPhoto.startAnimation(animOpen);
+			fabNote.setClickable(true);
+			fabPhoto.setClickable(true);
+			isFabOpen = true;
 		}
 	}
 
@@ -518,8 +560,17 @@ public class CardViewActivity extends AppCompatActivity
 			msgId				= id;
 			Intent cameraIntent	= new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 			File out			= Environment.getExternalStorageDirectory();
-			out					= new File(out, msgId);
-			tempUri				= Uri.fromFile(out);
+
+			if(StringUtils.isNotEmpty(id))
+			{
+				out = new File(out, id);
+			}
+			else
+			{
+				out = new File(out, String.valueOf(System.currentTimeMillis()));
+			}
+
+			tempUri = Uri.fromFile(out);
 			cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
 			startActivityForResult(cameraIntent, 0);
 		}
@@ -547,38 +598,65 @@ public class CardViewActivity extends AppCompatActivity
 
 				if(bitmap != null)
 				{
-					Realm realm		= Realm.getDefaultInstance();
-					Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+					Realm realm					= Realm.getDefaultInstance();
+					final Activity activity		= this;
+					ByteArrayOutputStream baos	= new ByteArrayOutputStream();
+					bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+					mDownloadUrl				= null;
 
-					if(message != null)
+					if(StringUtils.isNotEmpty(msgId))
 					{
-						ByteArrayOutputStream baos	= new ByteArrayOutputStream();
-						bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-						mDownloadUrl				= null;
-						final Activity activity		= this;
+						Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+						if(message != null)
+						{
+							realm.executeTransactionAsync(new Realm.Transaction()
+							{
+								@Override
+								public void execute(Realm bgRealm)
+								{
+									Message message	= bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+
+									//Actualizamos la uri primero para refrescar la vista mientras se sube la imagen
+									if(StringUtils.isNotEmpty(message.getUri()) && StringUtils.isNotEmpty(message.getUriTwo()))
+									{
+										message.setUriThree(tempUri.toString());
+									}
+									else
+									{
+										if(StringUtils.isNotEmpty(message.getUri()))
+										{
+											message.setUriTwo(tempUri.toString());
+										}
+										else
+										{
+											message.setUri(tempUri.toString());
+										}
+									}
+								}
+							}, new Realm.Transaction.OnSuccess()
+							{
+								@Override
+								public void onSuccess()
+								{
+									onUploadResultIntent(null);
+									activity.startService(new Intent(activity, MyUploadService.class).putExtra(MyUploadService.EXTRA_FILE_URI, tempUri).putExtra(Common.KEY_ID, msgId)
+											.setAction(MyUploadService.ACTION_UPLOAD));
+								}
+							});
+						}
+					}
+					else
+					{
+						//Se trata de una nota con imagen
 						realm.executeTransactionAsync(new Realm.Transaction()
 						{
 							@Override
 							public void execute(Realm bgRealm)
 							{
-								Message message	= bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
-
-								//Actualizamos la uri primero para refrescar la vista mientras se sube la imagen
-								if(StringUtils.isNotEmpty(message.getUri()) && StringUtils.isNotEmpty(message.getUriTwo()))
-								{
-									message.setUriThree(tempUri.toString());
-								}
-								else
-								{
-									if(StringUtils.isNotEmpty(message.getUri()))
-									{
-										message.setUriTwo(tempUri.toString());
-									}
-									else
-									{
-										message.setUri(tempUri.toString());
-									}
-								}
+								Message message = MessageHelper.getNewNote("", companyId, activity);
+								message.setUri(tempUri.toString());
+								bgRealm.copyToRealmOrUpdate(message);
 							}
 						}, new Realm.Transaction.OnSuccess()
 						{
@@ -586,11 +664,11 @@ public class CardViewActivity extends AppCompatActivity
 							public void onSuccess()
 							{
 								onUploadResultIntent(null);
-								activity.startService(new Intent(activity, MyUploadService.class).putExtra(MyUploadService.EXTRA_FILE_URI, tempUri).putExtra(Common.KEY_ID, msgId)
-										.setAction(MyUploadService.ACTION_UPLOAD));
 							}
 						});
 					}
+
+					realm.close();
 				}
 			}
 		}
@@ -604,8 +682,6 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			System.out.println("onUploadResultIntent!");
-
 			if(intent != null)
 			{
 				mDownloadUrl	= intent.getParcelableExtra(MyUploadService.EXTRA_DOWNLOAD_URL);

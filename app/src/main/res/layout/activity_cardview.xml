@@ -1,437 +1,471 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	xmlns:card_view="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	xmlns:card_view="http://schemas.android.com/apk/res-auto"
+	android:fitsSystemWindows="true"
 	tools:context="com.tween.viacelular.activities.CardViewActivity"
-	android:background="@color/background_company"
-	android:fitsSystemWindows="true">
-	<include
-		android:id="@+id/toolBarCardView"
-		layout="@layout/tool_bar_cards" />
+	android:background="@color/background_company">
 	<RelativeLayout
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_below="@+id/toolBarCardView"
-		android:layout_marginTop="4dp"
-		android:id="@+id/rlCardView">
-		<View
-			android:id="@+id/barInvisible"
-			android:layout_width="match_parent"
-			android:layout_height="16dp" />
-		<android.support.v7.widget.RecyclerView
-			android:id="@+id/rcwCard"
-			android:layout_below="@+id/barInvisible"
-			android:scrollbars="vertical"
-			android:layout_marginTop="16dp"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:visibility="gone" />
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+		<include
+			android:id="@+id/toolBarCardView"
+			layout="@layout/tool_bar_cards" />
 		<RelativeLayout
-			android:id="@+id/rlEmpty"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:gravity="center"
-			android:visibility="visible">
-			<ImageView
-				android:contentDescription="@string/app_name"
-				android:id="@+id/ivEmpty"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:src="@drawable/no_messages"
-				android:layout_centerHorizontal="true"
-				android:layout_marginTop="40dp" />
-			<TextView
-				android:id="@+id/txtTitle"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/no_messages_card"
-				android:textColor="@color/sub_text"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:textStyle="bold"
-				android:layout_below="@+id/ivEmpty"
-				android:layout_alignLeft="@+id/ivEmpty"
-				android:layout_alignStart="@+id/ivEmpty"/>
-			<TextView
-				android:id="@+id/txtSubTitle"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/no_messages_text"
-				android:textColor="@color/sub_text"
-				android:textAppearance="?android:attr/textAppearanceMedium"
-				android:layout_marginTop="10dp"
-				android:layout_below="@+id/txtTitle"
-				android:layout_alignLeft="@+id/txtTitle"
-				android:layout_alignStart="@+id/txtTitle"
-				android:layout_marginLeft="2dp"
-				android:layout_marginStart="2dp"
-				android:layout_alignRight="@+id/ivEmpty"
-				android:layout_alignEnd="@+id/ivEmpty"/>
-		</RelativeLayout>
-		<android.support.v7.widget.CardView
-			android:id="@+id/cardPayout"
-			android:layout_width="match_parent"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			card_view:cardBackgroundColor="@android:color/white"
-			card_view:cardCornerRadius="2dp"
-			card_view:cardElevation="6dp"
-			android:layout_marginBottom="10dp"
-			android:visibility="gone">
-			<RelativeLayout
-				android:id="@+id/rlCard"
+			android:layout_below="@+id/toolBarCardView"
+			android:layout_marginTop="4dp"
+			android:id="@+id/rlCardView">
+			<View
+				android:id="@+id/barInvisible"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_margin="10dp">
-				<TextView
-					android:id="@+id/txtContent"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:text="@string/sms_paid_continue"
-					android:layout_marginTop="10dp"
-					android:textColor="@color/black"
-					android:textSize="14sp" />
-				<TextView
-					android:id="@+id/txtSubContent"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_below="@+id/txtContent"
-					android:text="@string/sub_sms_paid_text"
-					android:textAppearance="?android:attr/textAppearanceSmall"
-					android:layout_marginTop="10dp"
-					android:textColor="@color/gray" />
-				<Button
-					android:id="@+id/btnContinue"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_below="@+id/txtSubContent"
-					android:layout_marginTop="10dp"
-					android:text="@string/btn_continue"
-					android:textAllCaps="true"
-					android:textColor="@color/accent"
-					android:onClick="continueCompany"
-					android:background="@android:color/transparent"
-					android:shadowColor="@android:color/transparent"
-					android:layout_alignRight="@+id/txtSubContent"
-					android:layout_alignEnd="@+id/txtSubContent"
-					android:layout_alignLeft="@+id/txtSubContent"
-					android:layout_alignStart="@+id/txtSubContent" />
-				<Button
-					android:id="@+id/btnBlock"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_below="@+id/txtSubContent"
-					android:layout_marginTop="10dp"
-					android:text="@string/landing_unsuscribe"
-					android:textAllCaps="true"
-					android:textColor="@color/accent"
-					android:onClick="blockCompany"
-					android:background="@android:color/transparent"
-					android:shadowColor="@android:color/transparent"
-					android:layout_alignRight="@+id/btnContinue"
-					android:layout_alignEnd="@+id/btnContinue" />
-			</RelativeLayout>
-		</android.support.v7.widget.CardView>
-		<android.support.v7.widget.CardView
-			android:id="@+id/cardSuscribe"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			card_view:cardBackgroundColor="@android:color/white"
-			card_view:cardCornerRadius="2dp"
-			card_view:cardElevation="6dp"
-			android:layout_marginBottom="10dp"
-			android:visibility="gone">
-			<RelativeLayout
-				android:id="@+id/rlSuscribe"
+				android:layout_height="16dp" />
+			<android.support.v7.widget.RecyclerView
+				android:id="@+id/rcwCard"
+				android:layout_below="@+id/barInvisible"
+				android:scrollbars="vertical"
+				android:layout_marginTop="16dp"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_margin="10dp">
-				<TextView
-					android:id="@+id/txtSuscribe"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:text="@string/sms_paid_continue"
-					android:layout_marginTop="10dp"
-					android:textColor="@color/black"
-					android:textSize="14sp" />
-				<TextView
-					android:id="@+id/txtSubSuscribe"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_below="@+id/txtSuscribe"
-					android:text="@string/landing_title"
-					android:textAppearance="?android:attr/textAppearanceSmall"
-					android:layout_marginTop="10dp"
-					android:textColor="@color/gray" />
-				<Button
-					android:id="@+id/btnYes"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_below="@+id/txtSubSuscribe"
-					android:layout_marginTop="10dp"
-					android:text="@string/landing_suscribe"
-					android:textAllCaps="true"
-					android:textColor="@color/accent"
-					android:onClick="suscribeCompany"
-					android:background="@android:color/transparent"
-					android:shadowColor="@android:color/transparent"
-					android:layout_alignRight="@+id/txtSubSuscribe"
-					android:layout_alignEnd="@+id/txtSubSuscribe"
-					android:layout_alignLeft="@+id/txtSubSuscribe"
-					android:layout_alignStart="@+id/txtSubSuscribe" />
-				<Button
-					android:id="@+id/btnNo"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_below="@+id/txtSubSuscribe"
-					android:layout_marginTop="10dp"
-					android:text="@string/landing_dismiss"
-					android:textAllCaps="true"
-					android:textColor="@color/accent"
-					android:onClick="becomeGray"
-					android:background="@android:color/transparent"
-					android:shadowColor="@android:color/transparent"
-					android:layout_alignRight="@+id/btnYes"
-					android:layout_alignEnd="@+id/btnYes" />
-			</RelativeLayout>
-		</android.support.v7.widget.CardView>
-		<android.support.v7.widget.CardView
-			android:id="@+id/cardForm"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			card_view:cardBackgroundColor="@android:color/white"
-			card_view:cardCornerRadius="3dp"
-			card_view:cardElevation="4dp"
-			android:layout_marginTop="20dp"
-			android:layout_marginLeft="10dp"
-			android:layout_marginRight="10dp"
-			android:layout_marginBottom="12dp"
-			android:visibility="gone">
+				android:layout_height="match_parent"
+				android:visibility="gone" />
 			<RelativeLayout
-				android:id="@+id/rlForm"
+				android:id="@+id/rlEmpty"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:paddingRight="16dp"
-				android:paddingBottom="16dp"
-				android:paddingLeft="16dp">
+				android:layout_height="match_parent"
+				android:gravity="center"
+				android:visibility="visible">
 				<ImageView
 					android:contentDescription="@string/app_name"
-					android:id="@+id/ivForm"
+					android:id="@+id/ivEmpty"
 					android:layout_width="wrap_content"
-					android:layout_height="190dp"
-					android:src="@drawable/step1_idkey"
-					android:layout_alignParentBottom="false"
-					android:layout_alignParentRight="false"
-					android:layout_alignParentEnd="false"
-					android:layout_alignParentTop="false"
-					android:layout_alignParentLeft="false"
-					android:layout_alignParentStart="false"
-					android:layout_marginTop="-20dp"/>
+					android:layout_height="wrap_content"
+					android:src="@drawable/no_messages"
+					android:layout_centerHorizontal="true"
+					android:layout_marginTop="40dp" />
 				<TextView
-					android:id="@+id/txtTitleForm"
-					android:layout_width="match_parent"
+					android:id="@+id/txtTitle"
+					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_below="@+id/ivForm"
-					android:text="@string/landing_card_form_header"
-					android:textColor="@color/black"
-					android:textSize="17sp" />
+					android:text="@string/no_messages_card"
+					android:textColor="@color/sub_text"
+					android:textAppearance="?android:attr/textAppearanceLarge"
+					android:textStyle="bold"
+					android:layout_below="@+id/ivEmpty"
+					android:layout_alignLeft="@+id/ivEmpty"
+					android:layout_alignStart="@+id/ivEmpty"/>
 				<TextView
-					android:id="@+id/txtSubTitleForm"
+					android:id="@+id/txtSubTitle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/no_messages_text"
+					android:textColor="@color/sub_text"
+					android:textAppearance="?android:attr/textAppearanceMedium"
+					android:layout_marginTop="10dp"
+					android:layout_below="@+id/txtTitle"
+					android:layout_alignLeft="@+id/txtTitle"
+					android:layout_alignStart="@+id/txtTitle"
+					android:layout_marginLeft="2dp"
+					android:layout_marginStart="2dp"
+					android:layout_alignRight="@+id/ivEmpty"
+					android:layout_alignEnd="@+id/ivEmpty"/>
+			</RelativeLayout>
+			<android.support.v7.widget.CardView
+				android:id="@+id/cardPayout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				card_view:cardBackgroundColor="@android:color/white"
+				card_view:cardCornerRadius="2dp"
+				card_view:cardElevation="6dp"
+				android:layout_marginBottom="10dp"
+				android:visibility="gone">
+				<RelativeLayout
+					android:id="@+id/rlCard"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_below="@+id/txtTitleForm"
-					android:text="@string/landing_card_form_text1"
-					android:textAppearance="?android:attr/textAppearanceSmall"
-					android:layout_marginTop="8dp"
-					android:textColor="@color/gray"
-					android:lineSpacingExtra="4dp"
-					android:textSize="14sp" />
-				<android.support.design.widget.TextInputLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/inputCode"
-					android:layout_below="@id/txtSubTitleForm">
-					<EditText
-						android:id="@+id/editCode"
-						android:layout_marginTop="12dp"
+					android:layout_margin="10dp">
+					<TextView
+						android:id="@+id/txtContent"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:inputType="text" />
-				</android.support.design.widget.TextInputLayout>
-				<Button
-					android:id="@+id/btnContinueForm"
-					android:layout_width="wrap_content"
-					android:minWidth="88dp"
-					android:layout_height="36dp"
-					android:text="@string/btn_continue"
-					android:textColor="@android:color/white"
-					android:textColorHint="@android:color/secondary_text_light"
-					android:textSize="14sp"
-					android:onClick="sendData"
-					android:background="@color/light_gray"
-					android:enabled="false"
-					android:paddingLeft="16dp"
+						android:text="@string/sms_paid_continue"
+						android:layout_marginTop="10dp"
+						android:textColor="@color/black"
+						android:textSize="14sp" />
+					<TextView
+						android:id="@+id/txtSubContent"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_below="@+id/txtContent"
+						android:text="@string/sub_sms_paid_text"
+						android:textAppearance="?android:attr/textAppearanceSmall"
+						android:layout_marginTop="10dp"
+						android:textColor="@color/gray" />
+					<Button
+						android:id="@+id/btnContinue"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_below="@+id/txtSubContent"
+						android:layout_marginTop="10dp"
+						android:text="@string/btn_continue"
+						android:textAllCaps="true"
+						android:textColor="@color/accent"
+						android:onClick="continueCompany"
+						android:background="@android:color/transparent"
+						android:shadowColor="@android:color/transparent"
+						android:layout_alignRight="@+id/txtSubContent"
+						android:layout_alignEnd="@+id/txtSubContent"
+						android:layout_alignLeft="@+id/txtSubContent"
+						android:layout_alignStart="@+id/txtSubContent" />
+					<Button
+						android:id="@+id/btnBlock"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_below="@+id/txtSubContent"
+						android:layout_marginTop="10dp"
+						android:text="@string/landing_unsuscribe"
+						android:textAllCaps="true"
+						android:textColor="@color/accent"
+						android:onClick="blockCompany"
+						android:background="@android:color/transparent"
+						android:shadowColor="@android:color/transparent"
+						android:layout_alignRight="@+id/btnContinue"
+						android:layout_alignEnd="@+id/btnContinue" />
+				</RelativeLayout>
+			</android.support.v7.widget.CardView>
+			<android.support.v7.widget.CardView
+				android:id="@+id/cardSuscribe"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				card_view:cardBackgroundColor="@android:color/white"
+				card_view:cardCornerRadius="2dp"
+				card_view:cardElevation="6dp"
+				android:layout_marginBottom="10dp"
+				android:visibility="gone">
+				<RelativeLayout
+					android:id="@+id/rlSuscribe"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_margin="10dp">
+					<TextView
+						android:id="@+id/txtSuscribe"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:text="@string/sms_paid_continue"
+						android:layout_marginTop="10dp"
+						android:textColor="@color/black"
+						android:textSize="14sp" />
+					<TextView
+						android:id="@+id/txtSubSuscribe"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_below="@+id/txtSuscribe"
+						android:text="@string/landing_title"
+						android:textAppearance="?android:attr/textAppearanceSmall"
+						android:layout_marginTop="10dp"
+						android:textColor="@color/gray" />
+					<Button
+						android:id="@+id/btnYes"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_below="@+id/txtSubSuscribe"
+						android:layout_marginTop="10dp"
+						android:text="@string/landing_suscribe"
+						android:textAllCaps="true"
+						android:textColor="@color/accent"
+						android:onClick="suscribeCompany"
+						android:background="@android:color/transparent"
+						android:shadowColor="@android:color/transparent"
+						android:layout_alignRight="@+id/txtSubSuscribe"
+						android:layout_alignEnd="@+id/txtSubSuscribe"
+						android:layout_alignLeft="@+id/txtSubSuscribe"
+						android:layout_alignStart="@+id/txtSubSuscribe" />
+					<Button
+						android:id="@+id/btnNo"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_below="@+id/txtSubSuscribe"
+						android:layout_marginTop="10dp"
+						android:text="@string/landing_dismiss"
+						android:textAllCaps="true"
+						android:textColor="@color/accent"
+						android:onClick="becomeGray"
+						android:background="@android:color/transparent"
+						android:shadowColor="@android:color/transparent"
+						android:layout_alignRight="@+id/btnYes"
+						android:layout_alignEnd="@+id/btnYes" />
+				</RelativeLayout>
+			</android.support.v7.widget.CardView>
+			<android.support.v7.widget.CardView
+				android:id="@+id/cardForm"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				card_view:cardBackgroundColor="@android:color/white"
+				card_view:cardCornerRadius="3dp"
+				card_view:cardElevation="4dp"
+				android:layout_marginTop="20dp"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+				android:layout_marginBottom="12dp"
+				android:visibility="gone">
+				<RelativeLayout
+					android:id="@+id/rlForm"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
 					android:paddingRight="16dp"
-					android:layout_below="@+id/inputCode"
-					android:layout_marginTop="10dp"
-					android:layout_alignParentRight="true"
-					android:layout_alignParentEnd="true" />
-			</RelativeLayout>
-		</android.support.v7.widget.CardView>
-		<android.support.v7.widget.CardView
-			android:id="@+id/cardRetry"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			card_view:cardBackgroundColor="@android:color/white"
-			card_view:cardCornerRadius="3dp"
-			card_view:cardElevation="4dp"
-			android:layout_marginTop="20dp"
-			android:layout_marginLeft="10dp"
-			android:layout_marginRight="10dp"
-			android:layout_marginBottom="12dp"
-			android:visibility="gone">
-			<RelativeLayout
-				android:id="@+id/rlRetry"
+					android:paddingBottom="16dp"
+					android:paddingLeft="16dp">
+					<ImageView
+						android:contentDescription="@string/app_name"
+						android:id="@+id/ivForm"
+						android:layout_width="wrap_content"
+						android:layout_height="190dp"
+						android:src="@drawable/step1_idkey"
+						android:layout_alignParentBottom="false"
+						android:layout_alignParentRight="false"
+						android:layout_alignParentEnd="false"
+						android:layout_alignParentTop="false"
+						android:layout_alignParentLeft="false"
+						android:layout_alignParentStart="false"
+						android:layout_marginTop="-20dp"/>
+					<TextView
+						android:id="@+id/txtTitleForm"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_below="@+id/ivForm"
+						android:text="@string/landing_card_form_header"
+						android:textColor="@color/black"
+						android:textSize="17sp" />
+					<TextView
+						android:id="@+id/txtSubTitleForm"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_below="@+id/txtTitleForm"
+						android:text="@string/landing_card_form_text1"
+						android:textAppearance="?android:attr/textAppearanceSmall"
+						android:layout_marginTop="8dp"
+						android:textColor="@color/gray"
+						android:lineSpacingExtra="4dp"
+						android:textSize="14sp" />
+					<android.support.design.widget.TextInputLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:id="@+id/inputCode"
+						android:layout_below="@id/txtSubTitleForm">
+						<EditText
+							android:id="@+id/editCode"
+							android:layout_marginTop="12dp"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:inputType="text" />
+					</android.support.design.widget.TextInputLayout>
+					<Button
+						android:id="@+id/btnContinueForm"
+						android:layout_width="wrap_content"
+						android:minWidth="88dp"
+						android:layout_height="36dp"
+						android:text="@string/btn_continue"
+						android:textColor="@android:color/white"
+						android:textColorHint="@android:color/secondary_text_light"
+						android:textSize="14sp"
+						android:onClick="sendData"
+						android:background="@color/light_gray"
+						android:enabled="false"
+						android:paddingLeft="16dp"
+						android:paddingRight="16dp"
+						android:layout_below="@+id/inputCode"
+						android:layout_marginTop="10dp"
+						android:layout_alignParentRight="true"
+						android:layout_alignParentEnd="true" />
+				</RelativeLayout>
+			</android.support.v7.widget.CardView>
+			<android.support.v7.widget.CardView
+				android:id="@+id/cardRetry"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:paddingTop="24dp"
-				android:paddingRight="16dp"
-				android:paddingBottom="16dp"
-				android:paddingLeft="16dp">
-				<ImageView
-					android:contentDescription="@string/app_name"
-					android:id="@+id/ivRetry"
-					android:layout_width="140dp"
-					android:layout_height="140dp"
-					android:src="@drawable/ic_error_48"
-					android:layout_margin="20dp"
-					android:layout_centerHorizontal="true" />
-				<TextView
-					android:id="@+id/txtTitleRetry"
+				card_view:cardBackgroundColor="@android:color/white"
+				card_view:cardCornerRadius="3dp"
+				card_view:cardElevation="4dp"
+				android:layout_marginTop="20dp"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+				android:layout_marginBottom="12dp"
+				android:visibility="gone">
+				<RelativeLayout
+					android:id="@+id/rlRetry"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_below="@+id/ivRetry"
-					android:text="@string/landing_card_error_header"
-					android:layout_margin="10dp"
-					android:textColor="@color/black"
-					android:gravity="center"
-					android:layout_centerHorizontal="true"
-					android:textSize="20sp" />
-				<TextView
-					android:id="@+id/txtSubTitleRetry"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_below="@+id/txtTitleRetry"
-					android:text="@string/landing_card_error_text"
-					android:textAppearance="?android:attr/textAppearanceSmall"
-					android:layout_margin="10dp"
-					android:textColor="@color/gray"
-					android:layout_centerHorizontal="true"
-					android:gravity="center"
-					android:lineSpacingExtra="4dp"
-					android:textSize="16sp" />
-				<Button
-					android:id="@+id/btnRetry"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_below="@+id/txtSubTitleRetry"
-					android:layout_marginTop="10dp"
-					android:text="@string/landing_card_error_retry"
-					android:textAllCaps="true"
-					android:textColor="@color/accent"
-					android:layout_centerHorizontal="true"
-					android:onClick="sendAgain"
-					android:gravity="center"
-					android:background="@android:color/transparent"
-					android:shadowColor="@android:color/transparent" />
-			</RelativeLayout>
-		</android.support.v7.widget.CardView>
-		<android.support.v7.widget.CardView
-			android:id="@+id/cardOk"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			card_view:cardBackgroundColor="@android:color/white"
-			card_view:cardCornerRadius="3dp"
-			card_view:cardElevation="4dp"
-			android:layout_marginTop="20dp"
-			android:layout_marginLeft="10dp"
-			android:layout_marginRight="10dp"
-			android:layout_marginBottom="12dp"
-			android:visibility="gone">
-			<RelativeLayout
-				android:id="@+id/rlOk"
+					android:paddingTop="24dp"
+					android:paddingRight="16dp"
+					android:paddingBottom="16dp"
+					android:paddingLeft="16dp">
+					<ImageView
+						android:contentDescription="@string/app_name"
+						android:id="@+id/ivRetry"
+						android:layout_width="140dp"
+						android:layout_height="140dp"
+						android:src="@drawable/ic_error_48"
+						android:layout_margin="20dp"
+						android:layout_centerHorizontal="true" />
+					<TextView
+						android:id="@+id/txtTitleRetry"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_below="@+id/ivRetry"
+						android:text="@string/landing_card_error_header"
+						android:layout_margin="10dp"
+						android:textColor="@color/black"
+						android:gravity="center"
+						android:layout_centerHorizontal="true"
+						android:textSize="20sp" />
+					<TextView
+						android:id="@+id/txtSubTitleRetry"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_below="@+id/txtTitleRetry"
+						android:text="@string/landing_card_error_text"
+						android:textAppearance="?android:attr/textAppearanceSmall"
+						android:layout_margin="10dp"
+						android:textColor="@color/gray"
+						android:layout_centerHorizontal="true"
+						android:gravity="center"
+						android:lineSpacingExtra="4dp"
+						android:textSize="16sp" />
+					<Button
+						android:id="@+id/btnRetry"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_below="@+id/txtSubTitleRetry"
+						android:layout_marginTop="10dp"
+						android:text="@string/landing_card_error_retry"
+						android:textAllCaps="true"
+						android:textColor="@color/accent"
+						android:layout_centerHorizontal="true"
+						android:onClick="sendAgain"
+						android:gravity="center"
+						android:background="@android:color/transparent"
+						android:shadowColor="@android:color/transparent" />
+				</RelativeLayout>
+			</android.support.v7.widget.CardView>
+			<android.support.v7.widget.CardView
+				android:id="@+id/cardOk"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:paddingTop="24dp"
-				android:paddingRight="16dp"
-				android:paddingBottom="16dp"
-				android:paddingLeft="16dp">
-				<ImageView
-					android:contentDescription="@string/app_name"
-					android:id="@+id/ivOk"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:src="@drawable/ic_done_48"
-					android:layout_margin="20dp"
-					android:layout_centerHorizontal="true" />
-				<TextView
-					android:id="@+id/txtTitleOk"
+				card_view:cardBackgroundColor="@android:color/white"
+				card_view:cardCornerRadius="3dp"
+				card_view:cardElevation="4dp"
+				android:layout_marginTop="20dp"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+				android:layout_marginBottom="12dp"
+				android:visibility="gone">
+				<RelativeLayout
+					android:id="@+id/rlOk"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_below="@+id/ivOk"
-					android:text="@string/landing_card_ok_header"
-					android:layout_margin="10dp"
-					android:textColor="@color/black"
-					android:gravity="center"
-					android:layout_centerHorizontal="true"
-					android:textSize="20sp" />
-				<ImageButton
-					android:id="@+id/ibOptions"
-					android:contentDescription="@string/agree"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:src="@drawable/ic_clear_black_24dp"
-					android:background="?android:attr/selectableItemBackground"
-					android:layout_alignParentRight="true"
-					android:clickable="true"
-					android:onClick="byeCard"
-					android:layout_alignParentEnd="true" />
-				<TextView
-					android:id="@+id/txtSubTitleOk"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_below="@+id/txtTitleOk"
-					android:text="@string/landing_card_ok_text"
-					android:textAppearance="?android:attr/textAppearanceSmall"
-					android:layout_margin="10dp"
-					android:textColor="@color/gray"
-					android:layout_centerHorizontal="true"
-					android:gravity="center"
-					android:lineSpacingExtra="4dp"
-					android:textSize="16sp" />
-			</RelativeLayout>
-		</android.support.v7.widget.CardView>
+					android:paddingTop="24dp"
+					android:paddingRight="16dp"
+					android:paddingBottom="16dp"
+					android:paddingLeft="16dp">
+					<ImageView
+						android:contentDescription="@string/app_name"
+						android:id="@+id/ivOk"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:src="@drawable/ic_done_48"
+						android:layout_margin="20dp"
+						android:layout_centerHorizontal="true" />
+					<TextView
+						android:id="@+id/txtTitleOk"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_below="@+id/ivOk"
+						android:text="@string/landing_card_ok_header"
+						android:layout_margin="10dp"
+						android:textColor="@color/black"
+						android:gravity="center"
+						android:layout_centerHorizontal="true"
+						android:textSize="20sp" />
+					<ImageButton
+						android:id="@+id/ibOptions"
+						android:contentDescription="@string/agree"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:src="@drawable/ic_clear_black_24dp"
+						android:background="?android:attr/selectableItemBackground"
+						android:layout_alignParentRight="true"
+						android:clickable="true"
+						android:onClick="byeCard"
+						android:layout_alignParentEnd="true" />
+					<TextView
+						android:id="@+id/txtSubTitleOk"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_below="@+id/txtTitleOk"
+						android:text="@string/landing_card_ok_text"
+						android:textAppearance="?android:attr/textAppearanceSmall"
+						android:layout_margin="10dp"
+						android:textColor="@color/gray"
+						android:layout_centerHorizontal="true"
+						android:gravity="center"
+						android:lineSpacingExtra="4dp"
+						android:textSize="16sp" />
+				</RelativeLayout>
+			</android.support.v7.widget.CardView>
+		</RelativeLayout>
+		<android.support.design.widget.CoordinatorLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_alignParentBottom="false"
+			android:id="@+id/clSnack"
+			android:layout_alignParentRight="false"
+			android:layout_alignParentEnd="false"
+			android:layout_alignParentTop="false"
+			android:layout_alignParentLeft="false"
+			android:layout_alignParentStart="false"
+			android:layout_marginTop="-20dp">
+		</android.support.design.widget.CoordinatorLayout>
 	</RelativeLayout>
+	<android.support.design.widget.FloatingActionButton
+		android:id="@+id/fabPhoto"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="160dp"
+		android:layout_gravity="bottom|end"
+		android:layout_marginRight="@dimen/fab_margin"
+		android:layout_marginEnd="@dimen/fab_margin"
+		android:visibility="invisible"
+		app:backgroundTint="@color/photo"
+		app:elevation="6dp"
+		android:onClick="createNoteWithPhoto"
+		app:pressedTranslationZ="12dp"
+		android:src="@drawable/ic_photo_camera_white_36dp" />
 	<android.support.design.widget.FloatingActionButton
 		android:id="@+id/fabNote"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:layout_alignParentRight="true"
-		android:layout_alignParentEnd="true"
-		android:layout_margin="10dp"
+		android:layout_marginBottom="90dp"
+		android:layout_gravity="bottom|end"
+		android:layout_marginRight="@dimen/fab_margin"
+		android:layout_marginEnd="@dimen/fab_margin"
+		android:visibility="invisible"
+		app:elevation="6dp"
 		android:onClick="createNote"
+		app:backgroundTint="@color/comment"
+		app:pressedTranslationZ="12dp"
+		android:src="@drawable/ic_message_white_36dp" />
+	<android.support.design.widget.FloatingActionButton
+		android:id="@+id/fabOpen"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|end"
+		app:elevation="6dp"
+		android:onClick="animateFab"
+		app:backgroundTint="@color/accent"
+		app:pressedTranslationZ="12dp"
+		android:layout_margin="@dimen/fab_margin"
 		app:srcCompat="@drawable/ic_add_white_36dp" />
-	<android.support.design.widget.CoordinatorLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_alignParentBottom="false"
-		android:id="@+id/clSnack"
-		android:layout_alignParentRight="false"
-		android:layout_alignParentEnd="false"
-		android:layout_alignParentTop="false"
-		android:layout_alignParentLeft="false"
-		android:layout_alignParentStart="false"
-		android:layout_marginTop="-20dp">
-	</android.support.design.widget.CoordinatorLayout>
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

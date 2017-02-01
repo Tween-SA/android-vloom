@@ -24,7 +24,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.FacebookSdk;
@@ -38,18 +37,15 @@ import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class PhoneActivity extends AppCompatActivity
 {
-	private Button			btnCountry;
-	private Button			btnContinue;
+	private Button			btnCountry, btnContinue;
 	private TextView		inputCountry;
 	private EditText		editPhone;
 	private TextInputLayout	inputPhone;

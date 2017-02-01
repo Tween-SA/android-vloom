@@ -49,8 +49,7 @@ public class CodeActivity extends AppCompatActivity
 	private EditText			editCode;
 	private TextInputLayout		inputCode;
 	private TextView			txtCount;
-	private Button				btnRegister;
-	private Button				btnFreePass;
+	private Button				btnRegister, btnFreePass;
 	private SharedPreferences	preferences;
 	private CountDownTimer		countDownTimer;
 	private int					originalSoftInputMode;

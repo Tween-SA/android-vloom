@@ -27,23 +27,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 	public static final int		SETTINGS_SELECTED		= 3;
 	private int					mIcons[]				= {R.drawable.notificaciones, R.drawable.empresas, 0};//Quitamos la pantalla Feedback
 	private String				mNavTitles[];
-	private String				name;
-	private int					profile;
-	private String				email;
-	private int					selected;
-	private int					color;
-	private String				phone;
+	private String				name, email, phone;
+	private int					profile, selected, color;
 	private Context				context;
 
 	public static class ViewHolder extends RecyclerView.ViewHolder
 	{
 		public int				HolderId;
-		public TextView			textView;
-		public ImageView		imageView;
-		public ImageView		profile;
+		public TextView			textView, name, email;
+		public ImageView		imageView, profile;
 		public View				div;
-		public TextView			Name;
-		public TextView			email;
 		public RelativeLayout	rlItem;
 
 		public ViewHolder(View itemView, int ViewType)
@@ -61,7 +54,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 			}
 			else
 			{
-				Name		= (TextView) itemView.findViewById(R.id.name);
+				name		= (TextView) itemView.findViewById(R.id.name);
 				email		= (TextView) itemView.findViewById(R.id.email);
 				profile		= (ImageView) itemView.findViewById(R.id.circleView);
 				HolderId	= 0;
@@ -200,21 +193,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
 				if(StringUtils.isNotEmpty(name))
 				{
-					holder.Name.setText(name);
-					holder.Name.setVisibility(android.widget.TextView.VISIBLE);
+					holder.name.setText(name);
+					holder.name.setVisibility(android.widget.TextView.VISIBLE);
 					initial = name;
 				}
 				else
 				{
 					if(StringUtils.isNotEmpty(email))
 					{
-						holder.Name.setText(email);
-						holder.Name.setVisibility(android.widget.TextView.VISIBLE);
+						holder.name.setText(email);
+						holder.name.setVisibility(android.widget.TextView.VISIBLE);
 						initial = email;
 					}
 					else
 					{
-						holder.Name.setVisibility(android.widget.TextView.GONE);
+						holder.name.setVisibility(android.widget.TextView.GONE);
 					}
 				}
 

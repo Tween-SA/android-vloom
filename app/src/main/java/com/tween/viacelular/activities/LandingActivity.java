@@ -25,7 +25,6 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
-import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -45,18 +44,12 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	private String				section								= "";
 	private String				color								= Common.COLOR_ACTION;
 	private LinearLayout		mTitleContainer;
-	private TextView			txtTitle;
+	private TextView			txtTitle, txtEmail, txtPhone, txtBigTitle, txtSubTitle, txtSubTitleCollapsed, txtAbout;
 	private Toolbar				toolBar;
-	private TextView			txtEmail;
-	private TextView			txtPhone;
 	private Context				context;
 	private CircleImageView		circleView;
 	private Button				btnSuscribe;
 	private ImageView			logo;
-	private TextView			txtBigTitle;
-	private TextView			txtSubTitle;
-	private TextView			txtSubTitleCollapsed;
-	private TextView			txtAbout;
 	private float				scale;
 
 	@Override
