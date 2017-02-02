@@ -177,9 +177,12 @@ public class CardViewActivity extends AppCompatActivity
 
 				if(intentRecive != null)
 				{
+					System.out.println("Intent companyId: "+intentRecive.getStringExtra(Common.KEY_ID));
+					System.out.println("Intent msgId: "+intentRecive.getStringExtra(Common.KEY_LAST_MSGID));
 					//Modificaciones para migrar entidad Company completa a Realm
 					companyId	= intentRecive.getStringExtra(Common.KEY_ID);
 					suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+					SuscriptionHelper.debugSuscription(suscription);
 
 					if(suscription != null)
 					{
@@ -534,7 +537,7 @@ public class CardViewActivity extends AppCompatActivity
 			new AttachAsyncTask(this, false, id, new CallBackListener()
 			{
 				@Override
-				public void callBack()
+				public void invoke()
 				{
 					runOnUiThread(new Runnable()
 					{

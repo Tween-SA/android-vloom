@@ -30,12 +30,9 @@ import com.tween.viacelular.activities.VerifyPhoneActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
 import com.tween.viacelular.adapters.IconOptionAdapter;
 import com.tween.viacelular.asynctask.GetTweetsAsyncTask;
-import com.tween.viacelular.models.Land;
-import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
-import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
@@ -43,7 +40,6 @@ import com.tween.viacelular.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * A basic sample that shows how to use {@link android.support.v4.widget.SwipeRefreshLayout} to add the 'swipe-to-refresh' gesture to a layout.
@@ -65,7 +61,6 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 	private HomeAdapter			adapter;
 	private Activity			activity;
 	private RelativeLayout		rlEmpty;
-	private RelativeLayout		rlFreePass;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -88,7 +83,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 		try
 		{
-			rlFreePass									= (RelativeLayout) view.findViewById(R.id.rlFreePass);
+			RelativeLayout rlFreePass					= (RelativeLayout) view.findViewById(R.id.rlFreePass);
 			mSwipeRefreshLayout							= (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
 			mSwipeRefreshLayout.setColorSchemeResources(R.color.swipe_color_1, R.color.swipe_color_2, R.color.swipe_color_3, R.color.accent);
 			rcwHome										= (RecyclerView) view.findViewById(R.id.rcwHome);
@@ -581,52 +576,8 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					}
 				}
 
-				if(companyPhantom.size() > 0)
-				{
-					SharedPreferences preferences	= homeActivity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-					SharedPreferences.Editor editor	= preferences.edit();
-					User user						= realm.where(User.class).findFirst();
-					String country					= preferences.getString(Land.KEY_API, "");
-					String companyId;
-
-					if(user != null)
-					{
-						if(StringUtils.isNotEmpty(user.getCountryCode()))
-						{
-							country	= user.getCountryCode();
-							editor.putString(Land.KEY_API, country);
-							editor.apply();
-						}
-					}
-
-					for(Suscription phantom : companyPhantom)
-					{
-						RealmResults<Message> messages	= realm.where(Message.class).equalTo(Suscription.KEY_API, phantom.getCompanyId()).equalTo(Message.KEY_DELETED, Common.BOOL_NO)
-															.lessThan(Common.KEY_STATUS, Message.STATUS_SPAM).findAll().distinct(Message.KEY_CHANNEL);
-
-						if(messages.size() > 0)
-						{
-							for(Message message : messages)
-							{
-								Suscription client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(	message.getChannel(),
-																																							message.getMsg(),
-																																							getHomeActivity(), country))
-														.findFirst();
-
-								if(client != null)
-								{
-									companyId = client.getCompanyId();
-
-									if(!companyId.equals(phantom.getCompanyId()) && StringUtils.isIdMongo(companyId))
-									{
-										//Actualizar los mensajes
-										MessageHelper.groupMessages(phantom.getCompanyId(), companyId, getHomeActivity());
-									}
-								}
-							}
-						}
-					}
-				}
+				//Simplificamos para re-utilizar desde asyntask
+				SuscriptionHelper.killPhantoms(companyPhantom, getHomeActivity(), null);
 			}
 			catch(Exception e)
 			{

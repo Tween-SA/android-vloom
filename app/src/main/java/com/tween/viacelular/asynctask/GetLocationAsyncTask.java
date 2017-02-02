@@ -290,7 +290,7 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 
 			if(listener != null)
 			{
-				listener.callBack();
+				listener.invoke();
 			}
 		}
 		catch(Exception e)

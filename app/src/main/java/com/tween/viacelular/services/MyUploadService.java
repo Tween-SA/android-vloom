@@ -148,7 +148,7 @@ public class MyUploadService extends MyBaseTaskService
 								new AttachAsyncTask(getApplicationContext(), false, id, new CallBackListener()
 								{
 									@Override
-									public void callBack()
+									public void invoke()
 									{
 										redirect();
 									}

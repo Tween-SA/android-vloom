@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.TimestampComparator;
+import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
@@ -251,6 +252,81 @@ public abstract class SuscriptionHelper
 	}
 
 	/**
+	 * Revisamos si hay companies que contengan los mensajes no reconocidos anteriormente
+	 * @param companyPhantom
+	 * @param context
+     */
+	public static void killPhantoms(List<Suscription> companyPhantom, final Context context, CallBackListener callBackListener)
+	{
+		Realm realm = Realm.getDefaultInstance();
+
+		if(companyPhantom == null)
+		{
+			companyPhantom					= new ArrayList<>();
+			List<Suscription> suscriptions	= getList(context);
+
+			for(Suscription suscription : suscriptions)
+			{
+				if(!StringUtils.isIdMongo(suscription.getCompanyId()))
+				{
+					companyPhantom.add(suscription);
+				}
+			}
+		}
+
+		if(companyPhantom.size() > 0)
+		{
+			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			SharedPreferences.Editor editor	= preferences.edit();
+			User user						= realm.where(User.class).findFirst();
+			String country					= preferences.getString(Land.KEY_API, "");
+			String companyId;
+
+			if(user != null)
+			{
+				if(StringUtils.isNotEmpty(user.getCountryCode()))
+				{
+					country	= user.getCountryCode();
+					editor.putString(Land.KEY_API, country);
+					editor.apply();
+				}
+			}
+
+			for(Suscription phantom : companyPhantom)
+			{
+				RealmResults<Message> messages	= realm.where(Message.class).equalTo(Suscription.KEY_API, phantom.getCompanyId()).equalTo(Message.KEY_DELETED, Common.BOOL_NO)
+													.lessThan(Common.KEY_STATUS, Message.STATUS_SPAM).findAll().distinct(Message.KEY_CHANNEL);
+
+				if(messages.size() > 0)
+				{
+					for(Message message : messages)
+					{
+						Suscription client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(	message.getChannel(),
+																																					message.getMsg(),
+																																					context, country)).findFirst();
+
+						if(client != null)
+						{
+							companyId = client.getCompanyId();
+
+							if(!companyId.equals(phantom.getCompanyId()) && StringUtils.isIdMongo(companyId))
+							{
+								//Actualizar los mensajes
+								MessageHelper.groupMessages(phantom.getCompanyId(), companyId, context);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if(callBackListener != null)
+		{
+			callBackListener.invoke();
+		}
+	}
+
+	/**
 	 * Retorna la lista de suscripciones a mostrar en el home
 	 * @param context
 	 * @return
@@ -265,7 +341,11 @@ public abstract class SuscriptionHelper
 			Realm realm							= Realm.getDefaultInstance();//No mostrar mensajes personales
 			RealmResults<Message> realmResults	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
 													.findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
+			String[] sortKey					= {Message.KEY_CREATED};
+			Sort[] sortVal						= {Sort.DESCENDING};
+			realmResults.sort(sortKey, sortVal);
 			realmResults.distinct(Suscription.KEY_API);
+			realmResults.sort(sortKey, sortVal);
 
 			if(realmResults.size() > 0)
 			{
@@ -293,6 +373,20 @@ public abstract class SuscriptionHelper
 								}
 							}
 						}
+					}
+				}
+			}
+
+			//Agregado para mostrar companies añadidas por más de que no tengan mensajes
+			RealmResults<Suscription> suscriptions = realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).findAll();
+
+			if(suscriptions.size() > 0)
+			{
+				for(Suscription suscription : suscriptions)
+				{
+					if(!companies.contains(suscription) && StringUtils.isIdMongo(suscription.getCompanyId()))
+					{
+						companies.add(suscription);
 					}
 				}
 			}

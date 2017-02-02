@@ -8,7 +8,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
-import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
@@ -124,10 +123,6 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 						}
 					}
 				});
-			}
-			else
-			{
-				MessageHelper.updateCountry(preferences.getString(Land.KEY_API, ""), activity);
 			}
 
 			result = ApiConnection.OK;

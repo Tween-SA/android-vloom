@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -48,7 +47,6 @@ import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -61,7 +59,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 
@@ -867,7 +864,7 @@ public class Utils
 					}
 
 					editor.apply();
-					new SplashAsyncTask(activity, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					checkSesion(activity, Common.SPLASH_SCREEN);
 				}
 			}
 			else
@@ -878,7 +875,7 @@ public class Utils
 				}
 				else
 				{
-					Utils.checkSesion(activity, Common.SPLASH_SCREEN);
+					checkSesion(activity, Common.SPLASH_SCREEN);
 				}
 			}
 		}
@@ -907,7 +904,7 @@ public class Utils
 					new GetLocationAsyncTask(activity, false, true, new CallBackListener()
 					{
 						@Override
-						public void callBack()
+						public void invoke()
 						{
 							activity.runOnUiThread(new Runnable()
 							{
@@ -920,13 +917,17 @@ public class Utils
 						}
 					}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
+				else
+				{
+					checkSesion(activity, Common.SPLASH_SCREEN);
+				}
 			}
 			else
 			{
 				new GetLocationAsyncTask(activity, false, false, new CallBackListener()
 				{
 					@Override
-					public void callBack()
+					public void invoke()
 					{
 						activity.runOnUiThread(new Runnable()
 						{

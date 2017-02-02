@@ -74,7 +74,6 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 				editFilter	= (EditText) view.findViewById(R.id.editFilter);
 				fab			= (FloatingActionButton) view.findViewById(R.id.fab);
 				section		= getArguments().getInt(ARG_SECTION_NUMBER);
-
 				stickyList.setOnItemClickListener(this);
 				stickyList.setOnHeaderClickListener(this);
 				stickyList.setOnStickyHeaderChangedListener(this);
