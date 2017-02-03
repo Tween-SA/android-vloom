@@ -8,7 +8,6 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Message;
-import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.ApiConnection;
@@ -80,7 +79,6 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 				if(StringUtils.isNotEmpty(msgId))
 				{
 					Message message = realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
-					MessageHelper.debugMessage(message);
 
 					if(message != null)
 					{

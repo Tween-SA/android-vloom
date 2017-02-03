@@ -284,4 +284,9 @@
 		<item>Posteingang leeren</item>
 		<item>Abmelden</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>Teilen</item>
+		<item>Bearbeiten</item>
+		<item>Löschen</item>
+	</string-array><!-- after traslate -->
 </resources>

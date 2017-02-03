@@ -11,7 +11,6 @@ import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
-import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
@@ -171,7 +170,6 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 			else
 			{
 				Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-				SuscriptionHelper.debugSuscription(suscription);
 
 				if(suscription != null)
 				{

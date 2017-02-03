@@ -63,6 +63,8 @@ public class Common
 	public static final String			KEY_PREF_FREEPASS			= "freePassOn"; //Clave de preferencia para indicar que el usuario se registró y espera el código de verificación
 	public static final String			KEY_PREF_LOGGED				= "logged"; //Clave de preferencia para indicar que el usuario se registró y espera el código de verificación
 	public static final String			KEY_PREF_NO_RATE			= "iWontRate"; //Clave de prefencia que indica si el usuario oprimió en "No, gracias" cuando se le sugirió calificar la app
+	public static final String			KEY_PREF_SHOWFREEPASS		= "showCaseFreePass"; //Clave de preferencia para indicar que ya se efectuó el showcase de notas, comentarios y fotos
+	public static final String			KEY_PREF_SHOWNOTE			= "showCaseNoteComentPhoto"; //Clave de preferencia para indicar que ya se efectuó el showcase de notas, comentarios y fotos
 	public static final String			KEY_PREF_SPLASHED			= "splashed"; //Clave de preferencia para indicar que ya se efectuó el splash de la primera vez
 	public static final String			KEY_PREF_TSCOMPANIES		= "time2UpdateCompanies"; //Clave de preferencia para guardar la última vez que se actualizaron los datos de las companies
 	public static final String			KEY_PREF_TSSUBSCRIPTIONS	= "time2UpdateSubscriptions"; //Clave de preferencia para guardar la última vez que se actualizaron los datos de las suscripciones

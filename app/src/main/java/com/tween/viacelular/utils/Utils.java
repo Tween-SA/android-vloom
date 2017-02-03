@@ -26,6 +26,8 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -67,7 +69,48 @@ import io.realm.Realm;
  */
 public class Utils
 {
-	public static final String path2Copy = Environment.getExternalStorageDirectory().getPath()+"/".replace("//", "/");//"/sdcard/";
+	private static final String path2Copy = Environment.getExternalStorageDirectory().getPath()+"/".replace("//", "/");//"/sdcard/";
+
+	/**
+	 * Destaque para nuevas funcionalidades
+	 * @param activity
+	 * @param view
+	 * @param title
+     * @param content
+     */
+	public static void initShowCase(Activity activity, View view, String title, String content, TapTargetView.Listener listener)
+	{
+		if(listener != null)
+		{
+			TapTargetView.showFor(activity, TapTarget.forView(view, title, content)
+				.outerCircleColor(R.color.accent)
+				.targetCircleColor(android.R.color.white)
+				.titleTextSize(28)
+				.descriptionTextSize(20)
+				.textColor(android.R.color.white)
+				.dimColor(R.color.black)
+				.drawShadow(true)
+				.cancelable(true)
+				.tintTarget(false)
+				.transparentTarget(true)
+				.targetRadius(40), listener);
+		}
+		else
+		{
+			TapTargetView.showFor(activity, TapTarget.forView(view, title, content)
+				.outerCircleColor(R.color.accent)
+				.targetCircleColor(android.R.color.white)
+				.titleTextSize(28)
+				.descriptionTextSize(20)
+				.textColor(android.R.color.white)
+				.dimColor(R.color.black)
+				.drawShadow(true)
+				.cancelable(true)
+				.tintTarget(false)
+				.transparentTarget(true)
+				.targetRadius(40));
+		}
+	}
 
 	//Cambio de contexto para redirigir desde el menú
 	public static void redirectMenu(Activity activity, int position, int current)
@@ -228,7 +271,7 @@ public class Utils
 
 		try
 		{
-			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			SharedPreferences preferences	= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			boolean logged					= preferences.getBoolean(Common.KEY_PREF_LOGGED, false);
 			boolean checked					= preferences.getBoolean(Common.KEY_PREF_CHECKED, false);
 			boolean freePassOn				= preferences.getBoolean(Common.KEY_PREF_FREEPASS, false);
