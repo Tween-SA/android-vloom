@@ -102,7 +102,7 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 				}
 
 				final String finalCountry = country;
-				realm.executeTransaction(new Realm.Transaction()
+				realm.executeTransactionAsync(new Realm.Transaction()
 				{
 					@Override
 					public void execute(Realm realm)
@@ -115,12 +115,6 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 															System.currentTimeMillis(), Common.BOOL_NO, Message.KIND_TEXT, "", "", "", "", "", Suscription.COMPANY_ID_VC_MONGO);
 						realm.copyToRealmOrUpdate(messageRealm);
 						realm.copyToRealmOrUpdate(messageRealm1);
-						Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, Suscription.COMPANY_ID_VC_MONGO).findFirst();
-
-						if(suscription != null)
-						{
-							suscription.getMessages().add(messageRealm);
-						}
 					}
 				});
 			}

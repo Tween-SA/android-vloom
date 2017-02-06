@@ -2,9 +2,11 @@ package com.tween.viacelular.models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import com.tween.viacelular.data.Company;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.Utils;
+
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;

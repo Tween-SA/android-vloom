@@ -71,11 +71,11 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(result.equals(ApiConnection.OK))
 			{
-				company = SuscriptionHelper.parseEntity(jsonResult.getJSONObject(Common.KEY_CONTENT), companyId, countryCode, context, false, getFlag());
+				company = SuscriptionHelper.parseEntity(jsonResult.getJSONObject(Common.KEY_CONTENT), companyId, countryCode, context, false, getFlag(), false);
 			}
 			else
 			{
-				company = SuscriptionHelper.parseEntity(null, companyId, countryCode, context, false, getFlag());
+				company = SuscriptionHelper.parseEntity(null, companyId, countryCode, context, false, getFlag(), false);
 			}
 
 			companyId = company.getCompanyId();

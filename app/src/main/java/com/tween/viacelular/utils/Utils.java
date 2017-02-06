@@ -46,6 +46,7 @@ import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
@@ -192,6 +193,8 @@ public class Utils
 	{
 		try
 		{
+			System.out.println("Utils: ");
+			MessageHelper.debugMessage(message);
 			MyFirebaseMessagingService push	= new MyFirebaseMessagingService();
 			push.setContext(context);
 			Bundle bundle				= new Bundle();

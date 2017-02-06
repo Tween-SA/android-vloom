@@ -72,6 +72,7 @@ import com.tween.viacelular.services.MyUploadService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import io.realm.Realm;
@@ -182,9 +183,20 @@ public class CardViewActivity extends AppCompatActivity
 				{
 					System.out.println("Intent companyId: "+intentRecive.getStringExtra(Common.KEY_ID));
 					System.out.println("Intent msgId: "+intentRecive.getStringExtra(Common.KEY_LAST_MSGID));
+					System.out.println("Intent json: "+intentRecive.getStringExtra(Suscription.KEY_API));
 					//Modificaciones para migrar entidad Company completa a Realm
 					companyId	= intentRecive.getStringExtra(Common.KEY_ID);
 					suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+
+					if(suscription == null)
+					{
+						//Intentar con otra cosa
+						if(StringUtils.isNotEmpty(intentRecive.getStringExtra(Suscription.KEY_API)))
+						{
+							JSONObject json	= new JSONObject(intentRecive.getStringExtra(Suscription.KEY_API));
+							suscription		= SuscriptionHelper.parseEntity(json, companyId, "", this, false, Common.BOOL_YES, true);
+						}
+					}
 
 					if(suscription != null)
 					{
@@ -872,9 +884,14 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			realm.beginTransaction();
-			suscription.setGray(Common.BOOL_YES);
-			realm.commitTransaction();
+			realm.executeTransaction(new Realm.Transaction()
+			{
+				@Override
+				public void execute(Realm realm)
+				{
+					suscription.setGray(Common.BOOL_YES);
+				}
+			});
 			Utils.hideViewWithFade(cardSuscribe, this);
 			txtTitle.setTextColor(Utils.adjustAlpha(colorTitle, Common.ALPHA_FOR_BLOCKS));
 			txtSubTitleCollapsed.setTextColor(Utils.adjustAlpha(colorSubTitle, Common.ALPHA_FOR_BLOCKS));
@@ -889,6 +906,7 @@ public class CardViewActivity extends AppCompatActivity
 			}
 
 			rcwCard.setLayoutParams(p);
+			realm.close();
 		}
 		catch(Exception e)
 		{

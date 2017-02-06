@@ -417,14 +417,14 @@ public abstract class SuscriptionHelper
 				{
 					for(int i = 0; i < jsonArray.length(); i++)
 					{
-						parseEntity(jsonArray.getJSONObject(i), "", "", context, update, 2);
+						parseEntity(jsonArray.getJSONObject(i), "", "", context, update, 2, false);
 					}
 				}
 				else
 				{
 					if(!update)
 					{
-						Suscription vc = new Suscription(	Suscription.COMPANY_ID_VC_MONGO, context.getString(R.string.app_name), Land.DEFAULT_VALUE, "2",context.getString(R.string.app),
+						final Suscription vc = new Suscription(	Suscription.COMPANY_ID_VC_MONGO, context.getString(R.string.app_name), Land.DEFAULT_VALUE, "2",context.getString(R.string.app),
 															Suscription.TYPE_FREE_REGISTERED, Suscription.ICON_APP, Common.COLOR_ACTION,
 															"[\"from\":\""+Suscription.DEFAULT_SENDER+"\", \"type\":\"free\"]", context.getString(R.string.app_name) + ",", "",
 															context.getString(R.string.url), "2614239139",
@@ -432,10 +432,14 @@ public abstract class SuscriptionHelper
 															"", Common.BOOL_NO, "", "Recibe notificaciones de vencimiento, promociones y novedades de "+context.getString(R.string.app_name),
 															Suscription.STATUS_ACTIVE, Common.BOOL_NO, Common.BOOL_NO, Common.MAIL_TWEEN, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_YES,
 															Common.BOOL_NO, Suscription.KEY_DEFAULTTWITTER);
-
-						realm.beginTransaction();
-						realm.copyToRealmOrUpdate(vc);
-						realm.commitTransaction();
+						realm.executeTransaction(new Realm.Transaction()
+						{
+							@Override
+							public void execute(Realm realm)
+							{
+								realm.copyToRealmOrUpdate(vc);
+							}
+						});
 					}
 				}
 			}
@@ -443,16 +447,21 @@ public abstract class SuscriptionHelper
 			{
 				if(!update)
 				{
-					Suscription vc = new Suscription(	Suscription.COMPANY_ID_VC_MONGO, context.getString(R.string.app_name), Land.DEFAULT_VALUE, "2", context.getString(R.string.app),
+					final Suscription vc = new Suscription(	Suscription.COMPANY_ID_VC_MONGO, context.getString(R.string.app_name), Land.DEFAULT_VALUE, "2", context.getString(R.string.app),
 							Suscription.TYPE_FREE_REGISTERED, Suscription.ICON_APP, Common.COLOR_ACTION, "[\"from\":\""+Suscription.DEFAULT_SENDER+"\", \"type\":\"free\"]",
 							context.getString(R.string.app_name) + ",", "", context.getString(R.string.url), "2614239139",
 							"[{“title”:”Favorite Road Trips”,”msg”:”Tu credit con Falabella cumple 180 días de mora el 02-12-2015…”,”created”:”1450370433000”}]",
 							"", Common.BOOL_NO, "", "Recibe notificaciones de vencimiento, promociones y novedades de "+context.getString(R.string.app_name),
 							Suscription.STATUS_ACTIVE, Common.BOOL_NO, Common.BOOL_NO, Common.MAIL_TWEEN, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_YES, Common.BOOL_NO,
 							Suscription.KEY_DEFAULTTWITTER);
-					realm.beginTransaction();
-					realm.copyToRealmOrUpdate(vc);
-					realm.commitTransaction();
+					realm.executeTransaction(new Realm.Transaction()
+					{
+						@Override
+						public void execute(Realm realm)
+						{
+							realm.copyToRealmOrUpdate(vc);
+						}
+					});
 				}
 			}
 		}
@@ -460,6 +469,50 @@ public abstract class SuscriptionHelper
 		{
 			Utils.logError(context, "SuscriptionHelper:parseList - Exception:", e);
 		}
+	}
+
+	public static String toJSON(Suscription suscription, Context context)
+	{
+		String json = "";
+		try
+		{
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put(Suscription.KEY_API, suscription.getCompanyId());
+			jsonObject.put(Common.KEY_NAME, suscription.getName());
+			jsonObject.put(Land.KEY_API, suscription.getCountryCode());
+			jsonObject.put(Suscription.KEY_INDUSTRYCODE, suscription.getIndustryCode());
+			jsonObject.put(Suscription.KEY_INDUSTRY, suscription.getIndustry());
+			jsonObject.put(Common.KEY_TYPE, suscription.getType());
+			jsonObject.put(Suscription.KEY_IMAGE, suscription.getImage());
+			jsonObject.put(Suscription.KEY_COLOR, suscription.getColorHex());
+			jsonObject.put(Suscription.KEY_NUMBERS, suscription.getFromNumbers());
+			jsonObject.put(Suscription.KEY_KEYWORDS, suscription.getKeywords());
+			jsonObject.put(Suscription.KEY_UNSUSCRIBE, suscription.getUnsuscribe());
+			jsonObject.put(Suscription.KEY_URL, suscription.getUrl());
+			jsonObject.put(User.KEY_PHONE, suscription.getPhone());
+			jsonObject.put(Suscription.KEY_MSGEXAMPLES, suscription.getMsgExamples());
+			jsonObject.put(Suscription.KEY_IDENTIFICATIONKEY, suscription.getIdentificationKey());
+			jsonObject.put(Suscription.KEY_DATASENT, suscription.getDataSent());
+			jsonObject.put(Suscription.KEY_IDENTIFICATIONVALUE, suscription.getIdentificationValue());
+			jsonObject.put(Suscription.KEY_ABOUT, suscription.getAbout());
+			jsonObject.put(Common.KEY_STATUS, suscription.getStatus());
+			jsonObject.put(Suscription.KEY_SILENCED, suscription.getSilenced());
+			jsonObject.put(Suscription.KEY_BLOCKED, suscription.getBlocked());
+			jsonObject.put(User.KEY_EMAIL, suscription.getEmail());
+			jsonObject.put(Suscription.KEY_RECEIVE, suscription.getReceive());
+			jsonObject.put(Suscription.KEY_SUSCRIBE, suscription.getSuscribe());
+			jsonObject.put(Suscription.KEY_FOLLOWER, suscription.getFollower());
+			jsonObject.put(Suscription.KEY_GRAY, suscription.getGray());
+			jsonObject.put(Suscription.KEY_LASTSOCIALUPDATED, suscription.getLastSocialUpdated());
+			jsonObject.put(Suscription.KEY_TWITTER, suscription.getTwitter());
+			json = jsonObject.toString();
+		}
+		catch(Exception e)
+		{
+			Utils.logError(context, "SuscriptionHelper:toJSON - Exception:", e);
+		}
+
+		return json;
 	}
 
 	/**
@@ -471,7 +524,7 @@ public abstract class SuscriptionHelper
 	 * @param update
 	 * @return Suscription
 	 */
-	public static Suscription parseEntity(JSONObject jsonObject, String companyId, String countryCode, Context context, boolean update, int flag)
+	public static Suscription parseEntity(JSONObject jsonObject, String companyId, String countryCode, Context context, boolean update, int flag, boolean justParser)
 	{
 		Suscription company	= null;
 
@@ -1037,51 +1090,55 @@ public abstract class SuscriptionHelper
 				}
 			}
 
-			company = new Suscription(	jCompanyId, jName, jCountryCode, jIndustryCode, jIndustry, jType, jImage, jColorHex, jFromNumbers, jKeywords, jUnsuscribe, jUrl, jPhone, jMsgExamples,
-										jIdentificationKey, jDataSent, jIdentificationValue, jAbout, jStatus, jSilenced, jBlocked, jEmail, jReceive, jSuscribe, jFollower, jGray, twitter);
+			company = new Suscription(	jCompanyId, jName, jCountryCode, jIndustryCode, jIndustry, jType, jImage, jColorHex, jFromNumbers, jKeywords, jUnsuscribe, jUrl, jPhone,
+										jMsgExamples, jIdentificationKey, jDataSent, jIdentificationValue, jAbout, jStatus, jSilenced, jBlocked, jEmail, jReceive, jSuscribe,
+										jFollower, jGray, twitter);
 			company.setReceive(Common.BOOL_YES);
 
 			//Agregado para actualizar companies mediante pull update
-			if(update)
+			if(!justParser)
 			{
-				Suscription existingCompany	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, company.getCompanyId()).findFirst();
-				realm.beginTransaction();
-
-				if(existingCompany != null)
+				if(update)
 				{
-					existingCompany.setName(company.getName());
-					existingCompany.setIndustry(company.getIndustry());
-					existingCompany.setIndustryCode(company.getIndustryCode());
-					existingCompany.setEmail(company.getEmail());
-					existingCompany.setFromNumbers(company.getFromNumbers());
-					existingCompany.setImage(company.getImage());
-					existingCompany.setColorHex(company.getColorHex());
-					existingCompany.setType(company.getType());
-					existingCompany.setKeywords(company.getKeywords());
-					existingCompany.setUnsuscribe(company.getUnsuscribe());
-					existingCompany.setStatus(company.getStatus());
-					existingCompany.setCountryCode(company.getCountryCode());
-					existingCompany.setUrl(company.getUrl());
-					existingCompany.setPhone(company.getPhone());
-					existingCompany.setMsgExamples(company.getMsgExamples());
-					existingCompany.setAbout(company.getAbout());
-					existingCompany.setIdentificationKey(company.getIdentificationKey());
-					existingCompany.setTwitter(company.getTwitter());
-					//Los campos internos no se actualizan para no perder la configuración local: silenced, blocked, receive, suscribe, dataSent, identificationValue, follower, gray
-					realm.copyToRealmOrUpdate(existingCompany);
+					Suscription existingCompany	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, company.getCompanyId()).findFirst();
+					realm.beginTransaction();
+
+					if(existingCompany != null)
+					{
+						existingCompany.setName(company.getName());
+						existingCompany.setIndustry(company.getIndustry());
+						existingCompany.setIndustryCode(company.getIndustryCode());
+						existingCompany.setEmail(company.getEmail());
+						existingCompany.setFromNumbers(company.getFromNumbers());
+						existingCompany.setImage(company.getImage());
+						existingCompany.setColorHex(company.getColorHex());
+						existingCompany.setType(company.getType());
+						existingCompany.setKeywords(company.getKeywords());
+						existingCompany.setUnsuscribe(company.getUnsuscribe());
+						existingCompany.setStatus(company.getStatus());
+						existingCompany.setCountryCode(company.getCountryCode());
+						existingCompany.setUrl(company.getUrl());
+						existingCompany.setPhone(company.getPhone());
+						existingCompany.setMsgExamples(company.getMsgExamples());
+						existingCompany.setAbout(company.getAbout());
+						existingCompany.setIdentificationKey(company.getIdentificationKey());
+						existingCompany.setTwitter(company.getTwitter());
+						//Los campos internos no se actualizan para no perder la configuración local: silenced, blocked, receive, suscribe, dataSent, identificationValue, follower, gray
+						realm.copyToRealmOrUpdate(existingCompany);
+					}
+					else
+					{
+						realm.copyToRealmOrUpdate(company);
+					}
+
+					realm.commitTransaction();
 				}
 				else
 				{
+					realm.beginTransaction();
 					realm.copyToRealmOrUpdate(company);
+					realm.commitTransaction();
 				}
-
-				realm.commitTransaction();
-			}
-			else
-			{
-				realm.beginTransaction();
-				realm.copyToRealmOrUpdate(company);
-				realm.commitTransaction();
 			}
 		}
 		catch(Exception e)
@@ -1440,9 +1497,15 @@ public abstract class SuscriptionHelper
 
 			client.setCompanyId(String.valueOf(System.currentTimeMillis())); //Generamos el nuevo id con timestamp para evitar duplicados
 			client.setFromNumbers(addNumber(fewness, Suscription.NUMBER_FREE, client, context));
-			realm.beginTransaction();
-			realm.insert(client);
-			realm.commitTransaction();
+			final Suscription suscription = client;
+			realm.executeTransaction(new Realm.Transaction()
+			{
+				@Override
+				public void execute(Realm realm)
+				{
+					realm.insert(suscription);
+				}
+			});
 		}
 		catch(Exception e)
 		{

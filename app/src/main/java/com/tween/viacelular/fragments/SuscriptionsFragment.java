@@ -7,14 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.TextView;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
@@ -26,7 +23,6 @@ import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
-import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -43,7 +39,6 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 	private StickyListHeadersListView	stickyList;
 	private FloatingActionButton		fab;
 	private int							originalSoftInputMode;
-	private EditText					editFilter;
 
 	public SuscriptionsFragment()
 	{
@@ -71,7 +66,6 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 			if(Utils.checkSesion(activityContext, Common.ANOTHER_SCREEN))
 			{
 				stickyList	= (StickyListHeadersListView) view.findViewById(R.id.list);
-				editFilter	= (EditText) view.findViewById(R.id.editFilter);
 				fab			= (FloatingActionButton) view.findViewById(R.id.fab);
 				section		= getArguments().getInt(ARG_SECTION_NUMBER);
 				stickyList.setOnItemClickListener(this);
@@ -102,18 +96,6 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 					}
 				});
 
-				editFilter.setOnEditorActionListener(new TextView.OnEditorActionListener()
-				{
-					@Override
-					public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent)
-					{
-						//Ejecutar consulta filtrada
-						populateList();
-						hideSoftKeyboard();
-						return true;
-					}
-				});
-
 				disableFilter();
 				populateList();
 			}
@@ -137,41 +119,12 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 			if(section == 1)
 			{
 				//Tab Añadidas
-				if(editFilter != null)
-				{
-					if(StringUtils.isNotEmpty(editFilter.getText().toString()))
-					{
-						suscriptions = realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).contains(Common.KEY_NAME, editFilter.getText().toString(), Case.INSENSITIVE)
-								.findAllSorted(Common.KEY_NAME);
-					}
-					else
-					{
-						suscriptions = realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).findAllSorted(Common.KEY_NAME);
-					}
-				}
-				else
-				{
-					suscriptions = realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).findAllSorted(Common.KEY_NAME);
-				}
+				suscriptions = realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).findAllSorted(Common.KEY_NAME);
 			}
 			else
 			{
 				//Tab Todas
-				if(editFilter != null)
-				{
-					if(StringUtils.isNotEmpty(editFilter.getText().toString()))
-					{
-						suscriptions = realm.where(Suscription.class).contains(Common.KEY_NAME, editFilter.getText().toString(), Case.INSENSITIVE).findAllSorted(Common.KEY_NAME);
-					}
-					else
-					{
-						suscriptions = realm.where(Suscription.class).findAllSorted(Common.KEY_NAME);
-					}
-				}
-				else
-				{
-					suscriptions = realm.where(Suscription.class).findAllSorted(Common.KEY_NAME);
-				}
+				suscriptions = realm.where(Suscription.class).findAllSorted(Common.KEY_NAME);
 			}
 
 			suscriptions.sort(Common.KEY_NAME);
@@ -238,26 +191,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 			//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
 			GoogleAnalytics.getInstance(getActivityContext()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Filtro")
 																											.setLabel("AccionUser").build());
-
-			if(fab != null)
-			{
-				fab.setImageResource(R.drawable.ic_clear_white_36dp);
-				fab.setOnClickListener(new View.OnClickListener()
-				{
-					@Override
-					public void onClick(View view)
-					{
-						disableFilter();
-					}
-				});
-			}
-
-			if(editFilter != null)
-			{
-				editFilter.setVisibility(EditText.VISIBLE);
-				editFilter.requestFocus();
-				showSoftKeyboard();
-			}
+			//TODO generar dialog similar a la carga de notas y comentarios pero con autocomplete y si es posible con logo
 		}
 		catch(Exception e)
 		{
@@ -280,15 +214,6 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 						enableFilter();
 					}
 				});
-			}
-
-			if(editFilter != null)
-			{
-				if(StringUtils.isNotEmpty(editFilter.getText().toString()))
-				{
-					editFilter.setText("");
-					populateList();
-				}
 			}
 
 			hideSoftKeyboard();

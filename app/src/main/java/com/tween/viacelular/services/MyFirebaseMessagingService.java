@@ -19,8 +19,8 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.tween.viacelular.R;
-import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.activities.CardViewActivity;
+import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.asynctask.CompanyAsyncTask;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
 import com.tween.viacelular.asynctask.LogoAsyncTask;
@@ -29,6 +29,7 @@ import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
+import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -409,7 +410,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 
 					if(StringUtils.isIdMongo(clientP.getCompanyId()))
 					{
-						intent.putExtra(Common.KEY_ID, clientP.getCompanyId());
 						image = clientP.getImage();
 						//Rollback para autoañadir companies si no está añadida
 						if(!newClient && clientP.getFollower() == Common.BOOL_NO && clientP.getBlocked() == Common.BOOL_NO)
@@ -417,11 +417,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 							HomeActivity.modifySubscriptions(context, Common.BOOL_YES, false, clientP.getCompanyId(), false);
 						}
 					}
-					else
-					{
-						intent.putExtra(Common.KEY_ID, "");
-					}
 
+					intent.putExtra(Common.KEY_ID, clientP.getCompanyId());
+					intent.putExtra(Suscription.KEY_API, SuscriptionHelper.toJSON(clientP, context));
 					intent.putExtra(Common.KEY_LAST_MSGID, msgId);
 					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					PendingIntent pendingIntent						= PendingIntent.getActivity(context, from, intent, PendingIntent.FLAG_ONE_SHOT);

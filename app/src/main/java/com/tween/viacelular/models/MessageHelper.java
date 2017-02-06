@@ -508,10 +508,17 @@ public abstract class MessageHelper
 
 			if(soundOn == MyFirebaseMessagingService.PUSH_NORMAL)
 			{
+				final Message messageToInsert = message;
 				Realm realm = Realm.getDefaultInstance();
-				realm.beginTransaction();
-				realm.copyToRealmOrUpdate(message);
-				realm.commitTransaction();
+				realm.executeTransaction(new Realm.Transaction()
+				{
+					@Override
+					public void execute(Realm realm)
+					{
+						realm.copyToRealmOrUpdate(messageToInsert);
+					}
+				});
+				realm.close();
 			}
 			else
 			{
