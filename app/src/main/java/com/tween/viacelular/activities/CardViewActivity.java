@@ -181,9 +181,6 @@ public class CardViewActivity extends AppCompatActivity
 
 				if(intentRecive != null)
 				{
-					System.out.println("Intent companyId: "+intentRecive.getStringExtra(Common.KEY_ID));
-					System.out.println("Intent msgId: "+intentRecive.getStringExtra(Common.KEY_LAST_MSGID));
-					System.out.println("Intent json: "+intentRecive.getStringExtra(Suscription.KEY_API));
 					//Modificaciones para migrar entidad Company completa a Realm
 					companyId	= intentRecive.getStringExtra(Common.KEY_ID);
 					suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
@@ -388,7 +385,7 @@ public class CardViewActivity extends AppCompatActivity
 
 			if(!preferences.getBoolean(Common.KEY_PREF_SHOWNOTE, false))
 			{
-				Utils.initShowCase(this, fabOpen, "Notas, Comentarios y Fotos", "Ahora puedes crear notas y agregar fotos y comentarios a tus mensajes!", new TapTargetView.Listener()
+				Utils.initShowCase(this, fabOpen, getString(R.string.showcase_note_title), getString(R.string.showcase_note_subtitle), new TapTargetView.Listener()
 				{
 					@Override
 					public void onTargetClick(TapTargetView view)

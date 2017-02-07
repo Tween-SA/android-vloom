@@ -265,11 +265,17 @@ public abstract class SuscriptionHelper
 			companyPhantom					= new ArrayList<>();
 			List<Suscription> suscriptions	= getList(context);
 
-			for(Suscription suscription : suscriptions)
+			if(suscriptions.size() > 0)
 			{
-				if(!StringUtils.isIdMongo(suscription.getCompanyId()))
+				for(Suscription suscription : suscriptions)
 				{
-					companyPhantom.add(suscription);
+					if(suscription != null)
+					{
+						if(!StringUtils.isIdMongo(suscription.getCompanyId()))
+						{
+							companyPhantom.add(suscription);
+						}
+					}
 				}
 			}
 		}

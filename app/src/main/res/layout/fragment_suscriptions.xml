@@ -3,14 +3,11 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:orientation="vertical"
-	android:layout_weight="3">
+	android:orientation="vertical">
 	<se.emilsjolander.stickylistheaders.StickyListHeadersListView
 		android:id="@+id/list"
 		android:layout_width="match_parent"
-		android:layout_height="0dp"
-		android:layout_weight="2.9"
+		android:layout_height="match_parent"
 		android:clipToPadding="false"
 		android:drawSelectorOnTop="true"
 		android:paddingTop="4dp"
@@ -23,15 +20,4 @@
 		android:layout_marginBottom="4dp"
 		android:dividerHeight="0dp"
 		android:background="@android:color/transparent" />
-	<android.support.design.widget.FloatingActionButton
-		android:id="@+id/fab"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="bottom|end"
-		app:elevation="6dp"
-		android:onClick="animateFab"
-		app:backgroundTint="@color/accent"
-		app:pressedTranslationZ="12dp"
-		android:layout_margin="@dimen/fab_margin"
-		app:srcCompat="@drawable/ic_search_white_36dp" />
 </LinearLayout>

@@ -1,19 +1,14 @@
 package com.tween.viacelular.fragments;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.SuscriptionsActivity;
 import com.tween.viacelular.adapters.SuscriptionsAdapter;
@@ -37,8 +32,6 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 	private SuscriptionsActivity		activityContext;
 	private int							section;
 	private StickyListHeadersListView	stickyList;
-	private FloatingActionButton		fab;
-	private int							originalSoftInputMode;
 
 	public SuscriptionsFragment()
 	{
@@ -66,7 +59,6 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 			if(Utils.checkSesion(activityContext, Common.ANOTHER_SCREEN))
 			{
 				stickyList	= (StickyListHeadersListView) view.findViewById(R.id.list);
-				fab			= (FloatingActionButton) view.findViewById(R.id.fab);
 				section		= getArguments().getInt(ARG_SECTION_NUMBER);
 				stickyList.setOnItemClickListener(this);
 				stickyList.setOnHeaderClickListener(this);
@@ -86,17 +78,6 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 					});
 				}
 
-				//Agregado para activar búsqueda
-				fab.setOnClickListener(new View.OnClickListener()
-				{
-					@Override
-					public void onClick(View view)
-					{
-						enableFilter();
-					}
-				});
-
-				disableFilter();
 				populateList();
 			}
 		}
@@ -112,9 +93,9 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 	{
 		try
 		{
-			Realm realm								= Realm.getDefaultInstance();
+			Realm realm						= Realm.getDefaultInstance();
 			RealmResults<Suscription> suscriptions;
-			List<String> listSuscriptions			= new ArrayList<>();
+			List<String> listSuscriptions	= new ArrayList<>();
 
 			if(section == 1)
 			{
@@ -131,7 +112,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 
 			if(suscriptions.size() > 0)
 			{
-				for(Suscription suscription: suscriptions)
+				for(Suscription suscription : suscriptions)
 				{
 					//Agregado para evitar mostrar phantoms companies
 					if(StringUtils.isIdMongo(suscription.getCompanyId()))
@@ -184,110 +165,13 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 		}
 	}
 
-	public void enableFilter()
-	{
-		try
-		{
-			//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
-			GoogleAnalytics.getInstance(getActivityContext()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Filtro")
-																											.setLabel("AccionUser").build());
-			//TODO generar dialog similar a la carga de notas y comentarios pero con autocomplete y si es posible con logo
-		}
-		catch(Exception e)
-		{
-			Utils.logError(activityContext, "SuscriptionsFragment:enableFilter - Exception:", e);
-		}
-	}
-
-	public void disableFilter()
-	{
-		try
-		{
-			if(fab != null)
-			{
-				fab.setImageResource(R.drawable.ic_search_white_36dp);
-				fab.setOnClickListener(new View.OnClickListener()
-				{
-					@Override
-					public void onClick(View view)
-					{
-						enableFilter();
-					}
-				});
-			}
-
-			hideSoftKeyboard();
-		}
-		catch(Exception e)
-		{
-			Utils.logError(activityContext, "SuscriptionsFragment:disableFilter - Exception:", e);
-		}
-	}
-
-	public SuscriptionsActivity getActivityContext()
-	{
-		return activityContext;
-	}
-
 	public void setActivityContext(final SuscriptionsActivity activityContext)
 	{
 		this.activityContext = activityContext;
 	}
 
-	public int getSection()
-	{
-		return section;
-	}
-
 	public void setSection(final int section)
 	{
 		this.section = section;
-	}
-
-	/**
-	 * Agregado para esconder el teclado cuando se oprime back
-	 */
-	private void hideSoftKeyboard()
-	{
-		try
-		{
-			activityContext.getWindow().setSoftInputMode(originalSoftInputMode);
-			// Hide keyboard when paused.
-			View currentFocusView = activityContext.getCurrentFocus();
-
-			if(currentFocusView != null)
-			{
-				InputMethodManager inputMethodManager = (InputMethodManager) activityContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-				inputMethodManager.hideSoftInputFromWindow(activityContext.getCurrentFocus().getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
-			}
-		}
-		catch(Exception e)
-		{
-			Utils.logError(activityContext, "SuscriptionsFragment:hideSoftKeyboard - Exception:", e);
-		}
-	}
-
-	/**
-	 * Agregado para mostrar el teclado
-	 */
-	private void showSoftKeyboard()
-	{
-		try
-		{
-			activityContext.getWindow().setSoftInputMode(originalSoftInputMode);
-
-			// Hide keyboard when paused.
-			View currentFocusView = activityContext.getCurrentFocus();
-
-			if(currentFocusView != null)
-			{
-				InputMethodManager inputMethodManager = (InputMethodManager) activityContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-				inputMethodManager.showSoftInput(activityContext.getCurrentFocus(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
-			}
-		}
-		catch(Exception e)
-		{
-			Utils.logError(activityContext, "SuscriptionsFragment:showSoftKeyboard - Exception:", e);
-		}
 	}
 }

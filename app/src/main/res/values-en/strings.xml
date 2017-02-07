@@ -142,6 +142,8 @@
 	<string name="seach">Search</string><!-- after traslate -->
 	<string name="seach_hint">Start typing the name of the company to look for</string><!-- after traslate -->
 	<string name="seach_title">Search company</string><!-- after traslate -->
+	<string name="showcase_note_title">Notes, Comments and Photos</string><!-- after traslate -->
+	<string name="showcase_note_subtitle">Now you can create notes and add photos and comments to your messages!</string><!-- after traslate -->
 	<string name="send_code">We\'ve sent an SMS with the activation code to the number</string>
 	<string name="send_mail_text">with Vloom Android:</string>
 	<string name="send_push_sms">Send test notification (SMS)</string>
