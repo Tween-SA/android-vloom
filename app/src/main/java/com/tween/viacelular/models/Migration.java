@@ -118,18 +118,6 @@ public class Migration implements RealmMigration
 
 					if(schema != null)
 					{
-						RealmObjectSchema subscription = schema.get(Suscription.class.getSimpleName());
-
-						if(subscription != null)
-						{
-							subscription.addField(Suscription.KEY_LASTSOCIALUPDATED, Long.class);
-							subscription.addField(Suscription.KEY_TWITTER, String.class);
-						}
-						else
-						{
-							System.out.println("subscription is null");
-						}
-
 						RealmObjectSchema message = schema.get(Message.class.getSimpleName());
 
 						if(message != null)
