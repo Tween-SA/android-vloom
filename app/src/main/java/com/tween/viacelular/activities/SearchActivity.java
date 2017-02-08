@@ -5,18 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.SuscriptionsAdapter;
@@ -24,10 +20,8 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -41,10 +35,12 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 																	StickyListHeadersListView.OnStickyHeaderOffsetChangedListener, StickyListHeadersListView.OnStickyHeaderChangedListener
 {
 	private MaterialSearchView			searchView;
-	private String						section	= "";
 	private StickyListHeadersListView	stickyList;
 	private Toolbar						toolBar;
 	private int							originalSoftInputMode;
+	private String						section	= "";
+	private String						filter	= "";
+	private boolean						enabled	= false;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -79,16 +75,30 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 				@Override
 				public boolean onQueryTextSubmit(String query)
 				{
-					System.out.println("onQueryTextSubmit: "+query);
-					populateList(query);
-					return false;
+					populateList();
+					enabled = false;
+					searchView.clearFocus();
+					searchView.setVisibility(View.VISIBLE);
+					return true;
 				}
 
 				@Override
 				public boolean onQueryTextChange(String newText)
 				{
-					System.out.println("onQueryTextChange: "+newText);
-					populateList(newText);
+					if(enabled)
+					{
+						filter = newText;
+						populateList();
+					}
+					else
+					{
+						if(searchView.isSearchOpen())
+						{
+							filter = "";
+							populateList();
+						}
+					}
+
 					return false;
 				}
 			});
@@ -97,17 +107,17 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 				@Override
 				public void onSearchViewShown()
 				{
-					toolBar.setVisibility(Toolbar.GONE);
-					System.out.println("onSearchViewShown");
+					populateList();
+					toolBar.setVisibility(Toolbar.INVISIBLE);
 					showSoftKeyboard();
+					enabled = true;
 				}
 
 				@Override
 				public void onSearchViewClosed()
 				{
 					hideSoftKeyboard();
-					toolBar.setVisibility(Toolbar.VISIBLE);
-					System.out.println("onSearchViewClosed");
+					onBackPressed();
 				}
 			});
 			final Intent intentRecive = getIntent();
@@ -128,8 +138,6 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 					}
 				});
 			}
-
-			populateList("");
 		}
 		catch(Exception e)
 		{
@@ -140,7 +148,7 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		toolBar.setVisibility(Toolbar.GONE);
+		toolBar.setVisibility(Toolbar.INVISIBLE);
 		getMenuInflater().inflate(R.menu.menu_search, menu);
 		MenuItem item = menu.findItem(R.id.action_search);
 		searchView.setMenuItem(item);
@@ -148,22 +156,23 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 		return true;
 	}
 
-	public void populateList(String filter)
+	public void populateList()
 	{
 		try
 		{
+			System.out.println("Consulta por: "+filter);
 			Realm realm						= Realm.getDefaultInstance();
 			RealmResults<Suscription> suscriptions;
 			List<String> listSuscriptions	= new ArrayList<>();
 
 			if(StringUtils.isNotEmpty(filter))
 			{
-				//Tab Añadidas
+				//Filtradas
 				suscriptions = realm.where(Suscription.class).contains(Common.KEY_NAME, filter, Case.INSENSITIVE).findAllSorted(Common.KEY_NAME);
 			}
 			else
 			{
-				//Tab Todas
+				//Todas
 				suscriptions = realm.where(Suscription.class).findAllSorted(Common.KEY_NAME);
 			}
 
@@ -187,7 +196,18 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 				}
 			}
 
-			SuscriptionsAdapter adapter = new SuscriptionsAdapter(listSuscriptions, this);
+			String backTo;
+
+			if(section.equals("suscriptions"))
+			{
+				backTo = "search";
+			}
+			else
+			{
+				backTo = "searchHome";
+			}
+
+			SuscriptionsAdapter adapter = new SuscriptionsAdapter(listSuscriptions, this, backTo);
 			stickyList.setAdapter(adapter);
 		}
 		catch(Exception e)
@@ -199,49 +219,24 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 	@Override
 	public void onBackPressed()
 	{
-		if(searchView.isSearchOpen())
+		Intent intent;
+
+		if(section.equals("suscriptions"))
 		{
-			searchView.closeSearch();
+			intent = new Intent(getApplicationContext(), SuscriptionsActivity.class);
 		}
 		else
 		{
-			Intent intent;
-
-			if(section.equals("suscriptions"))
-			{
-				intent = new Intent(getApplicationContext(), SuscriptionsActivity.class);
-			}
-			else
-			{
-				intent = new Intent(getApplicationContext(), HomeActivity.class);
-			}
-
-			startActivity(intent);
-			finish();
+			intent = new Intent(getApplicationContext(), HomeActivity.class);
 		}
+
+		startActivity(intent);
+		finish();
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		System.out.println("onActivityResult: "+requestCode+" resultCode: "+resultCode);
-		if(requestCode == MaterialSearchView.REQUEST_VOICE && resultCode == RESULT_OK)
-		{
-			ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-			System.out.println("matches: "+matches);
-
-			if(matches != null && matches.size() > 0)
-			{
-				String searchWrd = matches.get(0);
-
-				if(!TextUtils.isEmpty(searchWrd))
-				{
-					searchView.setQuery(searchWrd, false);
-				}
-			}
-
-			return;
-		}
-
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
@@ -272,8 +267,6 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 		try
 		{
 			getWindow().setSoftInputMode(originalSoftInputMode);
-
-			// Hide keyboard when paused.
 			View currentFocusView = getCurrentFocus();
 
 			if(currentFocusView != null)

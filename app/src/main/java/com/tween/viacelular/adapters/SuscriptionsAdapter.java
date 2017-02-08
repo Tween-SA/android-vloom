@@ -33,8 +33,9 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 	private int[]				mSectionIndices;
 	private Character[]			mSectionLetters;
 	private LayoutInflater		mInflater;
+	private String				backTo;
 
-	public SuscriptionsAdapter(List<String> itemList, Activity activityContext)
+	public SuscriptionsAdapter(List<String> itemList, Activity activityContext, String backTo)
 	{
 		Realm realm = Realm.getDefaultInstance();
 
@@ -50,6 +51,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		mSectionIndices			= getSectionIndices();
 		mSectionLetters			= getSectionLetters();
 		mInflater				= LayoutInflater.from(activityContext);
+		this.backTo				= backTo;
 	}
 
 	private int[] getSectionIndices()
@@ -191,7 +193,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 							{
 								Intent intent		= new Intent(activityContext, LandingActivity.class);
 								intent.putExtra(Common.KEY_ID, companyId);
-								intent.putExtra(Common.KEY_SECTION, "companies");
+								intent.putExtra(Common.KEY_SECTION, backTo);
 								activityContext.startActivity(intent);
 								activityContext.finish();
 							}
@@ -204,7 +206,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 							{
 								Intent intent		= new Intent(activityContext, LandingActivity.class);
 								intent.putExtra(Common.KEY_ID, companyId);
-								intent.putExtra(Common.KEY_SECTION, "companies");
+								intent.putExtra(Common.KEY_SECTION, backTo);
 								activityContext.startActivity(intent);
 								activityContext.finish();
 							}
@@ -218,7 +220,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 							{
 								Intent intent		= new Intent(activityContext, LandingActivity.class);
 								intent.putExtra(Common.KEY_ID, companyId);
-								intent.putExtra(Common.KEY_SECTION, "companies");
+								intent.putExtra(Common.KEY_SECTION, backTo);
 								activityContext.startActivity(intent);
 								activityContext.finish();
 							}

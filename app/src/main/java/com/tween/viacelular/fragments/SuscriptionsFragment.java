@@ -122,7 +122,7 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 				}
 			}
 
-			SuscriptionsAdapter adapter = new SuscriptionsAdapter(listSuscriptions, activityContext);
+			SuscriptionsAdapter adapter = new SuscriptionsAdapter(listSuscriptions, activityContext, "suscriptions");
 			stickyList.setAdapter(adapter);
 		}
 		catch(Exception e)

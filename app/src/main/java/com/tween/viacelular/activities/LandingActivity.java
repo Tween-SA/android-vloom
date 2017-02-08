@@ -386,7 +386,23 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			}
 			else
 			{
-				intent = new Intent(getApplicationContext(), SuscriptionsActivity.class);
+				if(section.equals("suscriptions"))
+				{
+					intent = new Intent(getApplicationContext(), SuscriptionsActivity.class);
+				}
+				else
+				{
+					if(section.equals("searchHome"))
+					{
+						intent = new Intent(getApplicationContext(), SearchActivity.class);
+						intent.putExtra(Common.KEY_SECTION, "home");
+					}
+					else
+					{
+						intent = new Intent(getApplicationContext(), SearchActivity.class);
+						intent.putExtra(Common.KEY_SECTION, "suscriptions");
+					}
+				}
 			}
 
 			startActivity(intent);

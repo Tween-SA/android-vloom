@@ -26,6 +26,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.HomeActivity;
+import com.tween.viacelular.activities.SearchActivity;
 import com.tween.viacelular.activities.VerifyPhoneActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
 import com.tween.viacelular.adapters.IconOptionAdapter;
@@ -194,9 +195,20 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 	{
 		try
 		{
-			switch(item.getItemId())
+			if(item.getItemId() == R.id.action_search)
 			{
-				case R.id.menu_refresh:
+				GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS)
+					.send(new HitBuilders.EventBuilder().setCategory("Company").setAction("Filtro").setLabel("AccionUser").build());
+				Intent intent = new Intent(getHomeActivity(), SearchActivity.class);
+				intent.putExtra(Common.KEY_SECTION, "home");
+				getHomeActivity().startActivity(intent);
+				getHomeActivity().finish();
+				return true;
+			}
+			else
+			{
+				if(item.getItemId() == R.id.menu_refresh)
+				{
 					Handler handler = new android.os.Handler();
 					handler.post(new Runnable()
 					{
@@ -205,7 +217,9 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 							initiateRefresh(true, true);
 						}
 					});
+
 					return true;
+				}
 			}
 		}
 		catch(Exception e)
