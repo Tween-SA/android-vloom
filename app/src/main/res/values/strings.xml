@@ -139,6 +139,10 @@
 	<string name="report">Denunciar</string>
 	<string name="response_invalid">Tu solicitud no pudo ser procesada, intenta nuevamente</string>
 	<string name="seach">Buscar</string><!-- after traslate -->
+	<string name="seach_hint">Comienza a escribir el nombre de la empresa a buscar</string><!-- after traslate -->
+	<string name="seach_title">Buscar empresa</string><!-- after traslate -->
+	<string name="showcase_note_title">Notas, Comentarios y Fotos</string><!-- after traslate -->
+	<string name="showcase_note_subtitle">Ahora puedes crear notas y agregar fotos y comentarios a tus mensajes!</string><!-- after traslate -->
 	<string name="send_code">Enviamos un SMS con el código de activación al número</string>
 	<string name="send_mail_text">con Vloom Android:\n</string>
 	<string name="send_push_sms">Enviar notificación de prueba (SMS)</string>

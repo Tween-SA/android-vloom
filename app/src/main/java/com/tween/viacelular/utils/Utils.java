@@ -25,8 +25,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.crashlytics.android.Crashlytics;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -45,10 +46,10 @@ import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -61,7 +62,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 
@@ -70,7 +70,48 @@ import io.realm.Realm;
  */
 public class Utils
 {
-	public static final String path2Copy = Environment.getExternalStorageDirectory().getPath()+"/".replace("//", "/");//"/sdcard/";
+	private static final String path2Copy = Environment.getExternalStorageDirectory().getPath()+"/".replace("//", "/");//"/sdcard/";
+
+	/**
+	 * Destaque para nuevas funcionalidades
+	 * @param activity
+	 * @param view
+	 * @param title
+     * @param content
+     */
+	public static void initShowCase(Activity activity, View view, String title, String content, TapTargetView.Listener listener)
+	{
+		if(listener != null)
+		{
+			TapTargetView.showFor(activity, TapTarget.forView(view, title, content)
+				.outerCircleColor(R.color.accent)
+				.targetCircleColor(android.R.color.white)
+				.titleTextSize(28)
+				.descriptionTextSize(20)
+				.textColor(android.R.color.white)
+				.dimColor(R.color.black)
+				.drawShadow(true)
+				.cancelable(true)
+				.tintTarget(false)
+				.transparentTarget(true)
+				.targetRadius(40), listener);
+		}
+		else
+		{
+			TapTargetView.showFor(activity, TapTarget.forView(view, title, content)
+				.outerCircleColor(R.color.accent)
+				.targetCircleColor(android.R.color.white)
+				.titleTextSize(28)
+				.descriptionTextSize(20)
+				.textColor(android.R.color.white)
+				.dimColor(R.color.black)
+				.drawShadow(true)
+				.cancelable(true)
+				.tintTarget(false)
+				.transparentTarget(true)
+				.targetRadius(40));
+		}
+	}
 
 	//Cambio de contexto para redirigir desde el menú
 	public static void redirectMenu(Activity activity, int position, int current)
@@ -152,6 +193,8 @@ public class Utils
 	{
 		try
 		{
+			System.out.println("Utils: ");
+			MessageHelper.debugMessage(message);
 			MyFirebaseMessagingService push	= new MyFirebaseMessagingService();
 			push.setContext(context);
 			Bundle bundle				= new Bundle();
@@ -231,7 +274,7 @@ public class Utils
 
 		try
 		{
-			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			SharedPreferences preferences	= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			boolean logged					= preferences.getBoolean(Common.KEY_PREF_LOGGED, false);
 			boolean checked					= preferences.getBoolean(Common.KEY_PREF_CHECKED, false);
 			boolean freePassOn				= preferences.getBoolean(Common.KEY_PREF_FREEPASS, false);
@@ -867,7 +910,7 @@ public class Utils
 					}
 
 					editor.apply();
-					new SplashAsyncTask(activity, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					checkSesion(activity, Common.SPLASH_SCREEN);
 				}
 			}
 			else
@@ -878,7 +921,7 @@ public class Utils
 				}
 				else
 				{
-					Utils.checkSesion(activity, Common.SPLASH_SCREEN);
+					checkSesion(activity, Common.SPLASH_SCREEN);
 				}
 			}
 		}
@@ -907,7 +950,7 @@ public class Utils
 					new GetLocationAsyncTask(activity, false, true, new CallBackListener()
 					{
 						@Override
-						public void callBack()
+						public void invoke()
 						{
 							activity.runOnUiThread(new Runnable()
 							{
@@ -920,13 +963,17 @@ public class Utils
 						}
 					}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
+				else
+				{
+					checkSesion(activity, Common.SPLASH_SCREEN);
+				}
 			}
 			else
 			{
 				new GetLocationAsyncTask(activity, false, false, new CallBackListener()
 				{
 					@Override
-					public void callBack()
+					public void invoke()
 					{
 						activity.runOnUiThread(new Runnable()
 						{

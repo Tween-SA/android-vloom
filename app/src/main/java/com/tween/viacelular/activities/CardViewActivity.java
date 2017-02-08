@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -46,6 +47,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -70,6 +72,7 @@ import com.tween.viacelular.services.MyUploadService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import io.realm.Realm;
@@ -120,6 +123,7 @@ public class CardViewActivity extends AppCompatActivity
 			super.onCreate(savedInstanceState);
 			Migration.getDB(this);
 			setContentView(R.layout.activity_cardview);
+			SharedPreferences preferences				= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			toolBar										= (Toolbar) findViewById(R.id.toolBarCardView);
 			rcwCard										= (RecyclerView) findViewById(R.id.rcwCard);
 			cardPayout									= (CardView) findViewById(R.id.cardPayout);
@@ -180,6 +184,16 @@ public class CardViewActivity extends AppCompatActivity
 					//Modificaciones para migrar entidad Company completa a Realm
 					companyId	= intentRecive.getStringExtra(Common.KEY_ID);
 					suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+
+					if(suscription == null)
+					{
+						//Intentar con otra cosa
+						if(StringUtils.isNotEmpty(intentRecive.getStringExtra(Suscription.KEY_API)))
+						{
+							JSONObject json	= new JSONObject(intentRecive.getStringExtra(Suscription.KEY_API));
+							suscription		= SuscriptionHelper.parseEntity(json, companyId, "", this, false, Common.BOOL_YES, true);
+						}
+					}
 
 					if(suscription != null)
 					{
@@ -368,6 +382,20 @@ public class CardViewActivity extends AppCompatActivity
 					}
 				}
 			};
+
+			if(!preferences.getBoolean(Common.KEY_PREF_SHOWNOTE, false))
+			{
+				Utils.initShowCase(this, fabOpen, getString(R.string.showcase_note_title), getString(R.string.showcase_note_subtitle), new TapTargetView.Listener()
+				{
+					@Override
+					public void onTargetClick(TapTargetView view)
+					{
+						super.onTargetClick(view);
+						animateFab(view);
+					}
+				});
+				preferences.edit().putBoolean(Common.KEY_PREF_SHOWNOTE, true).apply();
+			}
 		}
 		catch(Exception e)
 		{
@@ -507,23 +535,30 @@ public class CardViewActivity extends AppCompatActivity
 
 	public void animateFab(View view)
 	{
-		if(isFabOpen)
+		try
 		{
-			fabOpen.startAnimation(animRotateBackward);
-			fabNote.startAnimation(animClose);
-			fabPhoto.startAnimation(animClose);
-			fabNote.setClickable(false);
-			fabPhoto.setClickable(false);
-			isFabOpen = false;
+			if(isFabOpen)
+			{
+				fabOpen.startAnimation(animRotateBackward);
+				fabNote.startAnimation(animClose);
+				fabPhoto.startAnimation(animClose);
+				fabNote.setClickable(false);
+				fabPhoto.setClickable(false);
+				isFabOpen = false;
+			}
+			else
+			{
+				fabOpen.startAnimation(animRotateForward);
+				fabNote.startAnimation(animOpen);
+				fabPhoto.startAnimation(animOpen);
+				fabNote.setClickable(true);
+				fabPhoto.setClickable(true);
+				isFabOpen = true;
+			}
 		}
-		else
+		catch(Exception e)
 		{
-			fabOpen.startAnimation(animRotateForward);
-			fabNote.startAnimation(animOpen);
-			fabPhoto.startAnimation(animOpen);
-			fabNote.setClickable(true);
-			fabPhoto.setClickable(true);
-			isFabOpen = true;
+			Utils.logError(this, getLocalClassName()+":animateFab - Exception:", e);
 		}
 	}
 
@@ -534,7 +569,7 @@ public class CardViewActivity extends AppCompatActivity
 			new AttachAsyncTask(this, false, id, new CallBackListener()
 			{
 				@Override
-				public void callBack()
+				public void invoke()
 				{
 					runOnUiThread(new Runnable()
 					{
@@ -846,9 +881,14 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			Realm realm	= Realm.getDefaultInstance();
 			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			realm.beginTransaction();
-			suscription.setGray(Common.BOOL_YES);
-			realm.commitTransaction();
+			realm.executeTransaction(new Realm.Transaction()
+			{
+				@Override
+				public void execute(Realm realm)
+				{
+					suscription.setGray(Common.BOOL_YES);
+				}
+			});
 			Utils.hideViewWithFade(cardSuscribe, this);
 			txtTitle.setTextColor(Utils.adjustAlpha(colorTitle, Common.ALPHA_FOR_BLOCKS));
 			txtSubTitleCollapsed.setTextColor(Utils.adjustAlpha(colorSubTitle, Common.ALPHA_FOR_BLOCKS));
@@ -863,6 +903,7 @@ public class CardViewActivity extends AppCompatActivity
 			}
 
 			rcwCard.setLayoutParams(p);
+			realm.close();
 		}
 		catch(Exception e)
 		{

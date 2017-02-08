@@ -9,8 +9,4 @@
 		android:orderInCategory="100"
 		android:title="@string/abc_search_hint"
 		app:showAsAction="always" />
-	<item
-		android:id="@+id/menu_refresh"
-		android:title="@string/refresh_menu"
-		android:showAsAction="collapseActionView" />
 </menu>

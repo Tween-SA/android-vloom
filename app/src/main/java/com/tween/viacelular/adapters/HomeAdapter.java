@@ -111,73 +111,101 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 					RealmResults<Message> countNotif = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
 														.equalTo(Suscription.KEY_API, item.getCompanyId()).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 
+					//Modificación para migrar a asynctask la descarga de imágenes
+					if(StringUtils.isNotEmpty(item.getImage()))
+					{
+						//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
+						Picasso.with(activity.getHomeActivity()).load(item.getImage()).placeholder(R.drawable.ic_launcher).into(holder.picture);
+					}
+					else
+					{
+						//Mostrar el logo de Vloom si no tiene logo
+						Picasso.with(activity.getHomeActivity()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(holder.picture);
+					}
+
+					String name		= item.getName();
+					String industry	= item.getIndustry();
+
+					if(activity.getResources().getDisplayMetrics().density == Common.DENSITY_XHDPI)
+					{
+						//XHDPI
+						if(name.length() > 25)
+						{
+							name = name.substring(0, 20).trim() + "...";
+						}
+
+						if(industry.length() > 28)
+						{
+							industry = industry.substring(0, 20).trim() + "...";
+						}
+					}
+					else
+					{
+						//Agregado para nombres de company largos en fullhd
+						if(activity.getResources().getDisplayMetrics().density == Common.DENSITY_XXHDPI)
+						{
+							//XXHDPI
+							if(name.length() > 32)
+							{
+								name = name.substring(0, 30).trim() + "...";
+							}
+						}
+						else
+						{
+							//Agregado para nombres de company largos en resoluciones menores a HD
+							if(activity.getResources().getDisplayMetrics().density <= Common.DENSITY_HDPI)
+							{
+								//HDPI
+								if(name.length() > 25)
+								{
+									name = name.substring(0, 14).trim() + "...";
+								}
+
+								if(industry.length() > 28)
+								{
+									industry = industry.substring(0, 14).trim() + "...";
+								}
+							}
+						}
+					}
+
+					holder.title.setText(name);
+					holder.subTitle.setText(industry);
+					holder.rowTime.setText("");
+					holder.bigSilence.setVisibility(ImageView.GONE);
+					holder.bigPrice.setVisibility(ImageView.GONE);
+					int unread = 0;
+					//Se agregan los iconos para destacar cuando la company está bloqueada y se hizo dismiss de la card para suscribir
+					if(item.getGray() == Common.BOOL_YES)
+					{
+						holder.title.setTextColor(Utils.adjustAlpha(Color.BLACK, Common.ALPHA_FOR_BLOCKS));
+						holder.subTitle.setTextColor(Utils.adjustAlpha(Color.GRAY, Common.ALPHA_FOR_BLOCKS));
+						holder.bigBlock.setVisibility(ImageView.VISIBLE);
+						holder.price.setVisibility(ImageView.GONE);
+						holder.silence.setVisibility(ImageView.GONE);
+					}
+
+					holder.rlClient.setOnClickListener(new View.OnClickListener()
+					{
+						@Override
+						public void onClick(View v)
+						{
+							activity.redirectCard(item.getCompanyId());
+						}
+					});
+
+					holder.rlClient.setOnLongClickListener(new View.OnLongClickListener()
+					{
+						@Override
+						public boolean onLongClick(View v)
+						{
+							activity.showMenu(item, item.getCompanyId());
+							return true;
+						}
+					});
+
 					if(countNotif.size() > 0)
 					{
-						//Modificación para migrar a asynctask la descarga de imágenes
-						if(StringUtils.isNotEmpty(item.getImage()))
-						{
-							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
-							Picasso.with(activity.getHomeActivity()).load(item.getImage()).placeholder(R.drawable.ic_launcher).into(holder.picture);
-						}
-						else
-						{
-							//Mostrar el logo de Vloom si no tiene logo
-							Picasso.with(activity.getHomeActivity()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(holder.picture);
-						}
-
-						String name		= item.getName();
-						String industry	= item.getIndustry();
-
-						if(activity.getResources().getDisplayMetrics().density == Common.DENSITY_XHDPI)
-						{
-							//XHDPI
-							if(name.length() > 25)
-							{
-								name = name.substring(0, 20).trim() + "...";
-							}
-
-							if(industry.length() > 28)
-							{
-								industry = industry.substring(0, 20).trim() + "...";
-							}
-						}
-						else
-						{
-							//Agregado para nombres de company largos en fullhd
-							if(activity.getResources().getDisplayMetrics().density == Common.DENSITY_XXHDPI)
-							{
-								//XXHDPI
-								if(name.length() > 32)
-								{
-									name = name.substring(0, 30).trim() + "...";
-								}
-							}
-							else
-							{
-								//Agregado para nombres de company largos en resoluciones menores a HD
-								if(activity.getResources().getDisplayMetrics().density <= Common.DENSITY_HDPI)
-								{
-									//HDPI
-									if(name.length() > 25)
-									{
-										name = name.substring(0, 14).trim() + "...";
-									}
-
-									if(industry.length() > 28)
-									{
-										industry = industry.substring(0, 14).trim() + "...";
-									}
-								}
-							}
-						}
-
-						holder.title.setText(name);
-						holder.subTitle.setText(industry);
-						holder.rowTime.setText("");
-						holder.bigSilence.setVisibility(ImageView.GONE);
-						holder.bigPrice.setVisibility(ImageView.GONE);
-						int unread = 0;
-
 						//Agregado para mejora en la performance
 						for(Message message : countNotif)
 						{
@@ -255,35 +283,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 								holder.bigSilence.setVisibility(ImageView.GONE);
 							}
 						}
-
-						//Se agregan los iconos para destacar cuando la company está bloqueada y se hizo dismiss de la card para suscribir
-						if(item.getGray() == Common.BOOL_YES)
-						{
-							holder.title.setTextColor(Utils.adjustAlpha(Color.BLACK, Common.ALPHA_FOR_BLOCKS));
-							holder.subTitle.setTextColor(Utils.adjustAlpha(Color.GRAY, Common.ALPHA_FOR_BLOCKS));
-							holder.bigBlock.setVisibility(ImageView.VISIBLE);
-							holder.price.setVisibility(ImageView.GONE);
-							holder.silence.setVisibility(ImageView.GONE);
-						}
-
-						holder.rlClient.setOnClickListener(new View.OnClickListener()
-						{
-							@Override
-							public void onClick(View v)
-							{
-								activity.redirectCard(item.getCompanyId());
-							}
-						});
-
-						holder.rlClient.setOnLongClickListener(new View.OnLongClickListener()
-						{
-							@Override
-							public boolean onLongClick(View v)
-							{
-								activity.showMenu(item, item.getCompanyId());
-								return true;
-							}
-						});
 					}
 				}
 			}

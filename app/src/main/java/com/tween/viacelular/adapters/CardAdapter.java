@@ -487,7 +487,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 						});
 					}
 
-					if(holder.iconComent != null && holder.rlComment != null)
+					if(holder.iconComent != null && holder.rlComment != null && item.getKind() != Message.KIND_NOTE)
 					{
 						holder.ivEdit.setColorFilter(Color.parseColor(Common.COLOR_COMMENT));
 						holder.ivEdit.setOnClickListener(new View.OnClickListener()
@@ -655,6 +655,20 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								}
 							}
 						});
+					}
+					else
+					{
+						if(holder.iconComent != null && item.getKind() == Message.KIND_NOTE)
+						{
+							holder.iconComent.setOnClickListener(new View.OnClickListener()
+							{
+								@Override
+								public void onClick(View view)
+								{
+									activity.onCreateNote(item.getMsgId());
+								}
+							});
+						}
 					}
 
 					if(holder.iconAttach != null)

@@ -8,7 +8,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
-import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
@@ -103,7 +102,7 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 				}
 
 				final String finalCountry = country;
-				realm.executeTransaction(new Realm.Transaction()
+				realm.executeTransactionAsync(new Realm.Transaction()
 				{
 					@Override
 					public void execute(Realm realm)
@@ -116,18 +115,8 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 															System.currentTimeMillis(), Common.BOOL_NO, Message.KIND_TEXT, "", "", "", "", "", Suscription.COMPANY_ID_VC_MONGO);
 						realm.copyToRealmOrUpdate(messageRealm);
 						realm.copyToRealmOrUpdate(messageRealm1);
-						Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, Suscription.COMPANY_ID_VC_MONGO).findFirst();
-
-						if(suscription != null)
-						{
-							suscription.getMessages().add(messageRealm);
-						}
 					}
 				});
-			}
-			else
-			{
-				MessageHelper.updateCountry(preferences.getString(Land.KEY_API, ""), activity);
 			}
 
 			result = ApiConnection.OK;

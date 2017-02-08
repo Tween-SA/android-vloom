@@ -1,5 +1,7 @@
 package com.tween.viacelular.adapters;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +12,7 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
-import com.tween.viacelular.activities.SuscriptionsActivity;
+import com.tween.viacelular.activities.LandingActivity;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -26,13 +28,14 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
  */
 public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeadersAdapter, SectionIndexer
 {
-	private List<Suscription>		suscriptions		= new ArrayList<>();
-	private SuscriptionsActivity	activityContext;
-	private int[]					mSectionIndices;
-	private Character[]				mSectionLetters;
-	private LayoutInflater			mInflater;
+	private List<Suscription>	suscriptions	= new ArrayList<>();
+	private Activity			activityContext;
+	private int[]				mSectionIndices;
+	private Character[]			mSectionLetters;
+	private LayoutInflater		mInflater;
+	private String				backTo;
 
-	public SuscriptionsAdapter(List<String> itemList, SuscriptionsActivity activityContext)
+	public SuscriptionsAdapter(List<String> itemList, Activity activityContext, String backTo)
 	{
 		Realm realm = Realm.getDefaultInstance();
 
@@ -48,6 +51,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		mSectionIndices			= getSectionIndices();
 		mSectionLetters			= getSectionLetters();
 		mInflater				= LayoutInflater.from(activityContext);
+		this.backTo				= backTo;
 	}
 
 	private int[] getSectionIndices()
@@ -56,8 +60,8 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 
 		try
 		{
-			ArrayList<Integer> sectionIndices = new ArrayList<>();
-			char lastFirstChar = '\0';
+			ArrayList<Integer> sectionIndices	= new ArrayList<>();
+			char lastFirstChar					= '\0';
 
 			if(suscriptions != null)
 			{
@@ -180,15 +184,18 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 						}
 
 						holder.txtTitle.setText(item.getName());
-						final SuscriptionsActivity context	= activityContext;
-						final String companyId				= item.getCompanyId();
+						final String companyId = item.getCompanyId();
 
 						holder.picture.setOnClickListener(new View.OnClickListener()
 						{
 							@Override
 							public void onClick(View v)
 							{
-								SuscriptionsActivity.redirectLanding(context, companyId);
+								Intent intent		= new Intent(activityContext, LandingActivity.class);
+								intent.putExtra(Common.KEY_ID, companyId);
+								intent.putExtra(Common.KEY_SECTION, backTo);
+								activityContext.startActivity(intent);
+								activityContext.finish();
 							}
 						});
 
@@ -197,7 +204,11 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 							@Override
 							public void onClick(View v)
 							{
-								SuscriptionsActivity.redirectLanding(context, companyId);
+								Intent intent		= new Intent(activityContext, LandingActivity.class);
+								intent.putExtra(Common.KEY_ID, companyId);
+								intent.putExtra(Common.KEY_SECTION, backTo);
+								activityContext.startActivity(intent);
+								activityContext.finish();
 							}
 						});
 
@@ -207,7 +218,11 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 							@Override
 							public void onClick(View v)
 							{
-								SuscriptionsActivity.redirectLanding(context, companyId);
+								Intent intent		= new Intent(activityContext, LandingActivity.class);
+								intent.putExtra(Common.KEY_ID, companyId);
+								intent.putExtra(Common.KEY_SECTION, backTo);
+								activityContext.startActivity(intent);
+								activityContext.finish();
 							}
 						});
 
@@ -438,8 +453,8 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 	{
 		for(int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--)
 		{
-			final Suscription model = newModels.get(toPosition);
-			final int fromPosition = suscriptions.indexOf(model);
+			final Suscription model	= newModels.get(toPosition);
+			final int fromPosition	= suscriptions.indexOf(model);
 
 			if(fromPosition >= 0 && fromPosition != toPosition)
 			{

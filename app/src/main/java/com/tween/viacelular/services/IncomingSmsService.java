@@ -105,11 +105,10 @@ public class IncomingSmsService extends BroadcastReceiver
 							RealmResults<Message> notifications	= realm.where(Message.class).equalTo(Message.KEY_CHANNEL, address).equalTo(Common.KEY_TYPE, Message.TYPE_SMS)
 																	.equalTo(Message.KEY_CREATED, Long.valueOf(date)).findAll();
 
-							System.out.println("notifications: "+notifications.size());
 							if(notifications.size() == 0)
 							{
-								if(	StringUtils.isPhoneNumber(address) || message.contains(Message.SMS_CODE) || message.contains(Message.SMS_CODE_ES) || message.contains(Message.SMS_CODE_NEW) ||
-									message.contains(Message.SMS_CODE_ES_NEW))
+								if(	StringUtils.isPhoneNumber(address) || message.contains(Message.SMS_CODE) || message.contains(Message.SMS_CODE_ES) ||
+									message.contains(Message.SMS_CODE_NEW) || message.contains(Message.SMS_CODE_ES_NEW))
 								{
 									notification = new Message();
 									notification.setType(Message.TYPE_SMS);
@@ -117,7 +116,6 @@ public class IncomingSmsService extends BroadcastReceiver
 									notification.setCreated(System.currentTimeMillis());
 									notification.setChannel(address);
 									notification.setStatus(Message.STATUS_RECEIVE);
-
 									//Modificación para contemplar cambio en tratamiento de números cortos
 									editor.putInt(Common.KEY_LAST_MSGID, preferences.getInt(Common.KEY_LAST_MSGID, 1) + 1);
 									editor.apply();
@@ -222,7 +220,6 @@ public class IncomingSmsService extends BroadcastReceiver
 						}
 					}
 
-					System.out.println("code: "+code);
 					if(StringUtils.isNotEmpty(code))
 					{
 						if(StringUtils.isValidCode(code))

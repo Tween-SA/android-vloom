@@ -139,6 +139,10 @@
 	<string name="report">报告</string>
 	<string name="response_invalid">无法处理您的请求，请再试一次</string>
 	<string name="seach">搜索</string><!-- after traslate -->
+	<string name="seach_hint">开始输入公司的名称寻求</string><!-- after traslate -->
+	<string name="seach_title">搜索公司</string><!-- after traslate -->
+	<string name="showcase_note_title">注释，评论和照片</string><!-- after traslate -->
+	<string name="showcase_note_subtitle">现在你可以创建笔记和添加照片和评论你的帖子！</string><!-- after traslate -->
 	<string name="send_code">我们已发送一条包含验证激活码的短信到该手机号码上。</string>
 	<string name="send_mail_text">利用 Vloom Android 版：</string>
 	<string name="send_push_sms">发送测试通知（短信）</string>
