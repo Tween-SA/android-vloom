@@ -316,7 +316,7 @@ public class CardViewActivity extends AppCompatActivity
 
 					if(unread > 0)
 					{
-						new ConfirmReadingAsyncTask(false, companyId, "", Message.STATUS_READ, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+						new ConfirmReadingAsyncTask(false, companyId, "", Message.STATUS_READ, this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 					}
 
 					//Validaciones para mostrar o no campos según disponibilidad de datos
@@ -1018,7 +1018,7 @@ public class CardViewActivity extends AppCompatActivity
 								notification.setStatus(Message.STATUS_SPAM);
 							}
 						});
-						new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_SPAM, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+						new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_SPAM, this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
 						snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 						{
@@ -1035,7 +1035,7 @@ public class CardViewActivity extends AppCompatActivity
 									}
 								});
 								refresh(false);
-								new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+								new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 							}
 						});
 					}
@@ -1053,7 +1053,7 @@ public class CardViewActivity extends AppCompatActivity
 							notification.setStatus(Message.STATUS_SPAM);
 						}
 					});
-					new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_SPAM, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_SPAM, this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
 					snackBar = Snackbar.make(Clayout, getString(R.string.snack_msg_spam), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
@@ -1070,7 +1070,7 @@ public class CardViewActivity extends AppCompatActivity
 								}
 							});
 							refresh(false);
-							new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+							new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 						}
 					});
 					break;
@@ -1615,7 +1615,7 @@ public class CardViewActivity extends AppCompatActivity
 					//Agregado para capturar evento en Google Analytics
 					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("BloquearInCompany")
 																									.setLabel("AccionUser").build());
-					HomeActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, false);
+					HomeActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, false, companyId, false);
 					Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
 					intent.putExtra(Common.KEY_ID, companyId);
 					intent.putExtra(Suscription.KEY_BLOCKED, Common.BOOL_YES);
