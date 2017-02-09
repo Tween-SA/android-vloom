@@ -185,7 +185,7 @@ public class HomeActivity extends AppCompatActivity
 				}
 			}
 
-			new UpdateSuscriptionsAsyncTask(context, blockUI, flag, goToHome, companyId).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			new UpdateSuscriptionsAsyncTask(context, blockUI, flag, goToHome, companyId).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
 			if(sendSMS)
 			{

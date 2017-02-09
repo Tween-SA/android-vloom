@@ -502,7 +502,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 				{
 					try
 					{
-						new ConfirmReadingAsyncTask(context, false, "", msgId, Message.STATUS_RECEIVE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+						new ConfirmReadingAsyncTask(context, false, "", msgId, Message.STATUS_RECEIVE).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 					}
 					catch(Exception e)
 					{
@@ -529,7 +529,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					//Agregado para notificar como spam al ser descartado
 					GoogleAnalytics.getInstance(context).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
 							.setLabel("Accion_user").build());
-					new ConfirmReadingAsyncTask(context, false, "", id, Message.STATUS_SPAM).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					new ConfirmReadingAsyncTask(context, false, "", id, Message.STATUS_SPAM).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 				}
 			}
 		}
