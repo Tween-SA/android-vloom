@@ -50,7 +50,7 @@ public class ApiConnection
 	 * "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
 	 * "https://private-29fe84-davidfigueroa.apiary-mock.com/v1/"; //Development Apiary Private
 	 */
-	private static final String SERVERP					= "https://api.vloom.io/v1/";
+	private static final String SERVERP					= "https://dev.vloom.io/v1/";
 	public static final String IP_API					= "http://ip-api.com/json";
 	public static final String COMPANIES				= SERVERP+"companies";
 	public static final String COUNTRIES				= SERVERP+"countries?locale="+Locale.getDefault().getLanguage();

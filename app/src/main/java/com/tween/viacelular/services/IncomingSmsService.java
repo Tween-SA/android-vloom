@@ -253,63 +253,81 @@ public class IncomingSmsService extends BroadcastReceiver
 	{
 		try
 		{
-			PendingIntent sentPI		= PendingIntent.getBroadcast(context, 0, new Intent("SMS_SENT"), 0);
-			PendingIntent deliveredPI	= PendingIntent.getBroadcast(context, 0, new Intent("SMS_DELIVERED"), 0);
-
-			//---when the SMS has been sent---
-			context.registerReceiver(new BroadcastReceiver()
+			if(context != null && StringUtils.isNotEmpty(phoneNumber) && StringUtils.isNotEmpty(message))
 			{
-				@Override
-				public void onReceive(Context arg0, Intent arg1)
+				PendingIntent sentPI		= PendingIntent.getBroadcast(context, 0, new Intent("SMS_SENT"), 0);
+				PendingIntent deliveredPI	= PendingIntent.getBroadcast(context, 0, new Intent("SMS_DELIVERED"), 0);
+
+				if(sentPI != null && deliveredPI != null)
 				{
-					switch(getResultCode())
+					context.registerReceiver(new BroadcastReceiver()
 					{
-						case Activity.RESULT_OK:
-							System.out.println("SMS sent");
-						break;
+						@Override
+						public void onReceive(Context arg0, Intent arg1)
+						{
+							switch(getResultCode())
+							{
+								case Activity.RESULT_OK:
+									System.out.println("SMS sent");
+								break;
 
-						case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-							System.out.println("Generic failure");
-						break;
+								case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+									System.out.println("Generic failure");
+								break;
 
-						case SmsManager.RESULT_ERROR_NO_SERVICE:
-							System.out.println("No service");
-						break;
+								case SmsManager.RESULT_ERROR_NO_SERVICE:
+									System.out.println("No service");
+								break;
 
-						case SmsManager.RESULT_ERROR_NULL_PDU:
-							System.out.println("Null PDU");
-						break;
+								case SmsManager.RESULT_ERROR_NULL_PDU:
+									System.out.println("Null PDU");
+								break;
 
-						case SmsManager.RESULT_ERROR_RADIO_OFF:
-							System.out.println("Radio off");
-						break;
-					}
-				}
-			}, new IntentFilter("SMS_SENT"));
+								case SmsManager.RESULT_ERROR_RADIO_OFF:
+									System.out.println("Radio off");
+								break;
 
-			//---when the SMS has been delivered---
-			BroadcastReceiver broadcastReceiver = new BroadcastReceiver()
-			{
-				@Override
-				public void onReceive(Context arg0, Intent arg1)
-				{
-					switch(getResultCode())
+								default:
+									System.out.println("Result Code not found");
+								break;
+							}
+						}
+					}, new IntentFilter("SMS_SENT"));
+
+					//---when the SMS has been delivered---
+					BroadcastReceiver broadcastReceiver = new BroadcastReceiver()
 					{
-						case Activity.RESULT_OK:
-							System.out.println("SMS delivered");
-						break;
+						@Override
+						public void onReceive(Context arg0, Intent arg1)
+						{
+							switch(getResultCode())
+							{
+								case Activity.RESULT_OK:
+									System.out.println("SMS delivered");
+								break;
 
-						case Activity.RESULT_CANCELED:
-							System.out.println("SMS not delivered");
-						break;
+								case Activity.RESULT_CANCELED:
+									System.out.println("SMS not delivered");
+								break;
+
+								default:
+									System.out.println("Result Code2 not found");
+								break;
+							}
+						}
+					};
+
+					context.registerReceiver(broadcastReceiver, new IntentFilter("SMS_DELIVERED"));
+					SmsManager sms = SmsManager.getDefault();
+
+					if(sms != null)
+					{
+						sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
 					}
-				}
-			};
 
-			context.registerReceiver(broadcastReceiver, new IntentFilter("SMS_DELIVERED"));
-			SmsManager sms = SmsManager.getDefault();
-			sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
-			context.unregisterReceiver(broadcastReceiver);
+					context.unregisterReceiver(broadcastReceiver);
+				}
+			}
 		}
 		catch(Exception e)
 		{
