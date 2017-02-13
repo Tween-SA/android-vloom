@@ -528,12 +528,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 														@Override
 														public void onSuccess()
 														{
-															activity.attach(id);
+															holder.txtComment.setText(item.getNote());
+															Utils.showViewWithFade(holder.rlComment, activity);
+															activity.attach(id, comment, item.getAttached(), item.getAttachedTwo(), item.getAttachedThree());
 														}
 													});
-
-													holder.txtComment.setText(item.getNote());
-													Utils.showViewWithFade(holder.rlComment, activity);
 
 												}
 											}
@@ -594,12 +593,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 															@Override
 															public void onSuccess()
 															{
-																activity.attach(id);
+																holder.txtComment.setText(item.getNote());
+																Utils.showViewWithFade(holder.rlComment, activity);
+																activity.attach(id, comment, item.getAttached(), item.getAttachedTwo(), item.getAttachedThree());
 															}
 														});
-
-														holder.txtComment.setText(item.getNote());
-														Utils.showViewWithFade(holder.rlComment, activity);
 													}
 												}
 											}
@@ -641,12 +639,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 															@Override
 															public void onSuccess()
 															{
-																activity.attach(id);
+																holder.txtComment.setText(item.getNote());
+																Utils.showViewWithFade(holder.rlComment, activity);
+																activity.attach(id, comment, item.getAttached(), item.getAttachedTwo(), item.getAttachedThree());
 															}
 														});
-
-														holder.txtComment.setText(item.getNote());
-														Utils.showViewWithFade(holder.rlComment, activity);
 													}
 												}
 											}

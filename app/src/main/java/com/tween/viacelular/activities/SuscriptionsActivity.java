@@ -2,6 +2,7 @@ package com.tween.viacelular.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -153,7 +154,16 @@ public class SuscriptionsActivity extends AppCompatActivity
 				Intent intent = new Intent(this, SearchActivity.class);
 				intent.putExtra(Common.KEY_SECTION, "suscriptions");
 				startActivity(intent);
-				finish();
+
+				if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+				{
+					finishAndRemoveTask();
+				}
+				else
+				{
+					finish();
+				}
+
 				return true;
 			}
 		}

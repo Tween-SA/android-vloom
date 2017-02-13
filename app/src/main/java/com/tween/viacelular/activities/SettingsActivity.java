@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -194,7 +195,14 @@ public class SettingsActivity extends AppCompatActivity
 			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
 		}
 
-		finish();
+		if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+		{
+			finishAndRemoveTask();
+		}
+		else
+		{
+			finish();
+		}
 	}
 
 	public void goBusiness(View v)
@@ -211,7 +219,14 @@ public class SettingsActivity extends AppCompatActivity
 			Utils.logError(this, getLocalClassName()+":goBusiness - Exception:", e);
 		}
 
-		finish();
+		if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+		{
+			finishAndRemoveTask();
+		}
+		else
+		{
+			finish();
+		}
 	}
 
 	public void clickTxtSilence(View v)
@@ -518,7 +533,15 @@ public class SettingsActivity extends AppCompatActivity
 			editor.apply();
 			Intent intent					= new Intent(getApplicationContext(), PhoneActivity.class);
 			startActivity(intent);
-			finish();
+
+			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+			{
+				finishAndRemoveTask();
+			}
+			else
+			{
+				finish();
+			}
 		}
 		catch(Exception e)
 		{
@@ -608,7 +631,15 @@ public class SettingsActivity extends AppCompatActivity
 			Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
 			intent.putExtra(Common.KEY_REFRESH, false);
 			startActivity(intent);
-			finish();
+
+			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+			{
+				finishAndRemoveTask();
+			}
+			else
+			{
+				finish();
+			}
 		}
 		catch(Exception e)
 		{

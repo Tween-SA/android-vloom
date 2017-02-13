@@ -105,7 +105,6 @@ public class CardViewActivity extends AppCompatActivity
 	private Toolbar					toolBar;
 	private Uri						tempUri;
 	private BroadcastReceiver		mBroadcastReceiver;
-	private FirebaseAuth			mAuth;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -150,12 +149,13 @@ public class CardViewActivity extends AppCompatActivity
 			animRotateBackward							= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
 			rcwCard.setHasFixedSize(true);
 			RecyclerView.LayoutManager mLayoutManager	= new LinearLayoutManager(this);
+			FirebaseAuth mAuth							= FirebaseAuth.getInstance();
 			rcwCard.setLayoutManager(mLayoutManager);
 			setSupportActionBar(toolBar);
 			toolBar.setTitle("");
 			toolBar.setSubtitle("");
 			setTitle("");
-			mAuth = FirebaseAuth.getInstance();
+
 
 			if(mAuth != null)
 			{
@@ -316,7 +316,7 @@ public class CardViewActivity extends AppCompatActivity
 
 					if(unread > 0)
 					{
-						new ConfirmReadingAsyncTask(false, companyId, "", Message.STATUS_READ, this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+						new ConfirmReadingAsyncTask(false, companyId, "", Message.STATUS_READ, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 
 					//Validaciones para mostrar o no campos según disponibilidad de datos
@@ -562,11 +562,11 @@ public class CardViewActivity extends AppCompatActivity
 		}
 	}
 
-	public void attach(String id)
+	public void attach(String id, String comment, String linkOne, String linkTwo, String linkThree)
 	{
 		try
 		{
-			new AttachAsyncTask(this, false, id, new CallBackListener()
+			new AttachAsyncTask(this, false, id, comment, linkOne, linkTwo, linkThree, new CallBackListener()
 			{
 				@Override
 				public void invoke()
@@ -726,7 +726,15 @@ public class CardViewActivity extends AppCompatActivity
 			Intent intentRefresh = new Intent(this, CardViewActivity.class);
 			intentRefresh.putExtra(Common.KEY_ID, companyId);
 			startActivity(intentRefresh);
-			finish();
+
+			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+			{
+				finishAndRemoveTask();
+			}
+			else
+			{
+				finish();
+			}
 		}
 		catch(Exception e)
 		{
@@ -744,7 +752,15 @@ public class CardViewActivity extends AppCompatActivity
 			intent.putExtra(Common.KEY_ID, companyId);
 			intent.putExtra(Common.KEY_SECTION, "card");
 			startActivity(intent);
-			finish();
+
+			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+			{
+				finishAndRemoveTask();
+			}
+			else
+			{
+				finish();
+			}
 		}
 		catch(Exception e)
 		{
@@ -894,7 +910,6 @@ public class CardViewActivity extends AppCompatActivity
 			txtSubTitleCollapsed.setTextColor(Utils.adjustAlpha(colorSubTitle, Common.ALPHA_FOR_BLOCKS));
 			toolBar.setBackgroundColor(Color.parseColor(Common.COLOR_BLOCKED));
 			Utils.tintColorScreen(this, Common.COLOR_BLOCKED);
-
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 			if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -953,7 +968,6 @@ public class CardViewActivity extends AppCompatActivity
 			HomeActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, false);
 			Utils.hideViewWithFade(cardPayout, this);
 			Utils.hideViewWithFade(cardSuscribe, this);
-
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 			if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -962,13 +976,20 @@ public class CardViewActivity extends AppCompatActivity
 			}
 
 			rcwCard.setLayoutParams(p);
-
 			Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
 			intent.putExtra(Common.KEY_ID, companyId);
 			intent.putExtra(Suscription.KEY_BLOCKED, suscription.getBlocked());
 			intent.putExtra(Common.KEY_REFRESH, true);
 			startActivity(intent);
-			finish();
+
+			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+			{
+				finishAndRemoveTask();
+			}
+			else
+			{
+				finish();
+			}
 		}
 		catch(Exception e)
 		{
@@ -980,7 +1001,7 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			Realm realm					= Realm.getDefaultInstance();
+			final Realm realm			= Realm.getDefaultInstance();
 			suscription					= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			Snackbar snackBar			= null;
 			final Message notification	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
@@ -990,8 +1011,8 @@ public class CardViewActivity extends AppCompatActivity
 			{
 				case CardAdapter.OPTION_SHARE:
 					//Agregado para capturar evento en Google Analytics
-					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Compartir")
-																									.setLabel("Accion_user").build());
+					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Compartir")
+						.setLabel("Accion_user").build());
 					Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 					sharingIntent.setType("text/plain");
 					sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, notification.getType());
@@ -1274,7 +1295,8 @@ public class CardViewActivity extends AppCompatActivity
 
 						if(suscription != null)
 						{
-							if(StringUtils.isNotEmpty(suscription.getIdentificationKey()) && suscription.getDataSent() == Common.BOOL_NO && suscription.getFollower() == Common.BOOL_YES)
+							if(	StringUtils.isNotEmpty(suscription.getIdentificationKey()) && suscription.getDataSent() == Common.BOOL_NO &&
+								suscription.getFollower() == Common.BOOL_YES)
 							{
 								rlEmpty.setVisibility(RelativeLayout.GONE);
 								rcwCard.setVisibility(RecyclerView.GONE);
@@ -1433,8 +1455,8 @@ public class CardViewActivity extends AppCompatActivity
 			txtSubTitleCollapsed.setTextColor(colorSubTitle);
 			toolBar.setBackgroundColor(Color.parseColor(suscription.getColorHex()));
 			Utils.tintColorScreen(this, suscription.getColorHex());
-
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
 			if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 			{
 				p.removeRule(RelativeLayout.BELOW);
@@ -1451,7 +1473,6 @@ public class CardViewActivity extends AppCompatActivity
 				inputCode.setHint(suscription.getIdentificationKey());
 				String title = getString(R.string.landing_card_form_text1) + " " + suscription.getIdentificationKey() + " " + getString(R.string.landing_card_form_text2);
 				txtSubTitleForm.setText(title);
-
 				editCode.addTextChangedListener(new TextWatcher()
 				{
 					@Override
@@ -1517,8 +1538,8 @@ public class CardViewActivity extends AppCompatActivity
 				if(item.toString().equals(getString(R.string.silence)))
 				{
 					//Agregado para capturar evento en Google Analytics
-					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("SilenciarInCompany")
-																									.setLabel("AccionUser").build());
+					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Company")
+						.setAction("SilenciarInCompany").setLabel("AccionUser").build());
 					realm.executeTransaction(new Realm.Transaction()
 					{
 						@Override
@@ -1621,7 +1642,15 @@ public class CardViewActivity extends AppCompatActivity
 					intent.putExtra(Suscription.KEY_BLOCKED, Common.BOOL_YES);
 					intent.putExtra(Common.KEY_REFRESH, false);
 					startActivity(intent);
-					finish();
+
+					if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+					{
+						finishAndRemoveTask();
+					}
+					else
+					{
+						finish();
+					}
 				}
 
 				//Al igual que Silenciar/Activar, esta es la opción para suscribir
@@ -1669,7 +1698,15 @@ public class CardViewActivity extends AppCompatActivity
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			intent.putExtra(Common.KEY_REFRESH, false);
 			startActivity(intent);
-			finish();
+
+			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+			{
+				finishAndRemoveTask();
+			}
+			else
+			{
+				finish();
+			}
 		}
 		catch(Exception e)
 		{

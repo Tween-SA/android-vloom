@@ -31,10 +31,13 @@ public class MyUploadService extends MyBaseTaskService
 	public static final String	UPLOAD_ERROR		= "upload_error";
 	public static final String	EXTRA_FILE_URI		= "extra_file_uri";
 	public static final String	EXTRA_DOWNLOAD_URL	= "extra_download_url";
+	public String				linkOne				= "";
+	public String				linkTwo				= "";
+	public String				linkThree			= "";
+	public String				comment				= "";
 	private StorageReference	mStorageRef;
 	private int					field				= 1;
-	private Uri					fileUri;
-	private Uri					downloadUri;
+	private Uri					fileUri, downloadUri;
 
 	@Override
 	public void onCreate()
@@ -124,20 +127,25 @@ public class MyUploadService extends MyBaseTaskService
 									switch(field)
 									{
 										case 1:
+											linkOne = downloadUrl;
 											message.setAttached(downloadUrl);
 											message.setUri(fileUri.toString());
 										break;
 
 										case 2:
+											linkTwo = downloadUrl;
 											message.setAttachedTwo(downloadUrl);
 											message.setUriTwo(fileUri.toString());
 										break;
 
 										case 3:
+											linkThree = downloadUrl;
 											message.setAttachedThree(downloadUrl);
 											message.setUriThree(fileUri.toString());
 										break;
 									}
+
+									comment = message.getNote();
 								}
 							}
 						}, new Realm.Transaction.OnSuccess()
@@ -145,7 +153,7 @@ public class MyUploadService extends MyBaseTaskService
 							@Override
 							public void onSuccess()
 							{
-								new AttachAsyncTask(getApplicationContext(), false, id, new CallBackListener()
+								new AttachAsyncTask(getApplicationContext(), false, id, comment, linkOne, linkTwo, linkThree, new CallBackListener()
 								{
 									@Override
 									public void invoke()

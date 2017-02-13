@@ -363,7 +363,15 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			Intent intent = new Intent(getApplicationContext(), CardViewActivity.class);
 			intent.putExtra(Common.KEY_ID, companyId);
 			startActivity(intent);
-			finish();
+
+			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+			{
+				finishAndRemoveTask();
+			}
+			else
+			{
+				finish();
+			}
 		}
 		catch(Exception e)
 		{
@@ -406,7 +414,15 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			}
 
 			startActivity(intent);
-			finish();
+
+			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+			{
+				finishAndRemoveTask();
+			}
+			else
+			{
+				finish();
+			}
 		}
 		catch(Exception e)
 		{

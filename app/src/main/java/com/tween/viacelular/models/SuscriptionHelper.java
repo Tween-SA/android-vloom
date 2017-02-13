@@ -350,8 +350,6 @@ public abstract class SuscriptionHelper
 			String[] sortKey					= {Message.KEY_CREATED};
 			Sort[] sortVal						= {Sort.DESCENDING};
 			realmResults.sort(sortKey, sortVal);
-			realmResults.distinct(Suscription.KEY_API);
-			realmResults.sort(sortKey, sortVal);
 
 			if(realmResults.size() > 0)
 			{
@@ -363,7 +361,12 @@ public abstract class SuscriptionHelper
 				{
 					if(StringUtils.isIdMongo(message.getCompanyId()))
 					{
-						companies.add(realm.where(Suscription.class).equalTo(Suscription.KEY_API, message.getCompanyId()).findFirst());
+						Suscription company = realm.where(Suscription.class).equalTo(Suscription.KEY_API, message.getCompanyId()).findFirst();
+
+						if(company != null && !companies.contains(company))
+						{
+							companies.add(company);
+						}
 					}
 					else
 					{
@@ -371,7 +374,7 @@ public abstract class SuscriptionHelper
 						{
 							Suscription company = realm.where(Suscription.class).equalTo(Suscription.KEY_API, message.getCompanyId()).findFirst();
 
-							if(company != null)
+							if(company != null && !companies.contains(company))
 							{
 								if(company.getName().equals(message.getChannel()))
 								{
