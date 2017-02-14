@@ -225,12 +225,7 @@ public class ApiConnection
 				}
 				catch(Exception e)
 				{
-					System.out.println("ApiConnection:request:getResponseCode() - Exception: " + e);
-
-					if(Common.DEBUG)
-					{
-						e.printStackTrace();
-					}
+					Utils.logError(context, "ApiConnection:request:getResponseCode() - Exception:", e);
 				}
 
 				if(Common.DEBUG)
