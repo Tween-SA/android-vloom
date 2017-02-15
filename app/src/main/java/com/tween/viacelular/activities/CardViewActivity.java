@@ -1115,10 +1115,10 @@ public class CardViewActivity extends AppCompatActivity
 						{
 							if(rlEmpty != null)
 							{
-								SuscriptionHelper.debugSuscription(suscription);
 								if(suscription != null)
 								{
 									boolean isSubscribe = true;
+
 									if(suscription.getFollower() == Common.BOOL_NO && suscription.getGray() == Common.BOOL_NO)
 									{
 										Utils.showViewWithFade(cardSuscribe, context);
@@ -1131,10 +1131,8 @@ public class CardViewActivity extends AppCompatActivity
 
 									if(notifications != null)
 									{
-										System.out.println("messages: "+notifications.size());
 										if(notifications.size() > 0)
 										{
-											System.out.println("isRevenue: "+(SuscriptionHelper.isRevenue(suscription.getCompanyId(), context)));
 											if(SuscriptionHelper.isRevenue(suscription.getCompanyId(), context) && isSubscribe)
 											{
 												if(suscription.getReceive() != Common.BOOL_YES)
@@ -1153,19 +1151,17 @@ public class CardViewActivity extends AppCompatActivity
 
 											mAdapter = new CardAdapter(CardViewActivity.this, companyId);
 											rcwCard.setAdapter(mAdapter);
-											Utils.hideViewWithFade(rlEmpty, context);
+											rlEmpty.setVisibility(RelativeLayout.GONE);
 											Utils.showViewWithFade(rcwCard, context);
 										}
 										else
 										{
 											Utils.showViewWithFade(rlEmpty, context);
-											Utils.hideViewWithFade(rcwCard, context);
 										}
 									}
 									else
 									{
 										Utils.showViewWithFade(rlEmpty, context);
-										Utils.hideViewWithFade(rcwCard, context);
 									}
 								}
 							}
