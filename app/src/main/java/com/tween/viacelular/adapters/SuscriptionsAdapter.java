@@ -3,7 +3,6 @@ package com.tween.viacelular.adapters;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
+
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.LandingActivity;
@@ -18,8 +18,10 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
@@ -196,15 +198,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 								intent.putExtra(Common.KEY_ID, companyId);
 								intent.putExtra(Common.KEY_SECTION, backTo);
 								activityContext.startActivity(intent);
-
-								if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
-								{
-									activityContext.finishAndRemoveTask();
-								}
-								else
-								{
-									activityContext.finish();
-								}
+								activityContext.finish();
 							}
 						});
 
@@ -217,15 +211,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 								intent.putExtra(Common.KEY_ID, companyId);
 								intent.putExtra(Common.KEY_SECTION, backTo);
 								activityContext.startActivity(intent);
-
-								if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
-								{
-									activityContext.finishAndRemoveTask();
-								}
-								else
-								{
-									activityContext.finish();
-								}
+								activityContext.finish();
 							}
 						});
 
@@ -239,15 +225,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 								intent.putExtra(Common.KEY_ID, companyId);
 								intent.putExtra(Common.KEY_SECTION, backTo);
 								activityContext.startActivity(intent);
-
-								if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
-								{
-									activityContext.finishAndRemoveTask();
-								}
-								else
-								{
-									activityContext.finish();
-								}
+								activityContext.finish();
 							}
 						});
 

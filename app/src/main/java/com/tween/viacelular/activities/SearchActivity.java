@@ -231,15 +231,7 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 		}
 
 		startActivity(intent);
-
-		if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
-		{
-			finishAndRemoveTask();
-		}
-		else
-		{
-			finish();
-		}
+		finish();
 	}
 
 	@Override

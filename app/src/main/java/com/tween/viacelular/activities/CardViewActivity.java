@@ -27,9 +27,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.transition.Explode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,6 +44,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -59,22 +58,23 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.CardAdapter;
 import com.tween.viacelular.asynctask.AttachAsyncTask;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
-import com.tween.viacelular.asynctask.SendIdentificationKeyAsyncTask;
 import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
-import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.services.MyDownloadService;
 import com.tween.viacelular.services.MyUploadService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
 import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -245,14 +245,6 @@ public class CardViewActivity extends AppCompatActivity
 						txtSubTitleCollapsed.setText(suscription.getIndustry());
 						toolBar.setBackgroundColor(Color.parseColor(color));
 						Utils.tintColorScreen(this, color);
-
-						//Agregado para corregir ARN por phantomCompany
-						if(StringUtils.isNotEmpty(companyId))
-						{
-							notifications	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
-												.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
-						}
-
 						//Agregado como atajo para ir a la pantalla Configuración
 						txtTitle.setOnClickListener(new View.OnClickListener()
 						{
@@ -320,24 +312,7 @@ public class CardViewActivity extends AppCompatActivity
 						txtSubSuscribe.setText(getString(R.string.landing_title, " "+suscription.getName()));
 					}
 
-					if(notifications != null)
-					{
-						if(notifications.size() > 0)
-						{
-							rcwCard.setVisibility(RecyclerView.VISIBLE);
-							rlEmpty.setVisibility(RelativeLayout.GONE);
-						}
-						else
-						{
-							rcwCard.setVisibility(RecyclerView.GONE);
-							rlEmpty.setVisibility(RelativeLayout.VISIBLE);
-						}
-					}
-					else
-					{
-						rcwCard.setVisibility(RecyclerView.GONE);
-						rlEmpty.setVisibility(RelativeLayout.VISIBLE);
-					}
+					refresh(false);
 				}
 			}
 
@@ -716,15 +691,7 @@ public class CardViewActivity extends AppCompatActivity
 			Intent intentRefresh = new Intent(this, CardViewActivity.class);
 			intentRefresh.putExtra(Common.KEY_ID, companyId);
 			startActivity(intentRefresh);
-
-			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
-			{
-				finishAndRemoveTask();
-			}
-			else
-			{
-				finish();
-			}
+			finish();
 		}
 		catch(Exception e)
 		{
@@ -742,15 +709,7 @@ public class CardViewActivity extends AppCompatActivity
 			intent.putExtra(Common.KEY_ID, companyId);
 			intent.putExtra(Common.KEY_SECTION, "card");
 			startActivity(intent);
-
-			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
-			{
-				finishAndRemoveTask();
-			}
-			else
-			{
-				finish();
-			}
+			finish();
 		}
 		catch(Exception e)
 		{
@@ -971,15 +930,7 @@ public class CardViewActivity extends AppCompatActivity
 			intent.putExtra(Suscription.KEY_BLOCKED, suscription.getBlocked());
 			intent.putExtra(Common.KEY_REFRESH, true);
 			startActivity(intent);
-
-			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
-			{
-				finishAndRemoveTask();
-			}
-			else
-			{
-				finish();
-			}
+			finish();
 		}
 		catch(Exception e)
 		{
@@ -1164,13 +1115,27 @@ public class CardViewActivity extends AppCompatActivity
 						{
 							if(rlEmpty != null)
 							{
+								SuscriptionHelper.debugSuscription(suscription);
 								if(suscription != null)
 								{
+									boolean isSubscribe = true;
+									if(suscription.getFollower() == Common.BOOL_NO && suscription.getGray() == Common.BOOL_NO)
+									{
+										Utils.showViewWithFade(cardSuscribe, context);
+										isSubscribe = false;
+									}
+									else
+									{
+										Utils.hideViewWithFade(cardSuscribe, context);
+									}
+
 									if(notifications != null)
 									{
+										System.out.println("messages: "+notifications.size());
 										if(notifications.size() > 0)
 										{
-											if(SuscriptionHelper.isRevenue(suscription.getCompanyId(), context))
+											System.out.println("isRevenue: "+(SuscriptionHelper.isRevenue(suscription.getCompanyId(), context)));
+											if(SuscriptionHelper.isRevenue(suscription.getCompanyId(), context) && isSubscribe)
 											{
 												if(suscription.getReceive() != Common.BOOL_YES)
 												{
@@ -1179,71 +1144,31 @@ public class CardViewActivity extends AppCompatActivity
 												else
 												{
 													Utils.hideViewWithFade(cardPayout, context);
-													if(	suscription.getFollower() == Common.BOOL_NO && suscription.getGray() == Common.BOOL_NO &&
-														suscription.getBlocked() == Common.BOOL_YES)
-													{
-														Utils.showViewWithFade(cardSuscribe, context);
-													}
-													else
-													{
-														Utils.hideViewWithFade(cardSuscribe, context);
-													}
 												}
 											}
 											else
 											{
 												Utils.hideViewWithFade(cardPayout, context);
-												if(	suscription.getFollower() == Common.BOOL_NO && suscription.getGray() == Common.BOOL_NO &&
-													suscription.getBlocked() == Common.BOOL_YES)
-												{
-													Utils.showViewWithFade(cardSuscribe, context);
-												}
-												else
-												{
-													Utils.hideViewWithFade(cardSuscribe, context);
-												}
 											}
 
+											mAdapter = new CardAdapter(CardViewActivity.this, companyId);
+											rcwCard.setAdapter(mAdapter);
 											Utils.hideViewWithFade(rlEmpty, context);
 											Utils.showViewWithFade(rcwCard, context);
 										}
 										else
 										{
-											if(	suscription.getFollower() == Common.BOOL_NO && suscription.getGray() == Common.BOOL_NO &&
-												suscription.getBlocked() == Common.BOOL_YES)
-											{
-												Utils.showViewWithFade(cardSuscribe, context);
-											}
-											else
-											{
-												Utils.hideViewWithFade(cardSuscribe, context);
-											}
-
 											Utils.showViewWithFade(rlEmpty, context);
 											Utils.hideViewWithFade(rcwCard, context);
 										}
 									}
 									else
 									{
-										if(	suscription.getFollower() == Common.BOOL_NO && suscription.getGray() == Common.BOOL_NO &&
-											suscription.getBlocked() == Common.BOOL_YES)
-										{
-											Utils.showViewWithFade(cardSuscribe, context);
-										}
-										else
-										{
-											Utils.hideViewWithFade(cardSuscribe, context);
-										}
-
 										Utils.showViewWithFade(rlEmpty, context);
 										Utils.hideViewWithFade(rcwCard, context);
 									}
 								}
 							}
-
-							//Modificación para determinar si el mensaje es pago o no desde el número corto
-							mAdapter = new CardAdapter(CardViewActivity.this, companyId);
-							rcwCard.setAdapter(mAdapter);
 						}
 					}
 				}
@@ -1407,15 +1332,7 @@ public class CardViewActivity extends AppCompatActivity
 					intent.putExtra(Suscription.KEY_BLOCKED, Common.BOOL_YES);
 					intent.putExtra(Common.KEY_REFRESH, false);
 					startActivity(intent);
-
-					if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
-					{
-						finishAndRemoveTask();
-					}
-					else
-					{
-						finish();
-					}
+					finish();
 				}
 
 				//Al igual que Silenciar/Activar, esta es la opción para suscribir
@@ -1463,15 +1380,7 @@ public class CardViewActivity extends AppCompatActivity
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			intent.putExtra(Common.KEY_REFRESH, false);
 			startActivity(intent);
-
-			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
-			{
-				finishAndRemoveTask();
-			}
-			else
-			{
-				finish();
-			}
+			finish();
 		}
 		catch(Exception e)
 		{

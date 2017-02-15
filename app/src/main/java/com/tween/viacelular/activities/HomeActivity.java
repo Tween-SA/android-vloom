@@ -297,14 +297,7 @@ public class HomeActivity extends AppCompatActivity
 		{
 			if(Common.API_LEVEL > Build.VERSION_CODES.JELLY_BEAN)
 			{
-				if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
-				{
-					finishAndRemoveTask();
-				}
-				else
-				{
-					finish();
-				}
+				finish();
 			}
 			else
 			{

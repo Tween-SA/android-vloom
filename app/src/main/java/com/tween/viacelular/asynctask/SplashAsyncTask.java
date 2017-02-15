@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
@@ -103,6 +104,11 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 					{
 						country = user.getCountryCode();
 					}
+				}
+
+				if(Looper.myLooper() == null)
+				{
+					Looper.prepare();
 				}
 
 				final String finalCountry	= country;

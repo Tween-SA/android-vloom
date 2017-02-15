@@ -28,7 +28,7 @@
 				card_view:cardCornerRadius="2dp"
 				card_view:cardElevation="6dp"
 				android:layout_marginBottom="10dp"
-				android:visibility="visible">
+				android:visibility="gone">
 				<RelativeLayout
 					android:id="@+id/rlSuscribe"
 					android:layout_width="match_parent"
@@ -91,7 +91,7 @@
 				card_view:cardCornerRadius="2dp"
 				card_view:cardElevation="6dp"
 				android:layout_marginBottom="10dp"
-				android:visibility="visible">
+				android:visibility="gone">
 				<RelativeLayout
 					android:id="@+id/rlCard"
 					android:layout_width="match_parent"

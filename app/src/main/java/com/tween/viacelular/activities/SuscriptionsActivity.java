@@ -2,7 +2,6 @@ package com.tween.viacelular.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -19,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
@@ -27,6 +27,7 @@ import com.tween.viacelular.adapters.RecyclerItemClickListener;
 import com.tween.viacelular.fragments.SuscriptionsFragment;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -154,15 +155,7 @@ public class SuscriptionsActivity extends AppCompatActivity
 				Intent intent = new Intent(this, SearchActivity.class);
 				intent.putExtra(Common.KEY_SECTION, "suscriptions");
 				startActivity(intent);
-
-				if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
-				{
-					finishAndRemoveTask();
-				}
-				else
-				{
-					finish();
-				}
+				finish();
 
 				return true;
 			}
