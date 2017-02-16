@@ -2,11 +2,9 @@ package com.tween.viacelular.models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import com.tween.viacelular.data.Company;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.Utils;
-
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -150,11 +148,10 @@ public class Migration implements RealmMigration
 		}
 		catch(Exception e)
 		{
-			System.out.println(Migration.class.getName()+":migrate - Exception: " + e);
+			Utils.logError(null, Migration.class.getName()+":migrate - Exception:", e);
 
 			if(Common.DEBUG)
 			{
-				e.printStackTrace();
 				Utils.writeStringInFile(Migration.class.getName()+":migrate - Exception: " + e, "", null);
 			}
 		}

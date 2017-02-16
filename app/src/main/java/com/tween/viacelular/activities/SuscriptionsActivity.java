@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
@@ -26,6 +27,7 @@ import com.tween.viacelular.adapters.RecyclerItemClickListener;
 import com.tween.viacelular.fragments.SuscriptionsFragment;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -154,6 +156,7 @@ public class SuscriptionsActivity extends AppCompatActivity
 				intent.putExtra(Common.KEY_SECTION, "suscriptions");
 				startActivity(intent);
 				finish();
+
 				return true;
 			}
 		}

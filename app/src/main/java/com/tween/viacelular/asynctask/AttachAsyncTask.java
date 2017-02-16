@@ -22,16 +22,24 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog		progress;
 	private Context				context;
-	private boolean				displayDialog	= true;
 	private CallBackListener	listener;
 	private String				msgId;
+	private boolean				displayDialog	= true;
+	private String				comment			= "";
+	private String				linkOne			= "";
+	private String				linkTwo			= "";
+	private String				linkThree		= "";
 
-	public AttachAsyncTask(Context context, boolean displayDialog, String msgId, CallBackListener listener)
+	public AttachAsyncTask(Context context, boolean displayDialog, String msgId, String comment, String linkOne, String linkTwo, String linkThree, CallBackListener listener)
 	{
 		this.context		= context;
 		this.displayDialog	= displayDialog;
 		this.listener		= listener;
 		this.msgId			= msgId;
+		this.comment		= comment;
+		this.linkOne		= linkOne;
+		this.linkTwo		= linkTwo;
+		this.linkThree		= linkThree;
 	}
 
 	protected void onPreExecute()
@@ -137,8 +145,16 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 						if(StringUtils.isNotEmpty(message.getNote()) || StringUtils.isNotEmpty(message.getAttached()))
 						{
 							JSONObject enrichJSON = new JSONObject();
-							enrichJSON.put(Message.KEY_NOTE, message.getNote());
-							enrichJSON.put(Message.KEY_ATTACHED, message.getAttached());
+
+							if(StringUtils.isNotEmpty(message.getNote()))
+							{
+								enrichJSON.put(Message.KEY_NOTE, message.getNote());
+							}
+
+							if(StringUtils.isNotEmpty(message.getAttached()))
+							{
+								enrichJSON.put(Message.KEY_ATTACHED, message.getAttached());
+							}
 
 							if(StringUtils.isNotEmpty(message.getAttachedTwo()))
 							{
@@ -151,6 +167,36 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 							}
 
 							jsonObject.put(Common.KEY_ENRICH, enrichJSON);
+						}
+						else
+						{
+							//Doble checkeo por acceso a datos de distinto hilo
+							if(StringUtils.isNotEmpty(comment) || StringUtils.isNotEmpty(linkOne))
+							{
+								JSONObject enrichJSON = new JSONObject();
+
+								if(StringUtils.isNotEmpty(comment))
+								{
+									enrichJSON.put(Message.KEY_NOTE, comment);
+								}
+
+								if(StringUtils.isNotEmpty(linkOne))
+								{
+									enrichJSON.put(Message.KEY_ATTACHED, linkOne);
+								}
+
+								if(StringUtils.isNotEmpty(linkTwo))
+								{
+									enrichJSON.put(Message.KEY_ATTACHEDTWO, linkTwo);
+								}
+
+								if(StringUtils.isNotEmpty(linkThree))
+								{
+									enrichJSON.put(Message.KEY_ATTACHEDTHREE, linkThree);
+								}
+
+								jsonObject.put(Common.KEY_ENRICH, enrichJSON);
+							}
 						}
 
 						//Adjuntos provinientes de la push

@@ -152,7 +152,21 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 					}
 				}
 			}
+		}
+		catch(Exception e)
+		{
+			Utils.logError(context, "GetTweetsAsyncTask:doInBackground - Exception:", e);
+		}
 
+		return result;
+	}
+
+	@Override
+	protected void onPostExecute(String s)
+	{
+		super.onPostExecute(s);
+		try
+		{
 			if(displayDialog)
 			{
 				if(progress != null)
@@ -164,15 +178,14 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 				}
 			}
 
+			new ConfirmReadingAsyncTask(context, false, companyId, "", Message.STATUS_READ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			Intent intent = new Intent(context, CardViewActivity.class);
 			intent.putExtra(Common.KEY_ID, companyId);
 			context.startActivity(intent);
 		}
 		catch(Exception e)
 		{
-			Utils.logError(context, "GetTweetsAsyncTask:doInBackground - Exception:", e);
+			Utils.logError(context, "GetTweetsAsyncTask:onPostExecute - Exception:", e);
 		}
-
-		return result;
 	}
 }

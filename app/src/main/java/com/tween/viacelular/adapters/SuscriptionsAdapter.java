@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
+
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.LandingActivity;
@@ -17,8 +18,10 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;

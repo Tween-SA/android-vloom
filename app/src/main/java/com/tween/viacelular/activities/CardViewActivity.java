@@ -27,9 +27,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.transition.Explode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,6 +44,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -59,22 +58,23 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.CardAdapter;
 import com.tween.viacelular.asynctask.AttachAsyncTask;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
-import com.tween.viacelular.asynctask.SendIdentificationKeyAsyncTask;
 import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
-import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.services.MyDownloadService;
 import com.tween.viacelular.services.MyUploadService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
 import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -92,7 +92,7 @@ public class CardViewActivity extends AppCompatActivity
 	private RecyclerView			rcwCard;
 	private CardAdapter				mAdapter;
 	private CoordinatorLayout		Clayout;
-	private CardView				cardPayout, cardSuscribe, cardForm, cardOk, cardRetry;
+	private CardView				cardPayout, cardSuscribe;
 	private RelativeLayout			rlEmpty;
 	private EditText				editCode;
 	private TextInputLayout			inputCode;
@@ -105,7 +105,6 @@ public class CardViewActivity extends AppCompatActivity
 	private Toolbar					toolBar;
 	private Uri						tempUri;
 	private BroadcastReceiver		mBroadcastReceiver;
-	private FirebaseAuth			mAuth;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -127,9 +126,6 @@ public class CardViewActivity extends AppCompatActivity
 			toolBar										= (Toolbar) findViewById(R.id.toolBarCardView);
 			rcwCard										= (RecyclerView) findViewById(R.id.rcwCard);
 			cardPayout									= (CardView) findViewById(R.id.cardPayout);
-			cardForm									= (CardView) findViewById(R.id.cardForm);
-			cardOk										= (CardView) findViewById(R.id.cardOk);
-			cardRetry									= (CardView) findViewById(R.id.cardRetry);
 			rlEmpty										= (RelativeLayout) findViewById(R.id.rlEmpty);
 			editCode									= (EditText) findViewById(R.id.editCode);
 			inputCode									= (TextInputLayout) findViewById(R.id.inputCode);
@@ -150,12 +146,13 @@ public class CardViewActivity extends AppCompatActivity
 			animRotateBackward							= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
 			rcwCard.setHasFixedSize(true);
 			RecyclerView.LayoutManager mLayoutManager	= new LinearLayoutManager(this);
+			FirebaseAuth mAuth							= FirebaseAuth.getInstance();
 			rcwCard.setLayoutManager(mLayoutManager);
 			setSupportActionBar(toolBar);
 			toolBar.setTitle("");
 			toolBar.setSubtitle("");
 			setTitle("");
-			mAuth = FirebaseAuth.getInstance();
+
 
 			if(mAuth != null)
 			{
@@ -248,14 +245,6 @@ public class CardViewActivity extends AppCompatActivity
 						txtSubTitleCollapsed.setText(suscription.getIndustry());
 						toolBar.setBackgroundColor(Color.parseColor(color));
 						Utils.tintColorScreen(this, color);
-
-						//Agregado para corregir ARN por phantomCompany
-						if(StringUtils.isNotEmpty(companyId))
-						{
-							notifications	= realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
-												.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
-						}
-
 						//Agregado como atajo para ir a la pantalla Configuración
 						txtTitle.setOnClickListener(new View.OnClickListener()
 						{
@@ -301,13 +290,6 @@ public class CardViewActivity extends AppCompatActivity
 				});
 
 				Clayout = (CoordinatorLayout) findViewById(R.id.clSnack);
-				cardForm.setVisibility(CardView.GONE);
-				cardOk.setVisibility(CardView.GONE);
-				cardRetry.setVisibility(CardView.GONE);
-				cardPayout.setVisibility(CardView.GONE);
-				cardSuscribe.setVisibility(CardView.GONE);
-				rcwCard.setVisibility(RecyclerView.GONE);
-				rlEmpty.setVisibility(RelativeLayout.GONE);
 
 				if(suscription != null)
 				{
@@ -316,7 +298,7 @@ public class CardViewActivity extends AppCompatActivity
 
 					if(unread > 0)
 					{
-						new ConfirmReadingAsyncTask(false, companyId, "", Message.STATUS_READ, this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+						new ConfirmReadingAsyncTask(false, companyId, "", Message.STATUS_READ, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 
 					//Validaciones para mostrar o no campos según disponibilidad de datos
@@ -330,24 +312,7 @@ public class CardViewActivity extends AppCompatActivity
 						txtSubSuscribe.setText(getString(R.string.landing_title, " "+suscription.getName()));
 					}
 
-					if(notifications != null)
-					{
-						if(notifications.size() > 0)
-						{
-							rcwCard.setVisibility(RecyclerView.VISIBLE);
-							rlEmpty.setVisibility(RelativeLayout.GONE);
-						}
-						else
-						{
-							rcwCard.setVisibility(RecyclerView.GONE);
-							rlEmpty.setVisibility(RelativeLayout.VISIBLE);
-						}
-					}
-					else
-					{
-						rcwCard.setVisibility(RecyclerView.GONE);
-						rlEmpty.setVisibility(RelativeLayout.VISIBLE);
-					}
+					refresh(false);
 				}
 			}
 
@@ -562,11 +527,11 @@ public class CardViewActivity extends AppCompatActivity
 		}
 	}
 
-	public void attach(String id)
+	public void attach(String id, String comment, String linkOne, String linkTwo, String linkThree)
 	{
 		try
 		{
-			new AttachAsyncTask(this, false, id, new CallBackListener()
+			new AttachAsyncTask(this, false, id, comment, linkOne, linkTwo, linkThree, new CallBackListener()
 			{
 				@Override
 				public void invoke()
@@ -894,7 +859,6 @@ public class CardViewActivity extends AppCompatActivity
 			txtSubTitleCollapsed.setTextColor(Utils.adjustAlpha(colorSubTitle, Common.ALPHA_FOR_BLOCKS));
 			toolBar.setBackgroundColor(Color.parseColor(Common.COLOR_BLOCKED));
 			Utils.tintColorScreen(this, Common.COLOR_BLOCKED);
-
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 			if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -953,7 +917,6 @@ public class CardViewActivity extends AppCompatActivity
 			HomeActivity.modifySubscriptions(CardViewActivity.this, Common.BOOL_NO, true, companyId, false);
 			Utils.hideViewWithFade(cardPayout, this);
 			Utils.hideViewWithFade(cardSuscribe, this);
-
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 			if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -962,7 +925,6 @@ public class CardViewActivity extends AppCompatActivity
 			}
 
 			rcwCard.setLayoutParams(p);
-
 			Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
 			intent.putExtra(Common.KEY_ID, companyId);
 			intent.putExtra(Suscription.KEY_BLOCKED, suscription.getBlocked());
@@ -980,7 +942,7 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			Realm realm					= Realm.getDefaultInstance();
+			final Realm realm			= Realm.getDefaultInstance();
 			suscription					= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			Snackbar snackBar			= null;
 			final Message notification	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
@@ -990,8 +952,8 @@ public class CardViewActivity extends AppCompatActivity
 			{
 				case CardAdapter.OPTION_SHARE:
 					//Agregado para capturar evento en Google Analytics
-					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Compartir")
-																									.setLabel("Accion_user").build());
+					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Compartir")
+						.setLabel("Accion_user").build());
 					Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 					sharingIntent.setType("text/plain");
 					sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, notification.getType());
@@ -1153,156 +1115,55 @@ public class CardViewActivity extends AppCompatActivity
 						{
 							if(rlEmpty != null)
 							{
-								cardForm.setVisibility(CardView.GONE);
-								cardOk.setVisibility(CardView.GONE);
-								cardRetry.setVisibility(CardView.GONE);
-								cardPayout.setVisibility(CardView.GONE);
-								cardSuscribe.setVisibility(CardView.GONE);
-								rcwCard.setVisibility(RecyclerView.GONE);
-								rlEmpty.setVisibility(RelativeLayout.GONE);
-
-								int idViewFather = 0;
-
 								if(suscription != null)
 								{
-									if(SuscriptionHelper.isRevenue(suscription.getCompanyId(), context))
-									{
-										if(suscription.getReceive() != Common.BOOL_YES)
-										{
-											idViewFather = cardPayout.getId();
-										}
-										else
-										{
-											if(suscription.getFollower() == Common.BOOL_NO && suscription.getGray() == Common.BOOL_NO && suscription.getBlocked() == Common.BOOL_YES)
-											{
-												idViewFather = cardSuscribe.getId();
-											}
-										}
-									}
-									else
-									{
-										if(suscription.getFollower() == Common.BOOL_NO && suscription.getGray() == Common.BOOL_NO && suscription.getBlocked() == Common.BOOL_YES)
-										{
-											idViewFather = cardSuscribe.getId();
-										}
-									}
-								}
+									boolean isSubscribe = true;
 
-								RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-								if(notifications == null)
-								{
-									rcwCard.setVisibility(RecyclerView.GONE);
-									rlEmpty.setVisibility(RelativeLayout.VISIBLE);
-
-									//Agregado para evitar que las cards se solapen con la card superior
-									if(idViewFather != 0)
-									{
-										p.addRule(RelativeLayout.BELOW, idViewFather);
-										rlEmpty.setLayoutParams(p);
-									}
-									else
-									{
-										if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-										{
-											p.removeRule(RelativeLayout.BELOW);
-											rlEmpty.setLayoutParams(p);
-										}
-									}
-								}
-								else
-								{
-									if(notifications.size() == 0)
-									{
-										rcwCard.setVisibility(RecyclerView.GONE);
-										rlEmpty.setVisibility(RelativeLayout.VISIBLE);
-
-										//Agregado para evitar que las cards se solapen con la card superior
-										if(idViewFather != 0)
-										{
-											p.addRule(RelativeLayout.BELOW, idViewFather);
-											rlEmpty.setLayoutParams(p);
-										}
-										else
-										{
-											if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-											{
-												p.removeRule(RelativeLayout.BELOW);
-												rlEmpty.setLayoutParams(p);
-											}
-										}
-									}
-									else
-									{
-										rcwCard.setVisibility(RecyclerView.VISIBLE);
-										rlEmpty.setVisibility(RelativeLayout.GONE);
-
-										//Agregado para evitar que las cards se solapen con la card superior
-										if(idViewFather != 0)
-										{
-											p.addRule(RelativeLayout.BELOW, idViewFather);
-											rcwCard.setLayoutParams(p);
-										}
-										else
-										{
-											if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-											{
-												p.removeRule(RelativeLayout.BELOW);
-												rcwCard.setLayoutParams(p);
-											}
-										}
-									}
-								}
-
-								if(idViewFather == cardPayout.getId())
-								{
-									Utils.showViewWithFade(cardPayout, context);
-								}
-								else
-								{
-									if(idViewFather == cardSuscribe.getId())
+									if(suscription.getFollower() == Common.BOOL_NO && suscription.getGray() == Common.BOOL_NO)
 									{
 										Utils.showViewWithFade(cardSuscribe, context);
+										isSubscribe = false;
+									}
+									else
+									{
+										Utils.hideViewWithFade(cardSuscribe, context);
+									}
+
+									if(notifications != null)
+									{
+										if(notifications.size() > 0)
+										{
+											if(SuscriptionHelper.isRevenue(suscription.getCompanyId(), context) && isSubscribe)
+											{
+												if(suscription.getReceive() != Common.BOOL_YES)
+												{
+													Utils.showViewWithFade(cardPayout, context);
+												}
+												else
+												{
+													Utils.hideViewWithFade(cardPayout, context);
+												}
+											}
+											else
+											{
+												Utils.hideViewWithFade(cardPayout, context);
+											}
+
+											mAdapter = new CardAdapter(CardViewActivity.this, companyId);
+											rcwCard.setAdapter(mAdapter);
+											rlEmpty.setVisibility(RelativeLayout.GONE);
+											Utils.showViewWithFade(rcwCard, context);
+										}
+										else
+										{
+											Utils.showViewWithFade(rlEmpty, context);
+										}
+									}
+									else
+									{
+										Utils.showViewWithFade(rlEmpty, context);
 									}
 								}
-							}
-
-							//Modificación para determinar si el mensaje es pago o no desde el número corto
-							mAdapter = new CardAdapter(CardViewActivity.this, companyId);
-							rcwCard.setAdapter(mAdapter);
-						}
-
-						if(suscription != null)
-						{
-							if(StringUtils.isNotEmpty(suscription.getIdentificationKey()) && suscription.getDataSent() == Common.BOOL_NO && suscription.getFollower() == Common.BOOL_YES)
-							{
-								rlEmpty.setVisibility(RelativeLayout.GONE);
-								rcwCard.setVisibility(RecyclerView.GONE);
-								Utils.showViewWithFade(cardForm, context);
-								inputCode.setErrorEnabled(false);
-								inputCode.setHint(suscription.getIdentificationKey());
-								String title = getString(R.string.landing_card_form_text1) + " " + suscription.getIdentificationKey() + " " + getString(R.string.landing_card_form_text2);
-								txtSubTitleForm.setText(title);
-
-								editCode.addTextChangedListener(new TextWatcher()
-								{
-									@Override
-									public void beforeTextChanged(CharSequence s, int start, int count, int after)
-									{
-										inputCode.setErrorEnabled(false);
-										enableNextStep();
-									}
-
-									@Override
-									public void onTextChanged(CharSequence s, int start, int before, int count)
-									{
-									}
-
-									@Override
-									public void afterTextChanged(Editable s)
-									{
-									}
-								});
 							}
 						}
 					}
@@ -1312,108 +1173,6 @@ public class CardViewActivity extends AppCompatActivity
 		catch(Exception e)
 		{
 			Utils.logError(this, getLocalClassName()+":refresh - Exception:", e);
-		}
-	}
-
-	public void sendData(View view)
-	{
-		try
-		{
-			Utils.hideViewWithFade(cardForm, this);
-
-			if(StringUtils.isAlphanumeric(editCode.getText().toString()))
-			{
-				inputCode.setErrorEnabled(false);
-				SendIdentificationKeyAsyncTask task = new SendIdentificationKeyAsyncTask(this, true, editCode.getText().toString(), companyId);
-
-				if(task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get().equals(ApiConnection.OK))
-				{
-					Utils.showViewWithFade(cardOk, this);
-				}
-				else
-				{
-					Utils.showViewWithFade(cardRetry, this);
-				}
-			}
-			else
-			{
-				Utils.showViewWithFade(cardRetry, this);
-				inputCode.setErrorEnabled(true);
-				inputCode.setError(getString(R.string.code_alphanumeric));
-			}
-		}
-		catch(Exception e)
-		{
-			Utils.logError(this, getLocalClassName()+":sendData - Exception:", e);
-		}
-	}
-
-	public void sendAgain(View view)
-	{
-		try
-		{
-			inputCode.setErrorEnabled(false);
-			Utils.hideViewWithFade(cardRetry, this);
-			sendData(view);
-		}
-		catch(Exception e)
-		{
-			Utils.logError(this, getLocalClassName()+":sendAgain - Exception:", e);
-		}
-	}
-
-	public void byeCard(View view)
-	{
-		try
-		{
-			Utils.hideViewWithFade(cardForm, this);
-			Utils.hideViewWithFade(cardOk, this);
-			Utils.hideViewWithFade(cardRetry, this);
-			Utils.hideViewWithFade(cardPayout, this);
-			Utils.hideViewWithFade(cardSuscribe, this);
-			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-			if(notifications != null)
-			{
-				if(notifications.size() > 0)
-				{
-					rcwCard.setVisibility(RecyclerView.VISIBLE);
-					rlEmpty.setVisibility(RelativeLayout.GONE);
-				}
-				else
-				{
-					rcwCard.setVisibility(RecyclerView.GONE);
-					cardForm.setVisibility(CardView.GONE);
-					cardOk.setVisibility(CardView.GONE);
-					cardPayout.setVisibility(CardView.GONE);
-					cardSuscribe.setVisibility(CardView.GONE);
-					cardRetry.setVisibility(CardView.GONE);
-					rlEmpty.setVisibility(RelativeLayout.VISIBLE);
-					p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-				}
-			}
-			else
-			{
-				rcwCard.setVisibility(RecyclerView.GONE);
-				cardForm.setVisibility(CardView.GONE);
-				cardOk.setVisibility(CardView.GONE);
-				cardPayout.setVisibility(CardView.GONE);
-				cardSuscribe.setVisibility(CardView.GONE);
-				cardRetry.setVisibility(CardView.GONE);
-				rlEmpty.setVisibility(RelativeLayout.VISIBLE);
-				p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-			}
-
-			if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-			{
-				p.removeRule(RelativeLayout.BELOW);
-			}
-
-			rcwCard.setLayoutParams(p);
-		}
-		catch(Exception e)
-		{
-			Utils.logError(this, getLocalClassName()+":byeCard - Exception:", e);
 		}
 	}
 
@@ -1433,70 +1192,18 @@ public class CardViewActivity extends AppCompatActivity
 			txtSubTitleCollapsed.setTextColor(colorSubTitle);
 			toolBar.setBackgroundColor(Color.parseColor(suscription.getColorHex()));
 			Utils.tintColorScreen(this, suscription.getColorHex());
-
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
 			if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 			{
 				p.removeRule(RelativeLayout.BELOW);
 			}
 
 			rcwCard.setLayoutParams(p);
-
-			if(StringUtils.isNotEmpty(suscription.getIdentificationKey()) && suscription.getDataSent() == Common.BOOL_NO && suscription.getFollower() == Common.BOOL_YES)
-			{
-				rlEmpty.setVisibility(RelativeLayout.GONE);
-				rcwCard.setVisibility(RecyclerView.GONE);
-				Utils.showViewWithFade(cardForm, this);
-				inputCode.setErrorEnabled(false);
-				inputCode.setHint(suscription.getIdentificationKey());
-				String title = getString(R.string.landing_card_form_text1) + " " + suscription.getIdentificationKey() + " " + getString(R.string.landing_card_form_text2);
-				txtSubTitleForm.setText(title);
-
-				editCode.addTextChangedListener(new TextWatcher()
-				{
-					@Override
-					public void beforeTextChanged(CharSequence s, int start, int count, int after)
-					{
-						inputCode.setErrorEnabled(false);
-						enableNextStep();
-					}
-
-					@Override
-					public void onTextChanged(CharSequence s, int start, int before, int count)
-					{
-					}
-
-					@Override
-					public void afterTextChanged(Editable s)
-					{
-					}
-				});
-			}
 		}
 		catch(Exception e)
 		{
 			Utils.logError(this, getLocalClassName()+":suscribeCompany - Exception:", e);
-		}
-	}
-
-	public void enableNextStep()
-	{
-		try
-		{
-			btnContinueForm.setEnabled(true);
-			btnContinueForm.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.accent));
-			btnContinueForm.setOnClickListener(new View.OnClickListener()
-			{
-				@Override
-				public void onClick(View v)
-				{
-					sendData(v);
-				}
-			});
-		}
-		catch(Exception e)
-		{
-			Utils.logError(this, getLocalClassName()+":enableNextStep - Exception:", e);
 		}
 	}
 	
@@ -1517,8 +1224,8 @@ public class CardViewActivity extends AppCompatActivity
 				if(item.toString().equals(getString(R.string.silence)))
 				{
 					//Agregado para capturar evento en Google Analytics
-					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("SilenciarInCompany")
-																									.setLabel("AccionUser").build());
+					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Company")
+						.setAction("SilenciarInCompany").setLabel("AccionUser").build());
 					realm.executeTransaction(new Realm.Transaction()
 					{
 						@Override

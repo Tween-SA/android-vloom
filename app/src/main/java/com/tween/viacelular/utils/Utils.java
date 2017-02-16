@@ -1126,10 +1126,6 @@ public class Utils
 						}
 					});
 				}
-				else
-				{
-					view.setVisibility(View.GONE);
-				}
 			}
 		}
 		catch(Exception e)

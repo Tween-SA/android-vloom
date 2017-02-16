@@ -90,8 +90,6 @@ public class ApiConnection
 							System.out.println("Red: "+networkInfo.getTypeName()+" - "+networkInfo.toString());
 						}
 
-						//Emulador: [type: MOBILE[UMTS], state: CONNECTED/CONNECTED, reason: connected, extra: epc.tmobile.com, roaming: false, failover: false, isAvailable: true,
-						// isConnectedToProvisioningNetwork: false]
 						if(networkInfo.isConnected())
 						{
 							result = true;
@@ -168,6 +166,7 @@ public class ApiConnection
 		String result		= "{}";
 		InputStream stream	= null;
 		String message		= "";
+		String headers		= "";
 		int code			= 0;
 		boolean connected	= checkInternet(context);
 
@@ -188,8 +187,8 @@ public class ApiConnection
 
 				URL url								= new URL(urlStr);
 				URLConnection connection			= url.openConnection();
-				connection.setConnectTimeout(10000);
-				connection.setReadTimeout(10000);
+				connection.setConnectTimeout(10500);
+				connection.setReadTimeout(10500);
 				HttpURLConnection httpConnection	= (HttpURLConnection) connection;
 				httpConnection.setRequestMethod(method);
 				httpConnection.setRequestProperty("Accept", "application/json");
@@ -217,28 +216,23 @@ public class ApiConnection
 					os.close();
 				}
 
-				httpConnection.connect();
-
 				try
 				{
+					httpConnection.connect();
+					headers	= httpConnection.getHeaderFields().toString();
 					code	= httpConnection.getResponseCode();
 					message	= httpConnection.getResponseMessage();
 				}
 				catch(Exception e)
 				{
-					System.out.println("ApiConnection:request:getResponseCode() - Exception: " + e);
-
-					if(Common.DEBUG)
-					{
-						e.printStackTrace();
-					}
+					Utils.logError(context, "ApiConnection:request:getResponseCode() - Exception:", e);
 				}
 
 				if(Common.DEBUG)
 				{
-					System.out.println("Headers: " + httpConnection.getHeaderFields());
-					System.out.println("Response Code: " + httpConnection.getResponseCode());
-					System.out.println("Response Message: " + httpConnection.getResponseMessage());
+					System.out.println("Headers: " + headers);
+					System.out.println("Response Code: " + code);
+					System.out.println("Response Message: " + message);
 				}
 
 				if(code == HttpURLConnection.HTTP_OK || code == HttpURLConnection.HTTP_CREATED || code == HttpURLConnection.HTTP_ACCEPTED)
