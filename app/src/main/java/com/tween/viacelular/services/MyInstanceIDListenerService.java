@@ -1,8 +1,6 @@
 package com.tween.viacelular.services;
 
-import android.content.Intent;
 import com.google.android.gms.iid.InstanceIDListenerService;
-import com.tween.viacelular.utils.Common;
 
 /**
  * Created by david.figueroa on 16/6/15.
@@ -15,20 +13,5 @@ public class MyInstanceIDListenerService extends InstanceIDListenerService
 	@Override
 	public void onTokenRefresh()
 	{
-		try
-		{
-			// Fetch updated Instance ID token and notify our app's server of any changes (if applicable).
-			Intent intent = new Intent(this, RegistrationIntentService.class);
-			startService(intent);
-		}
-		catch(Exception e)
-		{
-			System.out.println("MyInstanceIDListenerService:onTokenRefresh - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
 	}
 }

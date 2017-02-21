@@ -5,10 +5,12 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
+import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -55,110 +57,114 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("ConnectApiSMSAsyncTask:onPreExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ConnectApiSMSAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
 	@Override
 	protected String doInBackground(Void... params)
 	{
-		String result = "";
-
 		try
 		{
-			//Modificaciones para contemplar migración a Realm
-			Realm realm						= Realm.getDefaultInstance();
-			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			JSONArray jsonArray				= new JSONArray();
-			User user						= realm.where(User.class).findFirst();
-			boolean send					= false;
-
-			//Modificación para reducir if innecesarios y corrección de CountryCode incorrecto, se tomará desde el Usuario que es el correcto
-			if(user != null)
+			//Antes de mandar los sms choreados intento agruparlos
+			SuscriptionHelper.killPhantoms(null, context, new CallBackListener()
 			{
-				String countryCode = user.getCountryCode();
-
-				//Agregado para enviar a la api sms que acaba de llegar
-				if(message != null)
+				@Override
+				public void invoke()
 				{
-					String companyId = "";
-
-					if(StringUtils.isIdMongo(message.getCompanyId()))
+					try
 					{
-						companyId = message.getCompanyId();
-					}
+						//Modificaciones para contemplar migración a Realm
+						Realm realm						= Realm.getDefaultInstance();
+						SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+						JSONArray jsonArray				= new JSONArray();
+						User user						= realm.where(User.class).findFirst();
+						boolean send					= false;
 
-					JSONObject jsonObject	= new JSONObject();
-					jsonObject.put(Common.KEY_TYPE, message.getType());
-					jsonObject.put(Message.KEY_MSG, StringUtils.sanitizeText(message.getMsg()));
-					jsonObject.put(Message.KEY_CHANNEL, Utils.getChannelSMS(context));
-					jsonObject.put(Common.KEY_STATUS, message.getStatus());
-					jsonObject.put(Suscription.KEY_API, companyId);
-					jsonObject.put(Message.KEY_CREATED, message.getCreated());
-					jsonObject.put(Message.KEY_DELETED, message.getDeleted());
-					jsonObject.put(Suscription.KEY_FROM, message.getChannel());
-					jsonObject.put(Message.KEY_TTD, 0);
-					jsonObject.put(Message.KEY_FLAGS, Message.FLAGS_SMSCAP);
-					JSONArray phones		= new JSONArray();
-					phones.put(user.getPhone().replace("+", ""));
-					jsonObject.put("phones", phones);
-					jsonArray.put(jsonObject);
-					send = true;
-				}
-				else
-				{
-					//Mejora para enviar siempre los últimos mensajes
-					RealmResults<Message> messages	= realm.where(Message.class).equalTo(Common.KEY_TYPE, Message.TYPE_SMS).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
-
-					if(messages.size() > 0)
-					{
-						//Armado de array en Json con los sms interpretados
-						for(int i = 0; i < messages.size(); i++)
+						//Modificación para reducir if innecesarios y corrección de CountryCode incorrecto, se tomará desde el Usuario que es el correcto
+						if(user != null)
 						{
-							if(i <= 300)
+							//Agregado para enviar a la api sms que acaba de llegar
+							if(message != null)
 							{
 								String companyId = "";
 
-								if(StringUtils.isIdMongo(messages.get(i).getCompanyId()))
+								if(StringUtils.isIdMongo(message.getCompanyId()))
 								{
-									companyId = messages.get(i).getCompanyId();
+									companyId = message.getCompanyId();
 								}
 
-								//Reestructuración de api
 								JSONObject jsonObject	= new JSONObject();
-								jsonObject.put(Common.KEY_TYPE, messages.get(i).getType());
-								jsonObject.put(Message.KEY_MSG, StringUtils.sanitizeText(messages.get(i).getMsg()));
+								jsonObject.put(Common.KEY_TYPE, message.getType());
+								jsonObject.put(Message.KEY_MSG, StringUtils.sanitizeText(message.getMsg()));
 								jsonObject.put(Message.KEY_CHANNEL, Utils.getChannelSMS(context));
-								jsonObject.put(Common.KEY_STATUS, messages.get(i).getStatus());
+								jsonObject.put(Common.KEY_STATUS, message.getStatus());
 								jsonObject.put(Suscription.KEY_API, companyId);
-								jsonObject.put(Message.KEY_CREATED, messages.get(i).getCreated());
-								jsonObject.put(Message.KEY_DELETED, messages.get(i).getDeleted());
-								jsonObject.put(Suscription.KEY_FROM, messages.get(i).getChannel());
+								jsonObject.put(Message.KEY_CREATED, message.getCreated());
+								jsonObject.put(Suscription.KEY_FROM, message.getChannel());
 								jsonObject.put(Message.KEY_TTD, 0);
 								jsonObject.put(Message.KEY_FLAGS, Message.FLAGS_SMSCAP);
 								JSONArray phones		= new JSONArray();
 								phones.put(user.getPhone().replace("+", ""));
 								jsonObject.put("phones", phones);
 								jsonArray.put(jsonObject);
+								send = true;
+							}
+							else
+							{
+								//Mejora para enviar siempre los últimos mensajes
+								RealmResults<Message> messages	= realm.where(Message.class).equalTo(Common.KEY_TYPE, Message.TYPE_SMS)
+																	.findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
+
+								if(messages.size() > 0)
+								{
+									//Armado de array en Json con los sms interpretados
+									for(int i = 0; i < messages.size(); i++)
+									{
+										if(i <= 300)
+										{
+											String companyId = "";
+
+											if(StringUtils.isIdMongo(messages.get(i).getCompanyId()))
+											{
+												companyId = messages.get(i).getCompanyId();
+											}
+
+											//Reestructuración de api
+											JSONObject jsonObject	= new JSONObject();
+											jsonObject.put(Common.KEY_TYPE, messages.get(i).getType());
+											jsonObject.put(Message.KEY_MSG, StringUtils.sanitizeText(messages.get(i).getMsg()));
+											jsonObject.put(Message.KEY_CHANNEL, Utils.getChannelSMS(context));
+											jsonObject.put(Common.KEY_STATUS, messages.get(i).getStatus());
+											jsonObject.put(Suscription.KEY_API, companyId);
+											jsonObject.put(Message.KEY_CREATED, messages.get(i).getCreated());
+											jsonObject.put(Suscription.KEY_FROM, messages.get(i).getChannel());
+											jsonObject.put(Message.KEY_TTD, 0);
+											jsonObject.put(Message.KEY_FLAGS, Message.FLAGS_SMSCAP);
+											JSONArray phones		= new JSONArray();
+											phones.put(user.getPhone().replace("+", ""));
+											jsonObject.put("phones", phones);
+											jsonArray.put(jsonObject);
+										}
+									}
+
+									send = true;
+								}
 							}
 						}
 
-						send = true;
+						if(send)
+						{
+							JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.SEND_SMS, context, ApiConnection.METHOD_POST,
+																		preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString()));
+						}
+					}
+					catch(Exception e)
+					{
+						Utils.logError(context, "ConnectApiSMSAsyncTask:doInBackground:invoke - Exception:", e);
 					}
 				}
-			}
-
-			if(send)
-			{
-				JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.SEND_SMS, context, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""),
-															jsonArray.toString()));
-				result					= ApiConnection.checkResponse(context, jsonResult);
-			}
+			});
 
 			if(displayDialog)
 			{
@@ -173,15 +179,10 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("ConnectApiSMSAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ConnectApiSMSAsyncTask:doInBackground - Exception:", e);
 		}
 
-		return result;
+		return "";
 	}
 
 	public Message getMessage()

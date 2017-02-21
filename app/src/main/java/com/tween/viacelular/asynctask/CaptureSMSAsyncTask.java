@@ -12,14 +12,15 @@ import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -56,18 +57,10 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 					.progress(true, 0)
 					.show();
 			}
-
-			final CompaniesAsyncTask task = new CompaniesAsyncTask(activity, false);
-			task.execute();
 		}
 		catch(Exception e)
 		{
-			System.out.println("CaptureSMSAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CaptureSMSAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -78,15 +71,20 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 
 		try
 		{
-			Realm realm						= Realm.getDefaultInstance();
-			RealmResults<Message> messages	= realm.where(Message.class).equalTo(Common.KEY_TYPE, Message.TYPE_SMS).findAll();
-			User user						= realm.where(User.class).findFirst();
+			Realm realm								= Realm.getDefaultInstance();
+			final RealmResults<Message> messages	= realm.where(Message.class).equalTo(Common.KEY_TYPE, Message.TYPE_SMS).findAll();
+			User user								= realm.where(User.class).findFirst();
 
 			if(messages.size() > 0)
 			{
-				realm.beginTransaction();
-				messages.deleteAllFromRealm();
-				realm.commitTransaction();
+				realm.executeTransaction(new Realm.Transaction()
+				{
+					@Override
+					public void execute(Realm realm)
+					{
+						messages.deleteAllFromRealm();
+					}
+				});
 			}
 
 			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
@@ -150,7 +148,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 							//Se incorpora lectura de sms personales
 							if(StringUtils.isPhoneNumber(address))
 							{
-								RealmResults<Message> notifications = null;
+								RealmResults<Message> notifications;
 
 								if(date.equals(date_sent))
 								{
@@ -166,7 +164,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 
 								if(notifications.size() == 0)
 								{
-									Message notification = new Message();
+									final Message notification = new Message();
 									notification.setMsg(body);
 
 									if(StringUtils.isNotEmpty(date_sent))
@@ -223,9 +221,14 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 									notification.setCountryCode(country);
 									notification.setFlags(Message.FLAGS_SMS);
 									notification.setPhone(preferences.getString(User.KEY_PHONE, ""));
-									realm.beginTransaction();
-									realm.copyToRealmOrUpdate(notification);
-									realm.commitTransaction();
+									realm.executeTransaction(new Realm.Transaction()
+									{
+										@Override
+										public void execute(Realm realm)
+										{
+											realm.copyToRealmOrUpdate(notification);
+										}
+									});
 								}
 							}
 						}
@@ -243,12 +246,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CaptureSMSAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CaptureSMSAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
@@ -271,16 +269,11 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 			}
 
 			//Agregado para enviar los sms recibidos a la api, se movió para chorear sin necesidad de validar (siempre que haya sms)
-			new ConnectApiSMSAsyncTask(activity, false).execute();
+			new ConnectApiSMSAsyncTask(activity, false).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
 		catch(Exception e)
 		{
-			System.out.println("CaptureSMSAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "CaptureSMSAsyncTask:onPostExecute - Exception:", e);
 		}
 
 		super.onPostExecute(result);

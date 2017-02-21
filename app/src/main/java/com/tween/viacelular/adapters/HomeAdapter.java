@@ -39,16 +39,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 		public int				HolderId;
 		private RelativeLayout	rlClient;
 		private CircleImageView picture;
-		private TextView		title;
-		private TextView		subTitle;
-		private ImageView		count;
-		private ImageView		silence;
-		private TextView		rowTime;
-		private ImageView		bigSilence;
-		private ImageView		price;
-		private ImageView		bigPrice;
-		private ImageView		block;
-		private ImageView		bigBlock;
+		private TextView		title, subTitle, rowTime;
+		private ImageView		count, silence, bigSilence, price, bigPrice, block, bigBlock;
 
 		public ViewHolder(View view, int ViewType)
 		{
@@ -90,12 +82,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 		}
 		catch(Exception e)
 		{
-			System.out.println("HomeAdapter:onCreateViewHolder - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity.getContext(), "HomeAdapter:onCreateViewHolder - Exception:", e);
 		}
 
 		return null;
@@ -124,68 +111,101 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 					RealmResults<Message> countNotif = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
 														.equalTo(Suscription.KEY_API, item.getCompanyId()).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
 
-					if(countNotif.size() > 0)
+					//Modificación para migrar a asynctask la descarga de imágenes
+					if(StringUtils.isNotEmpty(item.getImage()))
 					{
-						//Modificación para migrar a asynctask la descarga de imágenes
-						if(StringUtils.isNotEmpty(item.getImage()))
+						//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
+						Picasso.with(activity.getHomeActivity()).load(item.getImage()).placeholder(R.drawable.ic_launcher).into(holder.picture);
+					}
+					else
+					{
+						//Mostrar el logo de Vloom si no tiene logo
+						Picasso.with(activity.getHomeActivity()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(holder.picture);
+					}
+
+					String name		= item.getName();
+					String industry	= item.getIndustry();
+
+					if(activity.getResources().getDisplayMetrics().density == Common.DENSITY_XHDPI)
+					{
+						//XHDPI
+						if(name.length() > 25)
 						{
-							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
-							Picasso.with(activity.getHomeActivity()).load(item.getImage()).placeholder(R.drawable.ic_launcher).into(holder.picture);
+							name = name.substring(0, 20).trim() + "...";
 						}
 
-						String name		= item.getName();
-						String industry	= item.getIndustry();
-
-						if(activity.getResources().getDisplayMetrics().density == Common.DENSITY_XHDPI)
+						if(industry.length() > 28)
 						{
-							//XHDPI
-							if(name.length() > 25)
+							industry = industry.substring(0, 20).trim() + "...";
+						}
+					}
+					else
+					{
+						//Agregado para nombres de company largos en fullhd
+						if(activity.getResources().getDisplayMetrics().density == Common.DENSITY_XXHDPI)
+						{
+							//XXHDPI
+							if(name.length() > 32)
 							{
-								name = name.substring(0, 20).trim() + "...";
-							}
-
-							if(industry.length() > 28)
-							{
-								industry = industry.substring(0, 20).trim() + "...";
+								name = name.substring(0, 30).trim() + "...";
 							}
 						}
 						else
 						{
-							//Agregado para nombres de company largos en fullhd
-							if(activity.getResources().getDisplayMetrics().density == Common.DENSITY_XXHDPI)
+							//Agregado para nombres de company largos en resoluciones menores a HD
+							if(activity.getResources().getDisplayMetrics().density <= Common.DENSITY_HDPI)
 							{
-								//XXHDPI
-								if(name.length() > 32)
+								//HDPI
+								if(name.length() > 25)
 								{
-									name = name.substring(0, 30).trim() + "...";
+									name = name.substring(0, 14).trim() + "...";
 								}
-							}
-							else
-							{
-								//Agregado para nombres de company largos en resoluciones menores a HD
-								if(activity.getResources().getDisplayMetrics().density <= Common.DENSITY_HDPI)
-								{
-									//HDPI
-									if(name.length() > 25)
-									{
-										name = name.substring(0, 14).trim() + "...";
-									}
 
-									if(industry.length() > 28)
-									{
-										industry = industry.substring(0, 14).trim() + "...";
-									}
+								if(industry.length() > 28)
+								{
+									industry = industry.substring(0, 14).trim() + "...";
 								}
 							}
 						}
+					}
 
-						holder.title.setText(name);
-						holder.subTitle.setText(industry);
-						holder.rowTime.setText("");
-						holder.bigSilence.setVisibility(ImageView.GONE);
-						holder.bigPrice.setVisibility(ImageView.GONE);
-						int unread = 0;
+					holder.title.setText(name);
+					holder.subTitle.setText(industry);
+					holder.rowTime.setText("");
+					holder.bigSilence.setVisibility(ImageView.GONE);
+					holder.bigPrice.setVisibility(ImageView.GONE);
+					int unread = 0;
+					//Se agregan los iconos para destacar cuando la company está bloqueada y se hizo dismiss de la card para suscribir
+					if(item.getGray() == Common.BOOL_YES)
+					{
+						holder.title.setTextColor(Utils.adjustAlpha(Color.BLACK, Common.ALPHA_FOR_BLOCKS));
+						holder.subTitle.setTextColor(Utils.adjustAlpha(Color.GRAY, Common.ALPHA_FOR_BLOCKS));
+						holder.bigBlock.setVisibility(ImageView.VISIBLE);
+						holder.price.setVisibility(ImageView.GONE);
+						holder.silence.setVisibility(ImageView.GONE);
+					}
 
+					holder.rlClient.setOnClickListener(new View.OnClickListener()
+					{
+						@Override
+						public void onClick(View v)
+						{
+							activity.redirectCard(item.getCompanyId());
+						}
+					});
+
+					holder.rlClient.setOnLongClickListener(new View.OnLongClickListener()
+					{
+						@Override
+						public boolean onLongClick(View v)
+						{
+							activity.showMenu(item, item.getCompanyId());
+							return true;
+						}
+					});
+
+					if(countNotif.size() > 0)
+					{
 						//Agregado para mejora en la performance
 						for(Message message : countNotif)
 						{
@@ -217,7 +237,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 								.buildRound(String.valueOf(unread), Color.parseColor(Common.COLOR_ACCENT));
 							holder.count.setImageDrawable(drawableCount);
 
-							if(SuscriptionHelper.getTypeNumber(item, countNotif.get(0).getChannel()).equals(Suscription.NUMBER_PAYOUT))
+							if(SuscriptionHelper.getTypeNumber(item, countNotif.get(0).getChannel(), activity.getContext()).equals(Suscription.NUMBER_PAYOUT))
 							{
 								holder.price.setVisibility(ImageView.VISIBLE);
 								holder.silence.setVisibility(ImageView.GONE);
@@ -243,7 +263,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 							holder.silence.setVisibility(ImageView.GONE);
 							holder.price.setVisibility(ImageView.GONE);
 
-							if(SuscriptionHelper.getTypeNumber(item, countNotif.get(0).getChannel()).equals(Suscription.NUMBER_PAYOUT))
+							if(SuscriptionHelper.getTypeNumber(item, countNotif.get(0).getChannel(), activity.getContext()).equals(Suscription.NUMBER_PAYOUT))
 							{
 								holder.bigPrice.setVisibility(ImageView.VISIBLE);
 								holder.bigSilence.setVisibility(ImageView.GONE);
@@ -263,47 +283,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 								holder.bigSilence.setVisibility(ImageView.GONE);
 							}
 						}
-
-						//Se agregan los iconos para destacar cuando la company está bloqueada y se hizo dismiss de la card para suscribir
-						if(item.getGray() == Common.BOOL_YES)
-						{
-							holder.title.setTextColor(Utils.adjustAlpha(Color.BLACK, Common.ALPHA_FOR_BLOCKS));
-							holder.subTitle.setTextColor(Utils.adjustAlpha(Color.GRAY, Common.ALPHA_FOR_BLOCKS));
-							holder.bigBlock.setVisibility(ImageView.VISIBLE);
-							holder.price.setVisibility(ImageView.GONE);
-							holder.silence.setVisibility(ImageView.GONE);
-						}
-
-						holder.rlClient.setOnClickListener(new View.OnClickListener()
-						{
-							@Override
-							public void onClick(View v)
-							{
-								activity.redirectCard(item, item.getCompanyId());
-							}
-						});
-
-						holder.rlClient.setOnLongClickListener(new View.OnLongClickListener()
-						{
-							@Override
-							public boolean onLongClick(View v)
-							{
-								activity.showMenu(item, item.getCompanyId());
-								return true;
-							}
-						});
 					}
 				}
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("HomeAdapter:onBindViewHolder - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity.getContext(), "HomeAdapter:onBindViewHolder - Exception:", e);
 		}
 	}
 

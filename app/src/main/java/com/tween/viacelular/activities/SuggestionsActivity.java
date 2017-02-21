@@ -48,12 +48,7 @@ public class SuggestionsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuggestionsActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -66,12 +61,7 @@ public class SuggestionsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuggestionsActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onBackPressed - Exception:", e);
 		}
 	}
 
@@ -82,17 +72,12 @@ public class SuggestionsActivity extends AppCompatActivity
 			//Agregado para auto-suscribir companies
 			if(firstTime)
 			{
-				BlockedActivity.modifySubscriptions(SuggestionsActivity.this, Common.BOOL_YES, true, "", true);
+				HomeActivity.modifySubscriptions(SuggestionsActivity.this, Common.BOOL_YES, true, "", false);
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuggestionsActivity:begin - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":begin - Exception:", e);
 		}
 	}
 }

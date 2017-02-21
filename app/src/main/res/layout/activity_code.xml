@@ -17,18 +17,33 @@
 		android:layout_below="@+id/toolbarRegister">
 		<TextView
 			android:id="@+id/txtRecive"
-			android:layout_width="match_parent"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="20dp"
-			android:layout_marginBottom="20dp"
-			android:text="@string/sent_sms"
-			android:textColor="@color/background_material_dark"
+			android:layout_marginTop="10dp"
+			android:text="@string/verify_phone_code"
+			android:textColor="@color/text"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentStart="true"
 			android:textSize="14sp" />
+		<Button
+			android:id="@+id/btnWrong"
+			android:layout_width="wrap_content"
+			android:layout_height="30dp"
+			android:layout_marginRight="30dp"
+			android:layout_marginEnd="30dp"
+			android:text="@string/verify_phone_wrong"
+			android:onClick="logout"
+			android:textColor="@color/accent"
+			android:background="@android:color/transparent"
+			android:shadowColor="@android:color/transparent"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:layout_below="@+id/txtRecive"
+			android:gravity="left" />
 		<android.support.design.widget.TextInputLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:id="@+id/inputCode"
-			android:layout_below="@id/txtRecive">
+			android:layout_below="@id/btnWrong">
 			<EditText
 				android:id="@+id/editCode"
 				android:layout_marginTop="20dp"
@@ -36,6 +51,8 @@
 				android:layout_height="wrap_content"
 				android:hint="@string/code"
 				android:inputType="number"
+				android:maxLines="1"
+				android:imeOptions="actionSend"
 				android:maxLength="4" />
 		</android.support.design.widget.TextInputLayout>
 		<TextView
@@ -45,7 +62,7 @@
 			android:layout_marginTop="10dp"
 			android:text="@string/timer_count"
 			android:layout_below="@+id/inputCode"
-			android:textColor="@color/background_material_dark"
+			android:textColor="@color/text"
 			android:textSize="13sp"
 			android:visibility="visible" />
 		<!-- Agregado para permitir pasar sin validar -->
@@ -55,7 +72,7 @@
 			android:minWidth="88dp"
 			android:layout_height="36dp"
 			android:text="@string/btn_continue"
-			android:textColor="@color/text"
+			android:textColor="@android:color/white"
 			android:textColorHint="@android:color/secondary_text_light"
 			android:textSize="14sp"
 			android:onClick="login"
@@ -75,7 +92,7 @@
 			android:minWidth="88dp"
 			android:layout_height="36dp"
 			android:text="@string/btn_skip"
-			android:textColor="@color/text"
+			android:textColor="@android:color/white"
 			android:textColorHint="@android:color/secondary_text_light"
 			android:textSize="14sp"
 			android:onClick="getFreePass"

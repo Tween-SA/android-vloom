@@ -5,10 +5,12 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import com.tween.viacelular.R;
-import com.tween.viacelular.data.User;
 import com.tween.viacelular.models.Land;
+import com.tween.viacelular.models.Suscription;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -24,26 +26,42 @@ import java.util.Locale;
  */
 public class ApiConnection
 {
-	public static final String OK					= "OK";
-	public static final String FAIL					= "FAIL";
-	public static final String METHOD_GET			= "GET";
-	public static final String METHOD_POST			= "POST";
-	public static final String METHOD_PUT			= "PUT";
-	public static final String TOKEN_AUTHORIZATION	= "Bearer d32f7a8d983b442f608bcdbef27e41c32bf0d9a8";
-	public static final String CLOUDFRONT_S3		= "https://d1ads2zadze8sp.cloudfront.net/"; //Recuerdo que apunta al s3 https://s3-sa-east-1.amazonaws.com/vc-img/Logos/
-	public static final String SERVERP				= "https://api.vloom.io/v1/"; //New Production - master
-	//public static final String SERVERP				= "https://dev.vloom.io/v1/"; //Testing - develop
-	//public static final String SERVER				= "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
-	//public static final String SERVER				= "https://private-29fe84-davidfigueroa.apiary-mock.com/v1/"; //Development Apiary Private
-	public static final String IP_API				= "http://ip-api.com/json";
-	public static final String COMPANIES			= SERVERP + "companies";
-	public static final String COUNTRIES			= SERVERP + "countries?locale="+Locale.getDefault().getLanguage();
-	public static final String MESSAGES				= SERVERP + "messages";
-	public static final String USERS				= SERVERP + "users";
-	public static final String COMPANIES_BY_COUNTRY	= COMPANIES+"/"+ Land.KEY_API+"?code";
-	public static final String SEND_SMS				= MESSAGES + "/lists";
-	public static final String CALLME				= USERS + "/tts";
-	public static final String MODIFY_COMPANIES		= USERS + "/" + User.KEY_API + "/subscriptions";
+	public static final String OK						= "OK";
+	private static final String FAIL					= "FAIL";
+	public static final String METHOD_GET				= "GET";
+	public static final String METHOD_POST				= "POST";
+	public static final String METHOD_PUT				= "PUT";
+	private static final String TOKEN_AUTHORIZATION		= "Bearer d32f7a8d983b442f608bcdbef27e41c32bf0d9a8";
+	public static final String FIREBASE_STORAGE			= "gs://tween-viacelular.appspot.com"; //Cubeta en Firebase para adjuntar imagenes a los mensajes
+	public static final String FIREBASE_CHILD			= "messages_attached"; //Cubeta en Firebase para adjuntar imagenes a los mensajes
+	public static final String CLOUDFRONT_S3			= "https://dfp5lnxq5eoj6.cloudfront.net/"; //Recuerdo que apunta al s3 https://s3-sa-east-1.amazonaws.com/vc-img/Logos/
+	/**
+	 * Url para redirigir a la web business
+	 * "https://business.vloom.io/register"; //Production
+	 * "https://stagging-business.vloom.io/register"; //Stagging
+	 * "https://dev-business.vloom.io/register"; //Testing
+	 */
+	public static final String BUSINESS					= "https://business.vloom.io/register";
+	/**
+	 * Url base del server
+	 * "https://api.vloom.io/v1/"; //Production - master
+	 * "https://stagging.vloom.io/v1/"; //Stagging - stagging
+	 * "https://dev.vloom.io/v1/"; //Testing - develop
+	 * "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
+	 * "https://private-29fe84-davidfigueroa.apiary-mock.com/v1/"; //Development Apiary Private
+	 */
+	private static final String SERVERP					= "https://api.vloom.io/v1/";
+	public static final String IP_API					= "http://ip-api.com/json";
+	public static final String COMPANIES				= SERVERP+"companies";
+	public static final String COUNTRIES				= SERVERP+"countries?locale="+Locale.getDefault().getLanguage();
+	public static final String MESSAGES					= SERVERP+"messages";
+	public static final String USERS					= SERVERP+"users";
+	public static final String COMPANIES_BY_COUNTRY		= COMPANIES+"/"+ Land.KEY_API+"?code";
+	public static final String COMPANIES_SOCIAL			= COMPANIES+"/"+Suscription.KEY_API+"/social";
+	public static final String SEND_SMS					= MESSAGES+"/lists";
+	public static final String CALLME					= USERS+"/tts";
+	public static final String MODIFY_COMPANIES			= USERS+"/"+ User.KEY_API+"/subscriptions";
+	public static final String SUGGESTIONS				= MODIFY_COMPANIES+"?country="+Land.KEY_API;
 
 	/**
 	 * Detecta si hay conexión a internet.
@@ -67,9 +85,11 @@ public class ApiConnection
 
 					if(networkInfo != null)
 					{
-						System.out.println("Red: "+networkInfo.getTypeName()+" - "+networkInfo.toString());
-						//Emulador: [type: MOBILE[UMTS], state: CONNECTED/CONNECTED, reason: connected, extra: epc.tmobile.com, roaming: false, failover: false, isAvailable: true,
-						// isConnectedToProvisioningNetwork: false]
+						if(Common.DEBUG)
+						{
+							System.out.println("Red: "+networkInfo.getTypeName()+" - "+networkInfo.toString());
+						}
+
 						if(networkInfo.isConnected())
 						{
 							result = true;
@@ -80,12 +100,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:checkInternet - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:checkInternet - Exception:", e);
 		}
 
 		return result;
@@ -114,12 +129,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:getNetwork - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:getNetwork - Exception:", e);
 		}
 
 		return network;
@@ -145,12 +155,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:loadJSONFromAsset - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:loadJSONFromAsset - Exception:", e);
 		}
 
 		return json;
@@ -161,6 +166,7 @@ public class ApiConnection
 		String result		= "{}";
 		InputStream stream	= null;
 		String message		= "";
+		String headers		= "";
 		int code			= 0;
 		boolean connected	= checkInternet(context);
 
@@ -181,8 +187,8 @@ public class ApiConnection
 
 				URL url								= new URL(urlStr);
 				URLConnection connection			= url.openConnection();
-				connection.setConnectTimeout(10000);
-				connection.setReadTimeout(10000);
+				connection.setConnectTimeout(10500);
+				connection.setReadTimeout(10500);
 				HttpURLConnection httpConnection	= (HttpURLConnection) connection;
 				httpConnection.setRequestMethod(method);
 				httpConnection.setRequestProperty("Accept", "application/json");
@@ -210,31 +216,23 @@ public class ApiConnection
 					os.close();
 				}
 
-				httpConnection.connect();
-
-				if(httpConnection != null)
+				try
 				{
-					try
-					{
-						code	= httpConnection.getResponseCode();
-						message	= httpConnection.getResponseMessage();
-					}
-					catch(Exception e)
-					{
-						System.out.println("ApiConnection:request:getResponseCode() - Exception: " + e);
-
-						if(Common.DEBUG)
-						{
-							e.printStackTrace();
-						}
-					}
+					httpConnection.connect();
+					headers	= httpConnection.getHeaderFields().toString();
+					code	= httpConnection.getResponseCode();
+					message	= httpConnection.getResponseMessage();
+				}
+				catch(Exception e)
+				{
+					Utils.logError(context, "ApiConnection:request:getResponseCode() - Exception:", e);
 				}
 
 				if(Common.DEBUG)
 				{
-					System.out.println("Headers: " + httpConnection.getHeaderFields());
-					System.out.println("Response Code: " + httpConnection.getResponseCode());
-					System.out.println("Response Message: " + httpConnection.getResponseMessage());
+					System.out.println("Headers: " + headers);
+					System.out.println("Response Code: " + code);
+					System.out.println("Response Message: " + message);
 				}
 
 				if(code == HttpURLConnection.HTTP_OK || code == HttpURLConnection.HTTP_CREATED || code == HttpURLConnection.HTTP_ACCEPTED)
@@ -251,7 +249,7 @@ public class ApiConnection
 
 				if(stream != null)
 				{
-					result = convertInputStreamToString(stream);
+					result = convertInputStreamToString(stream, context);
 				}
 
 				result = StringUtils.removeSpacesJSON(result);
@@ -265,11 +263,7 @@ public class ApiConnection
 			}
 			catch(Exception e)
 			{
-				System.out.println("ApiConnection:request - Exception: " + e);
-				if(Common.DEBUG)
-				{
-					e.printStackTrace();
-				}
+				Utils.logError(context, "ApiConnection:request - Exception:", e);
 			}
 		}
 
@@ -331,32 +325,24 @@ public class ApiConnection
 		return result;
 	}
 
-	public static String convertInputStreamToString(InputStream inputStream)
+	private static String convertInputStreamToString(InputStream inputStream, Context context)
 	{
 		String result = "";
 		try
 		{
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+			String line;
 
-			if(bufferedReader != null)
+			while((line = bufferedReader.readLine()) != null)
 			{
-				String line = "";
-				while((line = bufferedReader.readLine()) != null)
-				{
-					result += line;
-				}
+				result += line;
 			}
 
 			inputStream.close();
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:convertInputStreamToString - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:convertInputStreamToString - Exception:", e);
 		}
 
 		return result;
@@ -444,11 +430,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:checkResponse - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:checkResponse - Exception:", e);
 		}
 
 		return result;

@@ -1,6 +1,7 @@
 package com.tween.viacelular.data;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import com.tween.viacelular.asynctask.CompanyAsyncTask;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Suscription;
@@ -465,13 +466,12 @@ public class User
 									{
 										//Modificación para validar paso de contexto Realm
 										Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-										String companyIdApi		= "";
 
 										if(suscription == null)
 										{
 											final CompanyAsyncTask task	= new CompanyAsyncTask(activity, false, companyId, jCountryCode);
 											task.setFlag(Common.BOOL_YES);
-											task.execute();
+											task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 										}
 									}
 								}

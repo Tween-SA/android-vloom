@@ -4,10 +4,12 @@
 	android:layout_height="180dp"
 	android:background="@drawable/background_hproflie">
 	<ImageView
+		android:contentDescription="@string/app_name"
 		android:id="@+id/circleView"
 		android:layout_width="80dp"
 		android:layout_height="80dp"
 		android:layout_marginLeft="20dp"
+		android:layout_marginStart="20dp"
 		android:layout_marginTop="20dp"
 		android:layout_marginBottom="10dp"
 		android:src="@drawable/ic_launcher" />
@@ -16,7 +18,8 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20dp"
-		android:textColor="@color/text"
+		android:layout_marginStart="20dp"
+		android:textColor="@android:color/white"
 		android:layout_below="@+id/circleView"
 		android:textAppearance="?android:attr/textAppearanceSmall" />
 	<TextView
@@ -24,10 +27,11 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20dp"
+		android:layout_marginStart="20dp"
 		android:layout_below="@+id/name"
 		android:layout_marginTop="5dp"
 		android:paddingBottom="10dp"
-		android:textColor="@color/text"
+		android:textColor="@android:color/white"
 		android:textAppearance="?android:attr/textAppearanceSmall"
 		android:textStyle="normal" />
 </RelativeLayout>

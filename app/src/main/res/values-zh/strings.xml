@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">已接受</string>
 	<string name="action_example">示例</string>
@@ -6,6 +6,7 @@
 	<string name="activate_notif">启用通知</string>
 	<string name="agree">接受</string>
 	<string name="app">应用程序</string>
+	<string name="attach_limit">您已达到附加图片的限制</string>
 	<string name="bad_request">无效请求</string>
 	<string name="block_service_text">您将不再收到通知或信息服务。</string>
 	<string name="block_service">模块服务</string>
@@ -32,6 +33,15 @@
 	<string name="email">电子邮件</string>
 	<string name="empty_messages_text">您将删除所有您已接收的消息。</string>
 	<string name="empty_messages">空消息</string>
+	<string name="enrich_addcommentheader">添加评论</string><!-- after traslate -->
+	<string name="enrich_commentheader">编辑点评</string><!-- after traslate -->
+	<string name="enrich_commenthint">写评论&#8230;</string><!-- after traslate -->
+	<string name="enrich_addnoteheader">添加备注</string><!-- after traslate -->
+	<string name="enrich_noteheader">编辑笔记</string><!-- after traslate -->
+	<string name="enrich_notehint">写笔记&#8230;</string><!-- after traslate -->
+	<string name="enrich_notetype">个人笔记</string><!-- after traslate -->
+	<string name="enrich_receipt">发票</string><!-- after traslate -->
+	<string name="enrich_save">保存</string><!-- after traslate -->
 	<string name="error_upgrade">我们已备份。很抱歉，给您造成不便</string>
 	<string name="feedback_error">请输入评论</string>
 	<string name="feedback_issue">报告为意外事件</string>
@@ -108,8 +118,8 @@
 	<string name="phone_lenght">您手机号码的位数必须与您所在国家要求的位数相一致</string>
 	<string name="phone">手机</string>
 	<string name="please_retry">请稍后再试</string>
-	<string name="please_wait">请稍候...</string>
-	<string name="progress_dialog">正在处理...</string>
+	<string name="please_wait">请稍候&#8230;</string>
+	<string name="progress_dialog">正在处理&#8230;</string>
 	<string name="rate_dialog_title">您是否想给 Vloom 5 星评价？</string>
 	<string name="rate_dialog_message">这仅需要一分钟。您的意见对我们很重要，谢谢！</string>
 	<string name="rate_dialog_ok">评价</string>
@@ -119,15 +129,20 @@
 	<string name="refresh_complete">您的订阅已更新</string>
 	<string name="refresh_menu">更新</string>
 	<string name="register_begin">注册以开始</string>
-	<string name="register_dialog">正在注册...</string>
+	<string name="register_dialog">正在注册&#8230;</string>
 	<string name="register">用您的电子邮件进行注册</string>
-	<string name="registering_message">正在生成的令牌实例 ID ...</string>
+	<string name="register_business">登录业务</string><!-- after traslate -->
+	<string name="registering_message">正在生成的令牌实例 ID&#8230;</string>
 	<string name="reimport_sms">重新导入我的短信</string>
 	<string name="repassword_blank">您必须确认您的密码</string>
 	<string name="repassword">重复密码</string>
 	<string name="report">报告</string>
 	<string name="response_invalid">无法处理您的请求，请再试一次</string>
 	<string name="seach">搜索</string><!-- after traslate -->
+	<string name="seach_hint">开始输入公司的名称寻求</string><!-- after traslate -->
+	<string name="seach_title">搜索公司</string><!-- after traslate -->
+	<string name="showcase_note_title">注释，评论和照片</string><!-- after traslate -->
+	<string name="showcase_note_subtitle">现在你可以创建笔记和添加照片和评论你的帖子！</string><!-- after traslate -->
 	<string name="send_code">我们已发送一条包含验证激活码的短信到该手机号码上。</string>
 	<string name="send_mail_text">利用 Vloom Android 版：</string>
 	<string name="send_push_sms">发送测试通知（短信）</string>
@@ -141,6 +156,9 @@
 	<string name="silence_actived">静默模式已启用</string>
 	<string name="silence_desactived">静默模式已禁用</string>
 	<string name="silence">静默</string>
+	<string name="social">我们正在为你的新内容</string><!-- after traslate -->
+	<string name="social_high">鸣叫亮点</string><!-- after traslate -->
+	<string name="social_date">发表于 dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">您想要继续接收这些消息？</string>
 	<string name="sms_text_paid">需付费短信</string>
 	<string name="sms_text">短信</string>
@@ -194,6 +212,17 @@
 	<string name="upgrade_text">我们正在更新您的信息</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">正在验证……</string>
+	<string name="verify_phone_add">新增电话号码</string><!-- after traslate -->
+	<string name="verify_phone_alert">我们将核实数+0是不是还是要改变它呢？</string><!-- after traslate -->
+	<string name="verify_phone_back">回报</string><!-- after traslate -->
+	<string name="verify_phone_code">等待自动检测发送到0000亿短信</string><!-- after traslate -->
+	<string name="verify_phone_contact">联系支持</string><!-- after traslate -->
+	<string name="verify_phone_edit">编辑</string><!-- after traslate -->
+	<string name="verify_phone_missing">如果你不验证电话号码后，您最喜欢的企业无法与您沟通</string><!-- after traslate -->
+	<string name="verify_phone_subtitle">确认你的国家，进入后您的手机号码区号：</string><!-- after traslate -->
+	<string name="verify_phone_title">将发送短信验证您的电话号码。</string><!-- after traslate -->
+	<string name="verify_phone_warning">确保帐户安全</string><!-- after traslate -->
+	<string name="verify_phone_wrong">¿号码错误？</string><!-- after traslate -->
 	<string name="version_settins">适用于 Android v</string>
 	<string name="week">周</string>
 	<string name="weeks">周</string>
@@ -248,9 +277,20 @@
 		<item>标记为垃圾</item>
 		<item>删除</item>
 	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>分享</item>
+		<item>标记为垃圾</item>
+		<item>删除</item>
+		<item>我不希望看到这个了</item><!-- after traslate -->
+	</string-array>
 	<string-array name="optionsChannel">
 		<item>静默</item>
 		<item>空消息</item>
 		<item>退订</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>分享</item>
+		<item>编辑</item>
+		<item>删除</item>
+	</string-array><!-- after traslate -->
 </resources>

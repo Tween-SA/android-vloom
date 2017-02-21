@@ -5,13 +5,13 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import io.realm.Realm;
 
 public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 {
@@ -54,36 +54,28 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("CompanyAsyncTask:onPreExecute - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "CompanyAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
 	@Override
 	protected String doInBackground(Void... params)
 	{
-		String result = "";
-
 		try
 		{
-			Suscription company				= null;
-			Realm realm						= Realm.getDefaultInstance();
+			Suscription company;
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			JSONObject jsonResult			= null;
-			jsonResult						= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES + "/" + companyId, context, ApiConnection.METHOD_GET,
+			JSONObject jsonResult			= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES + "/" + companyId, context, ApiConnection.METHOD_GET,
 																preferences.getString(Common.KEY_TOKEN, ""), ""));
-			result							= ApiConnection.checkResponse(context, jsonResult);
+			String result					= ApiConnection.checkResponse(context, jsonResult);
 
 			if(result.equals(ApiConnection.OK))
 			{
-				company = SuscriptionHelper.parseEntity(jsonResult.getJSONObject(Common.KEY_CONTENT), companyId, countryCode, context, false, getFlag());
+				company = SuscriptionHelper.parseEntity(jsonResult.getJSONObject(Common.KEY_CONTENT), companyId, countryCode, context, false, getFlag(), false);
 			}
 			else
 			{
-				company = SuscriptionHelper.parseEntity(null, companyId, countryCode, context, false, getFlag());
+				company = SuscriptionHelper.parseEntity(null, companyId, countryCode, context, false, getFlag(), false);
 			}
 
 			companyId = company.getCompanyId();
@@ -101,27 +93,17 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(JSONException e)
 		{
-			System.out.println("CompanyAsyncTask:doInBackground - JSONException: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "CompanyAsyncTask:doInBackground - JSONException:", e);
 		}
 		catch(Exception e)
 		{
-			System.out.println("CompanyAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "CompanyAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return companyId;
 	}
 
-	public int getFlag()
+	private int getFlag()
 	{
 		return flag;
 	}

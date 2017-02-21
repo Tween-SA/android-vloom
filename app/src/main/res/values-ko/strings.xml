@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">승인됨</string>
 	<string name="action_example">예시</string>
@@ -6,6 +6,7 @@
 	<string name="activate_notif">알림 사용</string>
 	<string name="agree">수락</string>
 	<string name="app">신청</string>
+	<string name="attach_limit">사용자는 첨부 된 이미지의 한계에 도달</string>
 	<string name="bad_request">잘못된 요청</string>
 	<string name="block_service_text">이 서비스와 관련하여 추가 통지 또는 정보를 받을 수 없습니다.</string>
 	<string name="block_service">서비스 차단</string>
@@ -32,6 +33,15 @@
 	<string name="email">이메일</string>
 	<string name="empty_messages_text">수신 메시지를 모두 삭제합니다.</string>
 	<string name="empty_messages">빈 메시지</string>
+	<string name="enrich_addcommentheader">코멘트를 추가</string><!-- after traslate -->
+	<string name="enrich_commentheader">편집 주석</string><!-- after traslate -->
+	<string name="enrich_commenthint">댓글 쓰기&#8230;</string><!-- after traslate -->
+	<string name="enrich_addnoteheader">메모 추가</string><!-- after traslate -->
+	<string name="enrich_noteheader">편집 노트</string><!-- after traslate -->
+	<string name="enrich_notehint">메모를 작성&#8230;</string><!-- after traslate -->
+	<string name="enrich_notetype">개인 노트</string><!-- after traslate -->
+	<string name="enrich_receipt">송장</string><!-- after traslate -->
+	<string name="enrich_save">구하다</string><!-- after traslate -->
 	<string name="error_upgrade">백업 중입니다. 불편을 끼쳐 죄송합니다</string>
 	<string name="feedback_error">의견을 입력하세요</string>
 	<string name="feedback_issue">사고로 보고하기</string>
@@ -51,7 +61,7 @@
 	<string name="landing_card_error_header">아차</string><!-- after traslate -->
 	<string name="landing_card_error_retry">다시 보내기</string><!-- after traslate -->
 	<string name="landing_card_error_text">귀하의 데이터는, 다시 시도하십시오 저장되지 않습니다.</string><!-- after traslate -->
-	<string name="landing_card_loading_header">그냥 순간 ...</string><!-- after traslate -->
+	<string name="landing_card_loading_header">그냥 순간 &#8230;</string><!-- after traslate -->
 	<string name="landing_card_loading_text">우리는 데이터를 유지하고 있습니다</string><!-- after traslate -->
 	<string name="landing_card_ok_header">모든 업!</string><!-- after traslate -->
 	<string name="landing_card_ok_text">더 나은 경험을 제공하기 위해 고객 ID를 유지</string><!-- after traslate -->
@@ -108,8 +118,8 @@
 	<string name="phone_lenght">전화번호는 귀하 국가의 자리 수와 일치해야 합니다</string>
 	<string name="phone">전화</string>
 	<string name="please_retry">나중에 다시 시도하십시오</string>
-	<string name="please_wait">잠시 기다려주십시오 ...</string>
-	<string name="progress_dialog">처리 중 ...</string>
+	<string name="please_wait">잠시 기다려주십시오 &#8230;</string>
+	<string name="progress_dialog">처리 중 &#8230;</string>
 	<string name="rate_dialog_title">별 5개로 Vloom를 평가하시겠습니까?</string>
 	<string name="rate_dialog_message">1분이면 충분합니다. 귀하의 의견은 저희에게 중요합니다. 감사합니다!</string>
 	<string name="rate_dialog_ok">평가하기</string>
@@ -119,15 +129,20 @@
 	<string name="refresh_complete">귀하의 구독이 업데이트되었습니다</string>
 	<string name="refresh_menu">업데이트</string>
 	<string name="register_begin">시작하기 위해 등록</string>
-	<string name="register_dialog">등록 중...</string>
+	<string name="register_dialog">등록 중&#8230;</string>
 	<string name="register">본인의 이메일로 등록하기</string>
-	<string name="registering_message">토큰을 위한 인스턴트 ID를 생성 중...</string>
+	<string name="register_business">비즈니스 로그인</string><!-- after traslate -->
+	<string name="registering_message">토큰을 위한 인스턴트 ID를 생성 중&#8230;</string>
 	<string name="reimport_sms">내 SMS 메시지를 다시 가져오기</string>
 	<string name="repassword_blank">귀하의 비밀번호를 확인해야 합니다</string>
 	<string name="repassword">비밀번호 재입력</string>
 	<string name="report">보고하기</string>
 	<string name="response_invalid">귀하의 요청을 처리할 수​​ 없습니다. 다시 시도해 주십시오</string>
 	<string name="seach">수색</string><!-- after traslate -->
+	<string name="seach_hint">추구하는 회사의 이름을 입력합니다</string><!-- after traslate -->
+	<string name="seach_title">검색 회사</string><!-- after traslate -->
+	<string name="showcase_note_title">노트, 댓글 및 사진</string><!-- after traslate -->
+	<string name="showcase_note_subtitle">지금 당신은 메모를 작성하고 귀하의 게시물에 사진과 설명을 추가 할 수 있습니다!</string><!-- after traslate -->
 	<string name="send_code">번호에 활성화 코드를 포함한 문자 메시지를  전송했습니다</string>
 	<string name="send_mail_text">Vloom 안드로이드와 함께:</string>
 	<string name="send_push_sms">시험 알림(SMS) 보내기</string>
@@ -141,6 +156,9 @@
 	<string name="silence_actived">음소거 모드 활성화</string>
 	<string name="silence_desactived">음소거 모드 비활성화</string>
 	<string name="silence">음소거</string>
+	<string name="social">우리는 당신을 위해 새로운 콘텐츠를 얻고있다</string><!-- after traslate -->
+	<string name="social_high">트윗 하이라이트</string><!-- after traslate -->
+	<string name="social_date">에 게시 dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">이 메시지를 수신하시겠습니까?</string>
 	<string name="sms_text_paid">유료 SMS</string>
 	<string name="sms_text">SMS</string>
@@ -193,7 +211,18 @@
 	<string name="unsuscribe">취소하기</string>
 	<string name="upgrade_text">우리는 귀하의 정보를 업데이트</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
-	<string name="verify_dialog">확인 중...</string>
+	<string name="verify_dialog">확인 중&#8230;</string>
+	<string name="verify_phone_add">전화 번호 추가</string><!-- after traslate -->
+	<string name="verify_phone_alert">우리는 숫자 0이를 마우스 오른쪽 단추로되어 있는지 확인합니다 또는 당신이 그것을 변경하려면?</string><!-- after traslate -->
+	<string name="verify_phone_back">반환</string><!-- after traslate -->
+	<string name="verify_phone_code">자동 000,000,000,000로 전송 된 SMS를 검출하도록 대기</string><!-- after traslate -->
+	<string name="verify_phone_contact">연락 지원</string><!-- after traslate -->
+	<string name="verify_phone_edit">편집</string><!-- after traslate -->
+	<string name="verify_phone_missing">당신이 당신의 번호를 확인하지 않으면, 당신의 마음에 드는 기업은 당신과 통신 할 수 없습니다</string><!-- after traslate -->
+	<string name="verify_phone_subtitle">국가를 확인하고 지역 번호 휴대 전화 번호 뒤에 입력 :</string><!-- after traslate -->
+	<string name="verify_phone_title">당신의 전화 번호를 확인하기 위해 SMS를 보낼 것입니다.</string><!-- after traslate -->
+	<string name="verify_phone_warning">계정 보안 유지</string><!-- after traslate -->
+	<string name="verify_phone_wrong">¿ 잘못된 번호?</string><!-- after traslate -->
 	<string name="version_settins">안드로이드 v용</string>
 	<string name="week">주</string>
 	<string name="weeks">주</string>
@@ -248,9 +277,20 @@
 		<item>스팸으로 표시하기</item>
 		<item>제거하기</item>
 	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>공유하기</item>
+		<item>스팸으로 표시하기</item>
+		<item>제거하기</item>
+		<item>나는이 문제를 더 이상보고 싶지 않아</item><!-- after traslate -->
+	</string-array>
 	<string-array name="optionsChannel">
 		<item>음소거</item>
 		<item>빈 메시지</item>
 		<item>탈퇴</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>공유하기</item>
+		<item>편집</item>
+		<item>제거하기</item>
+	</string-array><!-- after traslate -->
 </resources>

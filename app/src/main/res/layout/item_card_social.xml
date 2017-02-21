@@ -1,88 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
 	xmlns:card_view="http://schemas.android.com/apk/res-auto"
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:layout_marginBottom="10dp"
-	android:layout_marginTop="10dp"
-	android:id="@+id/rlItem">
-	<ImageView
-		android:contentDescription="@string/app_name"
-		android:id="@+id/iconSocial"
-		android:layout_width="20dp"
-		android:layout_height="20dp"
-		android:src="@drawable/ic_sms_price_24dp"
-		android:layout_marginBottom="8dp"
-		android:visibility="visible"
-		android:layout_alignParentLeft="true"
-		android:layout_marginStart="10dp"
-		android:layout_marginEnd="10dp"
-		android:layout_alignParentStart="true" />
-	<TextView
-		android:id="@+id/socialAccount"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginBottom="8dp"
-		android:text="@string/today"
-		android:textColor="@color/gray"
-		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:layout_toRightOf="@+id/iconSocial" />
-	<TextView
-		android:id="@+id/rowTime"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginRight="10dp"
-		android:layout_marginBottom="8dp"
-		android:text="@string/today"
-		android:textColor="@color/gray"
-		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:layout_alignParentRight="true"
-		android:layout_alignParentEnd="true" />
+	android:layout_marginBottom="4dp"
+	android:layout_marginTop="4dp"
+	android:id="@+id/rlItem"
+	android:background="@color/background_company">
+	<FrameLayout
+		android:id="@+id/line"
+		android:layout_width="match_parent"
+		android:layout_height="16dp" />
 	<android.support.v7.widget.CardView
 		android:id="@+id/cardView"
+		android:layout_below="@+id/line"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		card_view:cardBackgroundColor="@color/text"
-		card_view:cardCornerRadius="3dp"
-		card_view:cardElevation="2dp"
-		android:layout_marginLeft="10dp"
-		android:layout_marginRight="10dp"
-		android:layout_marginBottom="4dp"
-		android:layout_below="@+id/rowTime">
+		android:layout_marginBottom="10dp"
+		android:layout_marginLeft="6dp"
+		android:layout_marginStart="6dp"
+		android:layout_marginRight="6dp"
+		android:layout_marginEnd="6dp"
+		card_view:cardCornerRadius="16dp"
+		card_view:cardBackgroundColor="@color/background_cards"
+		card_view:cardUseCompatPadding="false"
+		card_view:contentPadding="4dp"
+		card_view:cardElevation="2dp">
 		<RelativeLayout
 			android:id="@+id/rlCard"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:paddingTop="24dp"
+			android:paddingBottom="10dp"
 			android:paddingRight="16dp"
-			android:paddingBottom="16dp"
-			android:paddingLeft="16dp">
+			android:paddingEnd="16dp"
+			android:paddingLeft="16dp"
+			android:paddingStart="16dp">
+			<ImageView
+				android:contentDescription="@string/app_name"
+				android:id="@+id/iconSocial"
+				android:layout_width="20dp"
+				android:layout_height="20dp"
+				android:src="@drawable/ic_twitter"
+				android:layout_alignParentTop="true"
+				android:layout_alignParentLeft="true"
+				android:layout_alignParentStart="true"
+				android:layout_marginTop="16dp"
+				android:layout_marginBottom="10dp"
+				android:layout_marginRight="4dp"
+				android:layout_marginEnd="4dp" />
+			<TextView
+				android:id="@+id/rowTime"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:layout_marginBottom="8dp"
+				android:text="@string/today"
+				android:textColor="@color/gray"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:layout_alignParentTop="true"
+				android:visibility="gone"
+				android:layout_toEndOf="@+id/iconSocial"
+				android:layout_toRightOf="@+id/iconSocial" />
+			<TextView
+				android:id="@+id/socialAccount"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:layout_marginBottom="10dp"
+				android:text="@string/today"
+				android:textColor="@color/gray"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:layout_alignParentTop="true"
+				android:layout_toEndOf="@+id/iconSocial"
+				android:layout_toRightOf="@+id/iconSocial" />
+			<ImageView
+				android:contentDescription="@string/app_name"
+				android:id="@+id/ibOptions"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/icon_more"
+				android:layout_marginTop="18dp"
+				android:background="?android:attr/selectableItemBackground"
+				android:layout_alignParentRight="true"
+				android:clickable="true"
+				android:layout_alignParentEnd="true" />
 			<TextView
 				android:id="@+id/txtTitle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:text="@string/you_have"
 				android:textColor="@color/action"
+				android:visibility="gone"
 				android:textSize="20sp" />
-			<ImageButton
-				android:contentDescription="@string/app_name"
-				android:id="@+id/ibOptions"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:src="@drawable/ic_more_vert_black_24dp"
-				android:background="?android:attr/selectableItemBackground"
-				android:layout_above="@+id/txtContent"
-				android:layout_alignParentRight="true"
-				android:clickable="true"
-				android:layout_alignParentEnd="true" />
 			<TextView
 				android:id="@+id/txtContent"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:text="@string/you_have_text"
-				android:layout_marginTop="10dp"
 				android:textColor="@color/black"
-				android:layout_below="@+id/txtTitle"
+				android:layout_below="@+id/iconSocial"
 				android:autoLink="web"
 				android:textSize="15sp"
 				android:lineSpacingExtra="4dp" />
@@ -97,7 +114,9 @@
 				android:textColor="@color/gray"
 				android:textAppearance="?android:attr/textAppearanceSmall"
 				android:layout_alignParentLeft="true"
-				android:layout_alignParentRight="true" />
+				android:layout_alignParentStart="true"
+				android:layout_alignParentRight="true"
+				android:layout_alignParentEnd="true" />
 		</RelativeLayout>
 	</android.support.v7.widget.CardView>
 </RelativeLayout>

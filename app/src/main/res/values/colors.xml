@@ -14,6 +14,14 @@
 	<color name="gray">#717171</color>
 	<color name="light_gray">#DBDBDB</color>
 	<color name="snack_gray">#323232</color>
-	<color name="text">#FFFFFF</color>
 	<color name="sub_text">#727272</color>
+	<color name="comment">#007AF6</color>
+	<color name="background_cards">#FAFAFA</color>
+	<color name="background_company">#EEEEEE</color>
+	<color name="background_receipt">#F3F3F3</color>
+	<color name="background_note">#FBF956</color>
+	<color name="background_note_header">#FFEA58</color>
+	<color name="text_note_header">#A96D30</color>
+	<color name="text">#ff303030</color>
+	<color name="photo">#FF2756</color>
 </resources>

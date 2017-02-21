@@ -45,9 +45,10 @@ public class StringUtils
 	 */
 	public static String sanitizeText(String text)
 	{
-		text	= text.replace("\\n", "").replace("\n", "").replace("\\r", "").replace("\r", "").replace("\\t", "").replace("\t", "").replace(":", "").replace(".", "").replace(";", "");
-		text	= text.replace("{", "").replace("}", "").replace("[", "").replace("]", "").replace("*", "").replace(",", "").replace("\"", "").replace("'", "").replace("`", "");
-		text	= text.replace("\\", "").replace("/", "");
+		//Se admiten : , . /
+		text	= text.replace("\\n", "").replace("\n", "").replace("\\r", "").replace("\r", "").replace("\\t", "").replace("\t", "").replace(";", "");
+		text	= text.replace("{", "").replace("}", "").replace("[", "").replace("]", "").replace("*", "").replace("\"", "").replace("'", "").replace("`", "");
+		text	= text.replace("\\", "");
 		return text;
 	}
 
@@ -132,7 +133,7 @@ public class StringUtils
 		{
 			if(isNotEmpty(number))
 			{
-				long num = Long.parseLong(number);
+				Long.parseLong(number);
 			}
 			else
 			{
@@ -153,7 +154,7 @@ public class StringUtils
 		{
 			if(isNotEmpty(number))
 			{
-				int num = Integer.parseInt(number);
+				Integer.parseInt(number);
 			}
 			else
 			{
@@ -264,21 +265,7 @@ public class StringUtils
 	
 	public static Boolean isEmpty(String text)
 	{
-		if(text != null)
-		{
-			if(text.trim().length() == 0)
-			{
-				return true;
-			}
-			else
-			{
-				return text.trim().toLowerCase().equals("null") || (text.trim().equals(""));
-			}
-		}
-		else
-		{
-			return true;
-		}
+		return !(text != null && text.trim().length() > 0 && !text.trim().toLowerCase().equals("null") && !text.trim().equals(""));
 	}
 	
 	public static Boolean isNotEmpty(String text)
@@ -299,7 +286,7 @@ public class StringUtils
 	public static String removeSpacesJSON(String result)
 	{
 		result = result.trim();
-		result = result.replace("     ", "");
+		result = result.replace("	 ", "");
 		result = result.replace("   ", "");
 		result = result.replace("  ", " ");
 		result = result.replace(" }", "}");
@@ -337,7 +324,7 @@ public class StringUtils
 	 * @param target
 	 * @return
 	 */
-	public static boolean isValidEmail(String target)
+	private static boolean isValidEmail(String target)
 	{
 		return target != null && Patterns.EMAIL_ADDRESS.matcher(target).matches();
 	}

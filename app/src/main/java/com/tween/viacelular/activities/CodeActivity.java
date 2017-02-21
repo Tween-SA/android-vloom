@@ -3,6 +3,8 @@ package com.tween.viacelular.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.TextInputLayout;
@@ -12,25 +14,33 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
-import com.tween.viacelular.asynctask.CaptureSMSAsyncTask;
 import com.tween.viacelular.asynctask.CheckCodeAsyncTask;
+import com.tween.viacelular.asynctask.CompaniesAsyncTask;
 import com.tween.viacelular.asynctask.RegisterPhoneAsyncTask;
 import com.tween.viacelular.models.Land;
+import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
+import com.tween.viacelular.models.UserHelper;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+import org.json.JSONObject;
 import java.util.concurrent.TimeUnit;
 import io.realm.Realm;
 
@@ -39,8 +49,7 @@ public class CodeActivity extends AppCompatActivity
 	private EditText			editCode;
 	private TextInputLayout		inputCode;
 	private TextView			txtCount;
-	private Button				btnRegister;
-	private Button				btnFreePass;
+	private Button				btnRegister, btnFreePass;
 	private SharedPreferences	preferences;
 	private CountDownTimer		countDownTimer;
 	private int					originalSoftInputMode;
@@ -53,7 +62,7 @@ public class CodeActivity extends AppCompatActivity
 		{
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.activity_code);
-			preferences = getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			preferences = getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 
 			if(Utils.checkSesion(this, Common.CODE_SCREEN))
 			{
@@ -67,62 +76,90 @@ public class CodeActivity extends AppCompatActivity
 				setSupportActionBar(toolBar);
 				toolBar.setNavigationIcon(R.drawable.back);
 				btnFreePass.setVisibility(Button.GONE);
-
 				toolBar.setNavigationOnClickListener(new View.OnClickListener()
 				{
 					@Override
 					public void onClick(final View v)
 					{
-						logout();
+						logout(v);
 					}
 				});
 
 				inputCode.setErrorEnabled(false);
 				Utils.tintColorScreen(this, Common.COLOR_ACTION);
-				txtRecive.setText(Html.fromHtml(txtRecive.getText().toString().replace("+000000000000", "<b>" + preferences.getString(User.KEY_PHONE, "") + "</b>")));
-				String code = preferences.getString(Common.KEY_CODE, "");
+
+				if(Common.API_LEVEL >= Build.VERSION_CODES.N)
+				{
+					txtRecive.setText(Html.fromHtml(txtRecive.getText().toString().replace("+000000000000", "<b>" + preferences.getString(User.KEY_PHONE, "") + "</b>"),
+													Html.FROM_HTML_MODE_LEGACY));
+				}
+				else
+				{
+					txtRecive.setText(Html.fromHtml(txtRecive.getText().toString().replace("+000000000000", "<b>" + preferences.getString(User.KEY_PHONE, "") + "</b>")));
+				}
+
+				final String code = preferences.getString(Common.KEY_CODE, "");
 
 				if(StringUtils.isNotEmpty(code))
 				{
 					if(StringUtils.isValidCode(code))
 					{
-						final CheckCodeAsyncTask task = new CheckCodeAsyncTask(CodeActivity.this, code, true);
-						task.execute();
+						new CheckCodeAsyncTask(CodeActivity.this, code, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 				}
 				else
 				{
-					if(!preferences.getBoolean(Common.KEY_PREF_CAPTURED, false))
+					Realm realm = Realm.getDefaultInstance();
+
+					if(	!preferences.getBoolean(Common.KEY_PREF_CAPTURED, false) && realm.where(Suscription.class).count() == 0 &&
+						realm.where(Message.class).count() < 3)
 					{
-						final CaptureSMSAsyncTask task = new CaptureSMSAsyncTask(CodeActivity.this, false);
-						task.execute();
+						new CompaniesAsyncTask(CodeActivity.this, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 				}
 
 				//Modificación para que el contador sea por 2 minutos, y que a los 3 minutos se aparezca el botón para pasar sin validar
-				countDownTimer = new CountDownTimer(120000, 1000)
-				{
-					public void onTick(long millisUntilFinished)
-					{
-						String timer	=	getString(R.string.timer_count);
-						String format	=	"" + String.format("%d:%02d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
-											TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
-						timer			=	timer.replace("0:00", format);
-						txtCount.setText(timer);
-						//Agregado para mostrar botón para saltar la verificación de código
-						if(firstRound && (TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) == 0))
-						{
-							btnFreePass.setVisibility(Button.VISIBLE);
-						}
-					}
+				boolean callme = preferences.getBoolean(Common.KEY_PREF_CALLME, true);
 
-					public void onFinish()
+				if(callme)
+				{
+					//Modificación para una vez completado el timer llamar directamente a la Api de llamada y quitar el cambio de botón
+					if(preferences.getInt(Common.KEY_PREF_CALLME_TIMES, 0) < 2)
 					{
-						txtCount.setText(getString(R.string.timer_count));
-						enableRetry();
-						firstRound = true;
+						countDownTimer = new CountDownTimer(120000, 1000)
+						{
+							public void onTick(long millisUntilFinished)
+							{
+								String timer	=	getString(R.string.timer_count);
+								String format	=	"" + String.format("%d:%02d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+										TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
+								timer			=	timer.replace("0:00", format);
+								txtCount.setText(timer);
+								//Agregado para mostrar botón para saltar la verificación de código
+								if(firstRound && (TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) == 0))
+								{
+									btnFreePass.setVisibility(Button.VISIBLE);
+								}
+							}
+
+							public void onFinish()
+							{
+								txtCount.setText(getString(R.string.timer_count));
+								enableRetry();
+								firstRound = true;
+							}
+						}.start();
 					}
-				}.start();
+					else
+					{
+						btnFreePass.setVisibility(Button.VISIBLE);
+					}
+				}
+				else
+				{
+					btnFreePass.setVisibility(Button.VISIBLE);
+				}
+
 
 				//Agregado para habilitar el botón luego de terminar de escribir en el input
 				editCode.addTextChangedListener(new TextWatcher()
@@ -142,6 +179,26 @@ public class CodeActivity extends AppCompatActivity
 					@Override
 					public void afterTextChanged(Editable s)
 					{
+						//Mejora para detectar si se termino de colocar los 4 digitos y validar automáticamente similar a la nueva app Galicia
+						if(s.toString().length() == 4)
+						{
+							login(null);
+						}
+					}
+				});
+				//Agregado para que el usuario no tenga que tocar el botón para continuar cuando el teclado se oculta
+				editCode.setOnEditorActionListener(new TextView.OnEditorActionListener()
+				{
+					public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+					{
+						if(actionId == EditorInfo.IME_ACTION_SEND)
+						{
+							enableNextStep();
+							login(v);
+							return true;
+						}
+
+						return false;
 					}
 				});
 
@@ -152,12 +209,7 @@ public class CodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -178,12 +230,7 @@ public class CodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:enableNextStep - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":enableNextStep - Exception:", e);
 		}
 	}
 
@@ -198,20 +245,22 @@ public class CodeActivity extends AppCompatActivity
 				//Modificación para una vez completado el timer llamar directamente a la Api de llamada y quitar el cambio de botón
 				if(preferences.getInt(Common.KEY_PREF_CALLME_TIMES, 0) < 2)
 				{
-					RegisterPhoneAsyncTask task = new RegisterPhoneAsyncTask(CodeActivity.this, preferences.getString(User.KEY_PHONE, ""), false);
-					task.execute();
+					new RegisterPhoneAsyncTask(CodeActivity.this, preferences.getString(User.KEY_PHONE, ""), false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					countDownTimer.start();
 				}
+				else
+				{
+					btnFreePass.setVisibility(Button.VISIBLE);
+				}
+			}
+			else
+			{
+				btnFreePass.setVisibility(Button.VISIBLE);
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:enableRetry - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":enableRetry - Exception:", e);
 		}
 	}
 
@@ -234,24 +283,32 @@ public class CodeActivity extends AppCompatActivity
 			Realm realm	= Realm.getDefaultInstance();
 			User user	= realm.where(User.class).findFirst();
 
+			if(user == null)
+			{
+				//Crear usuario de mentira
+				user = UserHelper.parseJSON(new JSONObject(preferences.getString(User.FAKE_USER, "")), false, null);
+			}
+
 			if(user != null)
 			{
-				realm.beginTransaction();
+				final User userFinal = user;
 
-				if(user.getPhone().replace("+", "").equals("5492616333888"))
+				realm.executeTransaction(new Realm.Transaction()
 				{
-					user.setUserId(User.USERID);
-				}
-
-				user.setStatus(User.STATUS_INACTIVE);
-				realm.commitTransaction();
-				SharedPreferences.Editor editor	= preferences.edit();
-				editor.putBoolean(Common.KEY_PREF_CALLME, false);
-				editor.putBoolean(Common.KEY_PREF_LOGGED, true);
-				editor.putBoolean(Common.KEY_PREF_CHECKED, true);
-				editor.putBoolean(Common.KEY_PREF_FREEPASS, true);
-				editor.apply();
+					@Override
+					public void execute(Realm realm)
+					{
+						userFinal.setStatus(User.STATUS_INACTIVE);
+					}
+				});
 			}
+
+			SharedPreferences.Editor editor	= preferences.edit();
+			editor.putBoolean(Common.KEY_PREF_CALLME, false);
+			editor.putBoolean(Common.KEY_PREF_LOGGED, true);
+			editor.putBoolean(Common.KEY_PREF_CHECKED, true);
+			editor.putBoolean(Common.KEY_PREF_FREEPASS, true);
+			editor.apply();
 
 			if(progress.isShowing())
 			{
@@ -265,12 +322,7 @@ public class CodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:getFreePass - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":getFreePass - Exception:", e);
 		}
 	}
 
@@ -308,30 +360,41 @@ public class CodeActivity extends AppCompatActivity
 				editor.putBoolean(Common.KEY_PREF_CALLME, false);
 				editor.apply();
 				//TODO Agregar transitions o delay para indicar actividad luego de oprimir el botón hasta la redirección al home
-				final CheckCodeAsyncTask task = new CheckCodeAsyncTask(CodeActivity.this, editCode.getText().toString().trim(), true);
-				task.execute();
+				new CheckCodeAsyncTask(CodeActivity.this, editCode.getText().toString().trim(), true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:login - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":login - Exception:", e);
 		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
+		getMenuInflater().inflate(R.menu.menu_support, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		try
+		{
+			if(item.getItemId() == R.id.action_support)
+			{
+				GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("Contacto")
+					.setLabel("AccionUser").build());
+				Utils.sendContactMail(CodeActivity.this);
+
+				return true;
+			}
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":onOptionsItemSelected - Exception:", e);
+		}
+
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -340,24 +403,19 @@ public class CodeActivity extends AppCompatActivity
 	{
 		try
 		{
-			hideSoftKeyboard();
-			logout();
+			logout(null);
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onBackPressed - Exception:", e);
 		}
 	}
 
-	public void logout()
+	public void logout(View view)
 	{
 		try
 		{
+			hideSoftKeyboard();
 			SharedPreferences.Editor editor	= preferences.edit();
 			editor.putBoolean(Common.KEY_PREF_LOGGED, false);
 			editor.putBoolean(Common.KEY_PREF_CHECKED, false);
@@ -372,12 +430,7 @@ public class CodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:logout - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":logout - Exception:", e);
 		}
 	}
 
@@ -401,12 +454,7 @@ public class CodeActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:hideSoftKeyboard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":hideSoftKeyboard - Exception:", e);
 		}
 	}
 
@@ -421,19 +469,14 @@ public class CodeActivity extends AppCompatActivity
 		{
 			Window window = getWindow();
 
-			// Overriding the soft input mode of the Window so that the Send and Cancel buttons appear above the soft keyboard when either EditText field gains focus. We cache the mode in order to set it
-			// back to the original value when the Fragment is paused.
+			// Overriding the soft input mode of the Window so that the Send and Cancel buttons appear above the soft keyboard when either EditText field gains focus.
+			// We cache the mode in order to set it back to the original value when the Fragment is paused.
 			originalSoftInputMode = window.getAttributes().softInputMode;
 			window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 		}
 		catch(Exception e)
 		{
-			System.out.println("CodeActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 }

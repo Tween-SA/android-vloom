@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,31 +20,37 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.newrelic.agent.android.NewRelic;
 import com.tween.viacelular.R;
-import com.tween.viacelular.asynctask.GetLocationByApiAsyncTask;
-import com.tween.viacelular.models.Isp;
+import com.tween.viacelular.asynctask.CountryAsyncTask;
+import com.tween.viacelular.models.Land;
+import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;
-import com.tween.viacelular.services.MyGcmListenerService;
-import com.tween.viacelular.services.RegistrationIntentService;
+import com.tween.viacelular.models.User;
+import com.tween.viacelular.services.MyFirebaseInstanceIdService;
+import com.tween.viacelular.services.MyFirebaseMessagingService;
 import com.tween.viacelular.utils.Common;
-import com.tween.viacelular.utils.DateUtils;
+import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
+import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 
-public class SplashActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
+public class SplashActivity extends AppCompatActivity
 {
 	private BroadcastReceiver		mRegistrationBroadcastReceiver;
 	//Ordanamiento de permisos y agregado del permiso para enviar sms
-	private String[]				permissionsNeed = {	Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.BROADCAST_SMS,
-														Manifest.permission.GET_ACCOUNTS, Manifest.permission.INTERNET, Manifest.permission.READ_CONTACTS,
+	private String[]				permissionsNeed = {	Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE,
+														Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.BROADCAST_SMS, Manifest.permission.GET_ACCOUNTS,
+														Manifest.permission.INTERNET, Manifest.permission.READ_CONTACTS, Manifest.permission.CAMERA,
 														Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS,
 														Manifest.permission.RECEIVE_SMS, Manifest.permission.WAKE_LOCK,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 	public static GoogleAnalytics	analytics;
@@ -57,6 +65,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 
 			if(!Common.DEBUG)
 			{
+				Fabric.with(this, new Crashlytics());
 				NewRelic.withApplicationToken(Common.HASH_NEWRELIC).start(this.getApplication());
 				//Agregado para reportar a GoogleAnalytics
 				analytics	= GoogleAnalytics.getInstance(this);
@@ -70,48 +79,43 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 			else
 			{
 				//Para saber qué tipo de pantalla es cuando estamos en debug
-				System.out.println("Densidad de pantalla: " + getResources().getDisplayMetrics().density);
+				Utils.showResolutionDevice(this);
 			}
 
-			//Agregado para inicializar nueva base de datos Realm
+			//Revisar si hay alguna preferencia que indique si estuvo logueado
+			SharedPreferences preferences	= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+
+
+			//Agregado para inicializar nueva base de datos Realm y migrar si es necesario
+			if(StringUtils.isEmpty(preferences.getString(User.KEY_PHONE, "")))
+			{
+				//Clean install
+				preferences.edit().putBoolean(Common.KEY_PREF_UPGRADED +"DB"+ Common.REALMDB_VERSION, true).apply();
+			}
+
+			if(Common.DEBUG)
+			{
+				System.out.println("Prefencias: "+preferences.getAll());
+			}
+
 			Migration.getDB(this);
 			Realm realm = Realm.getDefaultInstance();
 			realm.setAutoRefresh(true);
-
 			mRegistrationBroadcastReceiver = new BroadcastReceiver()
 			{
 				@Override
 				public void onReceive(Context context, Intent intent)
 				{
-
 				}
 			};
 
-			if(checkPlayServices())
+			if(realm.where(Land.class).count() < 3)
 			{
-				// Start IntentService to register this application with GCM.
-				Intent intent = new Intent(this, RegistrationIntentService.class);
-				startService(intent);
+				new CountryAsyncTask(this, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 
+			checkPlayServices();//No hace falta levantar un IntentService para push con FCM
 			setContentView(R.layout.activity_splash);
-
-			//Agregado para actualizar coordenadas
-			Isp isp = realm.where(Isp.class).findFirst();
-
-			if(isp != null)
-			{
-				if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.HIGH_FREQUENCY))
-				{
-					GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(this, false, true);
-					geoTask.execute();
-				}
-			}
-			else
-			{
-				GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(this, false, false);
-				geoTask.execute();
-			}
 
 			//Agregado para solicitar permisos en Android 6.0
 			if(Common.API_LEVEL >= Build.VERSION_CODES.M)
@@ -141,23 +145,18 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 				else
 				{
 					Utils.tintColorScreen(this, Common.COLOR_ACTION);
-					Utils.upgradeApp(SplashActivity.this);
+					Utils.getLocation(SplashActivity.this);
 				}
 			}
 			else
 			{
 				Utils.tintColorScreen(this, Common.COLOR_ACTION);
-				Utils.upgradeApp(SplashActivity.this);
+				Utils.getLocation(SplashActivity.this);
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -167,32 +166,12 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 		try
 		{
 			Utils.tintColorScreen(this, Common.COLOR_ACTION);
-			Utils.upgradeApp(SplashActivity.this);
+			Utils.getLocation(SplashActivity.this);
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashActivity:onRequestPermissionsResult - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onRequestPermissionsResult - Exception:", e);
 		}
-	}
-
-	@Override
-	public void onConnected(final Bundle bundle)
-	{
-	}
-
-	@Override
-	public void onConnectionSuspended(final int i)
-	{
-	}
-
-	@Override
-	public void onConnectionFailed(final ConnectionResult connectionResult)
-	{
 	}
 
 	/**
@@ -204,6 +183,22 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 		//Agregado para capturar excepciones
 		try
 		{
+			//Nuevo registro en FCM
+			FirebaseMessaging.getInstance().subscribeToTopic(MyFirebaseInstanceIdService.FRIENDLY_ENGAGE_TOPIC);
+			String token = FirebaseInstanceId.getInstance().getToken();
+
+			if(Common.DEBUG)
+			{
+				System.out.println("TOKEN NUEVO SPLASH: "+token);
+			}
+
+			if(StringUtils.isNotEmpty(token))
+			{
+				SharedPreferences.Editor preferences	= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE).edit();
+				preferences.putString(User.KEY_GCMID, token);
+				preferences.apply();
+			}
+
 			//Actualización de métodos que estaban deprecados
 			GoogleApiAvailability googleApiAvailability	= GoogleApiAvailability.getInstance();
 			int resultCode								= googleApiAvailability.isGooglePlayServicesAvailable(this);
@@ -217,7 +212,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 				{
 					if(googleApiAvailability.isUserResolvableError(resultCode))
 					{
-						googleApiAvailability.getErrorDialog(this, resultCode, MyGcmListenerService.PLAY_SERVICES_RESOLUTION_REQUEST).show();
+						googleApiAvailability.getErrorDialog(this, resultCode, MyFirebaseMessagingService.PLAY_SERVICES_RESOLUTION_REQUEST).show();
 						Utils.checkSesion(activity, Common.SPLASH_SCREEN);
 					}
 					else
@@ -263,12 +258,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashActivity:checkPlayServices - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":checkPlayServices - Exception:", e);
 		}
 
 		return true;
@@ -293,16 +283,20 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 
 		try
 		{
-			LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver, new IntentFilter(MyGcmListenerService.REGISTRATION_COMPLETE));
+			LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver, new IntentFilter(MyFirebaseMessagingService.REGISTRATION_COMPLETE));
+
+			//Agregado para redirigir cuando se recibe una push en background
+			if(getIntent() != null)
+			{
+				if(getIntent().getExtras() != null)
+				{
+					MessageHelper.savePush(getIntent().getExtras(), this, "", true);
+				}
+			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 
@@ -316,12 +310,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashActivity:onPause - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onPause - Exception:", e);
 		}
 	}
 }

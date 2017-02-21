@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.models.Isp;
-import com.tween.viacelular.models.IspHelper;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
-import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
@@ -18,9 +18,8 @@ import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-import org.json.JSONObject;
+
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 {
@@ -65,18 +64,12 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 
 			if(!splashed)
 			{
-				final ReadAccountsAsyncTask task = new ReadAccountsAsyncTask(activity, false);
-				task.execute();
+				new ReadAccountsAsyncTask(activity, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "SplashAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -87,7 +80,9 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 
 		try
 		{
-			if(!splashed)
+			final Realm realm = Realm.getDefaultInstance();
+
+			if(!splashed && realm.where(Message.class).count() < 2)
 			{
 				//Modificaciones para contemplar migración a Realm
 				SharedPreferences.Editor editor	= preferences.edit();
@@ -99,10 +94,8 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 				editor.apply();
 
 				//Agregado para migrar a objeto Realm Message
-				Realm realm							= Realm.getDefaultInstance();
-				RealmResults<Isp> ispRealmResults	= realm.where(Isp.class).findAll();
-				User user							= realm.where(User.class).findFirst();
-				String country						= preferences.getString(Land.KEY_API, "");
+				User user		= realm.where(User.class).findFirst();
+				String country	= preferences.getString(Land.KEY_API, "");
 
 				//Agregado para incorporar país en "push" iniciales
 				if(user != null)
@@ -113,91 +106,83 @@ public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 					}
 				}
 
-				realm.beginTransaction();
-				Message messageRealm = new Message(	"1", activity.getString(R.string.welcome_notification), activity.getString(R.string.welcome_text), activity.getString(R.string.app_name),
-													Message.STATUS_RECEIVE, "", country, Message.FLAGS_PUSH, System.currentTimeMillis(), Common.BOOL_NO, Message.KIND_TEXT, "", "", "", "",
-													"", Suscription.COMPANY_ID_VC_MONGO);
-				Message messageRealm1 = new Message(	"2", activity.getString(R.string.you_have), activity.getString(R.string.you_have_text), activity.getString(R.string.app_name),
-														Message.STATUS_RECEIVE, "", country, Message.FLAGS_PUSH, System.currentTimeMillis(), Common.BOOL_NO, Message.KIND_TEXT, "", "", "",
-														"", "", Suscription.COMPANY_ID_VC_MONGO);
-				realm.copyToRealmOrUpdate(messageRealm);
-				realm.copyToRealmOrUpdate(messageRealm1);
-				ispRealmResults.deleteAllFromRealm();
-				Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, Suscription.COMPANY_ID_VC_MONGO).findFirst();
-
-				if(suscription != null)
+				if(Looper.myLooper() == null)
 				{
-					suscription.getMessages().add(messageRealm);
+					Looper.prepare();
 				}
 
-				realm.commitTransaction();
-
-				JSONObject jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.IP_API, activity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
-				result					= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
-
-				if(result.equals(ApiConnection.OK))
+				final String finalCountry	= country;
+				Handler handler				= new android.os.Handler();
+				handler.post(new Runnable()
 				{
-					IspHelper.parseJSON(jsonResult.getJSONObject(Common.KEY_CONTENT), activity.getApplicationContext(), splashed);
-				}
-				else
-				{
-					IspHelper.parseJSON(null, activity.getApplicationContext(), splashed);
-				}
+					public void run()
+					{
+						realm.executeTransactionAsync(new Realm.Transaction()
+						{
+							@Override
+							public void execute(Realm realm)
+							{
+								Message messageRealm = new Message(	"1", activity.getString(R.string.welcome_notification), activity.getString(R.string.welcome_text),
+									activity.getString(R.string.app_name), Message.STATUS_RECEIVE, "", finalCountry, Message.FLAGS_PUSH,
+									System.currentTimeMillis(), Common.BOOL_NO, Message.KIND_TEXT, "", "", "", "", "", Suscription.COMPANY_ID_VC_MONGO);
+								Message messageRealm1 = new Message("2", activity.getString(R.string.you_have), activity.getString(R.string.you_have_text),
+									activity.getString(R.string.app_name), Message.STATUS_RECEIVE, "", finalCountry, Message.FLAGS_PUSH,
+									System.currentTimeMillis(), Common.BOOL_NO, Message.KIND_TEXT, "", "", "", "", "", Suscription.COMPANY_ID_VC_MONGO);
+								realm.copyToRealmOrUpdate(messageRealm);
+								realm.copyToRealmOrUpdate(messageRealm1);
+							}
+						}, new Realm.Transaction.OnSuccess()
+						{
+							@Override
+							public void onSuccess()
+							{
+								try
+								{
+									if(displayDialog)
+									{
+										if(progress != null)
+										{
+											if(progress.isShowing())
+											{
+												progress.cancel();
+											}
+										}
+									}
+
+									Utils.checkSesion(activity, Common.SPLASH_SCREEN);
+								}
+								catch(Exception e)
+								{
+									Utils.logError(activity, "SplashAsyncTask:onPostExecute - Exception:", e);
+								}
+							}
+						});
+					}
+				});
 			}
 			else
 			{
-				MessageHelper.updateCountry(preferences.getString(Land.KEY_API, ""));
+				if(displayDialog)
+				{
+					if(progress != null)
+					{
+						if(progress.isShowing())
+						{
+							progress.cancel();
+						}
+					}
+				}
+
+				Utils.checkSesion(activity, Common.SPLASH_SCREEN);
 			}
 
 			result = ApiConnection.OK;
 		}
 		catch(Exception e)
 		{
-			System.out.println("SplashAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "SplashAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
-	}
-
-	@Override
-	protected void onPostExecute(String result)
-	{
-		try
-		{
-			if(displayDialog)
-			{
-				if(progress != null)
-				{
-					if(progress.isShowing())
-					{
-						progress.cancel();
-					}
-				}
-			}
-
-			if(!splashed)
-			{
-				CountryAsyncTask task = new CountryAsyncTask(activity, false);
-				task.execute();
-			}
-
-			Utils.checkSesion(activity, Common.SPLASH_SCREEN);
-		}
-		catch(Exception e)
-		{
-			System.out.println("SplashAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		super.onPostExecute(result);
 	}
 }

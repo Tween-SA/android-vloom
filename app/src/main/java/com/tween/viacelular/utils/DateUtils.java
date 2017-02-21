@@ -15,9 +15,9 @@ import java.util.Locale;
 public class DateUtils
 {
 	public static final long oneDayTs			= (24 * 60 * 60 * 1000);
-	public static final int SECOND_MILLIS		= 1000;
-	public static final int MINUTE_MILLIS		= 60 * SECOND_MILLIS;
-	public static final int HOUR_MILLIS			= 60 * MINUTE_MILLIS;
+	private static final int SECOND_MILLIS		= 1000;
+	private static final int MINUTE_MILLIS		= 60 * SECOND_MILLIS;
+	private static final int HOUR_MILLIS		= 60 * MINUTE_MILLIS;
 	public static final int DAY_MILLIS			= 24 * HOUR_MILLIS;
 	public static final int LOW_FREQUENCY		= 90 * MINUTE_MILLIS;
 	public static final int MEAN_FREQUENCY		= 30 * MINUTE_MILLIS;
@@ -138,17 +138,13 @@ public class DateUtils
 		}
 		catch(Exception e)
 		{
-			System.out.println("DateUtils:getTimeFromTs - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(ctx, "DateUtils:getTimeFromTs - Exception:", e);
 		}
 
 		return "";
 	}
 
-	public static String getTime()
+	public static String getTime(Context context)
 	{
 		//Agregado para prevenir excepciones
 		try
@@ -158,11 +154,7 @@ public class DateUtils
 		}
 		catch(Exception e)
 		{
-			System.out.println("DateUtils:getTime - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "DateUtils:getTime - Exception:", e);
 		}
 
 		return "";
@@ -174,7 +166,7 @@ public class DateUtils
 	 *
 	 * @return Fecha y hora en formato "dd/MM/yyyy HH:mm:ss"
 	 */
-	public static String getDateTimePhone()
+	public static String getDateTimePhone(Context context)
 	{
 		//Agregado para prevenir excepciones
 		try
@@ -186,12 +178,7 @@ public class DateUtils
 		}
 		catch(Exception e)
 		{
-			System.out.println("DateUtils:getDateTimePhone - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "DateUtils:getDateTimePhone - Exception:", e);
 		}
 
 		return "";
@@ -203,7 +190,7 @@ public class DateUtils
 	 * @param frequency
 	 * @return
 	 */
-	public static boolean needUpdate(Long date, int frequency)
+	public static boolean needUpdate(Long date, int frequency, Context context)
 	{
 		try
 		{
@@ -223,12 +210,7 @@ public class DateUtils
 		}
 		catch(Exception e)
 		{
-			System.out.println("DateUtils:needUpdate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "DateUtils:needUpdate - Exception:", e);
 		}
 
 		return false;
@@ -239,24 +221,18 @@ public class DateUtils
 	 * @param time
 	 * @return
 	 */
-	public static String getDateFromTs(long time)
+	public static String getDateFromTs(long time, Context context)
 	{
 		//Agregado para prevenir excepciones
 		try
 		{
-			String result	= "";
 			Calendar cal	= Calendar.getInstance();
 			cal.setTimeInMillis(time);
-			result			= DateFormat.format("dd/MM/yyyy HH:mm:ss", cal).toString();
-			return result;
+			return DateFormat.format("dd/MM/yyyy HH:mm:ss", cal).toString();
 		}
 		catch(Exception e)
 		{
-			System.out.println("DateUtils:getDateFromTs - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "DateUtils:getDateFromTs - Exception:", e);
 		}
 
 		return "";
@@ -268,7 +244,7 @@ public class DateUtils
 	 *
 	 * @return Fecha en formato "dd/MM/yyyy"
 	 */
-	public static String getDatePhone()
+	public static String getDatePhone(Context context)
 	{
 		//Agregado para prevenir excepciones
 		try
@@ -280,11 +256,7 @@ public class DateUtils
 		}
 		catch(Exception e)
 		{
-			System.out.println("DateUtils:getDateTimePhone - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "DateUtils:getDateTimePhone - Exception:", e);
 		}
 
 		return "";

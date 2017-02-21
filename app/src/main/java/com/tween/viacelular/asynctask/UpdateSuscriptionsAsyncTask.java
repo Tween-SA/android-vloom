@@ -9,10 +9,10 @@ import android.os.Looper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.HomeActivity;
-import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -76,17 +76,11 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 					.content(R.string.landing_card_loading_text)
 					.progress(true, 0)
 					.show();
-				System.out.println("pre");
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("UpdateSuscriptionsAsyncTask:onPreExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "UpdateSuscriptionsAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -97,7 +91,6 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 
 		try
 		{
-			System.out.println("do");
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			Realm realm						= Realm.getDefaultInstance();
 			User user						= realm.where(User.class).equalTo(User.KEY_API, preferences.getString(User.KEY_API, "")).findFirst();
@@ -130,6 +123,10 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 							{
 								localIds = localIds+"'"+suscription.getCompanyId()+"',";
 							}
+						}
+						else
+						{
+							System.out.println("company is null");
 						}
 					}
 					else
@@ -203,12 +200,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("UpdateSuscriptionsAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "UpdateSuscriptionsAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
@@ -219,7 +211,6 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 	{
 		try
 		{
-			System.out.println("post");
 			if(displayDialog)
 			{
 				if(progress != null)
@@ -265,12 +256,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("UpdateSuscriptionsAsyncTask:onPostExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "UpdateSuscriptionsAsyncTask:onPostExecute - Exception:", e);
 		}
 	}
 
@@ -288,13 +274,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("UpdateSuscriptionsAsyncTask:modifySubscriptions - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
-
+			Utils.logError(activity, "UpdateSuscriptionsAsyncTask:modifySubscriptions - Exception:", e);
 			result = false;
 		}
 
@@ -352,12 +332,7 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 			}
 			catch(Exception e)
 			{
-				System.out.println("UpdateSuscriptionsAsyncTask:UpdateCompany:start - Exception: " + e);
-
-				if(Common.DEBUG)
-				{
-					e.printStackTrace();
-				}
+				Utils.logError(activity, "UpdateSuscriptionsAsyncTask:UpdateCompany:start - Exception:", e);
 			}
 		}
 	}

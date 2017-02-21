@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">Accettato</string>
 	<string name="action_example">Esempio</string>
@@ -6,6 +6,7 @@
 	<string name="activate_notif">Attiva notifiche</string>
 	<string name="agree">Accetta</string>
 	<string name="app">Applicazione</string>
+	<string name="attach_limit">Hai raggiunto il limite di immagini allegate</string>
 	<string name="bad_request">Richiesta non valida</string>
 	<string name="block_service_text">Non riceverai più notifiche o informazioni da questo servizio</string>
 	<string name="block_service">Blocca servizio</string>
@@ -32,6 +33,15 @@
 	<string name="email">E-mail</string>
 	<string name="empty_messages_text">Cancellerai tutti i messaggi ricevuti.</string>
 	<string name="empty_messages">Elimina messaggi</string>
+	<string name="enrich_addcommentheader">Aggiungi commento</string><!-- after traslate -->
+	<string name="enrich_commentheader">Modifica commento</string><!-- after traslate -->
+	<string name="enrich_commenthint">Scrivi un commento&#8230;</string><!-- after traslate -->
+	<string name="enrich_addnoteheader">Aggiungere nota</string><!-- after traslate -->
+	<string name="enrich_noteheader">Modifica nota</string><!-- after traslate -->
+	<string name="enrich_notehint">Scrivi una nota&#8230;</string><!-- after traslate -->
+	<string name="enrich_notetype">Nota personale</string><!-- after traslate -->
+	<string name="enrich_receipt">Fattura</string><!-- after traslate -->
+	<string name="enrich_save">SALVARE</string><!-- after traslate -->
 	<string name="error_upgrade">Siamo tornati. Ci scusiamo per l\'inconveniente</string>
 	<string name="feedback_error">Scrivi un commento</string>
 	<string name="feedback_issue">Segnala come incidenza</string>
@@ -51,7 +61,7 @@
 	<string name="landing_card_error_header">Spiacenti!</string><!-- after traslate -->
 	<string name="landing_card_error_retry">Rispedire</string><!-- after traslate -->
 	<string name="landing_card_error_text">I suoi dati non saranno salvati, si prega di riprovare.</string><!-- after traslate -->
-	<string name="landing_card_loading_header">Solo un momento...</string><!-- after traslate -->
+	<string name="landing_card_loading_header">Solo un momento&#8230;</string><!-- after traslate -->
 	<string name="landing_card_loading_text">Stiamo mantenendo i vostri dati</string><!-- after traslate -->
 	<string name="landing_card_ok_header">Tutto su!</string><!-- after traslate -->
 	<string name="landing_card_ok_text">Mantenete il vostro ID cliente per fornire una migliore esperienza</string><!-- after traslate -->
@@ -108,8 +118,8 @@
 	<string name="phone_lenght">Il tuo numero di telefono deve rispettare il numero di cifre secondo il tuo paese</string>
 	<string name="phone">Telefono</string>
 	<string name="please_retry">Riprova più tardi</string>
-	<string name="please_wait">Attendere...</string>
-	<string name="progress_dialog">Elaborazione in corso...</string>
+	<string name="please_wait">Attendere&#8230;</string>
+	<string name="progress_dialog">Elaborazione in corso&#8230;</string>
 	<string name="rate_dialog_title">Desideri valutare Vloom con 5 stelle?</string>
 	<string name="rate_dialog_message">Ci metterai solo un minuto. La tua opinione è importante per noi, grazie!</string>
 	<string name="rate_dialog_ok">Valuta</string>
@@ -119,15 +129,20 @@
 	<string name="refresh_complete">Le iscrizioni si sono aggiornate</string>
 	<string name="refresh_menu">Aggiorna</string>
 	<string name="register_begin">Registrati per iniziare</string>
-	<string name="register_dialog">Registrazione in corso...</string>
+	<string name="register_dialog">Registrazione in corso&#8230;</string>
 	<string name="register">Registrati con la tua e-mail</string>
-	<string name="registering_message">Generazione ID istanza per token...</string>
+	<string name="register_business">Entra in Business</string><!-- after traslate -->
+	<string name="registering_message">Generazione ID istanza per token&#8230;</string>
 	<string name="reimport_sms">Reimporta i miei messaggi SMS</string>
 	<string name="repassword_blank">Devi confermare la password</string>
 	<string name="repassword">Ripeti la password</string>
 	<string name="report">Denuncia</string>
 	<string name="response_invalid">La tua richiesta non può essere elaborata, riprova</string>
 	<string name="seach">Ricerca</string><!-- after traslate -->
+	<string name="seach_hint">Iniziare a digitare il nome della società a cercare</string><!-- after traslate -->
+	<string name="seach_title">Cerca azienda</string><!-- after traslate -->
+	<string name="showcase_note_title">Note, commenti e foto</string><!-- after traslate -->
+	<string name="showcase_note_subtitle">Ora è possibile creare note e aggiungere foto e commenti ai tuoi post!</string><!-- after traslate -->
 	<string name="send_code">Abbiamo inviato un SMS con il codice di attivazione al numero</string>
 	<string name="send_mail_text">con Vloom Android:</string>
 	<string name="send_push_sms">Invia notifica di prova (SMS)</string>
@@ -141,6 +156,9 @@
 	<string name="silence_actived">Silenzio attivato</string>
 	<string name="silence_desactived">Silenzio disattivato</string>
 	<string name="silence">Silenzio</string>
+	<string name="social">Stiamo ottenendo nuovi contenuti per voi</string><!-- after traslate -->
+	<string name="social_high">Tweet In evidenza</string><!-- after traslate -->
+	<string name="social_date">Pubblicato il dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">Vuoi continuare ricevendo questi messaggi?</string>
 	<string name="sms_text_paid">SMS a pagamento</string>
 	<string name="sms_text">SMS</string>
@@ -193,7 +211,18 @@
 	<string name="unsuscribe">DISISCRIVERSI</string>
 	<string name="upgrade_text">Stiamo aggiornando le informazioni</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
-	<string name="verify_dialog">Verifica in corso...</string>
+	<string name="verify_dialog">Verifica in corso&#8230;</string>
+	<string name="verify_phone_add">Aggiungi il tuo numero di telefono</string><!-- after traslate -->
+	<string name="verify_phone_alert">Noi verificare il numero +0 è giusto o se si vuole cambiare?</string><!-- after traslate -->
+	<string name="verify_phone_back">Ritorno</string><!-- after traslate -->
+	<string name="verify_phone_code">In attesa di rilevare automaticamente l\'SMS inviato al +000000000000</string><!-- after traslate -->
+	<string name="verify_phone_contact">Contattare l\'assistenza</string><!-- after traslate -->
+	<string name="verify_phone_edit">Modifica</string><!-- after traslate -->
+	<string name="verify_phone_missing">Se non si verifichi il tuo numero, le vostre aziende preferite non possono comunicare con voi</string><!-- after traslate -->
+	<string name="verify_phone_subtitle">Conferma il tuo Paese e inserire il prefisso seguito dal vostro numero di cellulare:</string><!-- after traslate -->
+	<string name="verify_phone_title">invierà un SMS per verificare il numero di telefono.</string><!-- after traslate -->
+	<string name="verify_phone_warning">Mantenere il vostro account sicuro</string><!-- after traslate -->
+	<string name="verify_phone_wrong">¿Sbagliato numero?</string><!-- after traslate -->
 	<string name="version_settins">per Android v</string>
 	<string name="week">settimana</string>
 	<string name="weeks">settimane</string>
@@ -248,9 +277,20 @@
 		<item>Contrassegna come spam</item>
 		<item>Elimina</item>
 	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>Condividi</item>
+		<item>Contrassegna come spam</item>
+		<item>Elimina</item>
+		<item>Non voglio più vedere questo</item><!-- after traslate -->
+	</string-array>
 	<string-array name="optionsChannel">
 		<item>Silenzia</item>
 		<item>Elimina messaggi</item>
 		<item>Annulla abbonamento</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>Condividi</item>
+		<item>Modifica</item>
+		<item>Elimina</item>
+	</string-array><!-- after traslate -->
 </resources>

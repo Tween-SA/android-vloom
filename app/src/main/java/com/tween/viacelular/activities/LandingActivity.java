@@ -1,5 +1,6 @@
 package com.tween.viacelular.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,14 +17,14 @@ import android.view.Menu;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
-import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -43,26 +44,17 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	private String				section								= "";
 	private String				color								= Common.COLOR_ACTION;
 	private LinearLayout		mTitleContainer;
-	private TextView			txtTitle;
+	private TextView			txtTitle, txtEmail, txtPhone, txtBigTitle, txtSubTitle, txtSubTitleCollapsed, txtAbout;
 	private Toolbar				toolBar;
-	private TextView			txtEmail;
-	private TextView			txtPhone;
 	private Context				context;
 	private CircleImageView		circleView;
 	private Button				btnSuscribe;
 	private ImageView			logo;
-	private TextView			txtBigTitle;
-	private TextView			txtSubTitle;
-	private TextView			txtSubTitleCollapsed;
-	private TextView			txtAbout;
 	private float				scale;
-	private int					dpAsPixels;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		Realm realm = null;
-
 		try
 		{
 			super.onCreate(savedInstanceState);
@@ -87,11 +79,10 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			View contact									= findViewById(R.id.contentContact);
 			btnSuscribe										= (Button) findViewById(R.id.btnSuscribe);
 			circleView										= (CircleImageView) findViewById(R.id.circleView);
-			FrameLayout flTitle								= (FrameLayout) findViewById(R.id.flTitle);
 			ImageView ivPlaceholder							= (ImageView) findViewById(R.id.ivPlaceholder);
 			final ImageView ibBack							= (ImageView) findViewById(R.id.ibBack);
 			logo											= (ImageView) findViewById(R.id.logo);
-			View dividerTitle								=findViewById(R.id.dividerTitle);
+			View dividerTitle								= findViewById(R.id.dividerTitle);
 			ImageView iconShowNotif							= (ImageView) findViewById(R.id.iconShowNotif);
 			TextView txtShowNotif							= (TextView) findViewById(R.id.txtShowNotif);
 			TextView txtId									= (TextView) findViewById(R.id.txtId);
@@ -106,7 +97,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			}
 
 			setSupportActionBar(toolBar);
-			startAlphaAnimation(txtTitle, 0, View.INVISIBLE);
+			startAlphaAnimation(txtTitle, 0, View.INVISIBLE, this);
 
 			if(txtUrl != null)
 			{
@@ -121,7 +112,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 
 			if(intentRecive != null)
 			{
-				realm		= Realm.getDefaultInstance();
+				Realm realm		= Realm.getDefaultInstance();
 				companyId	= intentRecive.getStringExtra(Common.KEY_ID);
 				section		= intentRecive.getStringExtra(Common.KEY_SECTION);
 
@@ -164,14 +155,32 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 
 							if(StringUtils.isNotEmpty(suscription.getUrl()))
 							{
-								txtUrl.setText(suscription.getUrl());
-								iconUrl.setVisibility(ImageView.VISIBLE);
-								txtUrl.setVisibility(TextView.VISIBLE);
+								if(txtUrl != null)
+								{
+									txtUrl.setText(suscription.getUrl());
+									iconUrl.setVisibility(ImageView.VISIBLE);
+									txtUrl.setVisibility(TextView.VISIBLE);
+									final Activity activity = this;
+									txtUrl.setOnClickListener(new View.OnClickListener()
+									{
+										@Override
+										public void onClick(final View view)
+										{
+											//Agregado para capturar evento en Google Analytics
+											GoogleAnalytics.getInstance(activity).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company")
+													.setAction("WebLanding").setLabel("AccionUser").build());
+										}
+									});
+								}
 							}
 							else
 							{
 								iconUrl.setVisibility(ImageView.GONE);
-								txtUrl.setVisibility(TextView.GONE);
+
+								if(txtUrl != null)
+								{
+									txtUrl.setVisibility(TextView.GONE);
+								}
 							}
 
 							if(StringUtils.isNotEmpty(suscription.getEmail()))
@@ -207,7 +216,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							color = Common.COLOR_ACTION;
 						}
 
-						if(Utils.isLightColor(color))
+						if(Utils.isLightColor(color, this))
 						{
 							toolBar.setTitleTextColor(Color.BLACK);
 							collapsingToolbarLayout.setCollapsedTitleTextColor(Color.BLACK);
@@ -219,8 +228,6 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							txtBigTitle.setTextColor(Color.BLACK);
 							txtSubTitle.setTextColor(Color.DKGRAY);
 							txtSubTitleCollapsed.setTextColor(Color.DKGRAY);
-							btnSuscribe.setTextColor(Color.WHITE);
-							btnSuscribe.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
 							ibBack.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_arrow_back_black_24dp));
 						}
 						else
@@ -239,21 +246,24 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(circleView);
 							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(logo);
 						}
+						else
+						{
+							//Mostrar el logo de Vloom si no tiene logo
+							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(circleView);
+							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(logo);
+						}
 
 						Utils.tintColorScreen(this, color);
 						collapsingToolbarLayout.setStatusBarScrimColor(Color.parseColor(color));
-
-						if(ibBack != null)
+						Utils.ampliarAreaTouch(ibBack, 150);
+						ibBack.setOnClickListener(new View.OnClickListener()
 						{
-							ibBack.setOnClickListener(new View.OnClickListener()
+							@Override
+							public void onClick(final View v)
 							{
-								@Override
-								public void onClick(final View v)
-								{
-									onBackPressed();
-								}
-							});
-						}
+								onBackPressed();
+							}
+						});
 
 						//Agregado para diferenciar vista cuando la company está añadida
 						if(suscription.getFollower() == Common.BOOL_YES)
@@ -264,14 +274,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 						else
 						{
 							btnSuscribe.setText(getString(R.string.landing_suscribe));
-							if(Utils.isLightColor(color))
-							{
-								btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.text));
-							}
-							else
-							{
-								btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.black));
-							}
+							btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.black));
 						}
 					}
 				}
@@ -279,34 +282,29 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 
 			if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
 			{
-				circleView.setElevation((float) 4);
-				mAppBarLayout.setElevation((float) 4);
+				if(circleView != null)
+				{
+					circleView.setElevation((float) 4);
+				}
+
+				if(mAppBarLayout != null)
+				{
+					mAppBarLayout.setElevation((float) 4);
+				}
 			}
 
 			//Agregado para replicar función de ir Cards como estaba en profile
 			if(suscription != null)
 			{
-				realm			= Realm.getDefaultInstance();
-				long messages	= realm.where(Message.class).equalTo(Message.KEY_DELETED, Common.BOOL_NO).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
-									.equalTo(Suscription.KEY_API, suscription.getCompanyId()).count();
-
-				if(messages > 0)
-				{
-					dividerTitle.setVisibility(View.VISIBLE);
-					iconShowNotif.setVisibility(ImageView.VISIBLE);
-					txtShowNotif.setVisibility(TextView.VISIBLE);
-				}
-				else
-				{
-					dividerTitle.setVisibility(View.GONE);
-					iconShowNotif.setVisibility(ImageView.GONE);
-					txtShowNotif.setVisibility(TextView.GONE);
-				}
+				//Se deja siempre visible para ir a la pantalla cards
+				dividerTitle.setVisibility(View.VISIBLE);
+				iconShowNotif.setVisibility(ImageView.VISIBLE);
+				txtShowNotif.setVisibility(TextView.VISIBLE);
 
 				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()))
 				{
 					txtId.setVisibility(TextView.VISIBLE);
-					llId.setVisibility(LinearLayout.VISIBLE);
+					//TODO Cuando terminemos de definir esta funcionalidad mostramos llId y seguimos desarrollando el popup para editar el dato
 				}
 				else
 				{
@@ -325,12 +323,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:OnCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -343,7 +336,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	{
 		try
 		{
-			String extraText	= "";
+			String extraText;
 			Integer action		= (Integer) view.getTag();
 
 			if(action == 1)
@@ -359,12 +352,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:goTo - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":goTo - Exception:", e);
 		}
 	}
 
@@ -379,12 +367,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:viewCards - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":viewCards - Exception:", e);
 		}
 	}
 
@@ -393,7 +376,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	{
 		try
 		{
-			Intent intent = null;
+			Intent intent;
 
 			//Agregado para volver a la activity que corresponda
 			if(section.equals("card"))
@@ -403,7 +386,23 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			}
 			else
 			{
-				intent = new Intent(getApplicationContext(), SuscriptionsActivity.class);
+				if(section.equals("suscriptions"))
+				{
+					intent = new Intent(getApplicationContext(), SuscriptionsActivity.class);
+				}
+				else
+				{
+					if(section.equals("searchHome"))
+					{
+						intent = new Intent(getApplicationContext(), SearchActivity.class);
+						intent.putExtra(Common.KEY_SECTION, "home");
+					}
+					else
+					{
+						intent = new Intent(getApplicationContext(), SearchActivity.class);
+						intent.putExtra(Common.KEY_SECTION, "suscriptions");
+					}
+				}
 			}
 
 			startActivity(intent);
@@ -411,12 +410,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onBackPressed - Exception:", e);
 		}
 	}
 
@@ -438,12 +432,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:onOffsetChanged - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onOffsetChanged - Exception:", e);
 		}
 	}
 
@@ -455,7 +444,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			{
 				if(!mIsTheTitleVisible)
 				{
-					startAlphaAnimation(txtTitle, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+					startAlphaAnimation(txtTitle, ALPHA_ANIMATIONS_DURATION, View.VISIBLE, this);
 					mIsTheTitleVisible = true;
 				}
 			}
@@ -463,19 +452,14 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			{
 				if(mIsTheTitleVisible)
 				{
-					startAlphaAnimation(txtTitle, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+					startAlphaAnimation(txtTitle, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE, this);
 					mIsTheTitleVisible = false;
 				}
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:handleToolbarTitleVisibility - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":handleToolbarTitleVisibility - Exception:", e);
 		}
 	}
 
@@ -483,12 +467,14 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	{
 		try
 		{
+			int dpAsPixels;
+
 			if(percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS)
 			{
 				if(mIsTheTitleContainerVisible)
 				{
 					//Al achicar la barra
-					startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+					startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE, this);
 					mIsTheTitleContainerVisible = false;
 					//Mostrar toolBar
 					circleView.setVisibility(CircleImageView.VISIBLE);
@@ -514,7 +500,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 				if(!mIsTheTitleContainerVisible)
 				{
 					//Al expandir la barra
-					startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+					startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.VISIBLE, this);
 					mIsTheTitleContainerVisible = true;
 					//Ocultar toolBar
 					circleView.setVisibility(CircleImageView.GONE);
@@ -538,16 +524,11 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:handleAlphaOnTitle - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":handleAlphaOnTitle - Exception:", e);
 		}
 	}
 
-	public static void startAlphaAnimation(View v, long duration, int visibility)
+	public static void startAlphaAnimation(View v, long duration, int visibility, Context context)
 	{
 		try
 		{
@@ -558,12 +539,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:onOffsetChanged - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "LandingActivity:onOffsetChanged - Exception:", e);
 		}
 	}
 
@@ -571,14 +547,27 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	{
 		try
 		{
-			System.out.println("apreta boton");
+			//TODO: Contemplar caso de añadir una empresa sugerida y medir con Analytics: (Category:Company - Action:AgregarSugerencia - Label:AccionUser)
 			//Agregado para verificar si la company ya estaba o no suscripta
 			Realm realm				= Realm.getDefaultInstance();
 			Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 
 			if(suscription != null)
 			{
-				BlockedActivity.modifySubscriptions(LandingActivity.this, Utils.reverseBool(suscription.getFollower()), false, companyId, true);
+				if(Utils.reverseBool(suscription.getFollower()) == Common.BOOL_YES)
+				{
+					//Agregado para capturar evento en Google Analytics
+					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("AgregarLanding")
+																									.setLabel("AccionUser").build());
+				}
+				else
+				{
+					//Agregado para capturar evento en Google Analytics
+					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("BloquearLanding")
+																									.setLabel("AccionUser").build());
+				}
+
+				HomeActivity.modifySubscriptions(LandingActivity.this, Utils.reverseBool(suscription.getFollower()), false, companyId, false);
 
 				//Agregado para redirigir a la pantallas cards para pedir la identificación del cliente si es necesario
 				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()) && Utils.reverseBool(suscription.getFollower()) == Common.BOOL_YES)
@@ -600,9 +589,9 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 						//Modificación para no redirigir al suscribir si no se necesita la identificación, en este caso actualizamos el layout
 						btnSuscribe.setText(getString(R.string.landing_suscribe));
 
-						if(Utils.isLightColor(color))
+						if(Utils.isLightColor(color, this))
 						{
-							btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.text));
+							btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.white));
 						}
 						else
 						{
@@ -614,12 +603,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:onOffsetChanged - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onOffsetChanged - Exception:", e);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">Accepté</string>
 	<string name="action_example">Exemple</string>
@@ -6,6 +6,7 @@
 	<string name="activate_notif">Activer les notifications</string>
 	<string name="agree">Accepter</string>
 	<string name="app">Application</string>
+	<string name="attach_limit">Vous avez atteint la limite des images jointes</string>
 	<string name="bad_request">Demande incorrecte</string>
 	<string name="block_service_text">Vous ne recevrez plus de notifications ni d\'informations de ce service.</string>
 	<string name="block_service">Bloquer le service</string>
@@ -32,6 +33,15 @@
 	<string name="email">Adresse de courrier électronique</string>
 	<string name="empty_messages_text">Vous allez supprimer tous les messages que vous avez reçus.</string>
 	<string name="empty_messages">Éliminer les messages</string>
+	<string name="enrich_addcommentheader">Ajouter un commentaire</string><!-- after traslate -->
+	<string name="enrich_commentheader">Modifier un commentaire</string><!-- after traslate -->
+	<string name="enrich_commenthint">Ecrire un commentaire&#8230;</string><!-- after traslate -->
+	<string name="enrich_addnoteheader">Ajouter une note</string><!-- after traslate -->
+	<string name="enrich_noteheader">Éditer note</string><!-- after traslate -->
+	<string name="enrich_notehint">Écrire une note&#8230;</string><!-- after traslate -->
+	<string name="enrich_notetype">Note personnelle</string><!-- after traslate -->
+	<string name="enrich_receipt">Facture d\'achat</string><!-- after traslate -->
+	<string name="enrich_save">GARDER</string><!-- after traslate -->
 	<string name="error_upgrade">Nous sommes de retour. Nous vous prions de bien vouloir nous excuser pour la gêne occasionnée.</string>
 	<string name="feedback_error">Veuillez écrire un commentaire</string>
 	<string name="feedback_issue">Signaler comme incidence</string>
@@ -51,7 +61,7 @@
 	<string name="landing_card_error_header">Oops!</string><!-- after traslate -->
 	<string name="landing_card_error_retry">Envoyer à nouveau</string><!-- after traslate -->
 	<string name="landing_card_error_text">Leurs données ne sont pas enregistrées, merci de réessayer.</string><!-- after traslate, problem with ' -->
-	<string name="landing_card_loading_header">Juste un instant...</string><!-- after traslate -->
+	<string name="landing_card_loading_header">Juste un instant&#8230;</string><!-- after traslate -->
 	<string name="landing_card_loading_text">Nous gardons vos données</string><!-- after traslate -->
 	<string name="landing_card_ok_header">Tous up!</string><!-- after traslate -->
 	<string name="landing_card_ok_text">Gardez votre numéro de client de fournir une meilleure expérience</string><!-- after traslate -->
@@ -108,8 +118,8 @@
 	<string name="phone_lenght">Votre numéro de téléphone doit respecter le nombre de chiffres selon votre pays</string>
 	<string name="phone">Numéro de téléphone</string>
 	<string name="please_retry">Veuillez réessayer plus tard</string>
-	<string name="please_wait">Veuillez patienter...</string>
-	<string name="progress_dialog">Traitement en cours...</string>
+	<string name="please_wait">Veuillez patienter&#8230;</string>
+	<string name="progress_dialog">Traitement en cours&#8230;</string>
 	<string name="rate_dialog_title">Voulez-vous donner une note de 5 étoiles à Vloom ?</string>
 	<string name="rate_dialog_message">Cela prendra juste une minute. Votre avis nous intéresse. Merci !</string>
 	<string name="rate_dialog_ok">Noter</string>
@@ -119,15 +129,20 @@
 	<string name="refresh_complete">Vos abonnements ont été mis à jour</string>
 	<string name="refresh_menu">Mettre à jour</string>
 	<string name="register_begin">Inscrivez-vous pour commencer</string>
-	<string name="register_dialog">Enregistrement en cours...</string>
+	<string name="register_dialog">Enregistrement en cours&#8230;</string>
 	<string name="register">Enregistrez-vous avec votre adresse de courrier électronique</string>
-	<string name="registering_message">Génération d\'identifiant d\'instance pour jeton...</string>
+	<string name="register_business">Connectez-vous d\'affaires</string><!-- after traslate -->
+	<string name="registering_message">Génération d\'identifiant d\'instance pour jeton&#8230;</string>
 	<string name="reimport_sms">Réimporter mes SMS</string>
 	<string name="repassword_blank">Vous devez confirmer le mot de passe</string>
 	<string name="repassword">Répéter le mot de passe</string>
 	<string name="report">Dénoncer</string>
 	<string name="response_invalid">Votre demande n\'a pas pu être traitée, essayez à nouveau</string>
 	<string name="seach">Recherche</string><!-- after traslate -->
+	<string name="seach_hint">Commencez à taper le nom de la société à rechercher</string><!-- after traslate -->
+	<string name="seach_title">Rechercher entreprise</string><!-- after traslate -->
+	<string name="showcase_note_title">Notes, commentaires et photos</string><!-- after traslate -->
+	<string name="showcase_note_subtitle">Maintenant, vous pouvez créer des notes et ajouter des photos et des commentaires à vos messages!</string><!-- after traslate -->
 	<string name="send_code">Nous avons envoyé un SMS avec le code d\'activation au numéro</string>
 	<string name="send_mail_text">avec Vloom Android :</string>
 	<string name="send_push_sms">Envoyer une notification d\'essai (SMS)</string>
@@ -141,6 +156,9 @@
 	<string name="silence_actived">Mode silencieux activé</string>
 	<string name="silence_desactived">Mode silencieux désactivé</string>
 	<string name="silence">Mettre en mode silencieux</string>
+	<string name="social">Nous obtenons un nouveau contenu pour vous</string><!-- after traslate -->
+	<string name="social_high">Tweet Faits saillants</string><!-- after traslate -->
+	<string name="social_date">Publié le dd/mm/yyyy</string><!-- after traslate -->
 	<string name="sms_paid_continue">Souhaitez-vous continuer à recevoir ces messages ?</string>
 	<string name="sms_text_paid">SMS avec coût</string>
 	<string name="sms_text">SMS</string>
@@ -193,7 +211,18 @@
 	<string name="unsuscribe">DÉSABONNER</string>
 	<string name="upgrade_text">Nous mettons à jour vos informations</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
-	<string name="verify_dialog">Vérification en cours...</string>
+	<string name="verify_dialog">Vérification en cours&#8230;</string>
+	<string name="verify_phone_add">Ajouter votre numéro de téléphone</string><!-- after traslate -->
+	<string name="verify_phone_alert">Nous allons vérifier le nombre +0 Est-il juste ou si vous voulez changer?</string><!-- after traslate -->
+	<string name="verify_phone_back">Revenir</string><!-- after traslate -->
+	<string name="verify_phone_code">En attente de détecter automatiquement le SMS envoyé à +000000000000</string><!-- after traslate -->
+	<string name="verify_phone_contact">Contacter le support</string><!-- after traslate -->
+	<string name="verify_phone_edit">Éditer</string><!-- after traslate -->
+	<string name="verify_phone_missing">Si vous ne vérifiez pas votre numéro, vos entreprises préférées ne peuvent pas communiquer avec vous</string><!-- after traslate -->
+	<string name="verify_phone_subtitle">Confirmez votre pays et entrez votre indicatif régional suivi de votre numéro de téléphone mobile:</string><!-- after traslate -->
+	<string name="verify_phone_title">va envoyer un SMS pour vérifier votre numéro de téléphone.</string><!-- after traslate -->
+	<string name="verify_phone_warning">Gardez votre compte sécurisé</string><!-- after traslate -->
+	<string name="verify_phone_wrong">¿Mauvais numéro?</string><!-- after traslate -->
 	<string name="version_settins">pour Android v</string>
 	<string name="week">semaine</string>
 	<string name="weeks">semaines</string>
@@ -248,9 +277,20 @@
 		<item>Marquer comme spam</item>
 		<item>Éliminer</item>
 	</string-array>
+	<string-array name="optionsCardSocial">
+		<item>Partager</item>
+		<item>Marquer comme spam</item>
+		<item>Éliminer</item>
+		<item>Je ne veux pas voir ça plus</item><!-- after traslate -->
+	</string-array>
 	<string-array name="optionsChannel">
 		<item>Mode silencieux</item>
 		<item>Vider les messages</item>
 		<item>Me désabonner</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>Partager</item>
+		<item>Éditer</item>
+		<item>Éliminer</item>
+	</string-array><!-- after traslate -->
 </resources>
