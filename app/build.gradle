@@ -3,8 +3,8 @@ apply plugin: "newrelic"
 apply plugin: "realm-android"
 apply plugin: "io.fabric"
 
-def argVersionCode = 39;
-def argVersionName = "1.3.4";
+def argVersionCode = 40;
+def argVersionName = "1.4";
 
 android
 {
