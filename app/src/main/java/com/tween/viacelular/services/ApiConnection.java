@@ -219,7 +219,12 @@ public class ApiConnection
 				try
 				{
 					httpConnection.connect();
-					headers	= httpConnection.getHeaderFields().toString();
+
+					if(httpConnection.getHeaderFields() != null)
+					{
+						headers	= httpConnection.getHeaderFields().toString();
+					}
+
 					code	= httpConnection.getResponseCode();
 					message	= httpConnection.getResponseMessage();
 				}
