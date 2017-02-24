@@ -14,6 +14,7 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 
 public class LogoAsyncTask extends AsyncTask<Void, Void, Bitmap>
 {
@@ -56,11 +57,7 @@ public class LogoAsyncTask extends AsyncTask<Void, Void, Bitmap>
 		}
 		catch(Exception e)
 		{
-			System.out.println("LogoAsyncTask:onPreExecute - Exception: " + e);
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "LogoAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -89,26 +86,29 @@ public class LogoAsyncTask extends AsyncTask<Void, Void, Bitmap>
 				}
 
 				//Agregado para evitar errores por codificación del @
-				if(density == Common.DENSITY_XHDPI)
+				if(density != -1)
 				{
-					urlLogo = urlLogo.replace("@3x.png", "@2x.png").replace("%403x.png", "%402x.png");
-				}
-				else
-				{
-					if(density == Common.DENSITY_HDPI)
+					if(density == Common.DENSITY_XHDPI)
 					{
-						urlLogo = urlLogo.replace("@3x.png", "@1,5x.png").replace("%403x.png", "%401,5x.png");
+						urlLogo = urlLogo.replace("@3x.png", "@2x.png").replace("%403x.png", "%402x.png");
 					}
 					else
 					{
-						if(density <= Common.DENSITY_HDPI)
+						if(density == Common.DENSITY_HDPI)
 						{
-							urlLogo = urlLogo.replace("@3x.png", "@1x.png").replace("%403x.png", "%401x.png");
+							urlLogo = urlLogo.replace("@3x.png", "@1,5x.png").replace("%403x.png", "%401,5x.png");
+						}
+						else
+						{
+							if(density <= Common.DENSITY_HDPI)
+							{
+								urlLogo = urlLogo.replace("@3x.png", "@1x.png").replace("%403x.png", "%401x.png");
+							}
 						}
 					}
-				}
 
-				urlLogo = urlLogo.replace("@", "%40");
+					urlLogo = urlLogo.replace("@", "%40");
+				}
 
 				if(Common.DEBUG)
 				{
@@ -121,7 +121,6 @@ public class LogoAsyncTask extends AsyncTask<Void, Void, Bitmap>
 					@Override
 					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
 					{
-						System.out.println("onLoadingComplete: ");
 						result = loadedImage;
 					}
 				});
@@ -144,12 +143,7 @@ public class LogoAsyncTask extends AsyncTask<Void, Void, Bitmap>
 		}
 		catch(Exception e)
 		{
-			System.out.println("LogoAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "LogoAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;

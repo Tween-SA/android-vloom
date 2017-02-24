@@ -3,6 +3,7 @@ package com.tween.viacelular.services;
 import android.os.Bundle;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.Utils;
 
 /**
  * Created by david.figueroa on 16/6/15.
@@ -35,12 +36,7 @@ public class MyGcmListenerService extends GcmListenerService
 		}
 		catch(Exception e)
 		{
-			System.out.println("MyGcmListenerService:onMessageReceived - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(null, "MyGcmListenerService:onMessageReceived - Exception:", e);
 		}
 	}
 }

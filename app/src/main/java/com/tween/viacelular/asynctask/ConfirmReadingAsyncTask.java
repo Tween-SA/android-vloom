@@ -1,20 +1,21 @@
 package com.tween.viacelular.asynctask;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Looper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.models.Migration;
-import com.tween.viacelular.models.SuscriptionHelper;
-import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import io.realm.Realm;
@@ -26,6 +27,7 @@ import io.realm.RealmResults;
 public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;
+	private Activity		activity;
 	private Context			context;
 	private boolean			displayDialog	= false;
 	private String			companyId		= "";
@@ -34,7 +36,18 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 	public ConfirmReadingAsyncTask(Context context, boolean displayDialog, String companyId, String msgId, int status)
 	{
+		this.activity		= null;
 		this.context		= context;
+		this.displayDialog	= displayDialog;
+		this.companyId		= companyId;
+		this.msgId			= msgId;
+		this.status			= status;
+	}
+
+	public ConfirmReadingAsyncTask(boolean displayDialog, String companyId, String msgId, int status, Activity activity)
+	{
+		this.activity		= activity;
+		this.context		= null;
 		this.displayDialog	= displayDialog;
 		this.companyId		= companyId;
 		this.msgId			= msgId;
@@ -45,6 +58,11 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 	{
 		try
 		{
+			if(context == null)
+			{
+				context = activity;
+			}
+
 			if(displayDialog)
 			{
 				if(progress != null)
@@ -64,7 +82,6 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 			}
 
 			Migration.getDB(context);
-			System.out.println("Confirma onPreExecute - msgId: " + msgId+" status: "+status+" companyId: "+companyId);
 
 			//Reportar coordenadas
 			if(StringUtils.isIdMongo(msgId) && status < Message.STATUS_SPAM)
@@ -72,24 +89,18 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 				Realm realm	= Realm.getDefaultInstance();
 				Isp isp		= realm.where(Isp.class).findFirst();
 
-				if(isp != null)
+				if(isp != null && activity != null)
 				{
-					if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.MEAN_FREQUENCY))
+					if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.MEAN_FREQUENCY, context))
 					{
-						GetLocationByApiAsyncTask geoTask = new GetLocationByApiAsyncTask(context, false, true);
-						geoTask.execute();
+						new GetLocationAsyncTask(activity, false, true, null).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 				}
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("ConfirmReadingAsyncTask:onPreExecute - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ConfirmReadingAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -100,7 +111,6 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 		try
 		{
-			System.out.println("Confirma doInBackground - msgId: " + msgId+" status: "+status+" companyId: "+companyId);
 			JSONObject jsonSend				= new JSONObject();
 			SharedPreferences preferences	= context.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			JSONArray jsonArray				= new JSONArray();
@@ -122,10 +132,10 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 						if(StringUtils.isNotEmpty(isp.getLat()) && StringUtils.isNotEmpty(isp.getLon()))
 						{
 							JSONObject geoJSON = new JSONObject();
-							geoJSON.put("latitude", isp.getLat());
-							geoJSON.put("longitude", isp.getLon());
-							geoJSON.put("source", ApiConnection.getNetwork(context));
-							jsonSend.put("geolocalization", geoJSON);
+							geoJSON.put(Common.KEY_GEO_LAT, isp.getLat());
+							geoJSON.put(Common.KEY_GEO_LON, isp.getLon());
+							geoJSON.put(Common.KEY_GEO_SOURCE, ApiConnection.getNetwork(context));
+							jsonSend.put(Common.KEY_GEO, geoJSON);
 						}
 					}
 
@@ -160,14 +170,12 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 			else
 			{
 				Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-				SuscriptionHelper.debugSuscription(suscription);
 
 				if(suscription != null)
 				{
 					//Agregado para actualizar el status en thread aparte
 					RealmResults<Message> notifications = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
 															.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAll();
-					System.out.println("Messages to mark: "+notifications.toString());
 
 					if(notifications.size() > 0)
 					{
@@ -204,8 +212,8 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 						if(jsonArray.length() > 0)
 						{
-							JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""),
-																		jsonArray.toString()));
+							JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES, context, ApiConnection.METHOD_PUT,
+																		preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString()));
 							result					= ApiConnection.checkResponse(context, jsonResult);
 						}
 					}
@@ -225,12 +233,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("ConfirmReadingAsyncTask:doInBackground - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ConfirmReadingAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
@@ -263,7 +266,6 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 					{
 						RealmResults<Message> messages = bgRealm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
 															.equalTo(Suscription.KEY_API, id).findAll();
-						System.out.println("Messages to mark Thread: "+messages.toString());
 
 						for(int i = messages.size() -1; i >=0; i--)
 						{
@@ -274,12 +276,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 			}
 			catch(Exception e)
 			{
-				System.out.println("ConfirmReadingAsyncTask:UpdateMessages:start - Exception: " + e);
-
-				if(Common.DEBUG)
-				{
-					e.printStackTrace();
-				}
+				Utils.logError(context, "ConfirmReadingAsyncTask:UpdateMessages:start - Exception:", e);
 			}
 		}
 	}

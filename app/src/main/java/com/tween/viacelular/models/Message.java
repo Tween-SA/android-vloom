@@ -41,6 +41,11 @@ public class Message extends RealmObject
 	private String	txid;
 	private String	note;
 	private String	attached;
+	private String	attachedTwo;
+	private String	attachedThree;
+	private String	uri;
+	private String	uriTwo;
+	private String	uriThree;
 
 	@Ignore
 	public static final int KIND_TEXT				= 0; //La push contiene únicamente texto, clase de push por defecto
@@ -69,6 +74,8 @@ public class Message extends RealmObject
 	@Ignore
 	public static final int KIND_FACEBOOK_IMAGE		= 12; //La push es un post de Facebook que contiene una imagen
 	@Ignore
+	public static final int KIND_NOTE				= 13; //La notificación es una nota generada desde la app
+	@Ignore
 	public static final int STATUS_RECEIVE			= 3;
 	@Ignore
 	public static final int STATUS_READ				= 4;
@@ -85,6 +92,8 @@ public class Message extends RealmObject
 	@Ignore
 	public static final String FLAGS_SMS			= "2";
 	@Ignore
+	public static final String FLAGS_PUSH_AND_SMS	= "3";
+	@Ignore
 	public static final String FLAGS_SMSCAP			= "4";
 	@Ignore
 	public static final String FLAGS_PUSHCAP		= "5";
@@ -99,9 +108,19 @@ public class Message extends RealmObject
 	@Ignore
 	public static final String KEY_NOTE				= "note";
 	@Ignore
+	public static final String KEY_ATTACHMENTS		= "attachments";
+	@Ignore
 	public static final String KEY_ATTACHED			= "attached";
 	@Ignore
-	public static final String KEY_ATTACHMENTS		= "attachments";
+	public static final String KEY_ATTACHEDTWO		= "attachedTwo";
+	@Ignore
+	public static final String KEY_ATTACHEDTHREE	= "attachedThree";
+	@Ignore
+	public static final String KEY_URI				= "uri";
+	@Ignore
+	public static final String KEY_URITWO			= "uriTwo";
+	@Ignore
+	public static final String KEY_URITHREE			= "uriThree";
 	@Ignore
 	public static final String KEY_SUBMSG			= "subMsg";
 	@Ignore
@@ -436,5 +455,55 @@ public class Message extends RealmObject
 	public void setAttached(final String attached)
 	{
 		this.attached = attached;
+	}
+
+	public String getAttachedTwo()
+	{
+		return attachedTwo;
+	}
+
+	public void setAttachedTwo(final String attachedTwo)
+	{
+		this.attachedTwo = attachedTwo;
+	}
+
+	public String getAttachedThree()
+	{
+		return attachedThree;
+	}
+
+	public void setAttachedThree(final String attachedThree)
+	{
+		this.attachedThree = attachedThree;
+	}
+
+	public String getUri()
+	{
+		return uri;
+	}
+
+	public void setUri(String uri)
+	{
+		this.uri = uri;
+	}
+
+	public String getUriTwo()
+	{
+		return uriTwo;
+	}
+
+	public void setUriTwo(String uriTwo)
+	{
+		this.uriTwo = uriTwo;
+	}
+
+	public String getUriThree()
+	{
+		return uriThree;
+	}
+
+	public void setUriThree(String uriThree)
+	{
+		this.uriThree = uriThree;
 	}
 }

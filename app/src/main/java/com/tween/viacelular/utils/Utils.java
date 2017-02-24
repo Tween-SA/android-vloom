@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,10 +19,15 @@ import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
+import android.view.TouchDelegate;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.crashlytics.android.Crashlytics;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -30,12 +37,16 @@ import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.activities.PhoneActivity;
 import com.tween.viacelular.activities.SettingsActivity;
 import com.tween.viacelular.activities.SuscriptionsActivity;
+import com.tween.viacelular.asynctask.GetLocationAsyncTask;
 import com.tween.viacelular.asynctask.MigrationAsyncTask;
 import com.tween.viacelular.asynctask.SplashAsyncTask;
 import com.tween.viacelular.asynctask.UpdateUserAsyncTask;
 import com.tween.viacelular.data.DaoMaster;
+import com.tween.viacelular.interfaces.CallBackListener;
+import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
@@ -51,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 
 /**
@@ -58,7 +70,48 @@ import io.realm.Realm;
  */
 public class Utils
 {
-	public static final String path2Copy = Environment.getExternalStorageDirectory().getPath()+"/".replace("//", "/");//"/sdcard/";
+	private static final String path2Copy = Environment.getExternalStorageDirectory().getPath()+"/".replace("//", "/");//"/sdcard/";
+
+	/**
+	 * Destaque para nuevas funcionalidades
+	 * @param activity
+	 * @param view
+	 * @param title
+     * @param content
+     */
+	public static void initShowCase(Activity activity, View view, String title, String content, TapTargetView.Listener listener)
+	{
+		if(listener != null)
+		{
+			TapTargetView.showFor(activity, TapTarget.forView(view, title, content)
+				.outerCircleColor(R.color.accent)
+				.targetCircleColor(android.R.color.white)
+				.titleTextSize(28)
+				.descriptionTextSize(20)
+				.textColor(android.R.color.white)
+				.dimColor(R.color.black)
+				.drawShadow(true)
+				.cancelable(true)
+				.tintTarget(false)
+				.transparentTarget(true)
+				.targetRadius(40), listener);
+		}
+		else
+		{
+			TapTargetView.showFor(activity, TapTarget.forView(view, title, content)
+				.outerCircleColor(R.color.accent)
+				.targetCircleColor(android.R.color.white)
+				.titleTextSize(28)
+				.descriptionTextSize(20)
+				.textColor(android.R.color.white)
+				.dimColor(R.color.black)
+				.drawShadow(true)
+				.cancelable(true)
+				.tintTarget(false)
+				.transparentTarget(true)
+				.targetRadius(40));
+		}
+	}
 
 	//Cambio de contexto para redirigir desde el menú
 	public static void redirectMenu(Activity activity, int position, int current)
@@ -84,7 +137,7 @@ public class Utils
 
 						if(realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).count() == 0)
 						{
-							new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).execute();
+							new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 						}
 						else
 						{
@@ -92,10 +145,10 @@ public class Utils
 							SharedPreferences preferences	= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 							long tsUpated					= preferences.getLong(Common.KEY_PREF_TSSUBSCRIPTIONS, System.currentTimeMillis());
 
-							if(DateUtils.needUpdate(tsUpated, DateUtils.HIGH_FREQUENCY))
+							if(DateUtils.needUpdate(tsUpated, DateUtils.HIGH_FREQUENCY, activity))
 							{
 								//Se modifica para reemplazar la pantalla Bloquedas por la pantalla Empresas con tab
-								new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).execute();
+								new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 							}
 							else
 							{
@@ -125,12 +178,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:redirectMenu - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			logError(activity, "Utils:redirectMenu - Exception:", e);
 		}
 	}
 
@@ -145,6 +193,8 @@ public class Utils
 	{
 		try
 		{
+			System.out.println("Utils: ");
+			MessageHelper.debugMessage(message);
 			MyFirebaseMessagingService push	= new MyFirebaseMessagingService();
 			push.setContext(context);
 			Bundle bundle				= new Bundle();
@@ -171,11 +221,41 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:showPush - Exception: " + e);
+			logError(context, "Utils:showPush - Exception:", e);
+		}
+	}
+
+	/**
+	 * Registra forzadamente una Excepción en Crashlytics
+	 * @param context
+	 * @param referenceName
+	 * @param e
+	 */
+	public static void logError(Context context, String referenceName, Exception e)
+	{
+		try
+		{
+			if(context != null)
+			{
+				Fabric.with(context, new Crashlytics());
+				Crashlytics.getInstance();
+				Crashlytics.logException(e);
+			}
+
+			System.out.println(referenceName+" "+e);
 
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
+			}
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Utils:logError - Exception: "+ex);
+
+			if(Common.DEBUG)
+			{
+				ex.printStackTrace();
 			}
 		}
 	}
@@ -194,7 +274,7 @@ public class Utils
 
 		try
 		{
-			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			SharedPreferences preferences	= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			boolean logged					= preferences.getBoolean(Common.KEY_PREF_LOGGED, false);
 			boolean checked					= preferences.getBoolean(Common.KEY_PREF_CHECKED, false);
 			boolean freePassOn				= preferences.getBoolean(Common.KEY_PREF_FREEPASS, false);
@@ -208,10 +288,10 @@ public class Utils
 						//Agregado para limitar frecuencia de actualización
 						long tsUpated = preferences.getLong(Common.KEY_PREF_TSUSER, System.currentTimeMillis());
 
-						if(DateUtils.needUpdate(tsUpated, DateUtils.LOW_FREQUENCY))
+						if(DateUtils.needUpdate(tsUpated, DateUtils.LOW_FREQUENCY, activity))
 						{
 							//Agregado para actualizar datos del usuario solamente cuando inicia la app
-							new UpdateUserAsyncTask(activity, Common.BOOL_YES, false, "", true, true).execute();
+							new UpdateUserAsyncTask(activity, Common.BOOL_YES, false, "", true, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 						}
 
 						intent	= new Intent(activity, HomeActivity.class);
@@ -262,23 +342,23 @@ public class Utils
 				break;
 
 				case Common.CODE_SCREEN:
-					if(logged && checked)
+					if(!freePassOn)
 					{
-						intent	= new Intent(activity, HomeActivity.class);
-						intent.putExtra(Common.KEY_REFRESH, false);
-						activity.startActivity(intent);
-						activity.finish();
-						result	= false;
-					}
-					else
-					{
-						if(!logged)
+						if(logged && checked)
 						{
-							intent	= new Intent(activity, PhoneActivity.class);
+							intent	= new Intent(activity, HomeActivity.class);
+							intent.putExtra(Common.KEY_REFRESH, false);
 							activity.startActivity(intent);
 							activity.finish();
 							result	= false;
 						}
+					}
+					else
+					{
+						intent	= new Intent(activity, HomeActivity.class);
+						activity.startActivity(intent);
+						activity.finish();
+						result	= false;
 					}
 				break;
 
@@ -309,12 +389,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:checkSession - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			logError(activity, "Utils:checkSession - Exception:", e);
 		}
 
 		return result;
@@ -325,7 +400,7 @@ public class Utils
 		return new String[]{context.getString(R.string.title_notifications), context.getString(R.string.title_companies), context.getString(R.string.title_settings)};
 	}
 
-	public static boolean isLightColor(String colorHex)
+	public static boolean isLightColor(String colorHex, Context context)
 	{
 		boolean result	= false;
 
@@ -344,12 +419,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:isLightColor - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			logError(context, "Utils:isLightColor - Exception:", e);
 		}
 
 		return result;
@@ -380,12 +450,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:getCarrierName - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			logError(context, "Utils:getCarrierName - Exception:", e);
 		}
 		finally
 		{
@@ -418,12 +483,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:getChannelSMS - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			logError(context, "Utils:getChannelSMS - Exception:", e);
 		}
 
 		return result;
@@ -451,12 +511,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:tintColorScreen - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			logError(activity, "Utils:tintColorScreen - Exception:", e);
 		}
 	}
 
@@ -501,12 +556,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:goTo - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			logError(activity, "Utils:goTo - Exception:", e);
 		}
 	}
 
@@ -522,12 +572,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:sendContactMail - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			logError(activity, "Utils:sendContactMail - Exception:", e);
 		}
 	}
 
@@ -566,12 +611,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:sendMail - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			logError(activity, "Utils:sendMail - Exception:", e);
 		}
 	}
 
@@ -579,7 +619,7 @@ public class Utils
 	 * Escribe la variable convertida a String en un archivo con posibilidad de renombrarlo
 	 * @param string
 	 */
-	public static void writeStringInFile(String string, String fileName)
+	public static void writeStringInFile(String string, String fileName, Context context)
 	{
 		try
 		{
@@ -592,18 +632,13 @@ public class Utils
 			root.mkdirs();
 			File gpxfile = new File(root, fileName);
 			FileWriter writer = new FileWriter(gpxfile);
-			writer.append(System.getProperty("line.separator")+DateUtils.getDateTimePhone()+": "+string);
+			writer.append(System.getProperty("line.separator")+DateUtils.getDateTimePhone(context)+": "+string);
 			writer.flush();
 			writer.close();
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:writeStringInFile - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			logError(context, "Utils:writeStringInFile - Exception:", e);
 		}
 	}
 
@@ -618,12 +653,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:createSubject - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			logError(context, "Utils:createSubject - Exception:", e);
 		}
 
 		return subject;
@@ -640,16 +670,14 @@ public class Utils
 			String androidVersion	= Build.VERSION.RELEASE + " (" + android.os.Build.VERSION.SDK_INT + ")";
 			String device			= Build.MANUFACTURER + " " + Build.MODEL;
 			String lang				= Locale.getDefault().getDisplayLanguage() + " (" + Locale.getDefault().getLanguage() + ")";
-			body					= context.getString(R.string.sub_send_stadistics) + " " + context.getString(R.string.send_mail_text) + context.getString(R.string.mail_date) + " " + DateUtils.getDateTimePhone() + context.getString(R.string.mail_version) + " " + version + "\n* DB: "+ db + context.getString(R.string.mail_android) + " " + androidVersion + context.getString(R.string.mail_device) + " " + device + context.getString(R.string.mail_lang) + " " + lang;
+			body					= context.getString(R.string.sub_send_stadistics) + " " + context.getString(R.string.send_mail_text)+context.getString(R.string.mail_date)
+										+ " " + DateUtils.getDateTimePhone(context) + context.getString(R.string.mail_version) + " " + version + "\n* DB: "+ db +
+										context.getString(R.string.mail_android) + " " + androidVersion + context.getString(R.string.mail_device) + " " + device
+										+context.getString(R.string.mail_lang) + " " + lang;
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:createBody - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			logError(context, "Utils:createBody - Exception:", e);
 		}
 
 		return body;
@@ -751,7 +779,7 @@ public class Utils
 
 				//Agregado para copiar a la carpeta Descargas del cel
 				currentDBPath	= path2Copy+"vloomdb.zip";
-				backupDBPath	= path2Copy+ "Download/vloomdb"+DateUtils.getDateTimePhone().replace("/","").replace(":","").replace(" ", "")+".zip";
+				backupDBPath	= path2Copy+ "Download/vloomdb"+DateUtils.getDateTimePhone(activity).replace("/","").replace(":","").replace(" ", "")+".zip";
 				System.out.println("Copiar de: "+currentDBPath+" a: "+backupDBPath);
 				currentDB		= new File(currentDBPath);
 				backupDB		= new File(backupDBPath);
@@ -763,6 +791,7 @@ public class Utils
 			}
 			catch(Exception e)
 			{
+				logError(activity, "Utils:PrepareDB:start - Exception:", e);
 				FileWriter fichero;
 				PrintWriter pw;
 
@@ -770,12 +799,11 @@ public class Utils
 				{
 					fichero	= new FileWriter(path2Copy+"LogVloom.txt");
 					pw		= new PrintWriter(fichero);
-					pw.println(DateUtils.getDatePhone() + " - (thread) ");
+					pw.println(DateUtils.getDatePhone(activity) + " - (thread) ");
 				}
 				catch(Exception d)
 				{
-					e.printStackTrace();
-					d.printStackTrace();
+					logError(activity, "Utils:PrepareDB:start2 - Exception:", e);
 				}
 			}
 		}
@@ -793,6 +821,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
+			logError(activity, "Utils:copyDb - Exception:", e);
 			FileWriter fichero;
 			PrintWriter pw;
 
@@ -800,12 +829,11 @@ public class Utils
 			{
 				fichero	= new FileWriter(path2Copy+"LogVloom.txt");
 				pw		= new PrintWriter(fichero);
-				pw.println(DateUtils.getDatePhone() + " - (sendMail) ");
+				pw.println(DateUtils.getDatePhone(activity) + " - (sendMail) ");
 			}
 			catch(Exception d)
 			{
-				e.printStackTrace();
-				d.printStackTrace();
+				logError(activity, "Utils:copyDb2 - Exception:", d);
 			}
 		}
 	}
@@ -831,7 +859,7 @@ public class Utils
 	 * Método para forzar ejecuciones al iniciar un update nuevo, se modifica si es necesario sino se omite
 	 * @param activity
 	 */
-	public static void upgradeApp(Activity activity)
+	private static void upgradeApp(Activity activity)
 	{
 		try
 		{
@@ -860,7 +888,7 @@ public class Utils
 					else
 					{
 						//Para apps viejas si es necesaria la migración
-						new MigrationAsyncTask(activity, true).execute();
+						new MigrationAsyncTask(activity, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					}
 				}
 				else
@@ -882,32 +910,105 @@ public class Utils
 					}
 
 					editor.apply();
-					SplashAsyncTask task = new SplashAsyncTask(activity, false);
-					task.execute();
+					checkSesion(activity, Common.SPLASH_SCREEN);
 				}
 			}
 			else
 			{
 				if(!splashed)
 				{
-					SplashAsyncTask task = new SplashAsyncTask(activity, false);
-					task.execute();
+					new SplashAsyncTask(activity, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 				else
 				{
-					Utils.checkSesion(activity, Common.SPLASH_SCREEN);
+					checkSesion(activity, Common.SPLASH_SCREEN);
 				}
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:upgradeApp - Exception: " + e);
+			logError(activity, "Utils:upgradeApp - Exception:", e);
+		}
+	}
 
-			if(Common.DEBUG)
+	/***
+	 * Método para actualizar ubicación de usuario y países
+	 * @param activity
+	 */
+	public static void getLocation(final Activity activity)
+	{
+		try
+		{
+			//Agregado para actualizar coordenadas
+			Realm realm	= Realm.getDefaultInstance();
+			Isp isp		= realm.where(Isp.class).findFirst();
+
+			if(isp != null)
 			{
-				e.printStackTrace();
+				if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.HIGH_FREQUENCY, activity))
+				{
+					new GetLocationAsyncTask(activity, false, true, new CallBackListener()
+					{
+						@Override
+						public void invoke()
+						{
+							activity.runOnUiThread(new Runnable()
+							{
+								@Override
+								public void run()
+								{
+									upgradeApp(activity);
+								}
+							});
+						}
+					}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
+				else
+				{
+					checkSesion(activity, Common.SPLASH_SCREEN);
+				}
+			}
+			else
+			{
+				new GetLocationAsyncTask(activity, false, false, new CallBackListener()
+				{
+					@Override
+					public void invoke()
+					{
+						activity.runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								upgradeApp(activity);
+							}
+						});
+					}
+				}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 		}
+		catch(Exception e)
+		{
+			logError(activity, "Utils:getLocation - Exception:", e);
+		}
+	}
+
+	public static void ampliarAreaTouch(final View btnMenu, final int value)
+	{
+		final View parent = (View) btnMenu.getParent();  // button: the view you want to enlarge hit area
+		parent.post(new Runnable()
+		{
+			public void run()
+			{
+				final Rect rect = new Rect();
+				btnMenu.getHitRect(rect);
+				rect.top -= value; // increase top hit area
+				rect.left -= value; // increase left hit area
+				rect.bottom += value; // increase bottom hit area
+				rect.right += value; // increase right hit area
+				parent.setTouchDelegate(new TouchDelegate(rect, btnMenu));
+			}
+		});
 	}
 
 	public static void setStyleSnackBar(Snackbar snackBar, Context context)
@@ -917,13 +1018,13 @@ public class Utils
 			View snackbarView = snackBar.getView();
 			snackbarView.setBackgroundColor(ContextCompat.getColor(context, R.color.snack_gray));
 			TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-			textView.setTextColor(ContextCompat.getColor(context, R.color.text));
+			textView.setTextColor(ContextCompat.getColor(context, android.R.color.white));
 			snackBar.setActionTextColor(ContextCompat.getColor(context, R.color.action));
 			snackBar.show();
 		}
 	}
 
-	public static void showCard(View view)
+	public static void showViewWithFade(View view, Context context)
 	{
 		try
 		{
@@ -936,13 +1037,60 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:showCard - Exception: " + e);
+			logError(context, "Utils:showViewWithFade - Exception:", e);
+		}
+	}
 
-			if(Common.DEBUG)
+	/**
+	 * Muestra la resolución y categoría de la pantalla que tiene el dispositivo usado
+	 * @param context
+     */
+	public static void showResolutionDevice(Context context)
+	{
+		DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+		String category = "4K";
+		//Densidad de pantalla: 1.5 objeto: DisplayMetrics{density=1.5, width=480, height=800, scaledDensity=1.5, xdpi=160.42105, ydpi=160.0} dpi 240
+		if(displayMetrics.densityDpi <= 120)
+		{
+			category = "LDPI";
+		}
+		else
+		{
+			if(displayMetrics.densityDpi <= 160)
 			{
-				e.printStackTrace();
+				category = "MDPI";
+			}
+			else
+			{
+				if(displayMetrics.densityDpi <= 240)
+				{
+					category = "HDPI";
+				}
+				else
+				{
+					if(displayMetrics.densityDpi <= 320)
+					{
+						category = "XHDPI";
+					}
+					else
+					{
+						if(displayMetrics.densityDpi <= 480)
+						{
+							category = "XXHDPI";
+						}
+						else
+						{
+							if(displayMetrics.densityDpi <= 640)
+							{
+								category = "XXXHDPI";
+							}
+						}
+					}
+				}
 			}
 		}
+
+		System.out.println("Pantalla: " +category+" "+displayMetrics.widthPixels+"x"+displayMetrics.heightPixels+" ("+displayMetrics.density+" o "+displayMetrics.densityDpi+" dpi)");
 	}
 
 	/**
@@ -960,7 +1108,7 @@ public class Utils
 		return Color.argb(alpha, red, green, blue);
 	}
 
-	public static void hideCard(final View view)
+	public static void hideViewWithFade(final View view, Context context)
 	{
 		try
 		{
@@ -978,20 +1126,11 @@ public class Utils
 						}
 					});
 				}
-				else
-				{
-					view.setVisibility(View.GONE);
-				}
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("Utils:hideCard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			logError(context, "Utils:hideViewWithFade - Exception:", e);
 		}
 	}
 

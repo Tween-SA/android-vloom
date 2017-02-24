@@ -3,25 +3,32 @@ package com.tween.viacelular.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.FacebookSdk;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.RegisterPhoneAsyncTask;
 import com.tween.viacelular.models.Isp;
@@ -38,8 +45,7 @@ import io.realm.RealmResults;
 
 public class PhoneActivity extends AppCompatActivity
 {
-	private Button			btnCountry;
-	private Button			btnContinue;
+	private Button			btnCountry, btnContinue;
 	private TextView		inputCountry;
 	private EditText		editPhone;
 	private TextInputLayout	inputPhone;
@@ -87,45 +93,78 @@ public class PhoneActivity extends AppCompatActivity
 					@Override
 					public void onTextChanged(CharSequence s, int start, int before, int count)
 					{
-
 					}
 
 					@Override
 					public void afterTextChanged(Editable s)
 					{
-
 					}
 				});
+				//Agregado para que el usuario no tenga que tocar el botón para continuar cuando el teclado se oculta
+				editPhone.setOnEditorActionListener(new TextView.OnEditorActionListener()
+				{
+					public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+					{
+						if(actionId == EditorInfo.IME_ACTION_SEND)
+						{
+							register(v);
+							return true;
+						}
 
-				//Se movió la preselección de país y la carga del celular a onResume
+						return false;
+					}
+				});
+				preSelectCountry();
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:OnCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":OnCreate - Exception:", e);
 		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
+		getMenuInflater().inflate(R.menu.menu_support, menu);
 		return true;
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		try
+		{
+			if(item.getItemId() == R.id.action_support)
+			{
+				GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("Contacto")
+					.setLabel("AccionUser").build());
+				Utils.sendContactMail(PhoneActivity.this);
+
+				return true;
+			}
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":onOptionsItemSelected - Exception:", e);
+		}
+
 		return super.onOptionsItemSelected(item);
 	}
 
 	public void register(View view)
 	{
-		registerMethod();
+		String confirm = getString(R.string.verify_phone_alert).replace("+0", inputCountry.getText().toString()+editPhone.getText().toString().trim());
+		new MaterialDialog.Builder(this).cancelable(false).positiveText(R.string.ok).negativeText(R.string.verify_phone_edit).content(confirm)
+			.onPositive(new MaterialDialog.SingleButtonCallback()
+			{
+				@Override
+				public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
+				{
+					registerMethod();
+				}
+			})
+			.build().show();
 	}
 
 	public boolean registerMethod()
@@ -177,18 +216,12 @@ public class PhoneActivity extends AppCompatActivity
 				}
 			}
 
-			phone						= inputCountry.getText().toString() + phone;
-			RegisterPhoneAsyncTask task	= new RegisterPhoneAsyncTask(PhoneActivity.this, phone);
-			task.execute();
+			phone = inputCountry.getText().toString() + phone;
+			new RegisterPhoneAsyncTask(PhoneActivity.this, phone).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:register - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":register - Exception:", e);
 		}
 
 		return true;
@@ -228,52 +261,47 @@ public class PhoneActivity extends AppCompatActivity
 					public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text)
 					{
 						view.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.action));
-						selectCountry(text.toString(), false);
+						selectCountry(text.toString());
 					}
 				}).show();
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:showCountries - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":showCountries - Exception:", e);
 		}
 	}
 
-	public void selectCountry(String lblCountry, boolean isCode)
+	public void selectCountry(String lblCountry)
 	{
 		try
 		{
 			if(StringUtils.isNotEmpty(lblCountry))
 			{
 				Realm realm						= Realm.getDefaultInstance();
-				Land country					= realm.where(Land.class).equalTo(Common.KEY_NAME, lblCountry.trim()).findFirst();
 				SharedPreferences preferences	= getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 				SharedPreferences.Editor editor	= preferences.edit();
 
-				if(country != null)
+				if(realm.where(Land.class).count() > 0)
 				{
-					btnCountry.setText(lblCountry);
-					//Modificación para evitar retratamiento del 9 en AR y CL
-					inputCountry.setText(country.getCode());
-					//Agregado para actualizar el país seleccionado
+					Land country = realm.where(Land.class).equalTo(Common.KEY_NAME, lblCountry.trim()).findFirst();
 
-					editor.putString(Land.KEY_API, country.getIsoCode());
-					editor.apply();
+					if(country != null)
+					{
+						btnCountry.setText(lblCountry);
+						//Modificación para evitar retratamiento del 9 en AR y CL
+						inputCountry.setText(country.getCode());
+						//Agregado para actualizar el país seleccionado
 
-					//Agregado para obtener dinámicamente la longitud a validar
-					minLenght		= Integer.valueOf(country.getMinLength());
-					maxLenght		= Integer.valueOf(country.getMaxLength());
-					format			= country.getFormat();
-					foundCountry	= true;
-				}
-				else
-				{
-					//Agregado para buscar país por isoCode en caso de que la api ip responda en otro idioma el país. Por ej: Spain
-					if(isCode)
+						editor.putString(Land.KEY_API, country.getIsoCode());
+						editor.apply();
+
+						//Agregado para obtener dinámicamente la longitud a validar
+						minLenght		= Integer.valueOf(country.getMinLength());
+						maxLenght		= Integer.valueOf(country.getMaxLength());
+						format			= country.getFormat();
+						foundCountry	= true;
+					}
+					else
 					{
 						country = realm.where(Land.class).equalTo(Land.KEY_ISOCODE, lblCountry.trim()).findFirst();
 
@@ -294,41 +322,41 @@ public class PhoneActivity extends AppCompatActivity
 							foundCountry	= true;
 						}
 					}
-					else
+				}
+				else
+				{
+					String[] arrayCountries	= getResources().getStringArray(R.array.countries);
+					String[] arrayCodes		= getResources().getStringArray(R.array.codes);
+					String[] arrayIsoCodes	= getResources().getStringArray(R.array.isoCodes);
+					//Placeholder agregado por si no se pudo procesar el json y la api tampoco devolvió data
+					String[] arrayFormats	= getResources().getStringArray(R.array.formats);
+					String[] arrayMinLength	= getResources().getStringArray(R.array.minLength);
+					String[] arrayMaxLength	= getResources().getStringArray(R.array.maxLength);
+
+					for(int i = 0; i < arrayCountries.length; i++)
 					{
-						String[] arrayCountries	= getResources().getStringArray(R.array.countries);
-						String[] arrayCodes		= getResources().getStringArray(R.array.codes);
-						String[] arrayIsoCodes	= getResources().getStringArray(R.array.isoCodes);
-						//Placeholder agregado por si no se pudo procesar el json y la api tampoco devolvió data
-						String[] arrayFormats	= getResources().getStringArray(R.array.formats);
-						String[] arrayMinLength	= getResources().getStringArray(R.array.minLength);
-						String[] arrayMaxLength	= getResources().getStringArray(R.array.maxLength);
-
-						for(int i = 0; i < arrayCountries.length; i++)
+						if(arrayCountries[i].equals(lblCountry))
 						{
-							if(arrayCountries[i].equals(lblCountry))
+							btnCountry.setText(lblCountry);
+							//Modificación para evitar retratamiento del 9 en AR y CL
+							inputCountry.setText(arrayCodes[i]);
+							preferences		= getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+							String phone	= preferences.getString(User.KEY_PHONE, "");
+
+							if(StringUtils.isNotEmpty(phone))
 							{
-								btnCountry.setText(lblCountry);
-								//Modificación para evitar retratamiento del 9 en AR y CL
-								inputCountry.setText(arrayCodes[i]);
-								preferences		= getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-								String phone	= preferences.getString(User.KEY_PHONE, "");
-
-								if(StringUtils.isNotEmpty(phone))
-								{
-									editPhone.setText(phone.replace(arrayCodes[i], ""));
-								}
-
-								editor.putString(Land.KEY_API, arrayIsoCodes[i]);
-								editor.apply();
-
-								//Agregado para obtener dinámicamente la longitud a validar
-								minLenght		= Integer.valueOf(arrayMinLength[i]);
-								maxLenght		= Integer.valueOf(arrayMaxLength[i]);
-								format			= arrayFormats[i];
-								foundCountry	= true;
-								break;
+								editPhone.setText(phone.replace(arrayCodes[i], ""));
 							}
+
+							editor.putString(Land.KEY_API, arrayIsoCodes[i]);
+							editor.apply();
+
+							//Agregado para obtener dinámicamente la longitud a validar
+							minLenght		= Integer.valueOf(arrayMinLength[i]);
+							maxLenght		= Integer.valueOf(arrayMaxLength[i]);
+							format			= arrayFormats[i];
+							foundCountry	= true;
+							break;
 						}
 					}
 				}
@@ -348,12 +376,7 @@ public class PhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:selectCountry - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":selectCountry - Exception:", e);
 		}
 	}
 
@@ -375,12 +398,7 @@ public class PhoneActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:hideSoftKeyboard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":hideSoftKeyboard - Exception:", e);
 		}
 	}
 
@@ -396,9 +414,26 @@ public class PhoneActivity extends AppCompatActivity
 			Window window			= getWindow();
 			originalSoftInputMode	= window.getAttributes().softInputMode;
 			window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+			preSelectCountry();
 
+			//Agregado para medición de descargas por Facebook
+			if(!Common.DEBUG)
+			{
+				FacebookSdk.sdkInitialize(getApplicationContext());
+			}
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
+		}
+	}
+
+	public void preSelectCountry()
+	{
+		try
+		{
 			//Se movío este código aquí para ejectuarse al efectuar back desde CodeActivity y al reingresar a esta activity
-			SharedPreferences preferences	= getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			SharedPreferences preferences	= getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 
 			//Preselección de Country en base a la api IP
 			Realm realm			= Realm.getDefaultInstance();
@@ -425,27 +460,57 @@ public class PhoneActivity extends AppCompatActivity
 						{
 							country = isp.getCountrySim();
 						}
+					}
+				}
+
+				//Agregado para mover el selector si hay diferencia de ubicación
+				if(!isp.getCountryCode().equals(isp.getCountryNet()) && !isp.getCountryCode().equals(isp.getCountrySim()))
+				{
+					if(StringUtils.isNotEmpty(isp.getCountryNet()))
+					{
+						Land land = realm.where(Land.class).equalTo(Land.KEY_ISOCODE, isp.getCountryNet()).findFirst();
+
+						if(land != null)
+						{
+							country = land.getName();
+						}
+
+						countryCode = isp.getCountryNet();
+					}
+					else
+					{
+						if(StringUtils.isNotEmpty(isp.getCountrySim()))
+						{
+							Land land = realm.where(Land.class).equalTo(Land.KEY_ISOCODE, isp.getCountrySim()).findFirst();
+
+							if(land != null)
+							{
+								country = land.getName();
+							}
+
+							countryCode = isp.getCountrySim();
+						}
 						else
 						{
-							//Agregado para recargar el país si el usuario vuelve a esta pantalla
-							if(StringUtils.isNotEmpty(preferences.getString(Land.KEY_API, "")))
+							if(StringUtils.isNotEmpty(isp.getCountryCode()))
 							{
-								country = preferences.getString(Land.KEY_API, "");
+								countryCode = isp.getCountryCode();
 							}
 						}
 					}
 				}
+			}
 
-				if(StringUtils.isNotEmpty(isp.getCountryCode()))
-				{
-					countryCode = isp.getCountryCode();
-				}
+			//Agregado para recargar el país si el usuario vuelve a esta pantalla
+			if(StringUtils.isNotEmpty(preferences.getString(Land.KEY_API, "")))
+			{
+				country = preferences.getString(Land.KEY_API, "");
 			}
 
 			//Agregado para corregir falla en preselección de país
 			if(StringUtils.isNotEmpty(country))
 			{
-				selectCountry(country, false);
+				selectCountry(country);
 			}
 			else
 			{
@@ -458,7 +523,7 @@ public class PhoneActivity extends AppCompatActivity
 						if(StringUtils.isNotEmpty(intent.getStringExtra(Land.KEY_API)))
 						{
 							country = intent.getStringExtra(Land.KEY_API);
-							selectCountry(country, false);
+							selectCountry(country);
 						}
 					}
 				}
@@ -466,28 +531,18 @@ public class PhoneActivity extends AppCompatActivity
 
 			if(!foundCountry)
 			{
-				selectCountry(countryCode, true);
+				selectCountry(countryCode);
 			}
 
-			if(StringUtils.isNotEmpty(preferences.getString(User.KEY_PHONE, "")) && StringUtils.isNotEmpty(inputCountry.getText().toString()) && StringUtils.isEmpty(editPhone.getText().toString()))
+			if(	StringUtils.isNotEmpty(preferences.getString(User.KEY_PHONE, "")) && StringUtils.isNotEmpty(inputCountry.getText().toString()) &&
+					StringUtils.isEmpty(editPhone.getText().toString()))
 			{
-				editPhone.setText(preferences.getString(User.KEY_PHONE, "").substring(inputCountry.getText().toString().length()));
-			}
-
-			//Agregado para medición de descargas por Facebook
-			if(!Common.DEBUG)
-			{
-				FacebookSdk.sdkInitialize(getApplicationContext());
+				editPhone.setText(preferences.getString(User.KEY_PHONE, "").replace("+", "").substring(inputCountry.getText().toString().replace("+", "").length()));
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("PhoneActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":preSelectCountry - Exception:", e);
 		}
 	}
 

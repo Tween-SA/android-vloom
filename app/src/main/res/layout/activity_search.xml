@@ -1,0 +1,31 @@
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/container"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	<include
+		android:id="@+id/toolBar"
+		layout="@layout/tool_bar" />
+	<com.miguelcatalan.materialsearchview.MaterialSearchView
+		android:id="@+id/search_view"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="20dp" />
+	<se.emilsjolander.stickylistheaders.StickyListHeadersListView
+		android:id="@+id/list"
+		android:layout_below="@+id/toolBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="4dp"
+		android:background="@android:color/transparent"
+		android:clipToPadding="false"
+		android:dividerHeight="0dp"
+		android:drawSelectorOnTop="true"
+		android:fastScrollEnabled="true"
+		android:overScrollMode="never"
+		android:paddingBottom="8dp"
+		android:paddingLeft="16dp"
+		android:paddingRight="16dp"
+		android:paddingTop="4dp"
+		android:scrollbarStyle="outsideOverlay" />
+</RelativeLayout>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.telephony.TelephonyManager;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONObject;
 import io.realm.Realm;
 
@@ -14,7 +15,6 @@ public abstract class IspHelper
 {
 	public static void debug(Isp isp)
 	{
-
 		if(isp != null)
 		{
 			System.out.println("\nIsp - query: " + isp.getQuery());
@@ -207,54 +207,84 @@ public abstract class IspHelper
 			{
 				isp = realm.where(Isp.class).findFirst();
 
-				if(StringUtils.isNotEmpty(jAs) && !isp.getAs().equals(jAs))
+				if(StringUtils.isNotEmpty(jAs) && StringUtils.isNotEmpty(isp.getAs()))
 				{
-					isp.setAs(jAs);
+					if(!isp.getAs().equals(jAs))
+					{
+						isp.setAs(jAs);
+					}
 				}
 
-				if(StringUtils.isNotEmpty(jRegionName) && !isp.getRegionName().equals(jRegionName))
+				if(StringUtils.isNotEmpty(jRegionName) && StringUtils.isNotEmpty(isp.getRegionName()))
 				{
-					isp.setRegionName(jRegionName);
+					if(!isp.getRegionName().equals(jRegionName))
+					{
+						isp.setRegionName(jRegionName);
+					}
 				}
 
-				if(StringUtils.isNotEmpty(jRegion) && !isp.getRegion().equals(jRegion))
+				if(StringUtils.isNotEmpty(jRegion) && StringUtils.isNotEmpty(isp.getRegion()))
 				{
-					isp.setRegion(jRegion);
+					if(!isp.getRegion().equals(jRegion))
+					{
+						isp.setRegion(jRegion);
+					}
 				}
 
-				if(StringUtils.isNotEmpty(jCity) && !isp.getCity().equals(jCity))
+				if(StringUtils.isNotEmpty(jCity) && StringUtils.isNotEmpty(isp.getCity()))
 				{
-					isp.setCity(jCity);
+					if(!isp.getCity().equals(jCity))
+					{
+						isp.setCity(jCity);
+					}
 				}
 
-				if(StringUtils.isNotEmpty(jZip) && !isp.getZip().equals(jZip))
+				if(StringUtils.isNotEmpty(jZip) && StringUtils.isNotEmpty(isp.getZip()))
 				{
-					isp.setZip(jZip);
+					if(!isp.getZip().equals(jZip))
+					{
+						isp.setZip(jZip);
+					}
 				}
 
-				if(StringUtils.isNotEmpty(jLat) && !isp.getLat().equals(jLat))
+				if(StringUtils.isNotEmpty(jLat) && StringUtils.isNotEmpty(isp.getLat()))
 				{
-					isp.setLat(jLat);
+					if(!isp.getLat().equals(jLat))
+					{
+						isp.setLat(jLat);
+					}
 				}
 
-				if(StringUtils.isNotEmpty(jLon) && !isp.getLon().equals(jLon))
+				if(StringUtils.isNotEmpty(jLon) && StringUtils.isNotEmpty(isp.getLon()))
 				{
-					isp.setLon(jLon);
+					if(!isp.getLon().equals(jLon))
+					{
+						isp.setLon(jLon);
+					}
 				}
 
-				if(StringUtils.isNotEmpty(jTimezone) && !isp.getTimezone().equals(jTimezone))
+				if(StringUtils.isNotEmpty(jTimezone) && StringUtils.isNotEmpty(isp.getTimezone()))
 				{
-					isp.setTimezone(jTimezone);
+					if(!isp.getTimezone().equals(jTimezone))
+					{
+						isp.setTimezone(jTimezone);
+					}
 				}
 
-				if(StringUtils.isNotEmpty(jIsp) && !isp.getIsp().equals(jIsp))
+				if(StringUtils.isNotEmpty(jIsp) && StringUtils.isNotEmpty(isp.getIsp()))
 				{
-					isp.setIsp(jIsp);
+					if(!isp.getIsp().equals(jIsp))
+					{
+						isp.setIsp(jIsp);
+					}
 				}
 
-				if(StringUtils.isNotEmpty(jOrg) && !isp.getOrg().equals(jOrg))
+				if(StringUtils.isNotEmpty(jOrg) && StringUtils.isNotEmpty(isp.getOrg()))
 				{
-					isp.setOrg(jOrg);
+					if(!isp.getOrg().equals(jOrg))
+					{
+						isp.setOrg(jOrg);
+					}
 				}
 
 				isp.setUpdated(System.currentTimeMillis());
@@ -270,12 +300,7 @@ public abstract class IspHelper
 		}
 		catch(Exception e)
 		{
-			System.out.println("Isp:parseJSON - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "Isp:parseJSON - Exception:", e);
 		}
 	}
 }

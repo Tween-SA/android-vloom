@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><resources xmlns:tools="http://schemas.android.com/tools"
-                                                 xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">Angenommen</string>
 	<string name="action_example">Beispiel</string>
@@ -7,6 +6,7 @@
 	<string name="activate_notif">Benachrichtigungen aktivieren</string>
 	<string name="agree">Akzeptieren</string>
 	<string name="app">Anwendung</string>
+	<string name="attach_limit">Sie haben das Limit von beigefügten Bilder erreicht</string>
 	<string name="bad_request">Falsche Abfrage</string>
 	<string name="block_service_text">Ab sofort erhältst du keine weiteren Benachrichtigungen oder Informationen von diesem Dienst.</string>
 	<string name="block_service">Dienst blockieren</string>
@@ -33,6 +33,15 @@
 	<string name="email">E-Mail</string>
 	<string name="empty_messages_text">Du bist im Begriff alle Nachrichten, die du erhalten hast, zu löschen.</string>
 	<string name="empty_messages">Nachrichten löschen</string>
+	<string name="enrich_addcommentheader">Kommentar hinzufügen</string><!-- after traslate -->
+	<string name="enrich_commentheader">Kommentar bearbeiten</string><!-- after traslate -->
+	<string name="enrich_commenthint">Schreibe einen Kommentar&#8230;</string><!-- after traslate -->
+	<string name="enrich_addnoteheader">Anmerkung hinzufügen</string><!-- after traslate -->
+	<string name="enrich_noteheader">Notiz bearbeiten</string><!-- after traslate -->
+	<string name="enrich_notehint">Schreiben Sie eine Notiz&#8230;</string><!-- after traslate -->
+	<string name="enrich_notetype">persönliche Anmerkung</string><!-- after traslate -->
+	<string name="enrich_receipt">Rechnung</string><!-- after traslate -->
+	<string name="enrich_save">SPAREN</string><!-- after traslate -->
 	<string name="error_upgrade">Wir sind wieder zurück - bitte entschuldige die Unannehmlichkeiten</string>
 	<string name="feedback_error">Bitte gib einen Kommentar ein</string>
 	<string name="feedback_issue">Zwischenfall melden</string>
@@ -130,6 +139,10 @@
 	<string name="report">Melden</string>
 	<string name="response_invalid">Deine Anfrage konnte nicht bearbeitet werden, bitte versuche es noch einmal</string>
 	<string name="seach">Suche</string><!-- after traslate -->
+	<string name="seach_hint">Starten Sie den Namen des Unternehmens eingeben zu suchen</string><!-- after traslate -->
+	<string name="seach_title">Suchen Unternehmen</string><!-- after traslate -->
+	<string name="showcase_note_title">Notizen, Kommentare und Fotos</string><!-- after traslate -->
+	<string name="showcase_note_subtitle">Jetzt können Sie Notizen erstellen und Fotos und Kommentare zu Ihrer Beiträge hinzuzufügen!</string><!-- after traslate -->
 	<string name="send_code">Wir schicken eine SMS mit einem Freischaltcode an diese Nummer</string>
 	<string name="send_mail_text">mit Vloom Android:</string>
 	<string name="send_push_sms">Sende Testbenachrichtigung (SMS)</string>
@@ -199,6 +212,17 @@
 	<string name="upgrade_text">Wir aktualisieren Ihre Informationen</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">Überprüfen&#8230;</string>
+	<string name="verify_phone_add">Fügen Sie Ihre Telefonnummer</string><!-- after traslate -->
+	<string name="verify_phone_alert">Wir werden überprüfen, die Zahl +0 Ist es richtig, oder Sie wollen es ändern?</string><!-- after traslate -->
+	<string name="verify_phone_back">Rückkehr</string><!-- after traslate -->
+	<string name="verify_phone_code">Warten, um automatisch die SMS erkennen an +000000000000 gesendet</string><!-- after traslate -->
+	<string name="verify_phone_contact">Kontakt Unterstützung</string><!-- after traslate -->
+	<string name="verify_phone_edit">Bearbeiten</string><!-- after traslate -->
+	<string name="verify_phone_missing">Wenn Sie nicht Ihre Nummer zu überprüfen, Ihre Lieblings-Unternehmen können nicht mit Ihnen zu kommunizieren</string><!-- after traslate -->
+	<string name="verify_phone_subtitle">Bestätigen Sie Ihr Land und geben Sie Ihre Vorwahl von Ihrem Mobiltelefonnummer ein:</string><!-- after traslate -->
+	<string name="verify_phone_title">wird ein SMS senden Sie Ihre Telefonnummer zu überprüfen.</string><!-- after traslate -->
+	<string name="verify_phone_warning">Schützen Sie Ihr Konto</string><!-- after traslate -->
+	<string name="verify_phone_wrong">¿Falsche Nummer?</string><!-- after traslate -->
 	<string name="version_settins">für Android v</string>
 	<string name="week">Woche</string>
 	<string name="weeks">Wochen</string>
@@ -264,4 +288,9 @@
 		<item>Posteingang leeren</item>
 		<item>Abmelden</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>Teilen</item>
+		<item>Bearbeiten</item>
+		<item>Löschen</item>
+	</string-array><!-- after traslate -->
 </resources>

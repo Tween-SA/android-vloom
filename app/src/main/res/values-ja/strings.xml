@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">承認済み</string>
 	<string name="action_example">例</string>
@@ -6,6 +6,7 @@
 	<string name="activate_notif">通知を有効化</string>
 	<string name="agree">承認</string>
 	<string name="app">アプリケーション</string>
+	<string name="attach_limit">あなたは、添付画像の限界に達しています</string>
 	<string name="bad_request">不正なリクエスト</string>
 	<string name="block_service_text">このサービスに関する通知や情報は受信されなくなります。</string>
 	<string name="block_service">サービスをブロック</string>
@@ -32,6 +33,15 @@
 	<string name="email">メール</string>
 	<string name="empty_messages_text">受信したすべてのメッセージを削除します。</string>
 	<string name="empty_messages">メッセージを空にする</string>
+	<string name="enrich_addcommentheader">コメントを追加します</string><!-- after traslate -->
+	<string name="enrich_commentheader">コメントを編集</string><!-- after traslate -->
+	<string name="enrich_commenthint">コメントを書きます&#8230;</string><!-- after traslate -->
+	<string name="enrich_addnoteheader">メモを追加</string><!-- after traslate -->
+	<string name="enrich_noteheader">編集メモ</string><!-- after traslate -->
+	<string name="enrich_notehint">メモを書きます&#8230;</string><!-- after traslate -->
+	<string name="enrich_notetype">真筆</string><!-- after traslate -->
+	<string name="enrich_receipt">請求書</string><!-- after traslate -->
+	<string name="enrich_save">セーブ</string><!-- after traslate -->
 	<string name="error_upgrade">バックアップ中です。ご不便をおかけしております。</string>
 	<string name="feedback_error">コメントを入力してください</string>
 	<string name="feedback_issue">インシデントとして報告</string>
@@ -129,6 +139,10 @@
 	<string name="report">報告する</string>
 	<string name="response_invalid">リクエストを処理できませんでした。もう一度やり直してください</string>
 	<string name="seach">検索</string><!-- after traslate -->
+	<string name="seach_hint">追求する会社の名前の入力を開始</string><!-- after traslate -->
+	<string name="seach_title">検索会社</string><!-- after traslate -->
+	<string name="showcase_note_title">注記、コメントと写真</string><!-- after traslate -->
+	<string name="showcase_note_subtitle">今、あなたはノートを作成し、あなたの投稿に写真やコメントを追加することができます！</string><!-- after traslate -->
 	<string name="send_code">アクティベーションコードを掲載したSMSがその番号に送信されました</string>
 	<string name="send_mail_text">Vloom Android用：</string>
 	<string name="send_push_sms">テスト通知（SMS）を送信</string>
@@ -198,6 +212,17 @@
 	<string name="upgrade_text">私たちはあなたの情報を更新します</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">確認しています&#8230;</string>
+	<string name="verify_phone_add">お使いの電話番号を追加します。</string><!-- after traslate -->
+	<string name="verify_phone_alert">私たちは、数0は右のそれをしていることを確認しますまたはあなたはそれを変更したいですか？</string><!-- after traslate -->
+	<string name="verify_phone_back">リターン</string><!-- after traslate -->
+	<string name="verify_phone_code">自動的+000000000000に送信されたSMSを検出するために待っています</string><!-- after traslate -->
+	<string name="verify_phone_contact">サポートにお問い合わせ</string><!-- after traslate -->
+	<string name="verify_phone_edit">編集</string><!-- after traslate -->
+	<string name="verify_phone_missing">あなたの番号を確認していない場合は、あなたの好きな企業があなたと通信することはできません</string><!-- after traslate -->
+	<string name="verify_phone_subtitle">あなたの国を確認し、あなたの携帯電話番号に続いて市外局番を入力します。:</string><!-- after traslate -->
+	<string name="verify_phone_title">電話番号を確認するために、SMSを送信します。</string><!-- after traslate -->
+	<string name="verify_phone_warning">アカウントのセキュリティを保ちます</string><!-- after traslate -->
+	<string name="verify_phone_wrong">¿間違った番号？</string><!-- after traslate -->
 	<string name="version_settins">Android v 用</string>
 	<string name="week">週</string>
 	<string name="weeks">週間</string>
@@ -263,4 +288,9 @@
 		<item>メッセージを空にする</item>
 		<item>登録解除</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>共有</item>
+		<item>編集</item>
+		<item>削除</item>
+	</string-array><!-- after traslate -->
 </resources>

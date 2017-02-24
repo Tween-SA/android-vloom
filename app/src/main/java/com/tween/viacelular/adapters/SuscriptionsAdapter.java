@@ -1,5 +1,7 @@
 package com.tween.viacelular.adapters;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,15 +10,18 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
+
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
-import com.tween.viacelular.activities.SuscriptionsActivity;
+import com.tween.viacelular.activities.LandingActivity;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
@@ -26,13 +31,14 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
  */
 public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeadersAdapter, SectionIndexer
 {
-	private List<Suscription>		suscriptions		= new ArrayList<>();
-	private SuscriptionsActivity	activityContext;
-	private int[]					mSectionIndices;
-	private Character[]				mSectionLetters;
-	private LayoutInflater			mInflater;
+	private List<Suscription>	suscriptions	= new ArrayList<>();
+	private Activity			activityContext;
+	private int[]				mSectionIndices;
+	private Character[]			mSectionLetters;
+	private LayoutInflater		mInflater;
+	private String				backTo;
 
-	public SuscriptionsAdapter(List<String> itemList, SuscriptionsActivity activityContext)
+	public SuscriptionsAdapter(List<String> itemList, Activity activityContext, String backTo)
 	{
 		Realm realm = Realm.getDefaultInstance();
 
@@ -48,6 +54,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		mSectionIndices			= getSectionIndices();
 		mSectionLetters			= getSectionLetters();
 		mInflater				= LayoutInflater.from(activityContext);
+		this.backTo				= backTo;
 	}
 
 	private int[] getSectionIndices()
@@ -56,8 +63,8 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 
 		try
 		{
-			ArrayList<Integer> sectionIndices = new ArrayList<>();
-			char lastFirstChar = '\0';
+			ArrayList<Integer> sectionIndices	= new ArrayList<>();
+			char lastFirstChar					= '\0';
 
 			if(suscriptions != null)
 			{
@@ -98,12 +105,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsAdapter:getSectionLetters - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsAdapter:getSectionLetters - Exception:", e);
 		}
 
 		return sections;
@@ -127,12 +129,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsAdapter:getSectionLetters - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsAdapter:getSectionLetters - Exception:", e);
 		}
 
 		return letters;
@@ -190,15 +187,18 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 						}
 
 						holder.txtTitle.setText(item.getName());
-						final SuscriptionsActivity context	= activityContext;
-						final String companyId				= item.getCompanyId();
+						final String companyId = item.getCompanyId();
 
 						holder.picture.setOnClickListener(new View.OnClickListener()
 						{
 							@Override
 							public void onClick(View v)
 							{
-								SuscriptionsActivity.redirectLanding(context, companyId);
+								Intent intent		= new Intent(activityContext, LandingActivity.class);
+								intent.putExtra(Common.KEY_ID, companyId);
+								intent.putExtra(Common.KEY_SECTION, backTo);
+								activityContext.startActivity(intent);
+								activityContext.finish();
 							}
 						});
 
@@ -207,7 +207,11 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 							@Override
 							public void onClick(View v)
 							{
-								SuscriptionsActivity.redirectLanding(context, companyId);
+								Intent intent		= new Intent(activityContext, LandingActivity.class);
+								intent.putExtra(Common.KEY_ID, companyId);
+								intent.putExtra(Common.KEY_SECTION, backTo);
+								activityContext.startActivity(intent);
+								activityContext.finish();
 							}
 						});
 
@@ -217,7 +221,11 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 							@Override
 							public void onClick(View v)
 							{
-								SuscriptionsActivity.redirectLanding(context, companyId);
+								Intent intent		= new Intent(activityContext, LandingActivity.class);
+								intent.putExtra(Common.KEY_ID, companyId);
+								intent.putExtra(Common.KEY_SECTION, backTo);
+								activityContext.startActivity(intent);
+								activityContext.finish();
 							}
 						});
 
@@ -232,12 +240,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsAdapter:getView - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsAdapter:getView - Exception:", e);
 		}
 
 		return convertView;
@@ -283,12 +286,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsAdapter:getHeaderView - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsAdapter:getHeaderView - Exception:", e);
 		}
 
 		return convertView;
@@ -321,12 +319,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsAdapter:getHeaderId - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsAdapter:getHeaderId - Exception:", e);
 		}
 
 		return id;
@@ -380,12 +373,7 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsAdapter:getSectionForPosition - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activityContext, "SuscriptionsAdapter:getSectionForPosition - Exception:", e);
 		}
 
 		return 0;
@@ -468,8 +456,8 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 	{
 		for(int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--)
 		{
-			final Suscription model = newModels.get(toPosition);
-			final int fromPosition = suscriptions.indexOf(model);
+			final Suscription model	= newModels.get(toPosition);
+			final int fromPosition	= suscriptions.indexOf(model);
 
 			if(fromPosition >= 0 && fromPosition != toPosition)
 			{
@@ -486,13 +474,11 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 	private void addItem(int position, Suscription model)
 	{
 		suscriptions.add(position, model);
-		//notifyItemInserted(position);
 	}
 
 	private void moveItem(int fromPosition, int toPosition)
 	{
 		final Suscription model = suscriptions.remove(fromPosition);
 		suscriptions.add(toPosition, model);
-		//notifyItemMoved(fromPosition, toPosition);
 	}
 }

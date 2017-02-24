@@ -6,6 +6,7 @@
 	<string name="activate_notif">Activar Notificaciones</string>
 	<string name="agree">Aceptar</string>
 	<string name="app">Aplicación</string>
+	<string name="attach_limit">Has alcanzado el límite de imágenes adjuntas</string>
 	<string name="bad_request">Solicitud Incorrecta</string>
 	<string name="block_service_text">No recibirás más notificaciones, ni información de este servicio.</string>
 	<string name="block_service">Bloquear servicio</string>
@@ -32,6 +33,15 @@
 	<string name="email">Correo electrónico</string>
 	<string name="empty_messages_text">Borrarás todos los mensajes que has recibido.</string>
 	<string name="empty_messages">Vaciar mensajes</string>
+	<string name="enrich_addcommentheader">Añadir comentario</string><!-- after traslate -->
+	<string name="enrich_commentheader">Editar comentario</string><!-- after traslate -->
+	<string name="enrich_commenthint">Escribe un comentario&#8230;</string><!-- after traslate -->
+	<string name="enrich_addnoteheader">Añadir nota</string><!-- after traslate -->
+	<string name="enrich_noteheader">Editar nota</string><!-- after traslate -->
+	<string name="enrich_notehint">Escribe una nota&#8230;</string><!-- after traslate -->
+	<string name="enrich_notetype">Nota personal</string><!-- after traslate -->
+	<string name="enrich_receipt">Factura</string><!-- after traslate -->
+	<string name="enrich_save">GUARDAR</string><!-- after traslate -->
 	<string name="error_upgrade">Ya estamos de vuelta sentimos las molestias ocasionadas</string>
 	<string name="feedback_error">Por favor, ingresa un comentario</string>
 	<string name="feedback_issue">Reportar como incidencia</string>
@@ -129,6 +139,10 @@
 	<string name="report">Denunciar</string>
 	<string name="response_invalid">Tu solicitud no pudo ser procesada, intenta nuevamente</string>
 	<string name="seach">Buscar</string><!-- after traslate -->
+	<string name="seach_hint">Comienza a escribir el nombre de la empresa a buscar</string><!-- after traslate -->
+	<string name="seach_title">Buscar empresa</string><!-- after traslate -->
+	<string name="showcase_note_title">Notas, Comentarios y Fotos</string><!-- after traslate -->
+	<string name="showcase_note_subtitle">Ahora puedes crear notas y agregar fotos y comentarios a tus mensajes!</string><!-- after traslate -->
 	<string name="send_code">Enviamos un SMS con el código de activación al número</string>
 	<string name="send_mail_text">con Vloom Android:\n</string>
 	<string name="send_push_sms">Enviar notificación de prueba (SMS)</string>
@@ -198,6 +212,17 @@
 	<string name="upgrade_text">Estamos actualizando tu información</string><!-- after traslate -->
 	<string name="url">http://www.vloom.com/</string>
 	<string name="verify_dialog">Verificando&#8230;</string>
+	<string name="verify_phone_add">Añade tu número de teléfono</string><!-- after traslate -->
+	<string name="verify_phone_alert">Vamos a verificar el número +0 ¿Es correcto o quieres modificarlo?</string><!-- after traslate -->
+	<string name="verify_phone_back">Volver</string><!-- after traslate -->
+	<string name="verify_phone_code">Esperando para detectar automáticamente el SMS enviado al +000000000000</string><!-- after traslate -->
+	<string name="verify_phone_contact">Contactar a soporte</string><!-- after traslate -->
+	<string name="verify_phone_edit">Editar</string><!-- after traslate -->
+	<string name="verify_phone_missing">Si no verificas tu número, tus empresas favoritas no podrán comunicarse contigo</string><!-- after traslate -->
+	<string name="verify_phone_subtitle">Confirma tu país e introduce tu código de área seguido de tu número de teléfono móvil:</string><!-- after traslate -->
+	<string name="verify_phone_title">te enviará un SMS para verificar tu número de teléfono.</string><!-- after traslate -->
+	<string name="verify_phone_warning">Mantén tu cuenta segura</string><!-- after traslate -->
+	<string name="verify_phone_wrong">¿Número equivocado?</string><!-- after traslate -->
 	<string name="version_settins">para Android v</string>
 	<string name="week">semana</string>
 	<string name="weeks">semanas</string>
@@ -263,4 +288,9 @@
 		<item>Vaciar mensajes</item>
 		<item>Quitar</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>Compartir</item>
+		<item>Editar</item>
+		<item>Eliminar</item>
+	</string-array><!-- after traslate -->
 </resources>

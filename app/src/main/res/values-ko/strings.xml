@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">승인됨</string>
 	<string name="action_example">예시</string>
@@ -6,6 +6,7 @@
 	<string name="activate_notif">알림 사용</string>
 	<string name="agree">수락</string>
 	<string name="app">신청</string>
+	<string name="attach_limit">사용자는 첨부 된 이미지의 한계에 도달</string>
 	<string name="bad_request">잘못된 요청</string>
 	<string name="block_service_text">이 서비스와 관련하여 추가 통지 또는 정보를 받을 수 없습니다.</string>
 	<string name="block_service">서비스 차단</string>
@@ -32,6 +33,15 @@
 	<string name="email">이메일</string>
 	<string name="empty_messages_text">수신 메시지를 모두 삭제합니다.</string>
 	<string name="empty_messages">빈 메시지</string>
+	<string name="enrich_addcommentheader">코멘트를 추가</string><!-- after traslate -->
+	<string name="enrich_commentheader">편집 주석</string><!-- after traslate -->
+	<string name="enrich_commenthint">댓글 쓰기&#8230;</string><!-- after traslate -->
+	<string name="enrich_addnoteheader">메모 추가</string><!-- after traslate -->
+	<string name="enrich_noteheader">편집 노트</string><!-- after traslate -->
+	<string name="enrich_notehint">메모를 작성&#8230;</string><!-- after traslate -->
+	<string name="enrich_notetype">개인 노트</string><!-- after traslate -->
+	<string name="enrich_receipt">송장</string><!-- after traslate -->
+	<string name="enrich_save">구하다</string><!-- after traslate -->
 	<string name="error_upgrade">백업 중입니다. 불편을 끼쳐 죄송합니다</string>
 	<string name="feedback_error">의견을 입력하세요</string>
 	<string name="feedback_issue">사고로 보고하기</string>
@@ -129,6 +139,10 @@
 	<string name="report">보고하기</string>
 	<string name="response_invalid">귀하의 요청을 처리할 수​​ 없습니다. 다시 시도해 주십시오</string>
 	<string name="seach">수색</string><!-- after traslate -->
+	<string name="seach_hint">추구하는 회사의 이름을 입력합니다</string><!-- after traslate -->
+	<string name="seach_title">검색 회사</string><!-- after traslate -->
+	<string name="showcase_note_title">노트, 댓글 및 사진</string><!-- after traslate -->
+	<string name="showcase_note_subtitle">지금 당신은 메모를 작성하고 귀하의 게시물에 사진과 설명을 추가 할 수 있습니다!</string><!-- after traslate -->
 	<string name="send_code">번호에 활성화 코드를 포함한 문자 메시지를  전송했습니다</string>
 	<string name="send_mail_text">Vloom 안드로이드와 함께:</string>
 	<string name="send_push_sms">시험 알림(SMS) 보내기</string>
@@ -198,6 +212,17 @@
 	<string name="upgrade_text">우리는 귀하의 정보를 업데이트</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">확인 중&#8230;</string>
+	<string name="verify_phone_add">전화 번호 추가</string><!-- after traslate -->
+	<string name="verify_phone_alert">우리는 숫자 0이를 마우스 오른쪽 단추로되어 있는지 확인합니다 또는 당신이 그것을 변경하려면?</string><!-- after traslate -->
+	<string name="verify_phone_back">반환</string><!-- after traslate -->
+	<string name="verify_phone_code">자동 000,000,000,000로 전송 된 SMS를 검출하도록 대기</string><!-- after traslate -->
+	<string name="verify_phone_contact">연락 지원</string><!-- after traslate -->
+	<string name="verify_phone_edit">편집</string><!-- after traslate -->
+	<string name="verify_phone_missing">당신이 당신의 번호를 확인하지 않으면, 당신의 마음에 드는 기업은 당신과 통신 할 수 없습니다</string><!-- after traslate -->
+	<string name="verify_phone_subtitle">국가를 확인하고 지역 번호 휴대 전화 번호 뒤에 입력 :</string><!-- after traslate -->
+	<string name="verify_phone_title">당신의 전화 번호를 확인하기 위해 SMS를 보낼 것입니다.</string><!-- after traslate -->
+	<string name="verify_phone_warning">계정 보안 유지</string><!-- after traslate -->
+	<string name="verify_phone_wrong">¿ 잘못된 번호?</string><!-- after traslate -->
 	<string name="version_settins">안드로이드 v용</string>
 	<string name="week">주</string>
 	<string name="weeks">주</string>
@@ -263,4 +288,9 @@
 		<item>빈 메시지</item>
 		<item>탈퇴</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>공유하기</item>
+		<item>편집</item>
+		<item>제거하기</item>
+	</string-array><!-- after traslate -->
 </resources>

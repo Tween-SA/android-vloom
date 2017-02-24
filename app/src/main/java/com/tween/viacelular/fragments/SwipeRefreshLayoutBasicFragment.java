@@ -24,18 +24,16 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
-import com.tween.viacelular.activities.BlockedActivity;
 import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.HomeActivity;
+import com.tween.viacelular.activities.SearchActivity;
+import com.tween.viacelular.activities.VerifyPhoneActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
 import com.tween.viacelular.adapters.IconOptionAdapter;
 import com.tween.viacelular.asynctask.GetTweetsAsyncTask;
-import com.tween.viacelular.models.Land;
-import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
-import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
@@ -43,13 +41,13 @@ import com.tween.viacelular.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
- * A basic sample that shows how to use {@link android.support.v4.widget.SwipeRefreshLayout} to add the 'swipe-to-refresh' gesture to a layout. In this sample, SwipeRefreshLayout contains a
- * scrollable {@link android.widget.ListView} as its only child.
+ * A basic sample that shows how to use {@link android.support.v4.widget.SwipeRefreshLayout} to add the 'swipe-to-refresh' gesture to a layout.
+ * In this sample, SwipeRefreshLayout contains a scrollable {@link android.widget.ListView} as its only child.
  *
- * <p>To provide an accessible way to trigger the refresh, this app also provides a refresh action item. <p>In this sample app, the refresh updates the ListView with a random set of new items.
+ * <p>To provide an accessible way to trigger the refresh, this app also provides a refresh action item.
+ * <p>In this sample app, the refresh updates the ListView with a random set of new items.
  * Created by davidfigueroa on 17/11/15.
  */
 public class SwipeRefreshLayoutBasicFragment extends Fragment
@@ -62,7 +60,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 	private List<Suscription>	companies	= new ArrayList<>();
 	private CoordinatorLayout	clayout;
 	private HomeAdapter			adapter;
-	private HomeActivity		homeActivity;
+	private Activity			activity;
 	private RelativeLayout		rlEmpty;
 
 	@Override
@@ -75,12 +73,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshBasicFragment:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:onCreate - Exception:", e);
 		}
 	}
 
@@ -91,6 +84,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 		try
 		{
+			RelativeLayout rlFreePass					= (RelativeLayout) view.findViewById(R.id.rlFreePass);
 			mSwipeRefreshLayout							= (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
 			mSwipeRefreshLayout.setColorSchemeResources(R.color.swipe_color_1, R.color.swipe_color_2, R.color.swipe_color_3, R.color.accent);
 			rcwHome										= (RecyclerView) view.findViewById(R.id.rcwHome);
@@ -98,15 +92,29 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			RecyclerView.LayoutManager mLayoutManager	= new LinearLayoutManager(getActivity());
 			rcwHome.setLayoutManager(mLayoutManager);
 			rlEmpty										= (RelativeLayout) view.findViewById(R.id.rlEmpty);
+			SharedPreferences preferences				= getHomeActivity().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+
+			if(preferences.getBoolean(Common.KEY_PREF_FREEPASS, false))
+			{
+				rlFreePass.setVisibility(RelativeLayout.VISIBLE);
+				rlFreePass.setOnClickListener(new View.OnClickListener()
+				{
+					@Override
+					public void onClick(View view)
+					{
+						Intent intent = new Intent(getHomeActivity(), VerifyPhoneActivity.class);
+						getHomeActivity().startActivity(intent);
+					}
+				});
+			}
+			else
+			{
+				rlFreePass.setVisibility(RelativeLayout.GONE);
+			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshBasicFragment:onCreateView - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:onCreateView - Exception:", e);
 		}
 
 		return view;
@@ -119,9 +127,9 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		{
 			super.onViewCreated(view, savedInstanceState);
 
-			if(homeActivity != null)
+			if(getHomeActivity() != null)
 			{
-				companies = SuscriptionHelper.getList(homeActivity);
+				companies = SuscriptionHelper.getList(getHomeActivity());
 			}
 
 			if(companies != null)
@@ -169,12 +177,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshBasicFragment:onViewCreated - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:onViewCreated - Exception:", e);
 		}
 	}
 
@@ -192,9 +195,20 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 	{
 		try
 		{
-			switch(item.getItemId())
+			if(item.getItemId() == R.id.action_search)
 			{
-				case R.id.menu_refresh:
+				GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS)
+					.send(new HitBuilders.EventBuilder().setCategory("Company").setAction("Filtro").setLabel("AccionUser").build());
+				Intent intent = new Intent(getHomeActivity(), SearchActivity.class);
+				intent.putExtra(Common.KEY_SECTION, "home");
+				getHomeActivity().startActivity(intent);
+				getHomeActivity().finish();
+				return true;
+			}
+			else
+			{
+				if(item.getItemId() == R.id.menu_refresh)
+				{
 					Handler handler = new android.os.Handler();
 					handler.post(new Runnable()
 					{
@@ -203,17 +217,14 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 							initiateRefresh(true, true);
 						}
 					});
+
 					return true;
+				}
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshLayoutBasicFragment:onOptionsItemSelected - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:onOptionsItemSelected - Exception:", e);
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -244,7 +255,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 				if(bringOut)
 				{
-					new RefreshCompanyTask(homeActivity, showDialog).execute();
+					new RefreshCompanyTask(getHomeActivity(), showDialog).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 				else
 				{
@@ -254,12 +265,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshBasicFragment:initiateRefresh - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:initiateRefresh - Exception:", e);
 		}
 	}
 
@@ -283,12 +289,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshLayoutBasicFragment:showMenu - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:showMenu - Exception:", e);
 		}
 	}
 
@@ -311,9 +312,9 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 							if(suscription.getLastSocialUpdated() != null)
 							{
 								//Solamente se pide una vez al día
-								if(DateUtils.needUpdate(suscription.getLastSocialUpdated(), DateUtils.DAY_MILLIS))
+								if(DateUtils.needUpdate(suscription.getLastSocialUpdated(), DateUtils.DAY_MILLIS, getHomeActivity()))
 								{
-									new GetTweetsAsyncTask(getActivity(), false, companyId).execute();
+									new GetTweetsAsyncTask(getActivity(), false, companyId).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 								}
 								else
 								{
@@ -324,7 +325,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 							}
 							else
 							{
-								new GetTweetsAsyncTask(getActivity(), false, companyId).execute();
+								new GetTweetsAsyncTask(getActivity(), false, companyId).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 							}
 						}
 						else
@@ -355,12 +356,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshLayoutBasicFragment:redirectCard - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:redirectCard - Exception:", e);
 		}
 	}
 
@@ -377,22 +373,25 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			switch(position)
 			{
 				case IconOptionAdapter.OPTION_SILENCED:
-					Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, company.getCompanyId()).findFirst();
-					realm.beginTransaction();
-
-					if(suscription.getSilenced() == Common.BOOL_YES)
+					final Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, company.getCompanyId()).findFirst();
+					realm.executeTransaction(new Realm.Transaction()
 					{
-						suscription.setSilenced(Common.BOOL_NO);
-					}
-					else
-					{
-						//Agregado para capturar evento en Google Analytics
-						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Silenciar")
-																														.setLabel("AccionUser").build());
-						suscription.setSilenced(Common.BOOL_YES);
-					}
-
-					realm.commitTransaction();
+						@Override
+						public void execute(Realm realm)
+						{
+							if(suscription.getSilenced() == Common.BOOL_YES)
+							{
+								suscription.setSilenced(Common.BOOL_NO);
+							}
+							else
+							{
+								//Agregado para capturar evento en Google Analytics
+								GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Company")
+										.setAction("Silenciar").setLabel("AccionUser").build());
+								suscription.setSilenced(Common.BOOL_YES);
+							}
+						}
+					});
 
 					snackBar = Snackbar.make(clayout, context.getString(R.string.snack_silence), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
@@ -400,19 +399,23 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 						public void onClick(View v)
 						{
 							Realm realm	= Realm.getDefaultInstance();
-							Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, company.getCompanyId()).findFirst();
-							realm.beginTransaction();
-
-							if(suscription.getSilenced() == Common.BOOL_YES)
+							final Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, company.getCompanyId()).findFirst();
+							realm.executeTransaction(new Realm.Transaction()
 							{
-								suscription.setSilenced(Common.BOOL_NO);
-							}
-							else
-							{
-								suscription.setSilenced(Common.BOOL_YES);
-							}
+								@Override
+								public void execute(Realm realm)
+								{
+									if(suscription.getSilenced() == Common.BOOL_YES)
+									{
+										suscription.setSilenced(Common.BOOL_NO);
+									}
+									else
+									{
+										suscription.setSilenced(Common.BOOL_YES);
+									}
+								}
+							});
 
-							realm.commitTransaction();
 							refresh(false, false);
 						}
 					});
@@ -420,12 +423,12 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 				case IconOptionAdapter.OPTION_EMPTY:
 					//Agregado para capturar evento en Google Analytics
-					GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Vaciar")
-																													.setLabel("AccionUser").build());
+					GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company")
+																													.setAction("Vaciar").setLabel("AccionUser").build());
 					//Modificación para ejecutar proceso en background
 					if(StringUtils.isNotEmpty(companyId))
 					{
-						MessageHelper.emptyCompany(companyId, Common.BOOL_YES);
+						MessageHelper.emptyCompany(companyId, Common.BOOL_YES, getHomeActivity());
 					}
 
 					snackBar = Snackbar.make(clayout, context.getString(R.string.snack_empty), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
@@ -436,7 +439,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 							//Modificación para ejecutar proceso en background
 							if(StringUtils.isNotEmpty(companyId))
 							{
-								MessageHelper.emptyCompany(companyId, Common.BOOL_NO);
+								MessageHelper.emptyCompany(companyId, Common.BOOL_NO, getHomeActivity());
 							}
 							refresh(false, false);
 						}
@@ -449,24 +452,24 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					if(Utils.reverseBool(company.getFollower()) == Common.BOOL_NO)
 					{
 						//Agregado para capturar evento en Google Analytics
-						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Bloquear")
-																														.setLabel("AccionUser").build());
+						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Company")
+																													.setAction("Bloquear").setLabel("AccionUser").build());
 						snackBarText = context.getString(R.string.snack_blocked);
 					}
 					else
 					{
 						//Agregado para capturar evento en Google Analytics
-						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Agregar")
-																														.setLabel("AccionUser").build());
+						GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS).send(new HitBuilders.EventBuilder().setCategory("Company")
+																													.setAction("Agregar").setLabel("AccionUser").build());
 					}
 
-					BlockedActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(client.getFollower()), false, company.getCompanyId(), false);
+					HomeActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(client.getFollower()), false, company.getCompanyId(), false);
 					snackBar = Snackbar.make(clayout, snackBarText, Snackbar.LENGTH_LONG).setAction(getString(R.string.undo), new View.OnClickListener()
 					{
 						@Override
 						public void onClick(View v)
 						{
-							BlockedActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(company.getFollower()), false, companyId, false);
+							HomeActivity.modifySubscriptions(getHomeActivity(), Utils.reverseBool(company.getFollower()), false, companyId, false);
 							refresh(false, false);
 						}
 					});
@@ -479,12 +482,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshLayoutBasicFragment:dispatchMenu - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:dispatchMenu - Exception:", e);
 		}
 	}
 
@@ -503,12 +501,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshLayoutBasicFragment:refresh - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:refresh - Exception:", e);
 		}
 	}
 
@@ -554,12 +547,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 		catch(Exception e)
 		{
-			System.out.println("SwipeRefreshBasicFragment:initiateRefresh - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:initiateRefresh - Exception:", e);
 		}
 
 		mSwipeRefreshLayout.setRefreshing(false);
@@ -602,59 +590,12 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					}
 				}
 
-				if(companyPhantom.size() > 0)
-				{
-					SharedPreferences preferences	= homeActivity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-					SharedPreferences.Editor editor	= preferences.edit();
-					User user						= realm.where(User.class).findFirst();
-					String country					= preferences.getString(Land.KEY_API, "");
-					String companyId;
-
-					if(user != null)
-					{
-						if(StringUtils.isNotEmpty(user.getCountryCode()))
-						{
-							country	= user.getCountryCode();
-							editor.putString(Land.KEY_API, country);
-							editor.apply();
-						}
-					}
-
-					for(Suscription phantom : companyPhantom)
-					{
-						RealmResults<Message> messages	= realm.where(Message.class).equalTo(Suscription.KEY_API, phantom.getCompanyId()).equalTo(Message.KEY_DELETED, Common.BOOL_NO)
-															.lessThan(Common.KEY_STATUS, Message.STATUS_SPAM).findAll().distinct(Message.KEY_CHANNEL);
-
-						if(messages.size() > 0)
-						{
-							for(Message message : messages)
-							{
-								Suscription client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(message.getChannel(), message.getMsg(),
-														homeActivity, country)).findFirst();
-
-								if(client != null)
-								{
-									companyId = client.getCompanyId();
-
-									if(!companyId.equals(phantom.getCompanyId()) && StringUtils.isIdMongo(companyId))
-									{
-										//Actualizar los mensajes
-										MessageHelper.groupMessages(phantom.getCompanyId(), companyId);
-									}
-								}
-							}
-						}
-					}
-				}
+				//Simplificamos para re-utilizar desde asyntask
+				SuscriptionHelper.killPhantoms(companyPhantom, getHomeActivity(), null);
 			}
 			catch(Exception e)
 			{
-				System.out.println("SwipeRefreshLayoutBasicFragment:RefreshCompanyTask:doInBackground - Exception: " + e);
-
-				if(Common.DEBUG)
-				{
-					e.printStackTrace();
-				}
+				Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:RefreshCompanyTask:doInBackground - Exception:", e);
 			}
 
 			return idsList;
@@ -671,12 +612,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			}
 			catch(Exception e)
 			{
-				System.out.println("SwipeRefreshLayoutBasicFragment:RefreshCompanyTask:onPostExecute - Exception: " + e);
-
-				if(Common.DEBUG)
-				{
-					e.printStackTrace();
-				}
+				Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:RefreshCompanyTask:onPostExecute - Exception:", e);
 			}
 		}
 	}
@@ -691,13 +627,18 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		this.clayout = clayout;
 	}
 
-	public HomeActivity getHomeActivity()
+	public Activity getHomeActivity()
 	{
-		return homeActivity;
+		if(activity == null)
+		{
+			activity = getActivity();
+		}
+
+		return activity;
 	}
 
-	public void setHomeActivity(final HomeActivity homeActivity)
+	public void setHomeActivity(final Activity homeActivity)
 	{
-		this.homeActivity = homeActivity;
+		this.activity = homeActivity;
 	}
 }

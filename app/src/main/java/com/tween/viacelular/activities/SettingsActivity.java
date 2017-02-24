@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -53,8 +55,7 @@ import io.realm.RealmResults;
 
 public class SettingsActivity extends AppCompatActivity
 {
-	private CheckBox			chkSilence;
-	private CheckBox			chkStatistics;
+	private CheckBox			chkSilence, chkStatistics;
 	public boolean				silenced		= false;
 	public boolean				sendStatistics	= false;
 	public Timer				timer;
@@ -89,7 +90,8 @@ public class SettingsActivity extends AppCompatActivity
 				setSupportActionBar(toolBar);
 				RecyclerView mRecyclerView		= (RecyclerView) findViewById(R.id.RecyclerView);
 				mRecyclerView.setHasFixedSize(true);
-				RecyclerView.Adapter mAdapter	= new RecyclerAdapter(	Utils.getMenu(getApplicationContext()), intentRecive.getIntExtra(Common.KEY_SECTION, RecyclerAdapter.SETTINGS_SELECTED),
+				RecyclerView.Adapter mAdapter	= new RecyclerAdapter(	Utils.getMenu(getApplicationContext()),
+																		intentRecive.getIntExtra(Common.KEY_SECTION, RecyclerAdapter.SETTINGS_SELECTED),
 																		ContextCompat.getColor(getApplicationContext(), R.color.accent), getApplicationContext());
 
 				mRecyclerView.setAdapter(mAdapter);
@@ -174,12 +176,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 
@@ -212,12 +209,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:goBusiness - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":goBusiness - Exception:", e);
 		}
 
 		finish();
@@ -288,12 +280,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:checkSilence - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":checkSilence - Exception:", e);
 		}
 	}
 
@@ -318,12 +305,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:checkStatistics - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":checkStatistics - Exception:", e);
 		}
 	}
 
@@ -336,12 +318,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:backup - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":backup - Exception:", e);
 		}
 	}
 
@@ -352,17 +329,11 @@ public class SettingsActivity extends AppCompatActivity
 			SharedPreferences.Editor editor	= preferences.edit();
 			editor.putBoolean(Common.KEY_PREF_CAPTURED, false);
 			editor.apply();
-			final CaptureSMSAsyncTask task = new CaptureSMSAsyncTask(SettingsActivity.this, false);
-			task.execute();
+			new CaptureSMSAsyncTask(SettingsActivity.this, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:reImport - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":reImport - Exception:", e);
 		}
 	}
 
@@ -372,19 +343,14 @@ public class SettingsActivity extends AppCompatActivity
 		{
 			//Modificación se traslado a Utils para invocarlo también desde IncomingSmsService
 			Message message = new Message();
-			message.setCompanyId("5669786d1b5c469e378a4c15");
+			message.setCompanyId("561e659f34dea37a1dc7389f");
 			message.setCountryCode(preferences.getString(Land.KEY_API, ""));
 			message.setCreated(System.currentTimeMillis());
 			Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), String.valueOf(MyFirebaseMessagingService.PUSH_NORMAL), message);
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:sendPush - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":sendPush - Exception:", e);
 		}
 	}
 
@@ -394,18 +360,13 @@ public class SettingsActivity extends AppCompatActivity
 		try
 		{
 			Message message = new Message();
-			message.setCompanyId("5699028c7669284157dc9153");
+			message.setCompanyId("561e659f34dea37a1dc7389f");
 			message.setCreated(System.currentTimeMillis());
 			Utils.showPush(getApplicationContext(), preferences.getString(User.KEY_PHONE, ""), String.valueOf(MyFirebaseMessagingService.PUSH_WITHOUT_SOUND), message);
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:sendPushSMS - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":sendPushSMS - Exception:", e);
 		}
 	}
 
@@ -438,22 +399,25 @@ public class SettingsActivity extends AppCompatActivity
 					public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text)
 					{
 						Message message = new Message();
-						message.setCompanyId("561fa82c34dea37a1dc73905");
+						message.setCompanyId("561e659f34dea37a1dc7389f");
 						message.setKind(which);
 						message.setCreated(System.currentTimeMillis());
 
 						switch(which)
 						{
+							case Message.KIND_TEXT:
+								message.setMsg("COMPRA en VOYENBUS.COM/BUS TICKETS U$S49,56 Ctas.1 28/11/2016.Disp. 1/P $ 42.377,79 Neva $ 42.377,79. Descarga la app: https://goo.gl/9W6jN4");
+							break;
+
 							case Message.KIND_IMAGE:
 								message.setLink("http://i.blogs.es/d63bea/8538679708_906ab6a815_o/original.jpg");
 							break;
 
-							case Message.KIND_VIDEO:
-								message.setLink("https://www.youtube.com/watch?v=YXsHuj6SIVQ");
-								message.setLinkThumbnail("http://i.blogs.es/d63bea/8538679708_906ab6a815_o/original.jpg");
+							case Message.KIND_INVOICE:
+								message.setMsg("Servicio SMS de Tarjeta Nevada. Resumen a Pagar con vto. 10/12/2016. 1 P. $17731,76. Neva $0. SEUO");
+								message.setLink("https://apps.tarjetanevada.com.ar/ImpresionResumen/resumen?titular=28844711&periodo=1&server=resujava");
 							break;
 
-							case Message.KIND_INVOICE:
 							case Message.KIND_FILE_DOWNLOADABLE:
 								message.setLink("http://www.fiat.com.ar/Download.ashx?t=ModelDownload&i=2802");
 							break;
@@ -464,6 +428,11 @@ public class SettingsActivity extends AppCompatActivity
 
 							case Message.KIND_LINKMAP:
 								message.setLink("https://www.google.com.ar/maps/place/TweenCo+Work/@-32.867278,-68.853549,15z/data=!4m5!3m4!1s0x0:0xeee579b0091db087!8m2!3d-32.867278!4d-68.853549");
+							break;
+
+							case Message.KIND_VIDEO:
+								message.setLink("https://www.youtube.com/watch?v=YXsHuj6SIVQ");
+								message.setLinkThumbnail("http://i.blogs.es/d63bea/8538679708_906ab6a815_o/original.jpg");
 							break;
 
 							case Message.KIND_TWITTER:
@@ -484,12 +453,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:sendMediaPush - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":sendMediaPush - Exception:", e);
 		}
 	}
 
@@ -537,12 +501,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:sendSimilSMS - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":sendSimilSMS - Exception:", e);
 		}
 	}
 
@@ -564,12 +523,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:logout - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":logout - Exception:", e);
 		}
 	}
 
@@ -606,12 +560,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:silenceUp - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":silenceUp - Exception:", e);
 		}
 	}
 
@@ -636,12 +585,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:goContact - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":goContact - Exception:", e);
 		}
 	}
 	
@@ -669,12 +613,7 @@ public class SettingsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SettingsActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onBackPressed - Exception:", e);
 		}
 	}
 
@@ -716,12 +655,7 @@ public class SettingsActivity extends AppCompatActivity
 			}
 			catch(Exception e)
 			{
-				System.out.println("SettingsActivity:UpdateSilence:start - Exception: " + e);
-
-				if(Common.DEBUG)
-				{
-					e.printStackTrace();
-				}
+				Utils.logError(getApplicationContext(), "SettingsActivity:UpdateSilence:start - Exception:", e);
 			}
 		}
 	}

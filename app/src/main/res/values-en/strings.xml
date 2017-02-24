@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
 	<string name="app_name">Vloom</string>
 	<string name="acepted">Accepted</string>
@@ -7,6 +6,7 @@
 	<string name="activate_notif">Turn on Notifications</string>
 	<string name="agree">Accept</string>
 	<string name="app">Application</string>
+	<string name="attach_limit">You have reached the limit of attached images</string>
 	<string name="bad_request">Bad Request</string>
 	<string name="block_service_text">You will no longer receive notifications nor information from this service.</string>
 	<string name="block_service">Block service</string>
@@ -33,6 +33,15 @@
 	<string name="email">Email</string>
 	<string name="empty_messages_text">You will delete all of the messages that you\'ve received.</string>
 	<string name="empty_messages">Empty messages</string>
+	<string name="enrich_addcommentheader">Add comment</string><!-- after traslate -->
+	<string name="enrich_commentheader">Edit comment</string><!-- after traslate -->
+	<string name="enrich_commenthint">Write a comment&#8230;</string><!-- after traslate -->
+	<string name="enrich_addnoteheader">Add note</string><!-- after traslate -->
+	<string name="enrich_noteheader">Edit note</string><!-- after traslate -->
+	<string name="enrich_notehint">Write a note&#8230;</string><!-- after traslate -->
+	<string name="enrich_notetype">Personal note</string><!-- after traslate -->
+	<string name="enrich_receipt">Invoice</string><!-- after traslate -->
+	<string name="enrich_save">SAVE</string><!-- after traslate -->
 	<string name="error_upgrade">We\'re back up. Apologies for the inconvenience.</string>
 	<string name="feedback_error">Please enter a comment</string>
 	<string name="feedback_issue">Report as incident</string>
@@ -131,6 +140,10 @@
 	<string name="report">Report</string>
 	<string name="response_invalid">Your request could not be processed, try again</string>
 	<string name="seach">Search</string><!-- after traslate -->
+	<string name="seach_hint">Start typing the name of the company to look for</string><!-- after traslate -->
+	<string name="seach_title">Search company</string><!-- after traslate -->
+	<string name="showcase_note_title">Notes, Comments and Photos</string><!-- after traslate -->
+	<string name="showcase_note_subtitle">Now you can create notes and add photos and comments to your messages!</string><!-- after traslate -->
 	<string name="send_code">We\'ve sent an SMS with the activation code to the number</string>
 	<string name="send_mail_text">with Vloom Android:</string>
 	<string name="send_push_sms">Send test notification (SMS)</string>
@@ -199,6 +212,17 @@
 	<string name="upgrade_text">We are updating your information</string><!-- after traslate -->
 	<string name="url">http://www.vloom.io/</string>
 	<string name="verify_dialog">Verifying&#8230;</string>
+	<string name="verify_phone_add">Add your phone number</string><!-- after traslate -->
+	<string name="verify_phone_alert">Let\'s verify the number +0 Is it correct or do you want to modify it?</string><!-- after traslate -->
+	<string name="verify_phone_back">Back</string><!-- after traslate -->
+	<string name="verify_phone_code">Waiting to automatically detect the SMS sent to +000000000000</string><!-- after traslate -->
+	<string name="verify_phone_contact">Contact support</string><!-- after traslate -->
+	<string name="verify_phone_edit">Edit</string><!-- after traslate -->
+	<string name="verify_phone_missing">If you do not check your number, your favorite companies will not be able to communicate with you</string><!-- after traslate -->
+	<string name="verify_phone_subtitle">Confirm your country and enter your area code followed by your mobile phone number:</string><!-- after traslate -->
+	<string name="verify_phone_title">will send you an SMS to verify your phone number.</string><!-- after traslate -->
+	<string name="verify_phone_warning">Keep your account safe</string><!-- after traslate -->
+	<string name="verify_phone_wrong">Wrong number?</string><!-- after traslate -->
 	<string name="version_settins">for Android v</string>
 	<string name="week">week</string>
 	<string name="weeks">weeks</string>
@@ -264,4 +288,9 @@
 		<item>Empty messages</item>
 		<item>Unsubscribe</item><!-- after traslate -->
 	</string-array>
+	<string-array name="optionsNote">
+		<item>Share</item>
+		<item>Edit</item>
+		<item>Delete</item>
+	</string-array><!-- after traslate -->
 </resources>

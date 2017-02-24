@@ -18,17 +18,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.RecyclerAdapter;
 import com.tween.viacelular.adapters.RecyclerItemClickListener;
 import com.tween.viacelular.fragments.SuscriptionsFragment;
-import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.WeakHashMap;
-import io.realm.Realm;
 
 /**
  * Created by davidfigueroa on 13/1/16.
@@ -39,8 +40,7 @@ public class SuscriptionsActivity extends AppCompatActivity
 	public Intent						intentRecive;
 	private Toolbar						toolBar;
 	private Activity					context;
-	public RecyclerView.Adapter			mAdapter				= null;
-	public WeakHashMap<View,Integer>	mOriginalViewHeightPool	= new WeakHashMap<>();
+	public RecyclerView.Adapter			mAdapter	= null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -66,31 +66,13 @@ public class SuscriptionsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsActivity:onCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
 	protected void onResume()
 	{
-		//Agregado para capturar excepciones
 		try
 		{
 			super.onResume();
@@ -102,12 +84,7 @@ public class SuscriptionsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsActivity:onResume - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onResume - Exception:", e);
 		}
 	}
 
@@ -154,41 +131,41 @@ public class SuscriptionsActivity extends AppCompatActivity
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsActivity:updateMenu - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":updateMenu - Exception:", e);
 		}
 	}
 
-	/**
-	 * Redirige a la configuración o landing de una company según si está suscripto o no
-	 * @param activity
-	 */
-	public static void redirectLanding(Activity activity, String companyId)
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		getMenuInflater().inflate(R.menu.menu_search, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		try
 		{
-			//Unificación de landing activity
-			Intent intent		= new Intent(activity, LandingActivity.class);
-			Realm realm				= Realm.getDefaultInstance();
-			Suscription client	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-			intent.putExtra(Common.KEY_ID, client.getCompanyId());
-			intent.putExtra(Common.KEY_SECTION, "companies");
-			activity.startActivity(intent);
-			activity.finish();
+			if(item.getItemId() == R.id.action_search)
+			{
+				//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
+				GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company").setAction("Filtro")
+					.setLabel("AccionUser").build());
+				Intent intent = new Intent(this, SearchActivity.class);
+				intent.putExtra(Common.KEY_SECTION, "suscriptions");
+				startActivity(intent);
+				finish();
+
+				return true;
+			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("SuscriptionsActivity:redirectLanding - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onOptionsItemSelected - Exception:", e);
 		}
+
+		return super.onOptionsItemSelected(item);
 	}
 
 	public static class PagerAdapter extends FragmentPagerAdapter

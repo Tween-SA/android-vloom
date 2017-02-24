@@ -286,7 +286,7 @@ public class StringUtils
 	public static String removeSpacesJSON(String result)
 	{
 		result = result.trim();
-		result = result.replace("     ", "");
+		result = result.replace("	 ", "");
 		result = result.replace("   ", "");
 		result = result.replace("  ", " ");
 		result = result.replace(" }", "}");

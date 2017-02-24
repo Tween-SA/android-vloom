@@ -51,12 +51,11 @@ public class Migration implements RealmMigration
 		}
 		catch(Exception e)
 		{
-			System.out.println(Migration.class.getName()+":getDB - Exception: " + e);
+			Utils.logError(context, Migration.class.getName()+":getDB - Exception:", e);
 
 			if(Common.DEBUG)
 			{
-				e.printStackTrace();
-				Utils.writeStringInFile(Migration.class.getName()+":getDB - Exception: " + e, "");
+				Utils.writeStringInFile(Migration.class.getName()+":getDB - Exception: " + e, "", context);
 			}
 		}
 	}
@@ -117,31 +116,15 @@ public class Migration implements RealmMigration
 
 					if(schema != null)
 					{
-						RealmObjectSchema subscription = schema.get(Suscription.class.getSimpleName());
-
-						if(subscription != null)
-						{
-							subscription.addField(Suscription.KEY_LASTSOCIALUPDATED, Long.class);
-							subscription.addField(Suscription.KEY_TWITTER, String.class);
-						}
-						else
-						{
-							System.out.println("subscription is null");
-						}
-
 						RealmObjectSchema message = schema.get(Message.class.getSimpleName());
 
 						if(message != null)
 						{
-							message.addField(Message.KEY_SOCIALID, String.class);
-							message.addField(Message.KEY_SOCIALDATE, String.class);
-							message.addField(Message.KEY_SOCIALLIKES, int.class);
-							message.addField(Message.KEY_SOCIALSHARES, int.class);
-							message.addField(Message.KEY_SOCIALACCOUNT, String.class);
-							message.addField(Message.KEY_SOCIALNAME, String.class);
-							message.addField(Message.KEY_TXID, String.class);
-							message.addField(Message.KEY_NOTE, String.class);
-							message.addField(Message.KEY_ATTACHED, String.class);
+							message.addField(Message.KEY_ATTACHEDTWO, String.class);
+							message.addField(Message.KEY_ATTACHEDTHREE, String.class);
+							message.addField(Message.KEY_URI, String.class);
+							message.addField(Message.KEY_URITWO, String.class);
+							message.addField(Message.KEY_URITHREE, String.class);
 						}
 						else
 						{
@@ -165,12 +148,11 @@ public class Migration implements RealmMigration
 		}
 		catch(Exception e)
 		{
-			System.out.println(Migration.class.getName()+":migrate - Exception: " + e);
+			Utils.logError(null, Migration.class.getName()+":migrate - Exception:", e);
 
 			if(Common.DEBUG)
 			{
-				e.printStackTrace();
-				Utils.writeStringInFile(Migration.class.getName()+":migrate - Exception: " + e, "");
+				Utils.writeStringInFile(Migration.class.getName()+":migrate - Exception: " + e, "", null);
 			}
 		}
 	}

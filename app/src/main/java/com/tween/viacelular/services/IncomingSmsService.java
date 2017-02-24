@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
@@ -16,11 +17,11 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.CheckCodeAsyncTask;
 import com.tween.viacelular.asynctask.ConnectApiSMSAsyncTask;
 import com.tween.viacelular.models.Land;
-import com.tween.viacelular.models.Migration;
-import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -100,14 +101,14 @@ public class IncomingSmsService extends BroadcastReceiver
 							}
 
 							//Agregado para prevenir las consultas si no se otorgo sessión para el dao
-							Realm realm = Realm.getDefaultInstance();
-							RealmResults<Message> notifications = realm.where(Message.class).equalTo(Message.KEY_CHANNEL, address).equalTo(Common.KEY_TYPE, Message.TYPE_SMS)
+							Realm realm							= Realm.getDefaultInstance();
+							RealmResults<Message> notifications	= realm.where(Message.class).equalTo(Message.KEY_CHANNEL, address).equalTo(Common.KEY_TYPE, Message.TYPE_SMS)
 																	.equalTo(Message.KEY_CREATED, Long.valueOf(date)).findAll();
 
 							if(notifications.size() == 0)
 							{
-								if(	StringUtils.isPhoneNumber(address) || message.contains(Message.SMS_CODE) || message.contains(Message.SMS_CODE_ES) || message.contains(Message.SMS_CODE_NEW) ||
-									message.contains(Message.SMS_CODE_ES_NEW))
+								if(	StringUtils.isPhoneNumber(address) || message.contains(Message.SMS_CODE) || message.contains(Message.SMS_CODE_ES) ||
+									message.contains(Message.SMS_CODE_NEW) || message.contains(Message.SMS_CODE_ES_NEW))
 								{
 									notification = new Message();
 									notification.setType(Message.TYPE_SMS);
@@ -115,7 +116,6 @@ public class IncomingSmsService extends BroadcastReceiver
 									notification.setCreated(System.currentTimeMillis());
 									notification.setChannel(address);
 									notification.setStatus(Message.STATUS_RECEIVE);
-
 									//Modificación para contemplar cambio en tratamiento de números cortos
 									editor.putInt(Common.KEY_LAST_MSGID, preferences.getInt(Common.KEY_LAST_MSGID, 1) + 1);
 									editor.apply();
@@ -224,8 +224,7 @@ public class IncomingSmsService extends BroadcastReceiver
 					{
 						if(StringUtils.isValidCode(code))
 						{
-							final CheckCodeAsyncTask task = new CheckCodeAsyncTask(context, code, false);
-							task.execute();
+							new CheckCodeAsyncTask(context, code, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 						}
 					}
 					else
@@ -235,7 +234,7 @@ public class IncomingSmsService extends BroadcastReceiver
 						{
 							final ConnectApiSMSAsyncTask task	= new ConnectApiSMSAsyncTask(context, false);
 							task.setMessage(notification);
-							task.execute();
+							task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 						}
 					}
 				}
@@ -243,12 +242,7 @@ public class IncomingSmsService extends BroadcastReceiver
 		}
 		catch(Exception e)
 		{
-			System.out.println("IncomingSmsService:onReceive - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "IncomingSmsService:onReceive - Exception:", e);
 		}
 	}
 
@@ -259,72 +253,85 @@ public class IncomingSmsService extends BroadcastReceiver
 	{
 		try
 		{
-			PendingIntent sentPI		= PendingIntent.getBroadcast(context, 0, new Intent("SMS_SENT"), 0);
-			PendingIntent deliveredPI	= PendingIntent.getBroadcast(context, 0, new Intent("SMS_DELIVERED"), 0);
-
-			//---when the SMS has been sent---
-			context.registerReceiver(new BroadcastReceiver()
+			if(context != null && StringUtils.isNotEmpty(phoneNumber) && StringUtils.isNotEmpty(message))
 			{
-				@Override
-				public void onReceive(Context arg0, Intent arg1)
+				PendingIntent sentPI		= PendingIntent.getBroadcast(context, 0, new Intent("SMS_SENT"), 0);
+				PendingIntent deliveredPI	= PendingIntent.getBroadcast(context, 0, new Intent("SMS_DELIVERED"), 0);
+
+				if(sentPI != null && deliveredPI != null)
 				{
-					switch(getResultCode())
+					context.registerReceiver(new BroadcastReceiver()
 					{
-						case Activity.RESULT_OK:
-							System.out.println("SMS sent");
-							break;
+						@Override
+						public void onReceive(Context arg0, Intent arg1)
+						{
+							switch(getResultCode())
+							{
+								case Activity.RESULT_OK:
+									System.out.println("SMS sent");
+								break;
 
-						case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-							System.out.println("Generic failure");
-							break;
+								case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+									System.out.println("Generic failure");
+								break;
 
-						case SmsManager.RESULT_ERROR_NO_SERVICE:
-							System.out.println("No service");
-							break;
+								case SmsManager.RESULT_ERROR_NO_SERVICE:
+									System.out.println("No service");
+								break;
 
-						case SmsManager.RESULT_ERROR_NULL_PDU:
-							System.out.println("Null PDU");
-							break;
+								case SmsManager.RESULT_ERROR_NULL_PDU:
+									System.out.println("Null PDU");
+								break;
 
-						case SmsManager.RESULT_ERROR_RADIO_OFF:
-							System.out.println("Radio off");
-							break;
-					}
-				}
-			}, new IntentFilter("SMS_SENT"));
+								case SmsManager.RESULT_ERROR_RADIO_OFF:
+									System.out.println("Radio off");
+								break;
 
-			//---when the SMS has been delivered---
-			BroadcastReceiver broadcastReceiver = new BroadcastReceiver()
-			{
-				@Override
-				public void onReceive(Context arg0, Intent arg1)
-				{
-					switch(getResultCode())
+								default:
+									System.out.println("Result Code not found");
+								break;
+							}
+						}
+					}, new IntentFilter("SMS_SENT"));
+
+					//---when the SMS has been delivered---
+					BroadcastReceiver broadcastReceiver = new BroadcastReceiver()
 					{
-						case Activity.RESULT_OK:
-							System.out.println("SMS delivered");
-							break;
+						@Override
+						public void onReceive(Context arg0, Intent arg1)
+						{
+							switch(getResultCode())
+							{
+								case Activity.RESULT_OK:
+									System.out.println("SMS delivered");
+								break;
 
-						case Activity.RESULT_CANCELED:
-							System.out.println("SMS not delivered");
-							break;
+								case Activity.RESULT_CANCELED:
+									System.out.println("SMS not delivered");
+								break;
+
+								default:
+									System.out.println("Result Code2 not found");
+								break;
+							}
+						}
+					};
+
+					context.registerReceiver(broadcastReceiver, new IntentFilter("SMS_DELIVERED"));
+					SmsManager sms = SmsManager.getDefault();
+
+					if(sms != null)
+					{
+						sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
 					}
-				}
-			};
 
-			context.registerReceiver(broadcastReceiver, new IntentFilter("SMS_DELIVERED"));
-			SmsManager sms = SmsManager.getDefault();
-			sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
-			context.unregisterReceiver(broadcastReceiver);
+					context.unregisterReceiver(broadcastReceiver);
+				}
+			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("IncomingSmsService:sendSMS - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "IncomingSmsService:sendSMS - Exception:", e);
 		}
 	}
 }

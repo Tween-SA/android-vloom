@@ -3,7 +3,7 @@ package com.tween.viacelular.services;
 import android.app.IntentService;
 import android.content.Intent;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.Utils;
 
 /**
  * Created by david.figueroa on 16/6/15.
@@ -80,12 +80,7 @@ public class RegistrationIntentService extends IntentService
 		}
 		catch(Exception e)
 		{
-			System.out.println("RegistrationIntentService:onHandleIntent - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(null, "RegistrationIntentService:onHandleIntent - Exception:", e);
 		}
 	}
 }

@@ -7,9 +7,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CodeActivity;
+import com.tween.viacelular.activities.VerifyCodeActivity;
 import com.tween.viacelular.models.ConnectedAccount;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.User;
@@ -21,6 +23,7 @@ import com.tween.viacelular.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Locale;
+import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -30,6 +33,7 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 	private Activity		activity;
 	private String			phone;
 	private boolean			needRedirect	= true;
+	private boolean			freePass		= false;
 
 	public RegisterPhoneAsyncTask(Activity activity, String phone)
 	{
@@ -42,6 +46,13 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 		this.activity		= activity;
 		this.phone			= phone;
 		this.needRedirect	= needRedirect;
+	}
+
+	public RegisterPhoneAsyncTask(boolean freePass, Activity activity, String phone)
+	{
+		this.freePass	= freePass;
+		this.activity	= activity;
+		this.phone		= phone;
 	}
 
 	protected void onPreExecute()
@@ -68,12 +79,7 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("RegisterPhoneAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "RegisterPhoneAsyncTask:onPreExecute - Exception:", e);
 		}
 	}
 
@@ -85,13 +91,18 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 		try
 		{
 			//Modificación para contemplar migración a Realm
-			SharedPreferences preferences	= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			Realm realm						= Realm.getDefaultInstance();
-			RealmResults<User> users		= realm.where(User.class).findAll();
-			String gcmId					= preferences.getString(User.KEY_GCMID, "");
-			realm.beginTransaction();
-			users.deleteAllFromRealm();
-			realm.commitTransaction();
+			SharedPreferences preferences		= activity.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+			Realm realm							= Realm.getDefaultInstance();
+			final RealmResults<User> users		= realm.where(User.class).findAll();
+			String gcmId						= preferences.getString(User.KEY_GCMID, "");
+			realm.executeTransaction(new Realm.Transaction()
+			{
+				@Override
+				public void execute(Realm realm)
+				{
+					users.deleteAllFromRealm();
+				}
+			});
 
 			if(StringUtils.isEmpty(gcmId))
 			{
@@ -141,6 +152,11 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 			info.put("os", "android");
 			info.put("countryLanguage", Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
 
+			//Agregado para trackear datos del usuario en Fabric
+			Fabric.with(activity, new Crashlytics());
+			Crashlytics.setUserEmail(email);
+			Crashlytics.setUserIdentifier(phone);
+
 			//TODO Probablemente en algún momento sea necesario agregar la info del device del usuario
 			jsonSend.put(User.KEY_PHONE, phone);
 
@@ -150,11 +166,13 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 				jsonSend.put(User.KEY_GCMID, gcmId);
 				jsonSend.put(Common.KEY_INFO, info);
 
-				jsonResult = new JSONObject(ApiConnection.request(ApiConnection.USERS, activity, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+				jsonResult = new JSONObject(ApiConnection.request(ApiConnection.USERS, activity, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""),
+											jsonSend.toString()));
 			}
 			else
 			{
-				jsonResult = new JSONObject(ApiConnection.request(ApiConnection.CALLME, activity, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+				jsonResult = new JSONObject(ApiConnection.request(ApiConnection.CALLME, activity, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""),
+											jsonSend.toString()));
 			}
 
 			result = ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
@@ -165,11 +183,12 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 
 				if(jsonData != null)
 				{
+					SharedPreferences.Editor editor = preferences.edit();
+					editor.putString(User.FAKE_USER, jsonData.toString());
 					User userParsed = UserHelper.parseJSON(jsonData, false, null);
 
 					if(userParsed != null)
 					{
-						SharedPreferences.Editor editor = preferences.edit();
 						editor.putString(User.KEY_PHONE, phone);
 
 						if(StringUtils.isNotEmpty(userParsed.getUserId()))
@@ -182,7 +201,6 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 						//Agregado para resetear el contador de llamadas
 						editor.putBoolean(Common.KEY_PREF_CALLME, true);
 						editor.putInt(Common.KEY_PREF_CALLME_TIMES, 0);
-						editor.apply();
 						result = ApiConnection.OK;
 					}
 					else
@@ -192,6 +210,8 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 							result = activity.getString(R.string.response_invalid);
 						}
 					}
+
+					editor.apply();
 				}
 				else
 				{
@@ -201,21 +221,11 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(JSONException e)
 		{
-			System.out.println("RegisterPhoneAsyncTask - JSONException: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "RegisterPhoneAsyncTask:doInBackground - JSONException:", e);
 		}
 		catch(Exception e)
 		{
-			System.out.println("RegisterPhoneAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "RegisterPhoneAsyncTask:doInBackground - Exception:", e);
 		}
 
 		return result;
@@ -237,15 +247,24 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 					}
 				}
 
-				if(result.equals(ApiConnection.OK))
+				if(result.equals(ApiConnection.OK) && freePass)
 				{
-					Intent intent = new Intent(activity.getApplicationContext(), CodeActivity.class);
+					Intent intent = new Intent(activity.getApplicationContext(), VerifyCodeActivity.class);
 					activity.startActivity(intent);
 					activity.finish();
 				}
 				else
 				{
-					Toast.makeText(activity.getApplicationContext(), result, Toast.LENGTH_LONG).show();
+					if(result.equals(ApiConnection.OK))
+					{
+						Intent intent = new Intent(activity.getApplicationContext(), CodeActivity.class);
+						activity.startActivity(intent);
+						activity.finish();
+					}
+					else
+					{
+						Toast.makeText(activity.getApplicationContext(), result, Toast.LENGTH_LONG).show();
+					}
 				}
 			}
 			else
@@ -266,12 +285,7 @@ public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 		}
 		catch(Exception e)
 		{
-			System.out.println("RegisterPhoneAsyncTask - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(activity, "RegisterPhoneAsyncTask:onPostExecute - Exception:", e);
 		}
 
 		super.onPostExecute(result);

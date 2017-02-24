@@ -10,6 +10,7 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -43,7 +44,7 @@ public class ApiConnection
 	public static final String BUSINESS					= "https://business.vloom.io/register";
 	/**
 	 * Url base del server
-	 * "https://api.vloom.io/v1/"; //New Production - master
+	 * "https://api.vloom.io/v1/"; //Production - master
 	 * "https://stagging.vloom.io/v1/"; //Stagging - stagging
 	 * "https://dev.vloom.io/v1/"; //Testing - develop
 	 * "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
@@ -84,9 +85,11 @@ public class ApiConnection
 
 					if(networkInfo != null)
 					{
-						System.out.println("Red: "+networkInfo.getTypeName()+" - "+networkInfo.toString());
-						//Emulador: [type: MOBILE[UMTS], state: CONNECTED/CONNECTED, reason: connected, extra: epc.tmobile.com, roaming: false, failover: false, isAvailable: true,
-						// isConnectedToProvisioningNetwork: false]
+						if(Common.DEBUG)
+						{
+							System.out.println("Red: "+networkInfo.getTypeName()+" - "+networkInfo.toString());
+						}
+
 						if(networkInfo.isConnected())
 						{
 							result = true;
@@ -97,12 +100,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:checkInternet - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:checkInternet - Exception:", e);
 		}
 
 		return result;
@@ -131,12 +129,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:getNetwork - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:getNetwork - Exception:", e);
 		}
 
 		return network;
@@ -162,12 +155,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:loadJSONFromAsset - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:loadJSONFromAsset - Exception:", e);
 		}
 
 		return json;
@@ -178,6 +166,7 @@ public class ApiConnection
 		String result		= "{}";
 		InputStream stream	= null;
 		String message		= "";
+		String headers		= "";
 		int code			= 0;
 		boolean connected	= checkInternet(context);
 
@@ -198,8 +187,8 @@ public class ApiConnection
 
 				URL url								= new URL(urlStr);
 				URLConnection connection			= url.openConnection();
-				connection.setConnectTimeout(10000);
-				connection.setReadTimeout(10000);
+				connection.setConnectTimeout(10500);
+				connection.setReadTimeout(10500);
 				HttpURLConnection httpConnection	= (HttpURLConnection) connection;
 				httpConnection.setRequestMethod(method);
 				httpConnection.setRequestProperty("Accept", "application/json");
@@ -227,28 +216,23 @@ public class ApiConnection
 					os.close();
 				}
 
-				httpConnection.connect();
-
 				try
 				{
+					httpConnection.connect();
+					headers	= httpConnection.getHeaderFields().toString();
 					code	= httpConnection.getResponseCode();
 					message	= httpConnection.getResponseMessage();
 				}
 				catch(Exception e)
 				{
-					System.out.println("ApiConnection:request:getResponseCode() - Exception: " + e);
-
-					if(Common.DEBUG)
-					{
-						e.printStackTrace();
-					}
+					Utils.logError(context, "ApiConnection:request:getResponseCode() - Exception:", e);
 				}
 
 				if(Common.DEBUG)
 				{
-					System.out.println("Headers: " + httpConnection.getHeaderFields());
-					System.out.println("Response Code: " + httpConnection.getResponseCode());
-					System.out.println("Response Message: " + httpConnection.getResponseMessage());
+					System.out.println("Headers: " + headers);
+					System.out.println("Response Code: " + code);
+					System.out.println("Response Message: " + message);
 				}
 
 				if(code == HttpURLConnection.HTTP_OK || code == HttpURLConnection.HTTP_CREATED || code == HttpURLConnection.HTTP_ACCEPTED)
@@ -265,7 +249,7 @@ public class ApiConnection
 
 				if(stream != null)
 				{
-					result = convertInputStreamToString(stream);
+					result = convertInputStreamToString(stream, context);
 				}
 
 				result = StringUtils.removeSpacesJSON(result);
@@ -279,11 +263,7 @@ public class ApiConnection
 			}
 			catch(Exception e)
 			{
-				System.out.println("ApiConnection:request - Exception: " + e);
-				if(Common.DEBUG)
-				{
-					e.printStackTrace();
-				}
+				Utils.logError(context, "ApiConnection:request - Exception:", e);
 			}
 		}
 
@@ -345,7 +325,7 @@ public class ApiConnection
 		return result;
 	}
 
-	private static String convertInputStreamToString(InputStream inputStream)
+	private static String convertInputStreamToString(InputStream inputStream, Context context)
 	{
 		String result = "";
 		try
@@ -362,12 +342,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:convertInputStreamToString - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:convertInputStreamToString - Exception:", e);
 		}
 
 		return result;
@@ -455,12 +430,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			System.out.println("ApiConnection:checkResponse - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "ApiConnection:checkResponse - Exception:", e);
 		}
 
 		return result;

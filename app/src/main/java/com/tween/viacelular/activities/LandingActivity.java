@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -26,7 +25,6 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
-import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -46,18 +44,12 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	private String				section								= "";
 	private String				color								= Common.COLOR_ACTION;
 	private LinearLayout		mTitleContainer;
-	private TextView			txtTitle;
+	private TextView			txtTitle, txtEmail, txtPhone, txtBigTitle, txtSubTitle, txtSubTitleCollapsed, txtAbout;
 	private Toolbar				toolBar;
-	private TextView			txtEmail;
-	private TextView			txtPhone;
 	private Context				context;
 	private CircleImageView		circleView;
 	private Button				btnSuscribe;
 	private ImageView			logo;
-	private TextView			txtBigTitle;
-	private TextView			txtSubTitle;
-	private TextView			txtSubTitleCollapsed;
-	private TextView			txtAbout;
 	private float				scale;
 
 	@Override
@@ -90,7 +82,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			ImageView ivPlaceholder							= (ImageView) findViewById(R.id.ivPlaceholder);
 			final ImageView ibBack							= (ImageView) findViewById(R.id.ibBack);
 			logo											= (ImageView) findViewById(R.id.logo);
-			View dividerTitle								=findViewById(R.id.dividerTitle);
+			View dividerTitle								= findViewById(R.id.dividerTitle);
 			ImageView iconShowNotif							= (ImageView) findViewById(R.id.iconShowNotif);
 			TextView txtShowNotif							= (TextView) findViewById(R.id.txtShowNotif);
 			TextView txtId									= (TextView) findViewById(R.id.txtId);
@@ -105,7 +97,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			}
 
 			setSupportActionBar(toolBar);
-			startAlphaAnimation(txtTitle, 0, View.INVISIBLE);
+			startAlphaAnimation(txtTitle, 0, View.INVISIBLE, this);
 
 			if(txtUrl != null)
 			{
@@ -224,7 +216,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							color = Common.COLOR_ACTION;
 						}
 
-						if(Utils.isLightColor(color))
+						if(Utils.isLightColor(color, this))
 						{
 							toolBar.setTitleTextColor(Color.BLACK);
 							collapsingToolbarLayout.setCollapsedTitleTextColor(Color.BLACK);
@@ -236,8 +228,6 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							txtBigTitle.setTextColor(Color.BLACK);
 							txtSubTitle.setTextColor(Color.DKGRAY);
 							txtSubTitleCollapsed.setTextColor(Color.DKGRAY);
-							btnSuscribe.setTextColor(Color.WHITE);
-							btnSuscribe.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
 							ibBack.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_arrow_back_black_24dp));
 						}
 						else
@@ -265,6 +255,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 
 						Utils.tintColorScreen(this, color);
 						collapsingToolbarLayout.setStatusBarScrimColor(Color.parseColor(color));
+						Utils.ampliarAreaTouch(ibBack, 150);
 						ibBack.setOnClickListener(new View.OnClickListener()
 						{
 							@Override
@@ -283,14 +274,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 						else
 						{
 							btnSuscribe.setText(getString(R.string.landing_suscribe));
-							if(Utils.isLightColor(color))
-							{
-								btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.text));
-							}
-							else
-							{
-								btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.black));
-							}
+							btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.black));
 						}
 					}
 				}
@@ -312,22 +296,10 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			//Agregado para replicar función de ir Cards como estaba en profile
 			if(suscription != null)
 			{
-				Realm realm		= Realm.getDefaultInstance();
-				long messages	= realm.where(Message.class).equalTo(Message.KEY_DELETED, Common.BOOL_NO).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
-									.equalTo(Suscription.KEY_API, suscription.getCompanyId()).count();
-
-				if(messages > 0)
-				{
-					dividerTitle.setVisibility(View.VISIBLE);
-					iconShowNotif.setVisibility(ImageView.VISIBLE);
-					txtShowNotif.setVisibility(TextView.VISIBLE);
-				}
-				else
-				{
-					dividerTitle.setVisibility(View.GONE);
-					iconShowNotif.setVisibility(ImageView.GONE);
-					txtShowNotif.setVisibility(TextView.GONE);
-				}
+				//Se deja siempre visible para ir a la pantalla cards
+				dividerTitle.setVisibility(View.VISIBLE);
+				iconShowNotif.setVisibility(ImageView.VISIBLE);
+				txtShowNotif.setVisibility(TextView.VISIBLE);
 
 				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()))
 				{
@@ -351,12 +323,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:OnCreate - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
 		}
 	}
 
@@ -385,12 +352,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:goTo - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":goTo - Exception:", e);
 		}
 	}
 
@@ -405,12 +367,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:viewCards - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":viewCards - Exception:", e);
 		}
 	}
 
@@ -429,7 +386,23 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			}
 			else
 			{
-				intent = new Intent(getApplicationContext(), SuscriptionsActivity.class);
+				if(section.equals("suscriptions"))
+				{
+					intent = new Intent(getApplicationContext(), SuscriptionsActivity.class);
+				}
+				else
+				{
+					if(section.equals("searchHome"))
+					{
+						intent = new Intent(getApplicationContext(), SearchActivity.class);
+						intent.putExtra(Common.KEY_SECTION, "home");
+					}
+					else
+					{
+						intent = new Intent(getApplicationContext(), SearchActivity.class);
+						intent.putExtra(Common.KEY_SECTION, "suscriptions");
+					}
+				}
 			}
 
 			startActivity(intent);
@@ -437,12 +410,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:onBackPressed - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onBackPressed - Exception:", e);
 		}
 	}
 
@@ -464,12 +432,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:onOffsetChanged - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onOffsetChanged - Exception:", e);
 		}
 	}
 
@@ -481,7 +444,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			{
 				if(!mIsTheTitleVisible)
 				{
-					startAlphaAnimation(txtTitle, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+					startAlphaAnimation(txtTitle, ALPHA_ANIMATIONS_DURATION, View.VISIBLE, this);
 					mIsTheTitleVisible = true;
 				}
 			}
@@ -489,19 +452,14 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			{
 				if(mIsTheTitleVisible)
 				{
-					startAlphaAnimation(txtTitle, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+					startAlphaAnimation(txtTitle, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE, this);
 					mIsTheTitleVisible = false;
 				}
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:handleToolbarTitleVisibility - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":handleToolbarTitleVisibility - Exception:", e);
 		}
 	}
 
@@ -516,7 +474,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 				if(mIsTheTitleContainerVisible)
 				{
 					//Al achicar la barra
-					startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+					startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE, this);
 					mIsTheTitleContainerVisible = false;
 					//Mostrar toolBar
 					circleView.setVisibility(CircleImageView.VISIBLE);
@@ -542,7 +500,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 				if(!mIsTheTitleContainerVisible)
 				{
 					//Al expandir la barra
-					startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+					startAlphaAnimation(mTitleContainer, ALPHA_ANIMATIONS_DURATION, View.VISIBLE, this);
 					mIsTheTitleContainerVisible = true;
 					//Ocultar toolBar
 					circleView.setVisibility(CircleImageView.GONE);
@@ -566,16 +524,11 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:handleAlphaOnTitle - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":handleAlphaOnTitle - Exception:", e);
 		}
 	}
 
-	public static void startAlphaAnimation(View v, long duration, int visibility)
+	public static void startAlphaAnimation(View v, long duration, int visibility, Context context)
 	{
 		try
 		{
@@ -586,12 +539,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:onOffsetChanged - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "LandingActivity:onOffsetChanged - Exception:", e);
 		}
 	}
 
@@ -619,7 +567,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 																									.setLabel("AccionUser").build());
 				}
 
-				BlockedActivity.modifySubscriptions(LandingActivity.this, Utils.reverseBool(suscription.getFollower()), false, companyId, false);
+				HomeActivity.modifySubscriptions(LandingActivity.this, Utils.reverseBool(suscription.getFollower()), false, companyId, false);
 
 				//Agregado para redirigir a la pantallas cards para pedir la identificación del cliente si es necesario
 				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()) && Utils.reverseBool(suscription.getFollower()) == Common.BOOL_YES)
@@ -641,9 +589,9 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 						//Modificación para no redirigir al suscribir si no se necesita la identificación, en este caso actualizamos el layout
 						btnSuscribe.setText(getString(R.string.landing_suscribe));
 
-						if(Utils.isLightColor(color))
+						if(Utils.isLightColor(color, this))
 						{
-							btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.text));
+							btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.white));
 						}
 						else
 						{
@@ -655,12 +603,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 		}
 		catch(Exception e)
 		{
-			System.out.println("LandingActivity:onOffsetChanged - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(this, getLocalClassName()+":onOffsetChanged - Exception:", e);
 		}
 	}
 }

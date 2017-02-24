@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -18,22 +19,22 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.tween.viacelular.R;
-import com.tween.viacelular.activities.BlockedActivity;
 import com.tween.viacelular.activities.CardViewActivity;
+import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.asynctask.CompanyAsyncTask;
 import com.tween.viacelular.asynctask.ConfirmReadingAsyncTask;
 import com.tween.viacelular.asynctask.LogoAsyncTask;
 import com.tween.viacelular.models.Land;
-import com.tween.viacelular.models.MessageHelper;
-import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.Message;
+import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
+import com.tween.viacelular.models.SuscriptionHelper;
+import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
-
+import com.tween.viacelular.utils.Utils;
 import org.json.JSONArray;
-
 import java.util.Map;
 import io.realm.Realm;
 
@@ -121,6 +122,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 						else
 						{
 							push.putString(Common.KEY_TYPE, context.getString(R.string.notification));
+						}
+					}
+
+					if(push.getString(Common.KEY_TYPE) != null)
+					{
+						if(push.getString(Common.KEY_TYPE).equals("Vloom.io"))
+						{
+							push.putString(Common.KEY_TYPE, context.getString(R.string.app_name));
 						}
 					}
 
@@ -275,12 +284,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 		}
 		catch(Exception e)
 		{
-			System.out.println("MyFirebaseMessagingService:onMessageReceived - Exception: "+e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "MyFirebaseMessagingService:sendNotification:onMessageReceived - Exception:", e);
 		}
 	}
 
@@ -296,19 +300,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 	{
 		try
 		{
-			boolean silenced	= preferences.getBoolean(Suscription.KEY_SILENCED, false);
-			int silencedChannel	= Common.BOOL_YES;
-			int blocked			= Common.BOOL_YES;
-			int statusP			= Suscription.STATUS_BLOCKED;
-			String title		= context.getString(R.string.app_name);
+			boolean silenced		= preferences.getBoolean(Suscription.KEY_SILENCED, false);
+			int silencedChannel		= Common.BOOL_YES;
+			int blocked				= Common.BOOL_YES;
+			int statusP				= Suscription.STATUS_BLOCKED;
+			String title			= context.getString(R.string.app_name);
 			Suscription clientP;
-			String image		= "";
-			Bitmap bmp			= BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
-			Realm realm			= Realm.getDefaultInstance();
-			Message message		= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+			String image			= "";
+			Bitmap bmp				= BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+			Realm realm				= Realm.getDefaultInstance();
+			final Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
 			String companyIdApi;
 			String contentText;
-			boolean newClient	= false;
+			boolean newClient		= false;
 
 			if(message != null)
 			{
@@ -343,13 +347,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 
 				try
 				{
+					//Se asume añadida porque el user no la tenía para quitarla
+					blocked			= Common.BOOL_NO;
+					statusP			= Suscription.STATUS_ACTIVE;
 					CompanyAsyncTask task	= new CompanyAsyncTask(context, false, companyIdApi, countryCode);
 					task.setFlag(Common.BOOL_YES);
-					task.execute();
+					task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 				catch(Exception e)
 				{
-					System.out.println("MyFirebaseMessagingService:sendNotification:getCompanyByApi - Exception: " + e);
+					Utils.logError(context, "MyFirebaseMessagingService:sendNotification:getCompanyByApi - Exception:", e);
 				}
 			}
 
@@ -378,9 +385,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 				{
 					if(message != null)
 					{
-						realm.beginTransaction();
-						realm.copyToRealmOrUpdate(message);
-						realm.commitTransaction();
+						realm.executeTransaction(new Realm.Transaction()
+						{
+							@Override
+							public void execute(Realm realm)
+							{
+								realm.copyToRealmOrUpdate(message);
+							}
+						});
 					}
 				}
 				else
@@ -398,19 +410,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 
 					if(StringUtils.isIdMongo(clientP.getCompanyId()))
 					{
-						intent.putExtra(Common.KEY_ID, clientP.getCompanyId());
 						image = clientP.getImage();
 						//Rollback para autoañadir companies si no está añadida
 						if(!newClient && clientP.getFollower() == Common.BOOL_NO && clientP.getBlocked() == Common.BOOL_NO)
 						{
-							BlockedActivity.modifySubscriptions(context, Common.BOOL_YES, false, clientP.getCompanyId(), false);
+							HomeActivity.modifySubscriptions(context, Common.BOOL_YES, false, clientP.getCompanyId(), false);
 						}
 					}
-					else
-					{
-						intent.putExtra(Common.KEY_ID, "");
-					}
 
+					intent.putExtra(Common.KEY_ID, clientP.getCompanyId());
+					intent.putExtra(Suscription.KEY_API, SuscriptionHelper.toJSON(clientP, context));
 					intent.putExtra(Common.KEY_LAST_MSGID, msgId);
 					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					PendingIntent pendingIntent						= PendingIntent.getActivity(context, from, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -429,11 +438,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 								//Modificación para delay en la descarga del logo de la Company
 								LogoAsyncTask task	= new LogoAsyncTask(context, false, image, context.getResources().getDisplayMetrics().density);
 								//TODO implementar callbacks para prevenir la suspención del UI por delay en la Asynctask
-								bmp					= task.execute().get();
+								bmp					= task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
 							}
 							catch(Exception e)
 							{
-								System.out.println("MyFirebaseMessagingService:sendNotification:getImageWithPicasso - Exception: " + e);
+								Utils.logError(context, "MyFirebaseMessagingService:sendNotification:getImageWithPicasso - Exception:", e);
 							}
 						}
 
@@ -441,16 +450,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					}
 
 					notificationBuilder
-							.setSmallIcon(R.drawable.vc)
-							.setContentTitle(title)
-							.setContentText(contentText)
-							.setAutoCancel(true)
-							.setContentIntent(pendingIntent);
+						.setSmallIcon(R.drawable.vc)
+						.setContentTitle(title)
+						.setContentText(contentText)
+						.setAutoCancel(true)
+						.setContentIntent(pendingIntent);
 
 					if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
 					{
-						notificationBuilder.setCategory(Notification.CATEGORY_MESSAGE)
-								.setVisibility(Notification.VISIBILITY_PUBLIC);
+						notificationBuilder.setCategory(Notification.CATEGORY_MESSAGE).setVisibility(Notification.VISIBILITY_PUBLIC);
 					}
 
 					if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN)
@@ -479,13 +487,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 					{
 						try
 						{
-							LogoAsyncTask task	= new LogoAsyncTask(context, false, image, context.getResources().getDisplayMetrics().density);
+							new LogoAsyncTask(context, false, image, context.getResources().getDisplayMetrics().density).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 							//TODO implementar callbacks para prevenir la suspención del UI por delay en la Asynctask
-							task.execute();
 						}
 						catch(Exception e)
 						{
-							System.out.println("MyFirebaseMessagingService:sendNotification:getImageWithPicasso - Exception: " + e);
+							Utils.logError(context, "MyFirebaseMessagingService:sendNotification:getImageWithPicasso - Exception:", e);
 						}
 					}
 				}
@@ -495,12 +502,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 				{
 					try
 					{
-						ConfirmReadingAsyncTask task = new ConfirmReadingAsyncTask(context, false, "", msgId, Message.STATUS_RECEIVE);
-						task.execute();
+						new ConfirmReadingAsyncTask(context, false, "", msgId, Message.STATUS_RECEIVE).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 					}
 					catch(Exception e)
 					{
-						System.out.println("MyFirebaseMessagingService:sendNotification:ConfirmReading - Exception: " + e);
+						Utils.logError(context, "MyFirebaseMessagingService:sendNotification:ConfirmReading - Exception:", e);
 					}
 				}
 				//Reload Home if it's running
@@ -511,26 +517,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 				{
 					String id = message.getMsgId();
 					//Agregado para no mostrar mensajes descartados por bloqueo
-					realm.beginTransaction();
-					message.setStatus(Message.STATUS_SPAM);
-					realm.commitTransaction();
+					realm.executeTransaction(new Realm.Transaction()
+					{
+						@Override
+						public void execute(Realm realm)
+						{
+							message.setStatus(Message.STATUS_SPAM);
+						}
+					});
 
 					//Agregado para notificar como spam al ser descartado
-					GoogleAnalytics.getInstance(this).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
+					GoogleAnalytics.getInstance(context).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Mensajes").setAction("Marcarspam")
 							.setLabel("Accion_user").build());
-					ConfirmReadingAsyncTask task	= new ConfirmReadingAsyncTask(context, false, "", id, Message.STATUS_SPAM);
-					task.execute();
+					new ConfirmReadingAsyncTask(context, false, "", id, Message.STATUS_SPAM).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 				}
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println("MyFirebaseMessagingService:sendNotification - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "MyFirebaseMessagingService:sendNotification - Exception:", e);
 		}
 	}
 
@@ -557,12 +562,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 		}
 		catch(Exception e)
 		{
-			System.out.println("MyFirebaseMessagingService:onOldPush - Exception: " + e);
-
-			if(Common.DEBUG)
-			{
-				e.printStackTrace();
-			}
+			Utils.logError(context, "MyFirebaseMessagingService:onOldPush - Exception:", e);
 		}
 	}
 
