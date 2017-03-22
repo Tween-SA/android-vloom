@@ -193,7 +193,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 				}
 
 				//Actualizar datos de suscriptions
-				List<String> idsList	= SuscriptionHelper.updateCompanies(activity, false);
+				SuscriptionHelper.updateCompanies(activity, false);
 
 				//Importar mensajes
 				if(messageDao != null)

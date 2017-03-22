@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
 	package="com.tween.viacelular">
 	<!-- Permissions, Ordanamiento de permisos y agregado del permiso para enviar sms -->
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -170,7 +169,8 @@
 		</receiver>
 		<receiver
 			android:name="com.google.android.gms.analytics.AnalyticsReceiver"
-			android:enabled="true">
+			android:enabled="true"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
 			</intent-filter>
@@ -186,6 +186,7 @@
 		</receiver>
 		<!-- Services -->
 		<service
+			android:exported="false"
 			android:name="com.tween.viacelular.services.MyGcmListenerService"
 			android:enabled="true">
 			<intent-filter>
@@ -193,6 +194,7 @@
 			</intent-filter>
 		</service>
 		<service
+			android:exported="false"
 			android:name="com.tween.viacelular.services.MyInstanceIDListenerService"
 			android:enabled="true">
 			<intent-filter>
@@ -200,6 +202,7 @@
 			</intent-filter>
 		</service>
 		<service
+			android:exported="false"
 			android:name="com.tween.viacelular.services.RegistrationIntentService"
 			android:enabled="true" />
 		<service
@@ -208,18 +211,20 @@
 			android:exported="false" />
 		<service
 			android:name="com.google.android.gms.analytics.CampaignTrackingService"
-			android:enabled="true" />
+			android:enabled="true"
+			android:exported="false" />
 		<service
 			android:name="com.tween.viacelular.services.MyFirebaseMessagingService"
 			android:enabled="true"
-			android:exported="true">
+			android:exported="false">
 			<intent-filter>
 				<action android:name="com.google.firebase.MESSAGING_EVENT" />
 			</intent-filter>
 		</service>
 		<service
 			android:name="com.tween.viacelular.services.MyFirebaseInstanceIdService"
-			android:enabled="true">
+			android:enabled="true"
+			android:exported="false">
 			<intent-filter>
 				<action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
 			</intent-filter>

@@ -128,8 +128,8 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 					}
 
 					//Mejora para obtener la ubicación en base al gps
-					Location location				= null;
-					String bestProvider				= null;
+					Location location;
+					String bestProvider;
 					Criteria criteria				= new Criteria();
 					LocationManager locationManager	= (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 

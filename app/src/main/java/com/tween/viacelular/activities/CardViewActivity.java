@@ -19,7 +19,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -39,12 +38,9 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -69,12 +65,9 @@ import com.tween.viacelular.services.MyUploadService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -94,13 +87,10 @@ public class CardViewActivity extends AppCompatActivity
 	private CoordinatorLayout		Clayout;
 	private CardView				cardPayout, cardSuscribe;
 	private RelativeLayout			rlEmpty;
-	private EditText				editCode;
-	private TextInputLayout			inputCode;
 	private int						originalSoftInputMode;
-	private Button					btnContinueForm;
 	private FloatingActionButton	fabOpen,fabNote,fabPhoto;
 	private Animation				animOpen, animClose, animRotateForward, animRotateBackward;
-	private TextView				txtSubTitleForm, txtTitle, txtSubTitleCollapsed;
+	private TextView				txtTitle, txtSubTitleCollapsed;
 	private String					companyId;
 	private Toolbar					toolBar;
 	private Uri						tempUri;
@@ -127,10 +117,6 @@ public class CardViewActivity extends AppCompatActivity
 			rcwCard										= (RecyclerView) findViewById(R.id.rcwCard);
 			cardPayout									= (CardView) findViewById(R.id.cardPayout);
 			rlEmpty										= (RelativeLayout) findViewById(R.id.rlEmpty);
-			editCode									= (EditText) findViewById(R.id.editCode);
-			inputCode									= (TextInputLayout) findViewById(R.id.inputCode);
-			btnContinueForm								= (Button) findViewById(R.id.btnContinueForm);
-			txtSubTitleForm								= (TextView) findViewById(R.id.txtSubTitleForm);
 			cardSuscribe								= (CardView) findViewById(R.id.cardSuscribe);
 			TextView txtSubSuscribe						= (TextView) findViewById(R.id.txtSubSuscribe);
 			ImageView ibBack							= (ImageView) findViewById(R.id.ibBack);
@@ -164,7 +150,7 @@ public class CardViewActivity extends AppCompatActivity
 					{
 						if(!task.isSuccessful())
 						{
-							System.out.println("OnCompleteListener-signInAnonymously:getException: "+task.getException());
+							System.out.println("OnCompleteListener-signInAnonymously:getException: ");
 						}
 					}
 				});
@@ -174,7 +160,6 @@ public class CardViewActivity extends AppCompatActivity
 			{
 				final Intent intentRecive			= getIntent();
 				Realm realm							= Realm.getDefaultInstance();
-				RealmResults<Message> notifications	= null;
 
 				if(intentRecive != null)
 				{
@@ -234,12 +219,12 @@ public class CardViewActivity extends AppCompatActivity
 						if(StringUtils.isNotEmpty(image))
 						{
 							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
-							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(circleView);
+							Picasso.with(getApplicationContext()).load(image).placeholder(R.mipmap.ic_launcher).into(circleView);
 						}
 						else
 						{
 							//Mostrar el logo de Vloom si no tiene logo
-							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(circleView);
+							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(circleView);
 						}
 
 						txtSubTitleCollapsed.setText(suscription.getIndustry());
@@ -388,7 +373,7 @@ public class CardViewActivity extends AppCompatActivity
 						.input(getString(R.string.enrich_notehint), txtNote, new MaterialDialog.InputCallback()
 						{
 							@Override
-							public void onInput(MaterialDialog dialog, CharSequence input)
+							public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
 							{
 								if(input != null)
 								{
@@ -433,7 +418,7 @@ public class CardViewActivity extends AppCompatActivity
 					.input(getString(R.string.enrich_notehint), txtNote, new MaterialDialog.InputCallback()
 					{
 						@Override
-						public void onInput(MaterialDialog dialog, CharSequence input)
+						public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
 						{
 							if(input != null)
 							{

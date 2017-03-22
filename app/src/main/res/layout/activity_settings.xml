@@ -221,7 +221,7 @@
 					android:shadowColor="@android:color/transparent"
 					android:textAppearance="?android:attr/textAppearanceMedium"
 					android:gravity="left"
-					android:visibility="gone" />
+					android:visibility="gone" tools:ignore="HardcodedText"/>
 				<android.support.design.widget.CoordinatorLayout
 					android:layout_width="match_parent"
 					android:layout_height="match_parent"

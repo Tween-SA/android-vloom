@@ -122,7 +122,7 @@ public class IncomingSmsService extends BroadcastReceiver
 									notification.setMsgId(String.valueOf(preferences.getInt(Common.KEY_LAST_MSGID, 1)));
 									//Agregado para continuar numeración de msgId
 
-									Suscription client	= null;
+									Suscription client;
 									String companyId	= "";
 
 									if(message.contains(Message.SMS_CODE))

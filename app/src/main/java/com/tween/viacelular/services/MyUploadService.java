@@ -111,8 +111,15 @@ public class MyUploadService extends MyBaseTaskService
 					@Override
 					public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
 					{
-						downloadUri					= taskSnapshot.getMetadata().getDownloadUrl();
-						final String downloadUrl	= downloadUri.toString();
+						String url	= "";
+						downloadUri	= taskSnapshot.getMetadata().getDownloadUrl();
+						
+						if(downloadUri != null)
+						{
+							url = downloadUri.toString();
+						}
+						
+						final String downloadUrl = url;
 
 						//Persist url in Message
 						realm.executeTransactionAsync(new Realm.Transaction()

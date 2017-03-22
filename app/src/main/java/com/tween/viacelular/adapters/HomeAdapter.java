@@ -115,12 +115,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 					if(StringUtils.isNotEmpty(item.getImage()))
 					{
 						//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
-						Picasso.with(activity.getHomeActivity()).load(item.getImage()).placeholder(R.drawable.ic_launcher).into(holder.picture);
+						Picasso.with(activity.getHomeActivity()).load(item.getImage()).placeholder(R.mipmap.ic_launcher).into(holder.picture);
 					}
 					else
 					{
 						//Mostrar el logo de Vloom si no tiene logo
-						Picasso.with(activity.getHomeActivity()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(holder.picture);
+						Picasso.with(activity.getHomeActivity()).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(holder.picture);
 					}
 
 					String name		= item.getName();

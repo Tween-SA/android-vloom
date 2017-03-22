@@ -632,7 +632,7 @@ public class Utils
 			root.mkdirs();
 			File gpxfile = new File(root, fileName);
 			FileWriter writer = new FileWriter(gpxfile);
-			writer.append(System.getProperty("line.separator")+DateUtils.getDateTimePhone(context)+": "+string);
+			writer.append(System.getProperty("line.separator")).append(DateUtils.getDateTimePhone(context)).append(": ").append(string);
 			writer.flush();
 			writer.close();
 		}

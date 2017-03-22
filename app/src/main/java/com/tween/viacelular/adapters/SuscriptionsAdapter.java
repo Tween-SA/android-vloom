@@ -178,12 +178,12 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 						if(StringUtils.isNotEmpty(item.getImage()))
 						{
 							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
-							Picasso.with(activityContext).load(item.getImage()).placeholder(R.drawable.ic_launcher).into(holder.picture);
+							Picasso.with(activityContext).load(item.getImage()).placeholder(R.mipmap.ic_launcher).into(holder.picture);
 						}
 						else
 						{
 							//Mostrar el logo de Vloom si no tiene logo
-							Picasso.with(activityContext).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(holder.picture);
+							Picasso.with(activityContext).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(holder.picture);
 						}
 
 						holder.txtTitle.setText(item.getName());

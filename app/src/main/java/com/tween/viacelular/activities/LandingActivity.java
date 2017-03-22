@@ -243,14 +243,14 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 						if(StringUtils.isNotEmpty(image))
 						{
 							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
-							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(circleView);
-							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(logo);
+							Picasso.with(getApplicationContext()).load(image).placeholder(R.mipmap.ic_launcher).into(circleView);
+							Picasso.with(getApplicationContext()).load(image).placeholder(R.mipmap.ic_launcher).into(logo);
 						}
 						else
 						{
 							//Mostrar el logo de Vloom si no tiene logo
-							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(circleView);
-							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(logo);
+							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(circleView);
+							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(logo);
 						}
 
 						Utils.tintColorScreen(this, color);

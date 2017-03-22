@@ -155,8 +155,7 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 
 						if(send)
 						{
-							JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.SEND_SMS, context, ApiConnection.METHOD_POST,
-																		preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString()));
+							ApiConnection.request(ApiConnection.SEND_SMS, context, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString());
 						}
 					}
 					catch(Exception e)
