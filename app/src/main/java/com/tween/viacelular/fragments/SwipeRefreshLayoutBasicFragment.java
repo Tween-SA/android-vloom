@@ -4,15 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -38,8 +42,10 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import io.realm.Realm;
 
 /**
@@ -195,32 +201,65 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 	{
 		try
 		{
-			if(item.getItemId() == R.id.action_search)
+			switch(item.getItemId())
 			{
-				GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS)
-					.send(new HitBuilders.EventBuilder().setCategory("Company").setAction("Filtro").setLabel("AccionUser").build());
-				Intent intent = new Intent(getHomeActivity(), SearchActivity.class);
-				intent.putExtra(Common.KEY_SECTION, "home");
-				getHomeActivity().startActivity(intent);
-				getHomeActivity().finish();
-				return true;
-			}
-			else
-			{
-				if(item.getItemId() == R.id.menu_refresh)
-				{
-					Handler handler = new android.os.Handler();
-					handler.post(new Runnable()
-					{
-						public void run()
+				case R.id.action_search:
+					GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS)
+							.send(new HitBuilders.EventBuilder().setCategory("Company").setAction("Filtro").setLabel("AccionUser").build());
+					Intent intent = new Intent(getHomeActivity(), SearchActivity.class);
+					intent.putExtra(Common.KEY_SECTION, "home");
+					getHomeActivity().startActivity(intent);
+					getHomeActivity().finish();
+				break;
+				
+				case R.id.action_folder:
+					new MaterialDialog.Builder(getHomeActivity()).title(getString(R.string.enrich_addnoteheader)).inputType(InputType.TYPE_CLASS_TEXT)
+						.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 20).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+						.input(getString(R.string.enrich_notehint), "", new MaterialDialog.InputCallback()
 						{
-							initiateRefresh(true, true);
-						}
-					});
-
-					return true;
-				}
+							@Override
+							public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
+							{
+								if(input != null)
+								{
+									if(input != "")
+									{
+										final String name = input.toString();
+										
+										if(StringUtils.isNotEmpty(name))
+										{
+											final Realm realm = Realm.getDefaultInstance();
+											realm.executeTransactionAsync(new Realm.Transaction()
+											{
+												@Override
+												public void execute(Realm bgRealm)
+												{
+													Suscription suscription = new Suscription();
+													suscription.setName(name);
+													bgRealm.copyToRealmOrUpdate(suscription);
+												}
+											}, new Realm.Transaction.OnSuccess()
+											{
+												@Override
+												public void onSuccess()
+												{
+													refresh();
+												}
+											});
+											realm.close();
+										}
+									}
+								}
+							}
+						}).show();
+				break;
+				
+				default:
+					refresh();
+				break;
 			}
+			
+			return true;
 		}
 		catch(Exception e)
 		{
@@ -228,6 +267,18 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public void refresh()
+	{
+		Handler handler = new android.os.Handler();
+		handler.post(new Runnable()
+		{
+			public void run()
+			{
+				initiateRefresh(true, true);
+			}
+		});
 	}
 
 	/**
