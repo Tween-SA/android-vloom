@@ -213,9 +213,9 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 				break;
 				
 				case R.id.action_folder:
-					new MaterialDialog.Builder(getHomeActivity()).title(getString(R.string.enrich_addnoteheader)).inputType(InputType.TYPE_CLASS_TEXT)
+					new MaterialDialog.Builder(getHomeActivity()).title(getString(R.string.folder_btn)).inputType(InputType.TYPE_CLASS_TEXT)
 						.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 20).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
-						.input(getString(R.string.enrich_notehint), "", new MaterialDialog.InputCallback()
+						.input(getString(R.string.folder_hint), "", new MaterialDialog.InputCallback()
 						{
 							@Override
 							public void onInput(@NonNull MaterialDialog dialog, CharSequence input)

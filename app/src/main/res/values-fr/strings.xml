@@ -48,6 +48,11 @@
 	<string name="feedback_ok">Nous avons bien reçu votre message</string>
 	<string name="feedback_text">Partagez vos expériences avec nous</string>
 	<string name="feedback_typepush">Réponse du service de soutien</string>
+	<string name="folder_btn">Créer un dossier de notes</string><!-- after traslate -->
+	<string name="folder_header">Renommer le dossier de notes</string><!-- after traslate -->
+	<string name="folder_hint">Entrez un nom pour votre dossier&#8230;</string><!-- after traslate -->
+	<string name="folder_notfound">Aucun résultat pour votre recherche</string><!-- after traslate -->
+	<string name="folder_showcase">Maintenant, vous pouvez créer vos propres dossiers pour stocker vos notes et de trouver plus facile!</string><!-- after traslate -->
 	<string name="gcm_send_message">Jeton récupéré et envoyé au serveur</string>
 	<string name="get_play_services">Obtenez Google Play Services</string>
 	<string name="hello_world">Bonjour</string>

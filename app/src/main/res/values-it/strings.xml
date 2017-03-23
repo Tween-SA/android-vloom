@@ -48,6 +48,11 @@
 	<string name="feedback_ok">Abbiamo ricevuto correttamente il tuo messaggio</string>
 	<string name="feedback_text">Condividi con noi la tua esperienza</string>
 	<string name="feedback_typepush">Risposta di supporto</string>
+	<string name="folder_btn">Crea cartella note</string><!-- after traslate -->
+	<string name="folder_header">Rinominare la cartella di appunti</string><!-- after traslate -->
+	<string name="folder_hint">Inserire un nome per la cartella&#8230;</string><!-- after traslate -->
+	<string name="folder_notfound">Nessun risultato corrisponde alla tua ricerca</string><!-- after traslate -->
+	<string name="folder_showcase">Ora è possibile creare cartelle per memorizzare le vostre note e trovare più facilmente!</string><!-- after traslate -->
 	<string name="gcm_send_message">Token recuperato ed inviato al server</string>
 	<string name="get_play_services">Ottieni Google Play Services</string>
 	<string name="hello_world">Ciao</string>

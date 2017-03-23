@@ -265,7 +265,7 @@ public class Utils
 	 * <p>Verifica si hay usuario logueado y verificado para redireccionar</p>
 	 *
 	 * @param activity Contexto
-	 * @param pantalla donde se realiza el control - 0 selección de tarjeta, 1 registro, 2 codigo, 3 slider
+	 * @param pantalla donde se realiza el control
 	 * @return void Redirecciona según verificación
 	 */
 	public static boolean checkSesion(Activity activity, int pantalla)
