@@ -23,7 +23,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -35,6 +34,7 @@ import com.tween.viacelular.activities.VerifyPhoneActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
 import com.tween.viacelular.adapters.IconOptionAdapter;
 import com.tween.viacelular.asynctask.GetTweetsAsyncTask;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
@@ -42,10 +42,8 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import io.realm.Realm;
 
 /**
@@ -224,29 +222,20 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 								{
 									if(input != "")
 									{
-										final String name = input.toString();
+										final String name = input.toString().trim();
 										
 										if(StringUtils.isNotEmpty(name))
 										{
-											final Realm realm = Realm.getDefaultInstance();
-											realm.executeTransactionAsync(new Realm.Transaction()
+											SharedPreferences preferences = activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+											SuscriptionHelper.createPhantom(name, activity, preferences.getString(Land.KEY_API, ""), true);
+											Handler handler = new android.os.Handler();
+											handler.post(new Runnable()
 											{
-												@Override
-												public void execute(Realm bgRealm)
+												public void run()
 												{
-													Suscription suscription = new Suscription();
-													suscription.setName(name);
-													bgRealm.copyToRealmOrUpdate(suscription);
-												}
-											}, new Realm.Transaction.OnSuccess()
-											{
-												@Override
-												public void onSuccess()
-												{
-													refresh();
+													initiateRefresh(false, true);
 												}
 											});
-											realm.close();
 										}
 									}
 								}
@@ -255,7 +244,14 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 				break;
 				
 				default:
-					refresh();
+					Handler handler = new android.os.Handler();
+					handler.post(new Runnable()
+					{
+						public void run()
+						{
+							initiateRefresh(true, true);
+						}
+					});
 				break;
 			}
 			
@@ -267,18 +263,6 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 
 		return super.onOptionsItemSelected(item);
-	}
-	
-	public void refresh()
-	{
-		Handler handler = new android.os.Handler();
-		handler.post(new Runnable()
-		{
-			public void run()
-			{
-				initiateRefresh(true, true);
-			}
-		});
 	}
 
 	/**
@@ -634,7 +618,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					{
 						Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, id).findFirst();
 
-						if(!StringUtils.isIdMongo(suscription.getCompanyId()))
+						if(!StringUtils.isIdMongo(suscription.getCompanyId()) && suscription.getType() != Suscription.TYPE_FOLDER)
 						{
 							companyPhantom.add(suscription);
 						}

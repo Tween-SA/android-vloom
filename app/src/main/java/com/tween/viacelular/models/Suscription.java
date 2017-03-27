@@ -58,6 +58,8 @@ public class Suscription extends RealmObject
 	@Ignore
 	public static final int TYPE_ONG					= 5;
 	@Ignore
+	public static final int TYPE_FOLDER					= 6;
+	@Ignore
 	public static final int STATUS_ACTIVE				= 0;
 	@Ignore
 	public static final int STATUS_INACTIVE				= 1;
