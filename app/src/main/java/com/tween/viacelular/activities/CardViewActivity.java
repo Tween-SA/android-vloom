@@ -214,17 +214,25 @@ public class CardViewActivity extends AppCompatActivity
 							txtTitle.setTextColor(colorTitle);
 							txtSubTitleCollapsed.setTextColor(Utils.adjustAlpha(colorSubTitle, Common.ALPHA_FOR_SUBTITLE));
 						}
-
-						//Modificación para migrar a asynctask la descarga de imágenes
-						if(StringUtils.isNotEmpty(image))
+						
+						if(suscription.getType() == Suscription.TYPE_FOLDER)
 						{
-							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
-							Picasso.with(getApplicationContext()).load(image).placeholder(R.mipmap.ic_launcher).into(circleView);
+							//Mostramos icono default de carpeta
+							Picasso.with(this).load(R.drawable.ic_folder).into(circleView);
 						}
 						else
 						{
-							//Mostrar el logo de Vloom si no tiene logo
-							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(circleView);
+							//Mostramos el logo de la company
+							if(StringUtils.isNotEmpty(image))
+							{
+								//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
+								Picasso.with(getApplicationContext()).load(image).placeholder(R.mipmap.ic_launcher).into(circleView);
+							}
+							else
+							{
+								//Mostrar el logo de Vloom si no tiene logo
+								Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(circleView);
+							}
 						}
 
 						txtSubTitleCollapsed.setText(suscription.getIndustry());

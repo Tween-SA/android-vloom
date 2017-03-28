@@ -51,6 +51,7 @@
 	<string name="folder_btn">创建笔记文件夹</string><!-- after traslate -->
 	<string name="folder_header">重命名的文件夹中的注意事项</string><!-- after traslate -->
 	<string name="folder_hint">您输入文件夹名称&#8230;</string><!-- after traslate -->
+	<string name="folder_industry">注文件夹</string><!-- after traslate -->
 	<string name="folder_notfound">找到你的搜索没有任何结果</string><!-- after traslate -->
 	<string name="folder_showcase">现在，您可以创建自己的文件夹来存储你的笔记，并找到它们更容易！</string><!-- after traslate -->
 	<string name="gcm_send_message">令牌已回收并发送给服务器</string>
@@ -66,7 +67,7 @@
 	<string name="landing_card_error_header">哎呀</string><!-- after traslate -->
 	<string name="landing_card_error_retry">重发</string><!-- after traslate -->
 	<string name="landing_card_error_text">您的数据将不会被保存，请重试。</string><!-- after traslate -->
-	<string name="landing_card_loading_header">就在那一刻......</string><!-- after traslate -->
+	<string name="landing_card_loading_header">就在那一刻&#8230;</string><!-- after traslate -->
 	<string name="landing_card_loading_text">我们让您的数据</string><!-- after traslate -->
 	<string name="landing_card_ok_header">所有了！</string><!-- after traslate -->
 	<string name="landing_card_ok_text">让您的客户ID，以提供更好的体验</string><!-- after traslate -->

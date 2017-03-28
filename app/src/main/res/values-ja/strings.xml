@@ -51,6 +51,7 @@
 	<string name="folder_btn">ノートフォルダを作成します。</string><!-- after traslate -->
 	<string name="folder_header">ノートのフォルダの名前を変更</string><!-- after traslate -->
 	<string name="folder_hint">フォルダの名前を入力します&#8230;</string><!-- after traslate -->
+	<string name="folder_industry">メモフォルダ</string><!-- after traslate -->
 	<string name="folder_notfound">該当する結果は、検索が見つかりません</string><!-- after traslate -->
 	<string name="folder_showcase">今すぐあなたのメモを保存し、簡単にそれらを見つけるために、独自のフォルダを作成することができます！</string><!-- after traslate -->
 	<string name="gcm_send_message">トークンが回収されてサーバに送信されました</string>

@@ -110,17 +110,25 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 				{
 					RealmResults<Message> countNotif = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_SPAM)
 														.equalTo(Suscription.KEY_API, item.getCompanyId()).findAllSorted(Message.KEY_CREATED, Sort.DESCENDING);
-
-					//Modificación para migrar a asynctask la descarga de imágenes
-					if(StringUtils.isNotEmpty(item.getImage()))
+					
+					if(item.getType() == Suscription.TYPE_FOLDER)
 					{
-						//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
-						Picasso.with(activity.getHomeActivity()).load(item.getImage()).placeholder(R.mipmap.ic_launcher).into(holder.picture);
+						//Mostramos icono default de carpeta
+						Picasso.with(activity.getHomeActivity()).load(R.drawable.ic_folder).into(holder.picture);
 					}
 					else
 					{
-						//Mostrar el logo de Vloom si no tiene logo
-						Picasso.with(activity.getHomeActivity()).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(holder.picture);
+						//Mostramos el logo de la company
+						if(StringUtils.isNotEmpty(item.getImage()))
+						{
+							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
+							Picasso.with(activity.getHomeActivity()).load(item.getImage()).placeholder(R.mipmap.ic_launcher).into(holder.picture);
+						}
+						else
+						{
+							//Mostrar el logo de Vloom si no tiene logo
+							Picasso.with(activity.getHomeActivity()).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(holder.picture);
+						}
 					}
 
 					String name		= item.getName();
@@ -175,6 +183,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 					holder.bigSilence.setVisibility(ImageView.GONE);
 					holder.bigPrice.setVisibility(ImageView.GONE);
 					int unread = 0;
+					
 					//Se agregan los iconos para destacar cuando la company está bloqueada y se hizo dismiss de la card para suscribir
 					if(item.getGray() == Common.BOOL_YES)
 					{
@@ -199,7 +208,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 						@Override
 						public boolean onLongClick(View v)
 						{
-							activity.showMenu(item, item.getCompanyId());
+							if(item.getType() == Suscription.TYPE_FOLDER)
+							{
+								activity.generateFolder(item.getCompanyId());
+							}
+							else
+							{
+								activity.showMenu(item, item.getCompanyId());
+							}
 							return true;
 						}
 					});

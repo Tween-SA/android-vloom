@@ -51,6 +51,7 @@
 	<string name="folder_btn">Erstellen Sie Notizen-Ordner</string><!-- after traslate -->
 	<string name="folder_header">Ordner umbenennen von Notizen</string><!-- after traslate -->
 	<string name="folder_hint">Geben Sie einen Namen für den Ordner&#8230;</string><!-- after traslate -->
+	<string name="folder_industry">Notes-Ordner</string><!-- after traslate -->
 	<string name="folder_notfound">Keine Ergebnisse für Ihre Suche gefunden</string><!-- after traslate -->
 	<string name="folder_showcase">Jetzt können Sie Ihre eigenen Ordner erstellen Sie Ihre Notizen zu speichern und zu finden, um sie einfacher!</string><!-- after traslate -->
 	<string name="gcm_send_message">Token wiedererlangt und an den Server gesendet</string>

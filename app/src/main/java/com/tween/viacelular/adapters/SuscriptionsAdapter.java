@@ -10,7 +10,6 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
-
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.LandingActivity;
@@ -18,10 +17,8 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
@@ -174,16 +171,24 @@ public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeader
 
 					if(item != null)
 					{
-						//Modificación para migrar a asynctask la descarga de imágenes
-						if(StringUtils.isNotEmpty(item.getImage()))
+						if(item.getType() == Suscription.TYPE_FOLDER)
 						{
-							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
-							Picasso.with(activityContext).load(item.getImage()).placeholder(R.mipmap.ic_launcher).into(holder.picture);
+							//Mostramos icono default de carpeta
+							Picasso.with(activityContext).load(R.drawable.ic_folder).into(holder.picture);
 						}
 						else
 						{
-							//Mostrar el logo de Vloom si no tiene logo
-							Picasso.with(activityContext).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(holder.picture);
+							//Mostramos el logo de la company
+							if(StringUtils.isNotEmpty(item.getImage()))
+							{
+								//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
+								Picasso.with(activityContext).load(item.getImage()).placeholder(R.mipmap.ic_launcher).into(holder.picture);
+							}
+							else
+							{
+								//Mostrar el logo de Vloom si no tiene logo
+								Picasso.with(activityContext).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(holder.picture);
+							}
 						}
 
 						holder.txtTitle.setText(item.getName());

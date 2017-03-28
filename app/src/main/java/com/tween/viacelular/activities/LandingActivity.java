@@ -168,7 +168,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 										{
 											//Agregado para capturar evento en Google Analytics
 											GoogleAnalytics.getInstance(activity).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company")
-													.setAction("WebLanding").setLabel("AccionUser").build());
+												.setAction("WebLanding").setLabel("AccionUser").build());
 										}
 									});
 								}
@@ -238,19 +238,28 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 						}
 
 						ivPlaceholder.setBackgroundColor(Color.parseColor(color));
-
-						//Modificación para migrar a asynctask la descarga de imágenes
-						if(StringUtils.isNotEmpty(image))
+						
+						if(suscription.getType() == Suscription.TYPE_FOLDER)
 						{
-							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
-							Picasso.with(getApplicationContext()).load(image).placeholder(R.mipmap.ic_launcher).into(circleView);
-							Picasso.with(getApplicationContext()).load(image).placeholder(R.mipmap.ic_launcher).into(logo);
+							//Mostramos icono default de carpeta
+							Picasso.with(this).load(R.drawable.ic_folder).into(circleView);
+							Picasso.with(this).load(R.drawable.ic_folder).into(logo);
 						}
 						else
 						{
-							//Mostrar el logo de Vloom si no tiene logo
-							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(circleView);
-							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(logo);
+							//Mostramos el logo de la company
+							if(StringUtils.isNotEmpty(image))
+							{
+								//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
+								Picasso.with(this).load(image).placeholder(R.mipmap.ic_launcher).into(circleView);
+								Picasso.with(this).load(image).placeholder(R.mipmap.ic_launcher).into(logo);
+							}
+							else
+							{
+								//Mostrar el logo de Vloom si no tiene logo
+								Picasso.with(this).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(circleView);
+								Picasso.with(this).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(logo);
+							}
 						}
 
 						Utils.tintColorScreen(this, color);
@@ -266,15 +275,22 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 						});
 
 						//Agregado para diferenciar vista cuando la company está añadida
-						if(suscription.getFollower() == Common.BOOL_YES)
+						if(suscription.getType() == Suscription.TYPE_FOLDER)
 						{
-							btnSuscribe.setText(getString(R.string.landing_suscribed));
-							btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.accent));
+							btnSuscribe.setVisibility(Button.GONE);
 						}
 						else
 						{
-							btnSuscribe.setText(getString(R.string.landing_suscribe));
-							btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.black));
+							if(suscription.getFollower() == Common.BOOL_YES)
+							{
+								btnSuscribe.setText(getString(R.string.landing_suscribed));
+								btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.accent));
+							}
+							else
+							{
+								btnSuscribe.setText(getString(R.string.landing_suscribe));
+								btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.black));
+							}
 						}
 					}
 				}
@@ -510,7 +526,16 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 					logo.setVisibility(CircleImageView.VISIBLE);
 					txtBigTitle.setVisibility(TextView.VISIBLE);
 					txtSubTitle.setVisibility(TextView.VISIBLE);
-					btnSuscribe.setVisibility(Button.VISIBLE);
+					
+					if(suscription.getType() == Suscription.TYPE_FOLDER)
+					{
+						btnSuscribe.setVisibility(Button.GONE);
+					}
+					else
+					{
+						btnSuscribe.setVisibility(Button.VISIBLE);
+					}
+					
 					toolBar.setBackgroundColor(Color.TRANSPARENT);
 					dpAsPixels	= (int) (10*scale + 0.5f);
 					txtAbout.setPadding(0, dpAsPixels, 0, 0);

@@ -51,6 +51,7 @@
 	<string name="folder_btn">Create Notes Folder</string><!-- after traslate -->
 	<string name="folder_header">Rename Notes Folder</string><!-- after traslate -->
 	<string name="folder_hint">Enter a name for your folder&#8230;</string><!-- after traslate -->
+	<string name="folder_industry">Notes folder</string><!-- after traslate -->
 	<string name="folder_notfound">We did not find results for your search</string><!-- after traslate -->
 	<string name="folder_showcase">Now you can create your own folders to save your notes and find them easier!</string><!-- after traslate -->
 	<string name="gcm_send_message">Token recovered and sent to server</string>

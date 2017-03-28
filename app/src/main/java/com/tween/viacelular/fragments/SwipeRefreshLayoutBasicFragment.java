@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -42,8 +43,10 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import io.realm.Realm;
 
 /**
@@ -211,36 +214,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 				break;
 				
 				case R.id.action_folder:
-					new MaterialDialog.Builder(getHomeActivity()).title(getString(R.string.folder_btn)).inputType(InputType.TYPE_CLASS_TEXT)
-						.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 20).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
-						.input(getString(R.string.folder_hint), "", new MaterialDialog.InputCallback()
-						{
-							@Override
-							public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
-							{
-								if(input != null)
-								{
-									if(input != "")
-									{
-										final String name = input.toString().trim();
-										
-										if(StringUtils.isNotEmpty(name))
-										{
-											SharedPreferences preferences = activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-											SuscriptionHelper.createPhantom(name, activity, preferences.getString(Land.KEY_API, ""), true);
-											Handler handler = new android.os.Handler();
-											handler.post(new Runnable()
-											{
-												public void run()
-												{
-													initiateRefresh(false, true);
-												}
-											});
-										}
-									}
-								}
-							}
-						}).show();
+					generateFolder("");
 				break;
 				
 				default:
@@ -263,6 +237,100 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public void generateFolder(final String companyId)
+	{
+		if(StringUtils.isNotEmpty(companyId))
+		{
+			Realm realm = Realm.getDefaultInstance();
+			final Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+			
+			if(suscription != null)
+			{
+				new MaterialDialog.Builder(getHomeActivity()).title(getString(R.string.folder_header)).inputType(InputType.TYPE_CLASS_TEXT)
+					.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 20).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+					.input(getString(R.string.folder_hint), suscription.getName(), new MaterialDialog.InputCallback()
+					{
+						@Override
+						public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
+						{
+							if(input != null)
+							{
+								if(input != "")
+								{
+									final String name = input.toString().trim();
+									
+									if(StringUtils.isNotEmpty(name))
+									{
+										Realm realm = Realm.getDefaultInstance();
+										realm.executeTransactionAsync(new Realm.Transaction()
+										{
+											@Override
+											public void execute(Realm bgRealm)
+											{
+												Suscription suscription1 = bgRealm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+												suscription1.setName(name);
+											}
+										}, new Realm.Transaction.OnSuccess()
+										{
+											@Override
+											public void onSuccess()
+											{
+												Handler handler = new android.os.Handler();
+												handler.post(new Runnable()
+												{
+													public void run()
+													{
+														initiateRefresh(false, true);
+													}
+												});
+											}
+										});
+										
+										realm.close();
+									}
+								}
+							}
+						}
+					}).show();
+			}
+			
+			realm.close();
+		}
+		else
+		{
+			new MaterialDialog.Builder(getHomeActivity()).title(getString(R.string.folder_btn)).inputType(InputType.TYPE_CLASS_TEXT)
+				.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 20).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+				.input(getString(R.string.folder_hint), "", new MaterialDialog.InputCallback()
+				{
+					@Override
+					public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
+					{
+						if(input != null)
+						{
+							if(input != "")
+							{
+								final String name = input.toString().trim();
+								
+								if(StringUtils.isNotEmpty(name))
+								{
+									SharedPreferences preferences = activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+									SuscriptionHelper.createPhantom(name, activity, preferences.getString(Land.KEY_API, ""), true);
+									Handler handler = new android.os.Handler();
+									handler.post(new Runnable()
+									{
+										public void run()
+										{
+											initiateRefresh(false, true);
+										}
+									});
+								}
+							}
+						}
+					}
+				}).show();
+		}
 	}
 
 	/**

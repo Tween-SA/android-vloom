@@ -1502,7 +1502,7 @@ public abstract class SuscriptionHelper
 			
 			if(isFolder)
 			{
-				client.setIndustry("");
+				client.setIndustry(context.getString(R.string.folder_industry));
 				client.setIndustryCode("0");
 				client.setType(Suscription.TYPE_FOLDER);
 				client.setReceive(Common.BOOL_YES);
