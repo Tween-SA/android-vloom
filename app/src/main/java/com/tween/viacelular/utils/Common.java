@@ -32,6 +32,7 @@ public class Common
 	public static final String			COLOR_ACTION				= "#FF8F00"; //Color primario en String
 	public static final String			COLOR_BLOCKED				= "#212121"; //Color de company bloqueada en String
 	public static final String			COLOR_COMMENT				= "#007AF6"; //Color de para textos de pantalla comentarios en String
+	public static final String			COLOR_SEARCH				= "#B1B1B1"; //Color de acento en String
 	public static final String			COLOR_GRAY					= "#717171"; //Color de filtro para iconos en String
 	public static final String			GCM_DEFAULTSENDERID			= "189459365557"; //Referencia al proyecto en la Google Developers Console
 	public static final String			HASH_GOOGLEANALYTICS		= "UA-15307457-3"; //Referencia a la cuenta de Google Analytics

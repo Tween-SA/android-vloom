@@ -1,22 +1,32 @@
 package com.tween.viacelular.activities;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.SuscriptionsAdapter;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Suscription;
+import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -138,10 +148,54 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 					}
 				});
 			}
+			
+			Utils.tintColorScreen(this, Common.COLOR_SEARCH);
 		}
 		catch(Exception e)
 		{
 			Utils.logError(this, getLocalClassName()+":onCreate - Exception:", e);
+		}
+	}
+	
+	public void generateFolder(View view)
+	{
+		try
+		{
+			final Activity activity = this;
+			new MaterialDialog.Builder(this).title(getString(R.string.folder_btn)).inputType(InputType.TYPE_CLASS_TEXT)
+				.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 20).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+				.input(getString(R.string.folder_hint), "", new MaterialDialog.InputCallback()
+				{
+					@Override
+					public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
+					{
+						if(input != null)
+						{
+							if(input != "")
+							{
+								final String name = input.toString().trim();
+								
+								if(StringUtils.isNotEmpty(name))
+								{
+									SharedPreferences preferences = activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+									SuscriptionHelper.createPhantom(name, activity, preferences.getString(Land.KEY_API, ""), true);
+									Handler handler = new android.os.Handler();
+									handler.post(new Runnable()
+									{
+										public void run()
+										{
+											populateList();
+										}
+									});
+								}
+							}
+						}
+					}
+				}).show();
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":generateFolder - Exception:", e);
 		}
 	}
 
@@ -160,7 +214,6 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 	{
 		try
 		{
-			System.out.println("Consulta por: "+filter);
 			Realm realm						= Realm.getDefaultInstance();
 			RealmResults<Suscription> suscriptions;
 			List<String> listSuscriptions	= new ArrayList<>();
@@ -191,6 +244,14 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 						if(StringUtils.isCompanyNumber(suscription.getName()))
 						{
 							listSuscriptions.add(suscription.getCompanyId());
+						}
+						else
+						{
+							//Mostrar las carpetas creadas
+							if(!StringUtils.isIdMongo(suscription.getCompanyId()) && suscription.getType() == Suscription.TYPE_FOLDER)
+							{
+								listSuscriptions.add(suscription.getCompanyId());
+							}
 						}
 					}
 				}

@@ -961,7 +961,7 @@ public class Utils
 								}
 							});
 						}
-					}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 				}
 				else
 				{
@@ -984,7 +984,7 @@ public class Utils
 							}
 						});
 					}
-				}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 			}
 		}
 		catch(Exception e)

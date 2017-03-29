@@ -716,7 +716,20 @@ public class CardViewActivity extends AppCompatActivity
 		try
 		{
 			MenuInflater inflater = getMenuInflater();
-			inflater.inflate(R.menu.menu_cardview, menu);
+			Migration.getDB(CardViewActivity.this);
+			Realm realm	= Realm.getDefaultInstance();
+			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+			
+			if(suscription.getType() == Suscription.TYPE_FOLDER)
+			{
+				inflater.inflate(R.menu.menu_folder, menu);
+			}
+			else
+			{
+				inflater.inflate(R.menu.menu_cardview, menu);
+			}
+			
+			realm.close();
 		}
 		catch(Exception e)
 		{
@@ -741,48 +754,53 @@ public class CardViewActivity extends AppCompatActivity
 				Migration.getDB(CardViewActivity.this);
 				Realm realm	= Realm.getDefaultInstance();
 				suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-
-				if(menu.getItem(1) != null)
+				
+				if(suscription.getType() != Suscription.TYPE_FOLDER)
 				{
-					MenuItem item	= menu.getItem(1);
-
-					if(suscription != null)
+					if(menu.getItem(1) != null)
 					{
-						if(suscription.getSilenced() == Common.BOOL_YES)
+						MenuItem item	= menu.getItem(1);
+						
+						if(suscription != null)
 						{
-							item.setTitle(R.string.activate_notif);
+							if(suscription.getSilenced() == Common.BOOL_YES)
+							{
+								item.setTitle(R.string.activate_notif);
+							}
+							else
+							{
+								item.setTitle(R.string.silence);
+							}
 						}
 						else
 						{
 							item.setTitle(R.string.silence);
 						}
 					}
-					else
+					
+					if(menu.getItem(3) != null)
 					{
-						item.setTitle(R.string.silence);
-					}
-				}
-
-				if(menu.getItem(3) != null)
-				{
-					MenuItem itemSuscribe	= menu.getItem(3);
-
-					if(suscription != null)
-					{
-						if(suscription.getFollower() == Common.BOOL_YES)
+						MenuItem itemSuscribe	= menu.getItem(3);
+						
+						if(suscription != null)
 						{
-							itemSuscribe.setTitle(R.string.landing_unsuscribe);
+							if(suscription.getFollower() == Common.BOOL_YES)
+							{
+								itemSuscribe.setTitle(R.string.landing_unsuscribe);
+							}
+							else
+							{
+								itemSuscribe.setTitle(R.string.landing_suscribe);
+							}
 						}
 						else
 						{
 							itemSuscribe.setTitle(R.string.landing_suscribe);
 						}
 					}
-					else
-					{
-						itemSuscribe.setTitle(R.string.landing_suscribe);
-					}
 				}
+				
+				realm.close();
 			}
 		}
 		catch(Exception e)
@@ -1206,7 +1224,7 @@ public class CardViewActivity extends AppCompatActivity
 		try
 		{
 			hideSoftKeyboard();
-			Realm realm					= Realm.getDefaultInstance();
+			Realm realm				= Realm.getDefaultInstance();
 			suscription				= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			final Activity activity	= this;
 
@@ -1341,6 +1359,57 @@ public class CardViewActivity extends AppCompatActivity
 				if(item.toString().equals(getString(R.string.settings)))
 				{
 					goToSettings();
+				}
+				
+				//Agregado para permitir cambiar nombre de la carpeta desde las opciones
+				if(item.toString().equals(getString(R.string.folder_header)))
+				{
+					new MaterialDialog.Builder(this).title(getString(R.string.folder_header)).inputType(InputType.TYPE_CLASS_TEXT)
+						.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 20).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+						.input(getString(R.string.folder_hint), suscription.getName(), new MaterialDialog.InputCallback()
+						{
+							@Override
+							public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
+							{
+								if(input != null)
+								{
+									if(input != "")
+									{
+										final String name = input.toString().trim();
+										
+										if(StringUtils.isNotEmpty(name))
+										{
+											Realm realm = Realm.getDefaultInstance();
+											realm.executeTransactionAsync(new Realm.Transaction()
+											{
+												@Override
+												public void execute(Realm bgRealm)
+												{
+													Suscription suscription1 = bgRealm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+													suscription1.setName(name);
+												}
+											}, new Realm.Transaction.OnSuccess()
+											{
+												@Override
+												public void onSuccess()
+												{
+													Handler handler = new android.os.Handler();
+													handler.post(new Runnable()
+													{
+														public void run()
+														{
+															txtTitle.setText(name);
+														}
+													});
+												}
+											});
+											
+											realm.close();
+										}
+									}
+								}
+							}
+						}).show();
 				}
 
 				Utils.setStyleSnackBar(snackBar, getApplicationContext());

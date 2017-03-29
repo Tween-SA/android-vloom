@@ -119,6 +119,14 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 					{
 						listSuscriptions.add(suscription.getCompanyId());
 					}
+					else
+					{
+						//Mostrar las carpetas creadas
+						if(!StringUtils.isIdMongo(suscription.getCompanyId()) && suscription.getType() == Suscription.TYPE_FOLDER)
+						{
+							listSuscriptions.add(suscription.getCompanyId());
+						}
+					}
 				}
 			}
 
