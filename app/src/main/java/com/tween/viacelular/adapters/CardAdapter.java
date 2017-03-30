@@ -493,7 +493,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					if(holder.iconComent != null && holder.rlComment != null && item.getKind() != Message.KIND_NOTE)
 					{
 						holder.ivEdit.setColorFilter(Color.parseColor(Common.COLOR_COMMENT));
-						holder.ivEdit.setOnClickListener(new View.OnClickListener()
+						holder.rlComment.setOnClickListener(new View.OnClickListener()
 						{
 							@Override
 							public void onClick(final View view)
@@ -1042,8 +1042,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 			return 0;
 		}
 	}
-
-
+	
 	@Override
 	public int getItemViewType(int position)
 	{

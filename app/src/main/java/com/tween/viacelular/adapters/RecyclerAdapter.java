@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.amulyakhare.textdrawable.TextDrawable;
+
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.ConnectedAccount;
 import com.tween.viacelular.models.Migration;
@@ -16,6 +16,7 @@ import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
 import io.realm.Realm;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder>
@@ -109,7 +110,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
 			this.name		= name;
 			this.email		= email;
-			this.profile	= R.mipmap.ic_launcher;
+			this.profile	= R.drawable.ic_account_circle_white_48dp;
 			this.mNavTitles	= title;
 			this.selected	= selected;
 			this.color		= color;
@@ -187,15 +188,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 			}
 			else
 			{
-				holder.profile.setImageResource(profile);
-				String initial = "";
 				//Agregado para mostrar siempre el celular debajo del nombre o email según de cual dato dispongamos
 
 				if(StringUtils.isNotEmpty(name))
 				{
 					holder.name.setText(name);
 					holder.name.setVisibility(android.widget.TextView.VISIBLE);
-					initial = name;
 				}
 				else
 				{
@@ -203,22 +201,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 					{
 						holder.name.setText(email);
 						holder.name.setVisibility(android.widget.TextView.VISIBLE);
-						initial = email;
 					}
 					else
 					{
 						holder.name.setVisibility(android.widget.TextView.GONE);
 					}
 				}
-
-				if(StringUtils.isEmpty(initial))
-				{
-					initial = phone;
-				}
-
+				
 				holder.email.setText(phone);
-				TextDrawable drawable = TextDrawable.builder().buildRound(StringUtils.getInitials(initial), R.color.button);
-				holder.profile.setImageDrawable(drawable);
 			}
 		}
 		catch(Exception e)

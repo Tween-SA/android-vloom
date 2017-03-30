@@ -23,7 +23,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -39,14 +38,16 @@ import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
+import com.tween.viacelular.models.User;
+import com.tween.viacelular.models.UserHelper;
+import com.tween.viacelular.services.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
-
 import io.realm.Realm;
 
 /**
@@ -676,9 +677,29 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 			try
 			{
-				Realm realm	= Realm.getDefaultInstance();
+				SharedPreferences preferences	= homeActivity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+				Realm realm						= Realm.getDefaultInstance();
+				String userId					= preferences.getString(User.KEY_API, "");
 				idsList.clear();
-				idsList		= SuscriptionHelper.updateCompanies(homeActivity, forceByUser);
+				
+				//Agregado para refrescar suscripciones del usuario con el pullupdate
+				if(StringUtils.isIdMongo(userId))
+				{
+					JSONObject jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.USERS + "/" + userId, homeActivity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
+					String result			= ApiConnection.checkResponse(homeActivity, jsonResult);
+					
+					if(result.equals(ApiConnection.OK))
+					{
+						JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_CONTENT);
+						
+						if(jsonData != null)
+						{
+							User userParsed = UserHelper.parseJSON(jsonData, true, homeActivity);
+						}
+					}
+				}
+				
+				idsList = SuscriptionHelper.updateCompanies(homeActivity, forceByUser);
 
 				if(idsList.size() > 0)
 				{
