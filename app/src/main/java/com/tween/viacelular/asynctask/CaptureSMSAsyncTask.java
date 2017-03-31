@@ -180,7 +180,7 @@ public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 									editor.putInt(Common.KEY_LAST_MSGID, preferences.getInt(Common.KEY_LAST_MSGID, 1) + 1);
 									editor.apply();
 									notification.setMsgId(String.valueOf(preferences.getInt(Common.KEY_LAST_MSGID, 1)));
-									Suscription client				= null;
+									Suscription client;
 									notification.setType(Message.TYPE_SMS);
 
 									if(body.toUpperCase().contains(activity.getString(R.string.app_name).toUpperCase()) || body.toUpperCase().contains("VIACELULAR"))

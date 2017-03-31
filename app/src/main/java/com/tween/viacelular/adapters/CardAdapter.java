@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -228,11 +229,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 	}
 
 	@Override
-	public void onBindViewHolder(final ViewHolder holder, final int position)
+	public void onBindViewHolder(final ViewHolder holder, int i)
 	{
 		//Agregado para capturar excepciones
 		try
 		{
+			final int position = holder.getAdapterPosition();
+			
 			if(notificationList.size() > 0)
 			{
 				final Message item = notificationList.get(position);
@@ -490,7 +493,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 					if(holder.iconComent != null && holder.rlComment != null && item.getKind() != Message.KIND_NOTE)
 					{
 						holder.ivEdit.setColorFilter(Color.parseColor(Common.COLOR_COMMENT));
-						holder.ivEdit.setOnClickListener(new View.OnClickListener()
+						holder.rlComment.setOnClickListener(new View.OnClickListener()
 						{
 							@Override
 							public void onClick(final View view)
@@ -500,7 +503,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								.input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
 								{
 									@Override
-									public void onInput(MaterialDialog dialog, CharSequence input)
+									public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
 									{
 										if(input != null)
 										{
@@ -565,7 +568,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 									.input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
 									{
 										@Override
-										public void onInput(MaterialDialog dialog, CharSequence input)
+										public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
 										{
 											if(input != null)
 											{
@@ -611,7 +614,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 									.input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
 									{
 										@Override
-										public void onInput(MaterialDialog dialog, CharSequence input)
+										public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
 										{
 											if(input != null)
 											{
@@ -1039,8 +1042,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 			return 0;
 		}
 	}
-
-
+	
 	@Override
 	public int getItemViewType(int position)
 	{

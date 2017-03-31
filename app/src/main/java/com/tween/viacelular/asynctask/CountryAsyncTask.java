@@ -81,8 +81,8 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 																preferences.getString(Common.KEY_TOKEN, ""), ""));
 			result							= ApiConnection.checkResponse(context, jsonResult);
 			boolean parseLocal				= true;
-			JSONObject jsonData				= null;
-			JSONArray arrayKey				= null;
+			JSONObject jsonData;
+			JSONArray arrayKey;
 
 			if(result.equals(ApiConnection.OK))
 			{

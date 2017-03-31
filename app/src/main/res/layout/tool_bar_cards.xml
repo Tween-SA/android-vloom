@@ -34,7 +34,7 @@
 			android:layout_width="50dp"
 			android:layout_height="50dp"
 			android:gravity="center_vertical"
-			android:src="@drawable/ic_launcher"
+			android:src="@mipmap/ic_launcher"
 			android:layout_toRightOf="@+id/ibBack"
 			android:layout_toEndOf="@+id/ibBack"
 			app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />

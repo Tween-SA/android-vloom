@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Looper;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CardViewActivity;
-import com.tween.viacelular.data.Country;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -295,7 +294,7 @@ public abstract class MessageHelper
 			String channel					= data.getString(Message.KEY_CHANNEL, "");
 			String companyId				= data.getString(Suscription.KEY_API, "");
 			String phone					= data.getString(User.KEY_PHONE, "");
-			String countryCode				= data.getString(Country.KEY_API, "");
+			String countryCode				= data.getString(Land.KEY_API, "");
 			String flags					= data.getString(Message.KEY_FLAGS, "");
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			String sound					= data.getString(Common.KEY_SOUND, "0");

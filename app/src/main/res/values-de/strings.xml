@@ -48,6 +48,12 @@
 	<string name="feedback_ok">Wir haben deine Nachricht korrekt empfangen</string>
 	<string name="feedback_text">Teile uns deine Erfahrungen mit</string>
 	<string name="feedback_typepush">Support-Antwort</string>
+	<string name="folder_btn">Erstellen Sie Notizen-Ordner</string><!-- after traslate -->
+	<string name="folder_header">Ordner umbenennen von Notizen</string><!-- after traslate -->
+	<string name="folder_hint">Geben Sie einen Namen für den Ordner&#8230;</string><!-- after traslate -->
+	<string name="folder_industry">Notes-Ordner</string><!-- after traslate -->
+	<string name="folder_notfound">Keine Ergebnisse für Ihre Suche gefunden</string><!-- after traslate -->
+	<string name="folder_showcase">Jetzt können Sie Ihre eigenen Ordner erstellen Sie Ihre Notizen zu speichern und zu finden, um sie einfacher!</string><!-- after traslate -->
 	<string name="gcm_send_message">Token wiedererlangt und an den Server gesendet</string>
 	<string name="get_play_services">Hol dir Google Play-Dienste</string>
 	<string name="hello_world">Hallo</string>

@@ -265,7 +265,7 @@ public class Utils
 	 * <p>Verifica si hay usuario logueado y verificado para redireccionar</p>
 	 *
 	 * @param activity Contexto
-	 * @param pantalla donde se realiza el control - 0 selección de tarjeta, 1 registro, 2 codigo, 3 slider
+	 * @param pantalla donde se realiza el control
 	 * @return void Redirecciona según verificación
 	 */
 	public static boolean checkSesion(Activity activity, int pantalla)
@@ -632,7 +632,7 @@ public class Utils
 			root.mkdirs();
 			File gpxfile = new File(root, fileName);
 			FileWriter writer = new FileWriter(gpxfile);
-			writer.append(System.getProperty("line.separator")+DateUtils.getDateTimePhone(context)+": "+string);
+			writer.append(System.getProperty("line.separator")).append(DateUtils.getDateTimePhone(context)).append(": ").append(string);
 			writer.flush();
 			writer.close();
 		}
@@ -961,7 +961,7 @@ public class Utils
 								}
 							});
 						}
-					}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 				}
 				else
 				{
@@ -984,7 +984,7 @@ public class Utils
 							}
 						});
 					}
-				}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 			}
 		}
 		catch(Exception e)

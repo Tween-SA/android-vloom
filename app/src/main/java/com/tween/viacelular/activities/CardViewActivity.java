@@ -19,7 +19,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -39,12 +38,9 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -69,12 +65,9 @@ import com.tween.viacelular.services.MyUploadService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -94,13 +87,10 @@ public class CardViewActivity extends AppCompatActivity
 	private CoordinatorLayout		Clayout;
 	private CardView				cardPayout, cardSuscribe;
 	private RelativeLayout			rlEmpty;
-	private EditText				editCode;
-	private TextInputLayout			inputCode;
 	private int						originalSoftInputMode;
-	private Button					btnContinueForm;
 	private FloatingActionButton	fabOpen,fabNote,fabPhoto;
 	private Animation				animOpen, animClose, animRotateForward, animRotateBackward;
-	private TextView				txtSubTitleForm, txtTitle, txtSubTitleCollapsed;
+	private TextView				txtTitle, txtSubTitleCollapsed;
 	private String					companyId;
 	private Toolbar					toolBar;
 	private Uri						tempUri;
@@ -127,10 +117,6 @@ public class CardViewActivity extends AppCompatActivity
 			rcwCard										= (RecyclerView) findViewById(R.id.rcwCard);
 			cardPayout									= (CardView) findViewById(R.id.cardPayout);
 			rlEmpty										= (RelativeLayout) findViewById(R.id.rlEmpty);
-			editCode									= (EditText) findViewById(R.id.editCode);
-			inputCode									= (TextInputLayout) findViewById(R.id.inputCode);
-			btnContinueForm								= (Button) findViewById(R.id.btnContinueForm);
-			txtSubTitleForm								= (TextView) findViewById(R.id.txtSubTitleForm);
 			cardSuscribe								= (CardView) findViewById(R.id.cardSuscribe);
 			TextView txtSubSuscribe						= (TextView) findViewById(R.id.txtSubSuscribe);
 			ImageView ibBack							= (ImageView) findViewById(R.id.ibBack);
@@ -164,7 +150,7 @@ public class CardViewActivity extends AppCompatActivity
 					{
 						if(!task.isSuccessful())
 						{
-							System.out.println("OnCompleteListener-signInAnonymously:getException: "+task.getException());
+							System.out.println("OnCompleteListener-signInAnonymously:getException: ");
 						}
 					}
 				});
@@ -174,7 +160,6 @@ public class CardViewActivity extends AppCompatActivity
 			{
 				final Intent intentRecive			= getIntent();
 				Realm realm							= Realm.getDefaultInstance();
-				RealmResults<Message> notifications	= null;
 
 				if(intentRecive != null)
 				{
@@ -229,17 +214,25 @@ public class CardViewActivity extends AppCompatActivity
 							txtTitle.setTextColor(colorTitle);
 							txtSubTitleCollapsed.setTextColor(Utils.adjustAlpha(colorSubTitle, Common.ALPHA_FOR_SUBTITLE));
 						}
-
-						//Modificación para migrar a asynctask la descarga de imágenes
-						if(StringUtils.isNotEmpty(image))
+						
+						if(suscription.getType() == Suscription.TYPE_FOLDER)
 						{
-							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
-							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(circleView);
+							//Mostramos icono default de carpeta
+							Picasso.with(this).load(R.drawable.ic_folder).into(circleView);
 						}
 						else
 						{
-							//Mostrar el logo de Vloom si no tiene logo
-							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(circleView);
+							//Mostramos el logo de la company
+							if(StringUtils.isNotEmpty(image))
+							{
+								//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
+								Picasso.with(getApplicationContext()).load(image).placeholder(R.mipmap.ic_launcher).into(circleView);
+							}
+							else
+							{
+								//Mostrar el logo de Vloom si no tiene logo
+								Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(circleView);
+							}
 						}
 
 						txtSubTitleCollapsed.setText(suscription.getIndustry());
@@ -388,7 +381,7 @@ public class CardViewActivity extends AppCompatActivity
 						.input(getString(R.string.enrich_notehint), txtNote, new MaterialDialog.InputCallback()
 						{
 							@Override
-							public void onInput(MaterialDialog dialog, CharSequence input)
+							public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
 							{
 								if(input != null)
 								{
@@ -433,7 +426,7 @@ public class CardViewActivity extends AppCompatActivity
 					.input(getString(R.string.enrich_notehint), txtNote, new MaterialDialog.InputCallback()
 					{
 						@Override
-						public void onInput(MaterialDialog dialog, CharSequence input)
+						public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
 						{
 							if(input != null)
 							{
@@ -723,7 +716,20 @@ public class CardViewActivity extends AppCompatActivity
 		try
 		{
 			MenuInflater inflater = getMenuInflater();
-			inflater.inflate(R.menu.menu_cardview, menu);
+			Migration.getDB(CardViewActivity.this);
+			Realm realm	= Realm.getDefaultInstance();
+			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+			
+			if(suscription.getType() == Suscription.TYPE_FOLDER)
+			{
+				inflater.inflate(R.menu.menu_folder, menu);
+			}
+			else
+			{
+				inflater.inflate(R.menu.menu_cardview, menu);
+			}
+			
+			realm.close();
 		}
 		catch(Exception e)
 		{
@@ -748,48 +754,53 @@ public class CardViewActivity extends AppCompatActivity
 				Migration.getDB(CardViewActivity.this);
 				Realm realm	= Realm.getDefaultInstance();
 				suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
-
-				if(menu.getItem(1) != null)
+				
+				if(suscription.getType() != Suscription.TYPE_FOLDER)
 				{
-					MenuItem item	= menu.getItem(1);
-
-					if(suscription != null)
+					if(menu.getItem(1) != null)
 					{
-						if(suscription.getSilenced() == Common.BOOL_YES)
+						MenuItem item	= menu.getItem(1);
+						
+						if(suscription != null)
 						{
-							item.setTitle(R.string.activate_notif);
+							if(suscription.getSilenced() == Common.BOOL_YES)
+							{
+								item.setTitle(R.string.activate_notif);
+							}
+							else
+							{
+								item.setTitle(R.string.silence);
+							}
 						}
 						else
 						{
 							item.setTitle(R.string.silence);
 						}
 					}
-					else
+					
+					if(menu.getItem(3) != null)
 					{
-						item.setTitle(R.string.silence);
-					}
-				}
-
-				if(menu.getItem(3) != null)
-				{
-					MenuItem itemSuscribe	= menu.getItem(3);
-
-					if(suscription != null)
-					{
-						if(suscription.getFollower() == Common.BOOL_YES)
+						MenuItem itemSuscribe	= menu.getItem(3);
+						
+						if(suscription != null)
 						{
-							itemSuscribe.setTitle(R.string.landing_unsuscribe);
+							if(suscription.getFollower() == Common.BOOL_YES)
+							{
+								itemSuscribe.setTitle(R.string.landing_unsuscribe);
+							}
+							else
+							{
+								itemSuscribe.setTitle(R.string.landing_suscribe);
+							}
 						}
 						else
 						{
 							itemSuscribe.setTitle(R.string.landing_suscribe);
 						}
 					}
-					else
-					{
-						itemSuscribe.setTitle(R.string.landing_suscribe);
-					}
 				}
+				
+				realm.close();
 			}
 		}
 		catch(Exception e)
@@ -1213,7 +1224,7 @@ public class CardViewActivity extends AppCompatActivity
 		try
 		{
 			hideSoftKeyboard();
-			Realm realm					= Realm.getDefaultInstance();
+			Realm realm				= Realm.getDefaultInstance();
 			suscription				= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			final Activity activity	= this;
 
@@ -1348,6 +1359,57 @@ public class CardViewActivity extends AppCompatActivity
 				if(item.toString().equals(getString(R.string.settings)))
 				{
 					goToSettings();
+				}
+				
+				//Agregado para permitir cambiar nombre de la carpeta desde las opciones
+				if(item.toString().equals(getString(R.string.folder_header)))
+				{
+					new MaterialDialog.Builder(this).title(getString(R.string.folder_header)).inputType(InputType.TYPE_CLASS_TEXT)
+						.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 20).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+						.input(getString(R.string.folder_hint), suscription.getName(), new MaterialDialog.InputCallback()
+						{
+							@Override
+							public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
+							{
+								if(input != null)
+								{
+									if(input != "")
+									{
+										final String name = input.toString().trim();
+										
+										if(StringUtils.isNotEmpty(name))
+										{
+											Realm realm = Realm.getDefaultInstance();
+											realm.executeTransactionAsync(new Realm.Transaction()
+											{
+												@Override
+												public void execute(Realm bgRealm)
+												{
+													Suscription suscription1 = bgRealm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+													suscription1.setName(name);
+												}
+											}, new Realm.Transaction.OnSuccess()
+											{
+												@Override
+												public void onSuccess()
+												{
+													Handler handler = new android.os.Handler();
+													handler.post(new Runnable()
+													{
+														public void run()
+														{
+															txtTitle.setText(name);
+														}
+													});
+												}
+											});
+											
+											realm.close();
+										}
+									}
+								}
+							}
+						}).show();
 				}
 
 				Utils.setStyleSnackBar(snackBar, getApplicationContext());

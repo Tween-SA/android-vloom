@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/rlContact"
+	xmlns:tools="http://schemas.android.com/tools" android:id="@+id/rlContact"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:paddingBottom="8dp"
@@ -67,7 +67,7 @@
 		android:layout_centerVertical="true"
 		android:textSize="15sp"
 		android:onClick="goTo"
-		android:textAppearance="?android:attr/textAppearanceMedium" />
+		android:textAppearance="?android:attr/textAppearanceMedium" tools:ignore="HardcodedText"/>
 	<ImageView
 		android:id="@+id/iconEmail"
 		android:layout_width="20dp"
@@ -93,5 +93,5 @@
 		android:layout_marginTop="21dp"
 		android:onClick="goTo"
 		android:textSize="15sp"
-		android:textAppearance="?android:attr/textAppearanceMedium" />
+		android:textAppearance="?android:attr/textAppearanceMedium" tools:ignore="HardcodedText"/>
 </RelativeLayout>

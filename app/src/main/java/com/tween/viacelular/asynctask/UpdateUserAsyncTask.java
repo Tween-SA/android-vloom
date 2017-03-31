@@ -86,13 +86,8 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 			JSONObject jsonSend				= new JSONObject();
 			JSONObject jsonResult			= new JSONObject();
 			JSONObject info					= new JSONObject();
-			String gcmId					= preferences.getString(User.KEY_GCMID, token);
-			String country					= preferences.getString(Land.KEY_API, "");
-			String phone					= preferences.getString(User.KEY_PHONE, "");
-			String email					= "";
-			String firstName				= "";
-			String lastName					= "";
-			int status						= User.STATUS_UNVERIFIED;
+			String gcmId, country, phone, email, firstName, lastName;
+			int status;
 
 			if(user != null)
 			{
