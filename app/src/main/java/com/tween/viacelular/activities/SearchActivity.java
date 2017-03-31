@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
@@ -47,6 +48,7 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 	private MaterialSearchView			searchView;
 	private StickyListHeadersListView	stickyList;
 	private Toolbar						toolBar;
+	private RelativeLayout				rlEmpty;
 	private int							originalSoftInputMode;
 	private String						section	= "";
 	private String						filter	= "";
@@ -59,7 +61,8 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 		{
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.activity_search);
-			toolBar = (Toolbar) findViewById(R.id.toolBar);
+			toolBar	= (Toolbar) findViewById(R.id.toolBar);
+			rlEmpty	= (RelativeLayout) findViewById(R.id.rlEmpty);
 			setSupportActionBar(toolBar);
 			toolBar.setNavigationIcon(R.drawable.back);
 			toolBar.setNavigationOnClickListener(new View.OnClickListener()
@@ -233,6 +236,8 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 
 			if(suscriptions.size() > 0)
 			{
+				rlEmpty.setVisibility(RelativeLayout.GONE);
+				
 				for(Suscription suscription : suscriptions)
 				{
 					if(StringUtils.isIdMongo(suscription.getCompanyId()))
@@ -255,6 +260,10 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 						}
 					}
 				}
+			}
+			else
+			{
+				rlEmpty.setVisibility(RelativeLayout.VISIBLE);
 			}
 
 			String backTo;
