@@ -36,7 +36,6 @@ import com.tween.viacelular.activities.CodeActivity;
 import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.activities.PhoneActivity;
 import com.tween.viacelular.activities.SettingsActivity;
-import com.tween.viacelular.activities.SuscriptionsActivity;
 import com.tween.viacelular.asynctask.GetLocationAsyncTask;
 import com.tween.viacelular.asynctask.MigrationAsyncTask;
 import com.tween.viacelular.asynctask.SplashAsyncTask;
@@ -132,35 +131,7 @@ public class Utils
 					break;
 
 					case 2:
-						//Agregado para prevenir casos en que no se actualizaron las suscripciones
-						Realm realm = Realm.getDefaultInstance();
-
-						if(realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).count() == 0)
-						{
-							new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-						}
-						else
-						{
-							//Agregado para limitar frecuencia de actualización
-							SharedPreferences preferences	= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-							long tsUpated					= preferences.getLong(Common.KEY_PREF_TSSUBSCRIPTIONS, System.currentTimeMillis());
-
-							if(DateUtils.needUpdate(tsUpated, DateUtils.HIGH_FREQUENCY, activity))
-							{
-								//Se modifica para reemplazar la pantalla Bloquedas por la pantalla Empresas con tab
-								new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-							}
-							else
-							{
-								intent = new Intent(activity, SuscriptionsActivity.class);
-								intent.putExtra(Common.KEY_TITLE, activity.getString(R.string.title_companies));
-								intent.putExtra(Common.KEY_SECTION, position);
-							}
-						}
-					break;
-
-					case 3:
-						//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
+						//Se quita la opción de Empresas del menú
 						GoogleAnalytics.getInstance(activity).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("Entrar")
 																											.setLabel("Accion_user").build());
 						intent = new Intent(activity, SettingsActivity.class);
@@ -397,7 +368,7 @@ public class Utils
 
 	public static String[] getMenu(Context context)
 	{
-		return new String[]{context.getString(R.string.title_notifications), context.getString(R.string.title_companies), context.getString(R.string.title_settings)};
+		return new String[]{context.getString(R.string.title_notifications), context.getString(R.string.title_settings)};
 	}
 
 	public static boolean isLightColor(String colorHex, Context context)
