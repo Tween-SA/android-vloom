@@ -48,9 +48,9 @@
 	<string name="feedback_ok">Recebemos sua mensagem corretamente</string>
 	<string name="feedback_text">Compartilhe sua experiência!</string>
 	<string name="feedback_typepush">Resposta de suporte</string>
-	<string name="folder_btn">Criar pasta notas</string><!-- after traslate -->
-	<string name="folder_header">Renomear pasta de notas</string><!-- after traslate -->
-	<string name="folder_hint">Digite um nome para a pasta&#8230;</string><!-- after traslate -->
+	<string name="folder_btn">Criar nova</string><!-- after traslate -->
+	<string name="folder_header">Rebatizar</string><!-- after traslate -->
+	<string name="folder_hint">Digite um nome&#8230;</string><!-- after traslate -->
 	<string name="folder_industry">Pasta de notas</string><!-- after traslate -->
 	<string name="folder_notfound">Não há resultados para a sua pesquisa</string><!-- after traslate -->
 	<string name="folder_showcase">Agora você pode criar suas próprias pastas para armazenar suas notas e encontrá-los mais fácil!</string><!-- after traslate -->

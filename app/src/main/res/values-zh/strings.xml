@@ -48,9 +48,9 @@
 	<string name="feedback_ok">我们已经顺利收到您的留言</string>
 	<string name="feedback_text">和我们分享您的体验</string>
 	<string name="feedback_typepush">来自支持的响应</string>
-	<string name="folder_btn">创建笔记文件夹</string><!-- after traslate -->
-	<string name="folder_header">重命名的文件夹中的注意事项</string><!-- after traslate -->
-	<string name="folder_hint">您输入文件夹名称&#8230;</string><!-- after traslate -->
+	<string name="folder_btn">创建新</string><!-- after traslate -->
+	<string name="folder_header">重命名</string><!-- after traslate -->
+	<string name="folder_hint">输入一个名称&#8230;</string><!-- after traslate -->
 	<string name="folder_industry">注文件夹</string><!-- after traslate -->
 	<string name="folder_notfound">找到你的搜索没有任何结果</string><!-- after traslate -->
 	<string name="folder_showcase">现在，您可以创建自己的文件夹来存储你的笔记，并找到它们更容易！</string><!-- after traslate -->

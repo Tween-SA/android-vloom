@@ -4,14 +4,10 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:context="com.tween.viacelular.activities.SuscriptionsActivity">
 	<item
-		android:id="@+id/action_folder"
-		android:icon="@drawable/ic_new_folder_white"
-		android:orderInCategory="100"
-		app:showAsAction="ifRoom" />
-	<item
 		android:id="@+id/action_search"
 		android:icon="@drawable/ic_action_action_search"
 		android:orderInCategory="200"
+		android:title="@string/folder_btn"
 		app:showAsAction="ifRoom" />
 	<item
 		android:id="@+id/menu_refresh"

@@ -23,13 +23,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.HomeActivity;
-import com.tween.viacelular.activities.SearchActivity;
 import com.tween.viacelular.activities.VerifyPhoneActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
 import com.tween.viacelular.adapters.IconOptionAdapter;
@@ -45,9 +45,12 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import io.realm.Realm;
 
 /**
@@ -206,16 +209,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			switch(item.getItemId())
 			{
 				case R.id.action_search:
-					GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS)
-							.send(new HitBuilders.EventBuilder().setCategory("Company").setAction("Filtro").setLabel("AccionUser").build());
-					Intent intent = new Intent(getHomeActivity(), SearchActivity.class);
-					intent.putExtra(Common.KEY_SECTION, "home");
-					getHomeActivity().startActivity(intent);
-					getHomeActivity().finish();
-				break;
-				
-				case R.id.action_folder:
-					generateFolder("");
+					HomeActivity.search(getHomeActivity());
 				break;
 				
 				default:
@@ -332,6 +326,11 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					}
 				}).show();
 		}
+	}
+	
+	public void onSearch(View view)
+	{
+		HomeActivity.search(getHomeActivity());
 	}
 
 	/**
@@ -685,7 +684,8 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 				//Agregado para refrescar suscripciones del usuario con el pullupdate
 				if(StringUtils.isIdMongo(userId))
 				{
-					JSONObject jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.USERS + "/" + userId, homeActivity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
+					JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + userId, homeActivity, ApiConnection.METHOD_GET,
+																preferences.getString(Common.KEY_TOKEN, ""), ""));
 					String result			= ApiConnection.checkResponse(homeActivity, jsonResult);
 					
 					if(result.equals(ApiConnection.OK))

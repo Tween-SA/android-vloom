@@ -49,8 +49,8 @@
 	<string name="feedback_text">Compartinos tu experiencia</string>
 	<string name="feedback_typepush">Respuesta de soporte</string>
 	<string name="folder_btn">Crear carpeta de notas</string><!-- after traslate -->
-	<string name="folder_header">Renombrar carpeta de notas</string><!-- after traslate -->
-	<string name="folder_hint">Escribe un nombre para tu carpeta&#8230;</string><!-- after traslate -->
+	<string name="folder_header">Renombrar</string><!-- after traslate -->
+	<string name="folder_hint">Escribe un nombre&#8230;</string><!-- after traslate -->
 	<string name="folder_industry">Carpeta de notas</string><!-- after traslate -->
 	<string name="folder_notfound">No encontramos resultados para tu búsqueda</string><!-- after traslate -->
 	<string name="folder_showcase">Ahora puedes crear carpetas propias para guardar tus notas y encontrarlas más fácil!</string><!-- after traslate -->

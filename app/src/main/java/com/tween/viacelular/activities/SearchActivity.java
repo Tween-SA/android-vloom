@@ -167,7 +167,7 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 			final Activity activity = this;
 			new MaterialDialog.Builder(this).title(getString(R.string.folder_btn)).inputType(InputType.TYPE_CLASS_TEXT)
 				.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 20).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
-				.input(getString(R.string.folder_hint), "", new MaterialDialog.InputCallback()
+				.input(getString(R.string.folder_hint), filter, new MaterialDialog.InputCallback()
 				{
 					@Override
 					public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
