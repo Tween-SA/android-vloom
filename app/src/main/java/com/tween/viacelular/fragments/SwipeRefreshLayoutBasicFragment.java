@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -45,12 +45,9 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import io.realm.Realm;
 
 /**
@@ -103,6 +100,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			RecyclerView.LayoutManager mLayoutManager	= new LinearLayoutManager(getActivity());
 			rcwHome.setLayoutManager(mLayoutManager);
 			rlEmpty										= (RelativeLayout) view.findViewById(R.id.rlEmpty);
+			FloatingActionButton fab					= (FloatingActionButton) view.findViewById(R.id.fabAdd);
 			SharedPreferences preferences				= getHomeActivity().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 
 			if(preferences.getBoolean(Common.KEY_PREF_FREEPASS, false))
@@ -122,6 +120,15 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			{
 				rlFreePass.setVisibility(RelativeLayout.GONE);
 			}
+			
+			fab.setOnClickListener(new View.OnClickListener()
+			{
+				@Override
+				public void onClick(final View view)
+				{
+					HomeActivity.search(getHomeActivity());
+				}
+			});
 		}
 		catch(Exception e)
 		{
@@ -326,11 +333,6 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					}
 				}).show();
 		}
-	}
-	
-	public void onSearch(View view)
-	{
-		HomeActivity.search(getHomeActivity());
 	}
 
 	/**
@@ -607,7 +609,28 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:refresh - Exception:", e);
 		}
 	}
-
+	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		try
+		{
+			Handler handler = new android.os.Handler();
+			handler.postDelayed(new Runnable()
+			{
+				public void run()
+				{
+					refresh(true, true);
+				}
+			}, 1000);
+		}
+		catch(Exception e)
+		{
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:refresh - Exception:", e);
+		}
+	}
+	
 	/**
 	 * When the AsyncTask finishes, it calls onRefreshComplete(), which updates the data in the ListAdapter and turns off the progress bar.
 	 */
