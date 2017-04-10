@@ -559,7 +559,7 @@ public abstract class SuscriptionHelper
 			String jUnsuscribe			= "";
 			Integer jStatus				= Suscription.STATUS_ACTIVE;
 			String jCountryCode			= "";
-			Integer jReceive			= Common.BOOL_NO;
+			Integer jReceive			= Common.BOOL_YES;
 			Integer jSuscribe			= Common.BOOL_NO;
 			String jUrl					= "";
 			String jPhone				= "";

@@ -93,7 +93,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 				{
 					if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.MEAN_FREQUENCY, context))
 					{
-						new GetLocationAsyncTask(activity, false, true, null).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+						new GetLocationAsyncTask(activity, false, true, null).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 					}
 				}
 			}
@@ -162,9 +162,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 				//Agregado para contemplar mensajes dentro de listas
 				if(StringUtils.isIdMongo(msgId.replace("-", "")))
 				{
-					JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES + "/" + msgId, context, ApiConnection.METHOD_PUT,
-																preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
-					result					= ApiConnection.checkResponse(context, jsonResult);
+					ApiConnection.request(ApiConnection.MESSAGES + "/" + msgId, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString());
 				}
 			}
 			else
@@ -212,9 +210,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 						if(jsonArray.length() > 0)
 						{
-							JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.MESSAGES, context, ApiConnection.METHOD_PUT,
-																		preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString()));
-							result					= ApiConnection.checkResponse(context, jsonResult);
+							ApiConnection.request(ApiConnection.MESSAGES, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString());
 						}
 					}
 				}

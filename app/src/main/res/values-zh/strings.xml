@@ -59,6 +59,11 @@
 	<string name="hello_world">您好</string>
 	<string name="home">通过验证您的手机号码，获得更好的 VíaCelular 体验</string>
 	<string name="hours">小时</string>
+	<string name="id_help">这家公司可以让你与布卢姆通过输入识别码字母数字通常位于该法案的上部连结您的帐户</string><!-- after traslate -->
+	<string name="id_ok">增强体验</string><!-- after traslate -->
+	<string name="id_oktext">您的ID是：</string><!-- after traslate -->
+	<string name="id_title">提升你的经验</string><!-- after traslate -->
+	<string name="id_text">收到独家消息，如发票输入您的</string><!-- after traslate -->
 	<string name="i_read">通过选择“继续”，您将接受我们的条款和条件</string>
 	<string name="invite">邀请</string>
 	<string name="landing_card_form_header">增强您的体验</string><!-- after traslate -->

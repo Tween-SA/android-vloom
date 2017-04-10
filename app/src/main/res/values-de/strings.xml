@@ -59,6 +59,11 @@
 	<string name="hello_world">Hallo</string>
 	<string name="home">Überprüfe deine Handynummer für eine bessere Erfahrung mit VíaCelular</string>
 	<string name="hours">Stunden</string>
+	<string name="id_help">Diese Firma ermöglicht es Ihnen, Ihr Konto mit Vloom zu verknüpfen, indem Sie einen Identifizierungscode Alphanumeric normalerweise befindet sich im oberen Teil der Rechnung eingeben</string><!-- after traslate -->
+	<string name="id_ok">verbesserte Erfahrung</string><!-- after traslate -->
+	<string name="id_oktext">Ihre Identifikation ist:</string><!-- after traslate -->
+	<string name="id_title">Verbessern Sie Ihre Erfahrung</string><!-- after traslate -->
+	<string name="id_text">Erhalten Sie exklusive Nachrichten wie Rechnungen Eingabe Ihrer</string><!-- after traslate -->
 	<string name="i_read">Durch Drücken auf \"Weiter\" akzeptierst du unsere Allgemeinen Geschäftsbedingungen</string>
 	<string name="invite">Einladung</string>
 	<string name="landing_card_form_header">Verbessern Sie Ihre Erfahrungen</string><!-- after traslate -->

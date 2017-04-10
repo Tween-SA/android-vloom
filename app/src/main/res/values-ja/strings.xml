@@ -59,6 +59,11 @@
 	<string name="hello_world">こんにちは</string>
 	<string name="home">VíaCelular体験をより良いものにするために携帯電話番号を照合する</string>
 	<string name="hours">時間</string>
+	<string name="id_help">この会社では、通常、法案の上部に位置識別子コードの英数字を入力することにより、ブルームでアカウントをリンクすることができます</string><!-- after traslate -->
+	<string name="id_ok">強化された経験</string><!-- after traslate -->
+	<string name="id_oktext">あなたのIDは以下のとおりです。</string><!-- after traslate -->
+	<string name="id_title">あなたの経験を強化</string><!-- after traslate -->
+	<string name="id_text">このようあなたに入った請求書などのエクスクルーシブ・メッセージを受信</string><!-- after traslate -->
 	<string name="i_read">続行を選択すると、利用規約に同意したことになります</string>
 	<string name="invite">招待</string>
 	<string name="landing_card_form_header">あなたの経験を強化</string><!-- after traslate -->

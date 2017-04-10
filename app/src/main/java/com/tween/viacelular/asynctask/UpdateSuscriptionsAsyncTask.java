@@ -124,10 +124,6 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 								localIds = localIds+"'"+suscription.getCompanyId()+"',";
 							}
 						}
-						else
-						{
-							System.out.println("company is null");
-						}
 					}
 					else
 					{
@@ -315,11 +311,13 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 							if(ids.contains(results.get(i).getCompanyId()))
 							{
 								results.get(i).setFollower(flag);
+								results.get(i).setReceive(flag);
 								results.get(i).setBlocked(Utils.reverseBool(flag));
 
 								if(flag == Common.BOOL_NO)
 								{
 									results.get(i).setDataSent(flag);
+									results.get(i).setIdentificationValue("");
 								}
 								else
 								{

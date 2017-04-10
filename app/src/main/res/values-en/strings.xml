@@ -59,6 +59,11 @@
 	<string name="hello_world">Hello</string>
 	<string name="home">Verify your mobile phone number for a better experience with Vloom</string>
 	<string name="hours">hours</string>
+	<string name="id_help">This company allows you to link your account with Vloom by entering an alphanumerical code that is normally located in the upper sector of the invoice</string><!-- after traslate -->
+	<string name="id_ok">Enhanced Experience</string><!-- after traslate -->
+	<string name="id_oktext">Your identifier is:</string><!-- after traslate -->
+	<string name="id_title">Improve your experience</string><!-- after traslate -->
+	<string name="id_text">Receive exclusive messages as invoices by entering your</string><!-- after traslate -->
 	<string name="i_read">By selecting Continue, you accept our Terms and Conditions</string>
 	<string name="invite">Invitation</string>
 	<string name="landing_card_form_header">Enhance Your Experience</string><!-- after traslate -->

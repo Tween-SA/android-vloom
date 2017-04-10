@@ -59,6 +59,11 @@
 	<string name="hello_world">Olá</string>
 	<string name="home">Confirme seu número de celular para uma melhor experiência com VíaCelular</string>
 	<string name="hours">horas</string>
+	<string name="id_help">Esta empresa permite que você vincular sua conta com Vloom, inserindo um alfanumérico código identificador normalmente localizado na parte superior da conta</string><!-- after traslate -->
+	<string name="id_ok">Experiência aprimorada</string><!-- after traslate -->
+	<string name="id_oktext">Seu ID é:</string><!-- after traslate -->
+	<string name="id_title">Melhore a sua experiência</string><!-- after traslate -->
+	<string name="id_text">Receber mensagens exclusivas, tais como notas fiscais recebidas no seu</string><!-- after traslate -->
 	<string name="i_read">Ao clicar em Continuar, você aceita os Termos e Condições</string>
 	<string name="invite">Convite</string>
 	<string name="landing_card_form_header">Melhore a sua experiência</string><!-- after traslate -->

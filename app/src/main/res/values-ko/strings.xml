@@ -59,6 +59,11 @@
 	<string name="hello_world">안녕하세요</string>
 	<string name="home">VíaCelular를 통한 더 나은 경험을 위해 휴대 전화를 확인하십시오</string>
 	<string name="hours">시</string>
+	<string name="id_help">이 회사는 일반적 법안의 상단 부분에 위치 식별자 코드 문자 숫자를 입력하여 꽃 계정을 연결 할 수 있습니다</string><!-- after traslate -->
+	<string name="id_ok">향상된 경험</string><!-- after traslate -->
+	<string name="id_oktext">귀하의 ID는 다음과 같습니다</string><!-- after traslate -->
+	<string name="id_title">귀하의 경험을 향상</string><!-- after traslate -->
+	<string name="id_text">송장이 입력하는 등 독점적 인 메시지를 수신하여</string><!-- after traslate -->
 	<string name="i_read">계속을 선택함으로써, 당사의 이용 약관에 동의하게 됩니다</string>
 	<string name="invite">초대</string>
 	<string name="landing_card_form_header">귀하의 경험을 향상</string><!-- after traslate -->

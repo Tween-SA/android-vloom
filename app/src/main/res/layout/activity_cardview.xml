@@ -15,9 +15,53 @@
 			android:id="@+id/toolBarCardView"
 			layout="@layout/tool_bar_cards" />
 		<RelativeLayout
+			android:layout_below="@+id/toolBarCardView"
+			android:id="@+id/rlClientId"
+			android:layout_centerHorizontal="true"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="6dp"
+			android:layout_marginBottom="10dp"
+			android:layout_marginLeft="10dp"
+			android:layout_marginStart="10dp"
+			android:layout_marginRight="10dp"
+			android:layout_marginEnd="10dp"
+			android:background="@drawable/freepass">
+			<ImageView
+				android:contentDescription="@string/app_name"
+				android:id="@+id/ivFreePass"
+				android:layout_width="30dp"
+				android:layout_height="30dp"
+				android:layout_marginLeft="10dp"
+				android:layout_centerVertical="true"
+				android:layout_marginStart="10dp"
+				android:src="@drawable/ic_live_help_white_36dp" />
+			<TextView
+				android:id="@+id/txtFreePassTitle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_toRightOf="@+id/ivFreePass"
+				android:layout_marginLeft="4dp"
+				android:layout_marginStart="4dp"
+				android:textStyle="bold"
+				android:layout_toEndOf="@+id/ivFreePass"
+				android:textColor="@android:color/white"
+				android:text="@string/id_title" />
+			<TextView
+				android:layout_below="@+id/txtFreePassTitle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_toRightOf="@+id/ivFreePass"
+				android:layout_marginLeft="4dp"
+				android:layout_marginStart="4dp"
+				android:layout_toEndOf="@+id/ivFreePass"
+				android:textColor="@android:color/white"
+				android:text="@string/id_text" />
+		</RelativeLayout>
+		<RelativeLayout
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_below="@+id/toolBarCardView"
+			android:layout_below="@+id/rlClientId"
 			android:layout_marginTop="4dp"
 			android:id="@+id/rlCardView">
 			<android.support.v7.widget.CardView

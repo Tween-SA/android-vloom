@@ -205,7 +205,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 									info.put("countryLanguage", Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
 									jsonSend.put(Common.KEY_INFO, info);
 									jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_PUT,
-											preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+																	preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
 									result		= ApiConnection.checkResponse(context, jsonResult);
 									//Guardar la fecha de última actualización
 									SharedPreferences.Editor editor = preferences.edit();
