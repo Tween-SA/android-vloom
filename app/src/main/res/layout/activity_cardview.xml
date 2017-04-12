@@ -29,33 +29,37 @@
 			android:background="@drawable/freepass">
 			<ImageView
 				android:contentDescription="@string/app_name"
-				android:id="@+id/ivFreePass"
+				android:id="@+id/ivHelp"
 				android:layout_width="30dp"
 				android:layout_height="30dp"
 				android:layout_marginLeft="10dp"
 				android:layout_centerVertical="true"
+				android:onClick="showHelp"
 				android:layout_marginStart="10dp"
 				android:src="@drawable/ic_live_help_white_36dp" />
 			<TextView
-				android:id="@+id/txtFreePassTitle"
+				android:id="@+id/idTitle"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_toRightOf="@+id/ivFreePass"
+				android:layout_toRightOf="@+id/ivHelp"
 				android:layout_marginLeft="4dp"
 				android:layout_marginStart="4dp"
 				android:textStyle="bold"
-				android:layout_toEndOf="@+id/ivFreePass"
+				android:layout_toEndOf="@+id/ivHelp"
+				android:onClick="modifyId"
 				android:textColor="@android:color/white"
 				android:text="@string/id_title" />
 			<TextView
-				android:layout_below="@+id/txtFreePassTitle"
+				android:layout_below="@+id/idTitle"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_toRightOf="@+id/ivFreePass"
+				android:layout_toRightOf="@+id/ivHelp"
 				android:layout_marginLeft="4dp"
 				android:layout_marginStart="4dp"
-				android:layout_toEndOf="@+id/ivFreePass"
+				android:layout_toEndOf="@+id/ivHelp"
+				android:onClick="modifyId"
 				android:textColor="@android:color/white"
+				android:id="@+id/idText"
 				android:text="@string/id_text" />
 		</RelativeLayout>
 		<RelativeLayout
