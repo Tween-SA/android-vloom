@@ -34,7 +34,6 @@
 				android:layout_height="30dp"
 				android:layout_marginLeft="10dp"
 				android:layout_centerVertical="true"
-				android:onClick="showHelp"
 				android:layout_marginStart="10dp"
 				android:src="@drawable/ic_live_help_white_36dp" />
 			<TextView

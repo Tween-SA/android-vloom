@@ -147,7 +147,6 @@ public class CardViewActivity extends AppCompatActivity
 			toolBar.setSubtitle("");
 			setTitle("");
 
-
 			if(mAuth != null)
 			{
 				mAuth.signOut();
@@ -242,6 +241,8 @@ public class CardViewActivity extends AppCompatActivity
 								Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(circleView);
 							}
 						}
+						
+						refreshIdZone();
 
 						txtSubTitleCollapsed.setText(suscription.getIndustry());
 						toolBar.setBackgroundColor(Color.parseColor(color));
@@ -406,6 +407,19 @@ public class CardViewActivity extends AppCompatActivity
 		}
 	}
 	
+	public void retry()
+	{
+		try
+		{
+			new SendIdentificationKeyAsyncTask(this, true, idValue, companyId).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+			refreshIdZone();
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":retry - Exception:", e);
+		}
+	}
+	
 	public void modifyId(View view)
 	{
 		final Activity activity = this;
@@ -447,26 +461,105 @@ public class CardViewActivity extends AppCompatActivity
 		{
 			if(StringUtils.isNotEmpty(companyId))
 			{
-				Realm realm = Realm.getDefaultInstance();
-				Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+				Realm realm				= Realm.getDefaultInstance();
+				Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 				
 				if(suscription != null)
 				{
-					if(suscription.getDataSent() == Common.BOOL_YES)
+					if(StringUtils.isNotEmpty(suscription.getIdentificationKey()))
 					{
-						rlClientId.setBackgroundColor(Color.parseColor(Common.COLOR_ACTION));
-						Picasso.with(this).load(R.drawable.ic_edit_white_18dp).into(ivHelp);
-						idTitle.setText(getString(R.string.id_ok));
-						String text = getString(R.string.id_oktext)+" "+suscription.getIdentificationValue();
-						idText.setText(text);
-						ivHelp.setOnClickListener(new View.OnClickListener()
+						rlClientId.setVisibility(RelativeLayout.VISIBLE);
+						
+						if(StringUtils.isNotEmpty(suscription.getIdentificationValue()) && suscription.getDataSent() == Common.BOOL_YES)
 						{
-							@Override
-							public void onClick(final View view)
+							idTitle.setText(getString(R.string.id_ok));
+							idText.setText(getString(R.string.id_oktext)+" "+suscription.getIdentificationValue());
+							ivHelp.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_edit_white_18dp));
+							ivHelp.setOnClickListener(new View.OnClickListener()
 							{
-								modifyId(view);
+								@Override
+								public void onClick(final View view)
+								{
+									modifyId(view);
+								}
+							});
+							
+							if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+							{
+								rlClientId.setBackground(getDrawable(R.drawable.idok));
 							}
-						});
+							else
+							{
+								rlClientId.setBackgroundDrawable(getResources().getDrawable(R.drawable.idok));
+							}
+						}
+						else
+						{
+							if(StringUtils.isNotEmpty(suscription.getIdentificationValue()) && suscription.getDataSent() != Common.BOOL_YES)
+							{
+								idTitle.setText(getString(R.string.id_title));
+								idText.setText(getString(R.string.id_oktext)+" "+suscription.getIdentificationValue());
+								ivHelp.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_edit_white_18dp));
+								ivHelp.setOnClickListener(new View.OnClickListener()
+								{
+									@Override
+									public void onClick(final View view)
+									{
+										modifyId(view);
+									}
+								});
+								idTitle.setOnClickListener(new View.OnClickListener()
+								{
+									@Override
+									public void onClick(final View view)
+									{
+										retry();
+									}
+								});
+								idText.setOnClickListener(new View.OnClickListener()
+								{
+									@Override
+									public void onClick(final View view)
+									{
+										retry();
+									}
+								});
+								if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+								{
+									rlClientId.setBackground(getDrawable(R.drawable.idfail));
+								}
+								else
+								{
+									rlClientId.setBackgroundDrawable(getResources().getDrawable(R.drawable.idfail));
+								}
+							}
+							else
+							{
+								idTitle.setText(getString(R.string.id_title));
+								idText.setText(getString(R.string.id_text));
+								ivHelp.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_live_help_white_36dp));
+								ivHelp.setOnClickListener(new View.OnClickListener()
+								{
+									@Override
+									public void onClick(final View view)
+									{
+										showHelp(view);
+									}
+								});
+								if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+								{
+									rlClientId.setBackground(getDrawable(R.drawable.freepass));
+								}
+								else
+								{
+									rlClientId.setBackgroundDrawable(getResources().getDrawable(R.drawable.freepass));
+								}
+							}
+						}
+					}
+					else
+					{
+						rlClientId.setVisibility(RelativeLayout.GONE);
 					}
 				}
 				
