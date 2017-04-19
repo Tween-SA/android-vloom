@@ -37,7 +37,8 @@
 				android:textColor="@color/gray"
 				android:textSize="16sp" />
 			<TextView
-				android:id="@+id/txtContact"
+				android:layout_below="@+id/txtAbout"
+				android:id="@+id/txtId"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="16dp"
@@ -45,14 +46,52 @@
 				android:text="@string/id_ok"
 				android:textColor="@color/action"
 				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:layout_alignParentTop="true"
 				android:textSize="16sp" />
-			<RelativeLayout
+			<LinearLayout
+				android:id="@+id/llId"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_below="@+id/txtId"
+				android:orientation="horizontal"
+				android:visibility="visible"
+				android:weightSum="3">
+				<ImageView
+					android:id="@+id/iconId"
+					android:layout_width="20dp"
+					android:layout_height="20dp"
+					android:layout_weight="0.5"
+					android:contentDescription="@string/landing_contact"
+					android:src="@drawable/ic_person_48dp" />
+				<TextView
+					android:id="@+id/txtValue"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="2"
+					android:textAppearance="?android:attr/textAppearanceSmall"
+					android:textColor="@color/black"/>
+				<ImageView
+					android:id="@+id/iconEdit"
+					android:layout_width="20dp"
+					android:layout_height="20dp"
+					android:layout_marginLeft="16dp"
+					android:layout_marginStart="16dp"
+					android:layout_weight="0.5"
+					android:contentDescription="@string/landing_contact"
+					android:src="@drawable/ic_edit_48dp"/>
+			</LinearLayout>
+			<View
+				android:id="@+id/dividerTitle"
+				android:layout_width="match_parent"
+				android:layout_height="7dp"
+				android:layout_below="@+id/llId"
 				android:layout_marginTop="10dp"
+				android:layout_marginBottom="-7dp"
+				android:background="@color/accent" />
+			<RelativeLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:background="@drawable/card_btn"
-				android:layout_below="@+id/txtAbout"
+				android:layout_below="@+id/dividerTitle"
 				android:onClick="viewCards">
 				<ImageView
 					android:id="@+id/iconShowNotif"
@@ -74,66 +113,10 @@
 					android:textAppearance="?android:attr/textAppearanceSmall"
 					android:textColor="@android:color/white" />
 			</RelativeLayout>
-			<View
-				android:id="@+id/dividerTitle"
-				android:layout_width="match_parent"
-				android:layout_height="1.5dp"
-				android:layout_below="@+id/txtAbout"
-				android:layout_marginTop="8dp"
-				android:background="@drawable/freepass"/>
-			<TextView
-				android:id="@+id/txtId"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_below="@+id/dividerTitle"
-				android:layout_margin="@dimen/text_margin"
-				android:text="@string/landing_contact"
-				android:visibility="gone"
-				android:textColor="@color/action"/>
-			<LinearLayout
-				android:id="@+id/llId"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_below="@+id/txtId"
-				android:orientation="horizontal"
-				android:visibility="gone"
-				android:weightSum="3">
-				<ImageView
-					android:id="@+id/iconId"
-					android:layout_width="20dp"
-					android:layout_height="20dp"
-					android:layout_weight="0.5"
-					android:contentDescription="@string/landing_contact"
-					android:src="@drawable/ic_person_48dp"/>
-				<TextView
-					android:id="@+id/txtValue"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_weight="2"
-					android:textAppearance="?android:attr/textAppearanceSmall"
-					android:textColor="@color/black"/>
-				<ImageView
-					android:id="@+id/iconEdit"
-					android:layout_width="20dp"
-					android:layout_height="20dp"
-					android:layout_marginLeft="16dp"
-					android:layout_marginStart="16dp"
-					android:layout_weight="0.5"
-					android:contentDescription="@string/landing_contact"
-					android:src="@drawable/ic_edit_48dp"/>
-			</LinearLayout>
 		</RelativeLayout>
 	</android.support.v7.widget.CardView>
-	<View
-		android:id="@+id/dividerContact"
-		android:layout_width="match_parent"
-		android:layout_height="2dp"
-		android:layout_below="@+id/cardAbout"
-		android:layout_marginTop="8dp"
-		android:visibility="gone"
-		android:background="@color/light_gray" />
 	<include
-		android:layout_below="@+id/dividerContact"
+		android:layout_below="@+id/cardAbout"
 		android:id="@+id/contentContact"
 		layout="@layout/content_contact"
 		android:layout_width="match_parent"
