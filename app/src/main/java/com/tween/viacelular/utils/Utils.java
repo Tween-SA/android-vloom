@@ -916,7 +916,7 @@ public class Utils
 
 			if(isp != null)
 			{
-				if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.HIGH_FREQUENCY, activity))
+				if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.MEAN_FREQUENCY, activity))
 				{
 					new GetLocationAsyncTask(activity, false, true, new CallBackListener()
 					{

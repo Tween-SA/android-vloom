@@ -70,12 +70,9 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			final AppBarLayout mAppBarLayout				= (AppBarLayout) findViewById(R.id.appBarLayout);
 			txtAbout										= (TextView) findViewById(R.id.txtAbout);
 			TextView txtUrl									= (TextView) findViewById(R.id.txtUrl);
-			TextView txtExample								= (TextView) findViewById(R.id.txtExample);
 			TextView txtContact								= (TextView) findViewById(R.id.txtContact);
 			txtEmail										= (TextView) findViewById(R.id.txtEmail);
 			txtPhone										= (TextView) findViewById(R.id.txtPhone);
-			RecyclerView rcwCard							= (RecyclerView) findViewById(R.id.rcwCard);
-			RelativeLayout rlExample						= (RelativeLayout) findViewById(R.id.rlExample);
 			View contact									= findViewById(R.id.contentContact);
 			btnSuscribe										= (Button) findViewById(R.id.btnSuscribe);
 			circleView										= (CircleImageView) findViewById(R.id.circleView);
@@ -137,10 +134,6 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							//Validar con PO para ver si cuando no hay texto no mostramos nada en vez del placeholder siguiente
 							txtAbout.setText(getString(R.string.landing_title, suscription.getName()));
 						}
-
-						//Momentaneamente queda oculta la sección de Mensajes de Ejemplos por falta de definición, buscar código implementado hasta el momento en VC-954
-						rlExample.setVisibility(RelativeLayout.GONE);
-						rcwCard.setVisibility(RecyclerView.GONE);
 
 						if(StringUtils.isEmpty(suscription.getUrl()) && StringUtils.isEmpty(suscription.getEmail()) && StringUtils.isEmpty(suscription.getPhone()))
 						{
@@ -223,7 +216,6 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							collapsingToolbarLayout.setExpandedTitleColor(Color.BLACK);
 							toolBar.setSubtitleTextColor(Color.DKGRAY);
 							txtContact.setTextColor(Color.BLACK);
-							txtExample.setTextColor(Color.BLACK);
 							txtTitle.setTextColor(Color.BLACK);
 							txtBigTitle.setTextColor(Color.BLACK);
 							txtSubTitle.setTextColor(Color.DKGRAY);
@@ -234,7 +226,6 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 						{
 							ibBack.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.back));
 							txtContact.setTextColor(Color.parseColor(color));
-							txtExample.setTextColor(Color.parseColor(color));
 						}
 
 						ivPlaceholder.setBackgroundColor(Color.parseColor(color));
@@ -319,7 +310,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 
 				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()))
 				{
-					txtId.setVisibility(TextView.VISIBLE);
+					//txtId.setVisibility(TextView.VISIBLE);
 					//TODO Cuando terminemos de definir esta funcionalidad mostramos llId y seguimos desarrollando el popup para editar el dato
 				}
 				else

@@ -411,8 +411,22 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			new SendIdentificationKeyAsyncTask(this, true, idValue, companyId).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 			refreshIdZone(true);
+			new SendIdentificationKeyAsyncTask(this, true, idValue, companyId, new CallBackListener()
+			{
+				@Override
+				public void invoke()
+				{
+					runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							refreshIdZone(true);
+						}
+					});
+				}
+			}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
 		catch(Exception e)
 		{
@@ -482,9 +496,60 @@ public class CardViewActivity extends AppCompatActivity
 				{
 					if(loading)
 					{
-						idTitle.setText(getString(R.string.id_title));
-						idText.setText(getString(R.string.id_oktext)+" "+idValue);
-						ivHelp.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_edit_white_18dp));
+						if(idTitle.getText().toString().equals(getString(R.string.id_title)))
+						{
+							idTitle.setText(getString(R.string.id_ok));
+							idText.setText(getString(R.string.id_oktext)+" "+suscription.getIdentificationValue());
+							ivHelp.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_edit_white_18dp));
+							ivHelp.setOnClickListener(new View.OnClickListener()
+							{
+								@Override
+								public void onClick(final View view)
+								{
+									modifyId(view);
+								}
+							});
+							
+							if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+							{
+								rlClientId.setBackground(getDrawable(R.drawable.idok));
+							}
+							else
+							{
+								rlClientId.setBackgroundDrawable(getResources().getDrawable(R.drawable.idok));
+							}
+						}
+						else
+						{
+							idTitle.setText(getString(R.string.id_title));
+							idText.setText(getString(R.string.id_oktext)+" "+idValue);
+							ivHelp.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_edit_white_18dp));
+							idTitle.setOnClickListener(new View.OnClickListener()
+							{
+								@Override
+								public void onClick(final View view)
+								{
+									retry();
+								}
+							});
+							idText.setOnClickListener(new View.OnClickListener()
+							{
+								@Override
+								public void onClick(final View view)
+								{
+									retry();
+								}
+							});
+							if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+							{
+								rlClientId.setBackground(getDrawable(R.drawable.idfail));
+							}
+							else
+							{
+								rlClientId.setBackgroundDrawable(getResources().getDrawable(R.drawable.idfail));
+							}
+						}
+						
 						ivHelp.setOnClickListener(new View.OnClickListener()
 						{
 							@Override
@@ -493,30 +558,6 @@ public class CardViewActivity extends AppCompatActivity
 								modifyId(view);
 							}
 						});
-						idTitle.setOnClickListener(new View.OnClickListener()
-						{
-							@Override
-							public void onClick(final View view)
-							{
-								retry();
-							}
-						});
-						idText.setOnClickListener(new View.OnClickListener()
-						{
-							@Override
-							public void onClick(final View view)
-							{
-								retry();
-							}
-						});
-						if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
-						{
-							rlClientId.setBackground(getDrawable(R.drawable.idfail));
-						}
-						else
-						{
-							rlClientId.setBackgroundDrawable(getResources().getDrawable(R.drawable.idfail));
-						}
 					}
 					else
 					{

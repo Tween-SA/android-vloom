@@ -171,100 +171,12 @@
 		app:layout_behavior="@string/appbar_scrolling_view_behavior">
 		<RelativeLayout
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content">
-			<TextView
-				android:id="@+id/txtAbout"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_margin="@dimen/text_margin"
-				android:gravity="center"
-				android:lineSpacingExtra="6dp"
-				android:paddingTop="20dp"
-				android:text="@string/landing_title"
-				android:textAlignment="center"
-				android:textColor="@color/gray"
-				android:textSize="16sp"/>
-			<View
-				android:id="@+id/dividerTitle"
-				android:layout_width="match_parent"
-				android:layout_height="1.5dp"
-				android:layout_below="@+id/txtAbout"
-				android:layout_marginTop="8dp"
-				android:background="@color/light_gray"/>
-			<ImageView
-				android:id="@+id/iconShowNotif"
-				android:layout_width="20dp"
-				android:layout_height="20dp"
-				android:layout_below="@+id/dividerTitle"
-				android:layout_marginLeft="16dp"
-				android:layout_marginTop="10dp"
-				android:contentDescription="@string/landing_contact"
-				android:src="@drawable/ic_message_gray_48dp"/>
-			<TextView
-				android:id="@+id/txtShowNotif"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_below="@+id/dividerTitle"
-				android:layout_marginTop="10dp"
-				android:onClick="viewCards"
-				android:paddingEnd="0dp"
-				android:paddingLeft="60dp"
-				android:paddingRight="0dp"
-				android:paddingStart="60dp"
-				android:text="@string/notification_view"
-				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:textColor="@color/black"/>
-			<TextView
-				android:id="@+id/txtId"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_below="@+id/iconShowNotif"
-				android:layout_margin="@dimen/text_margin"
-				android:text="@string/landing_contact"
-				android:textColor="@color/action"/>
-			<LinearLayout
-				android:id="@+id/llId"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_below="@+id/txtId"
-				android:orientation="horizontal"
-				android:visibility="gone"
-				android:weightSum="3">
-				<ImageView
-					android:id="@+id/iconId"
-					android:layout_width="20dp"
-					android:layout_height="20dp"
-					android:layout_weight="0.5"
-					android:contentDescription="@string/landing_contact"
-					android:src="@drawable/ic_person_48dp"/>
-				<TextView
-					android:id="@+id/txtValue"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_weight="2"
-					android:textAppearance="?android:attr/textAppearanceSmall"
-					android:textColor="@color/black"/>
-				<ImageView
-					android:id="@+id/iconEdit"
-					android:layout_width="20dp"
-					android:layout_height="20dp"
-					android:layout_marginLeft="16dp"
-					android:layout_weight="0.5"
-					android:contentDescription="@string/landing_contact"
-					android:src="@drawable/ic_edit_48dp"/>
-			</LinearLayout>
-			<View
-				android:id="@+id/dividerContact"
-				android:layout_width="match_parent"
-				android:layout_height="2dp"
-				android:layout_below="@+id/llId"
-				android:layout_marginTop="8dp"
-				android:background="@color/light_gray"/>
+			android:layout_height="wrap_content"
+			android:background="@color/background_company">
 			<include
 				layout="@layout/content_landing"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_below="@+id/dividerContact"
 				android:layout_margin="8dp"/>
 		</RelativeLayout>
 	</android.support.v4.widget.NestedScrollView>
