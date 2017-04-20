@@ -440,9 +440,9 @@ public class CardViewActivity extends AppCompatActivity
 		
 		try
 		{
-			new MaterialDialog.Builder(this).title(getString(R.string.id_title)).inputType(InputType.TYPE_CLASS_TEXT)
+			new MaterialDialog.Builder(this).title(getString(R.string.id_update)).inputType(InputType.TYPE_CLASS_TEXT)
 				.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 40)
-				.input(getString(R.string.enrich_notehint), idValue, new MaterialDialog.InputCallback()
+				.input(getString(R.string.id_hint), idValue, new MaterialDialog.InputCallback()
 				{
 					@Override
 					public void onInput(@NonNull MaterialDialog dialog, CharSequence input)

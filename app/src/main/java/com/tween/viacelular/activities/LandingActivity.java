@@ -4,14 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.View;
@@ -21,10 +24,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
+import com.tween.viacelular.asynctask.SendIdentificationKeyAsyncTask;
+import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -42,14 +49,15 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	private Suscription			suscription							= null;
 	private String				companyId							= "";
 	private String				section								= "";
+	private String				idValue								= "";
 	private String				color								= Common.COLOR_ACTION;
 	private LinearLayout		mTitleContainer;
-	private TextView			txtTitle, txtEmail, txtPhone, txtBigTitle, txtSubTitle, txtSubTitleCollapsed, txtAbout;
+	private TextView			txtTitle, txtEmail, txtPhone, txtBigTitle, txtSubTitle, txtSubTitleCollapsed, txtAbout, txtId, txtValue;
 	private Toolbar				toolBar;
 	private Context				context;
 	private CircleImageView		circleView;
 	private Button				btnSuscribe;
-	private ImageView			logo;
+	private ImageView			logo, iconId, iconEdit;
 	private float				scale;
 
 	@Override
@@ -79,11 +87,12 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			ImageView ivPlaceholder							= (ImageView) findViewById(R.id.ivPlaceholder);
 			final ImageView ibBack							= (ImageView) findViewById(R.id.ibBack);
 			logo											= (ImageView) findViewById(R.id.logo);
-			View dividerTitle								= findViewById(R.id.dividerTitle);
 			ImageView iconShowNotif							= (ImageView) findViewById(R.id.iconShowNotif);
 			TextView txtShowNotif							= (TextView) findViewById(R.id.txtShowNotif);
-			TextView txtId									= (TextView) findViewById(R.id.txtId);
-			LinearLayout llId								= (LinearLayout) findViewById(R.id.llId);
+			txtId											= (TextView) findViewById(R.id.txtId);
+			txtValue										= (TextView) findViewById(R.id.txtValue);
+			iconId											= (ImageView) findViewById(R.id.iconId);
+			iconEdit										= (ImageView) findViewById(R.id.iconEdit);
 			scale											= getResources().getDisplayMetrics().density;
 			toolBar.setTitle("");
 			toolBar.setSubtitle("");
@@ -304,28 +313,50 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			if(suscription != null)
 			{
 				//Se deja siempre visible para ir a la pantalla cards
-				dividerTitle.setVisibility(View.VISIBLE);
 				iconShowNotif.setVisibility(ImageView.VISIBLE);
 				txtShowNotif.setVisibility(TextView.VISIBLE);
 
 				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()))
 				{
-					//txtId.setVisibility(TextView.VISIBLE);
-					//TODO Cuando terminemos de definir esta funcionalidad mostramos llId y seguimos desarrollando el popup para editar el dato
+					idValue = suscription.getIdentificationValue();
+					txtValue.setText(idValue);
+					
+					if(StringUtils.isNotEmpty(suscription.getIdentificationValue()) && suscription.getDataSent() == Common.BOOL_YES)
+					{
+						txtId.setText(getString(R.string.id_ok));
+					}
+					else
+					{
+						txtId.setText(getString(R.string.id_retry));
+					}
+					
+					if(Common.API_LEVEL < Build.VERSION_CODES.M)
+					{
+						iconId.setColorFilter(getResources().getColor(R.color.filter_icon));
+					}
+					else
+					{
+						iconId.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.filter_icon));
+					}
+					
+					txtId.setVisibility(TextView.VISIBLE);
+					iconId.setVisibility(ImageView.VISIBLE);
+					txtValue.setVisibility(TextView.VISIBLE);
+					iconEdit.setVisibility(ImageView.VISIBLE);
 				}
 				else
 				{
 					txtId.setVisibility(TextView.GONE);
-					llId.setVisibility(LinearLayout.GONE);
+					iconId.setVisibility(ImageView.GONE);
+					txtValue.setVisibility(TextView.GONE);
+					iconEdit.setVisibility(ImageView.GONE);
 				}
 			}
 			else
 			{
-				dividerTitle.setVisibility(View.GONE);
 				iconShowNotif.setVisibility(ImageView.GONE);
 				txtShowNotif.setVisibility(TextView.GONE);
 				txtId.setVisibility(TextView.GONE);
-				llId.setVisibility(LinearLayout.GONE);
 			}
 		}
 		catch(Exception e)
@@ -337,6 +368,81 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	public void goBack(View view)
 	{
 		onBackPressed();
+	}
+	
+	public void retry()
+	{
+		try
+		{
+			new SendIdentificationKeyAsyncTask(this, true, idValue, companyId, new CallBackListener()
+			{
+				@Override
+				public void invoke()
+				{
+					runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							txtId.setText(getString(R.string.id_ok));
+						}
+					});
+				}
+			}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":retry - Exception:", e);
+		}
+	}
+	
+	public void modifyId(View view)
+	{
+		final Activity activity = this;
+		
+		try
+		{
+			new MaterialDialog.Builder(this).title(getString(R.string.id_update)).inputType(InputType.TYPE_CLASS_TEXT)
+				.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 40)
+				.input(getString(R.string.id_hint), idValue, new MaterialDialog.InputCallback()
+				{
+					@Override
+					public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
+					{
+						if(input != null)
+						{
+							if(input != "")
+							{
+								idValue = input.toString();
+								
+								if(StringUtils.isNotEmpty(idValue))
+								{
+									new SendIdentificationKeyAsyncTask(activity, true, idValue, companyId, new CallBackListener()
+									{
+										@Override
+										public void invoke()
+										{
+											runOnUiThread(new Runnable()
+											{
+												@Override
+												public void run()
+												{
+													txtId.setText(getString(R.string.id_ok));
+													txtValue.setText(idValue);
+												}
+											});
+										}
+									}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+								}
+							}
+						}
+					}
+				}).show();
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":modifyId - Exception:", e);
+		}
 	}
 
 	public void goTo(View view)

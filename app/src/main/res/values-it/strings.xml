@@ -64,6 +64,9 @@
 	<string name="id_oktext">Il tuo ID è:</string><!-- after traslate -->
 	<string name="id_title">Migliora la tua esperienza</string><!-- after traslate -->
 	<string name="id_text">Ricevere messaggi esclusivi quali fatture inserendo il tuo</string><!-- after traslate -->
+	<string name="id_update">Aggiorna il tuo ID</string><!-- after traslate -->
+	<string name="id_hint">Inserisci il tuo ID</string><!-- after traslate -->
+	<string name="id_retry">Riprovare</string><!-- after traslate -->
 	<string name="i_read">Cliccando su Continua, accetti i Termini e le Condizioni</string>
 	<string name="invite">Invito</string>
 	<string name="landing_card_form_header">Migliora la tua esperienza</string><!-- after traslate -->

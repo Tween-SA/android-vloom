@@ -64,6 +64,9 @@
 	<string name="id_oktext">귀하의 ID는 다음과 같습니다</string><!-- after traslate -->
 	<string name="id_title">귀하의 경험을 향상</string><!-- after traslate -->
 	<string name="id_text">송장이 입력하는 등 독점적 인 메시지를 수신하여</string><!-- after traslate -->
+	<string name="id_update">당신의 ID를 업데이트</string><!-- after traslate -->
+	<string name="id_hint">당신의 ID를 입력</string><!-- after traslate -->
+	<string name="id_retry">다시 시도</string><!-- after traslate -->
 	<string name="i_read">계속을 선택함으로써, 당사의 이용 약관에 동의하게 됩니다</string>
 	<string name="invite">초대</string>
 	<string name="landing_card_form_header">귀하의 경험을 향상</string><!-- after traslate -->

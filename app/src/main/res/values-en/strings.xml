@@ -64,6 +64,9 @@
 	<string name="id_oktext">Your identifier is:</string><!-- after traslate -->
 	<string name="id_title">Improve your experience</string><!-- after traslate -->
 	<string name="id_text">Receive exclusive messages as invoices by entering your</string><!-- after traslate -->
+	<string name="id_update">Update your identifier</string><!-- after traslate -->
+	<string name="id_hint">Enter your ID</string><!-- after traslate -->
+	<string name="id_retry">Retry</string><!-- after traslate -->
 	<string name="i_read">By selecting Continue, you accept our Terms and Conditions</string>
 	<string name="invite">Invitation</string>
 	<string name="landing_card_form_header">Enhance Your Experience</string><!-- after traslate -->

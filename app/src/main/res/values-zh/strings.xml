@@ -63,6 +63,9 @@
 	<string name="id_ok">增强体验</string><!-- after traslate -->
 	<string name="id_oktext">您的ID是：</string><!-- after traslate -->
 	<string name="id_title">提升你的经验</string><!-- after traslate -->
+	<string name="id_update">更新您的ID</string><!-- after traslate -->
+	<string name="id_hint">输入您的ID</string><!-- after traslate -->
+	<string name="id_retry">重试</string><!-- after traslate -->
 	<string name="id_text">收到独家消息，如发票输入您的</string><!-- after traslate -->
 	<string name="i_read">通过选择“继续”，您将接受我们的条款和条件</string>
 	<string name="invite">邀请</string>

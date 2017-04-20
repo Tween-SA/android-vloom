@@ -64,6 +64,9 @@
 	<string name="id_oktext">Tu identificador es:</string><!-- after traslate -->
 	<string name="id_title">Mejora tu experiencia</string><!-- after traslate -->
 	<string name="id_text">Recibe mensajes exclusivos como facturas ingresando tu</string><!-- after traslate -->
+	<string name="id_update">Actualiza tu identificador</string><!-- after traslate -->
+	<string name="id_hint">Escribe tu identificador</string><!-- after traslate -->
+	<string name="id_retry">Reintentar</string><!-- after traslate -->
 	<string name="i_read">Al pulsar Continuar aceptas los Términos y Condiciones</string>
 	<string name="invite">Invitación</string>
 	<string name="landing_card_form_header">Mejora tu experiencia</string><!-- after traslate -->
@@ -82,7 +85,7 @@
 	<string name="landing_suscribe">Añadir</string>
 	<string name="landing_suscribed">Añadida</string>
 	<string name="landing_unsuscribe">Quitar</string>
-	<string name="landing_title">Recibe notificaciones de vencimiento, promociones y novedades de<xliff:g example="Empresa" id="company">%s</xliff:g></string>
+	<string name="landing_title">Recibe notificaciones de vencimiento, promociones y novedades de <xliff:g example="Empresa" id="company">%s</xliff:g></string>
 	<string name="login_begin">Inicia sesión para empezar</string>
 	<string name="login">Iniciar sesión con tu e-mail</string>
 	<string name="logout">Cerrar Sesión</string>
