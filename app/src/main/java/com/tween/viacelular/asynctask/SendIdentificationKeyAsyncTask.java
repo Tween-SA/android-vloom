@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
+import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.ApiConnection;
@@ -17,18 +18,20 @@ import io.realm.Realm;
 
 public class SendIdentificationKeyAsyncTask extends AsyncTask<Void, Void, String>
 {
-	private MaterialDialog	progress;
-	private Context			context;
-	private boolean			displayDialog		= false;
-	private String			identificationValue	= "";
-	private String			companyId			= "";
+	private MaterialDialog		progress;
+	private Context				context;
+	private CallBackListener	listener;
+	private boolean				displayDialog		= false;
+	private String				identificationValue	= "";
+	private String				companyId			= "";
 
-	public SendIdentificationKeyAsyncTask(Context context, boolean displayDialog, String identificationValue, String companyId)
+	public SendIdentificationKeyAsyncTask(Context context, boolean displayDialog, String identificationValue, String companyId, CallBackListener listener)
 	{
 		this.context				= context;
 		this.displayDialog			= displayDialog;
 		this.identificationValue	= identificationValue;
 		this.companyId				= companyId;
+		this.listener				= listener;
 	}
 
 	protected void onPreExecute()
@@ -85,12 +88,7 @@ public class SendIdentificationKeyAsyncTask extends AsyncTask<Void, Void, String
 					jsonObject.put(Suscription.KEY_SUSCRIBE, Common.BOOL_YES);
 					jsonObject.put(Suscription.KEY_IDENTIFICATIONVALUE, identificationValue);
 					jsonArray.put(jsonObject);
-
-					JSONObject jsonResult	= new JSONObject(ApiConnection.request(url, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString()));
-					result					= ApiConnection.checkResponse(context, jsonResult);
-
-					//TODO Posteriormente debe haber un if procesando la respuesta de la api cuando esté disponible
-					result = ApiConnection.OK;
+					ApiConnection.request(url, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString());
 					realm.executeTransaction(new Realm.Transaction()
 					{
 						@Override
@@ -120,5 +118,32 @@ public class SendIdentificationKeyAsyncTask extends AsyncTask<Void, Void, String
 		}
 
 		return result;
+	}
+	
+	@Override
+	protected void onPostExecute(String result)
+	{
+		try
+		{
+			if(displayDialog)
+			{
+				if(progress != null)
+				{
+					if(progress.isShowing())
+					{
+						progress.cancel();
+					}
+				}
+			}
+			
+			//Llamar al callback
+			listener.invoke();
+		}
+		catch(Exception e)
+		{
+			Utils.logError(context, "RegisterPhoneAsyncTask:onPostExecute - Exception:", e);
+		}
+		
+		super.onPostExecute(result);
 	}
 }

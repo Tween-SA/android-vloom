@@ -13,47 +13,7 @@
 		android:layout_height="wrap_content"
 		android:layout_marginTop="20dp" />
 	<RelativeLayout
-		android:id="@+id/rlEmpty"
 		android:layout_below="@+id/search_view"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:visibility="visible">
-		<ImageView
-			android:contentDescription="@string/app_name"
-			android:id="@+id/ivEmpty"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:src="@drawable/no_messages"
-			android:layout_centerHorizontal="true" />
-		<TextView
-			android:id="@+id/txtTitle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/no_messages_card"
-			android:textColor="@color/sub_text"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:textStyle="bold"
-			android:layout_below="@+id/ivEmpty"
-			android:visibility="invisible"
-			android:layout_alignLeft="@+id/ivEmpty"
-			android:layout_alignStart="@+id/ivEmpty" />
-		<TextView
-			android:id="@+id/txtSubTitle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/no_messages_text"
-			android:textColor="@color/sub_text"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:layout_below="@+id/txtTitle"
-			android:layout_alignLeft="@+id/txtTitle"
-			android:layout_alignStart="@+id/txtTitle"
-			android:layout_marginLeft="2dp"
-			android:layout_marginStart="2dp"
-			android:layout_alignRight="@+id/ivEmpty"
-			android:layout_alignEnd="@+id/ivEmpty" />
-	</RelativeLayout>
-	<RelativeLayout
-		android:layout_below="@+id/rlEmpty"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="20dp"
@@ -85,6 +45,46 @@
 			android:layout_centerVertical="true"
 			android:layout_toRightOf="@+id/circleView"
 			android:layout_toEndOf="@+id/circleView" />
+	</RelativeLayout>
+	<RelativeLayout
+		android:layout_below="@+id/rlFolder"
+		android:id="@+id/rlEmpty"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:visibility="visible">
+		<ImageView
+			android:contentDescription="@string/app_name"
+			android:id="@+id/ivEmpty"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/search_no_found_draw"
+			android:layout_centerHorizontal="true" />
+		<TextView
+			android:id="@+id/txtTitle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/no_messages_card"
+			android:textColor="@color/sub_text"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:textStyle="bold"
+			android:layout_below="@+id/ivEmpty"
+			android:visibility="invisible"
+			android:layout_alignLeft="@+id/ivEmpty"
+			android:layout_alignStart="@+id/ivEmpty" />
+		<TextView
+			android:id="@+id/txtSubTitle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/folder_notfound"
+			android:textColor="@color/sub_text"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:layout_below="@+id/txtTitle"
+			android:layout_alignLeft="@+id/txtTitle"
+			android:layout_alignStart="@+id/txtTitle"
+			android:layout_marginLeft="2dp"
+			android:layout_marginStart="2dp"
+			android:layout_alignRight="@+id/ivEmpty"
+			android:layout_alignEnd="@+id/ivEmpty" />
 	</RelativeLayout>
 	<se.emilsjolander.stickylistheaders.StickyListHeadersListView
 		android:id="@+id/list"

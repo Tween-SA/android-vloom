@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -29,7 +30,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.HomeActivity;
-import com.tween.viacelular.activities.SearchActivity;
 import com.tween.viacelular.activities.VerifyPhoneActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
 import com.tween.viacelular.adapters.IconOptionAdapter;
@@ -100,6 +100,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			RecyclerView.LayoutManager mLayoutManager	= new LinearLayoutManager(getActivity());
 			rcwHome.setLayoutManager(mLayoutManager);
 			rlEmpty										= (RelativeLayout) view.findViewById(R.id.rlEmpty);
+			FloatingActionButton fab					= (FloatingActionButton) view.findViewById(R.id.fabAdd);
 			SharedPreferences preferences				= getHomeActivity().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 
 			if(preferences.getBoolean(Common.KEY_PREF_FREEPASS, false))
@@ -119,6 +120,15 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			{
 				rlFreePass.setVisibility(RelativeLayout.GONE);
 			}
+			
+			fab.setOnClickListener(new View.OnClickListener()
+			{
+				@Override
+				public void onClick(final View view)
+				{
+					HomeActivity.search(getHomeActivity());
+				}
+			});
 		}
 		catch(Exception e)
 		{
@@ -206,16 +216,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			switch(item.getItemId())
 			{
 				case R.id.action_search:
-					GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS)
-							.send(new HitBuilders.EventBuilder().setCategory("Company").setAction("Filtro").setLabel("AccionUser").build());
-					Intent intent = new Intent(getHomeActivity(), SearchActivity.class);
-					intent.putExtra(Common.KEY_SECTION, "home");
-					getHomeActivity().startActivity(intent);
-					getHomeActivity().finish();
-				break;
-				
-				case R.id.action_folder:
-					generateFolder("");
+					HomeActivity.search(getHomeActivity());
 				break;
 				
 				default:
@@ -608,7 +609,28 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:refresh - Exception:", e);
 		}
 	}
-
+	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		try
+		{
+			Handler handler = new android.os.Handler();
+			handler.postDelayed(new Runnable()
+			{
+				public void run()
+				{
+					refresh(true, true);
+				}
+			}, 1000);
+		}
+		catch(Exception e)
+		{
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:refresh - Exception:", e);
+		}
+	}
+	
 	/**
 	 * When the AsyncTask finishes, it calls onRefreshComplete(), which updates the data in the ListAdapter and turns off the progress bar.
 	 */
@@ -685,7 +707,8 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 				//Agregado para refrescar suscripciones del usuario con el pullupdate
 				if(StringUtils.isIdMongo(userId))
 				{
-					JSONObject jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.USERS + "/" + userId, homeActivity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
+					JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + userId, homeActivity, ApiConnection.METHOD_GET,
+																preferences.getString(Common.KEY_TOKEN, ""), ""));
 					String result			= ApiConnection.checkResponse(homeActivity, jsonResult);
 					
 					if(result.equals(ApiConnection.OK))

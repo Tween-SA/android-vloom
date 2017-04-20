@@ -48,9 +48,9 @@
 	<string name="feedback_ok">Recebemos sua mensagem corretamente</string>
 	<string name="feedback_text">Compartilhe sua experiência!</string>
 	<string name="feedback_typepush">Resposta de suporte</string>
-	<string name="folder_btn">Criar pasta notas</string><!-- after traslate -->
-	<string name="folder_header">Renomear pasta de notas</string><!-- after traslate -->
-	<string name="folder_hint">Digite um nome para a pasta&#8230;</string><!-- after traslate -->
+	<string name="folder_btn">Criar nova</string><!-- after traslate -->
+	<string name="folder_header">Rebatizar</string><!-- after traslate -->
+	<string name="folder_hint">Digite um nome&#8230;</string><!-- after traslate -->
 	<string name="folder_industry">Pasta de notas</string><!-- after traslate -->
 	<string name="folder_notfound">Não há resultados para a sua pesquisa</string><!-- after traslate -->
 	<string name="folder_showcase">Agora você pode criar suas próprias pastas para armazenar suas notas e encontrá-los mais fácil!</string><!-- after traslate -->
@@ -59,6 +59,14 @@
 	<string name="hello_world">Olá</string>
 	<string name="home">Confirme seu número de celular para uma melhor experiência com VíaCelular</string>
 	<string name="hours">horas</string>
+	<string name="id_help">Esta empresa permite que você vincular sua conta com Vloom, inserindo um alfanumérico código identificador normalmente localizado na parte superior da conta</string><!-- after traslate -->
+	<string name="id_ok">Experiência aprimorada</string><!-- after traslate -->
+	<string name="id_oktext">Seu ID é:</string><!-- after traslate -->
+	<string name="id_title">Melhore a sua experiência</string><!-- after traslate -->
+	<string name="id_text">Receber mensagens exclusivas, tais como notas fiscais recebidas no seu</string><!-- after traslate -->
+	<string name="id_update">Atualize seu ID</string><!-- after traslate -->
+	<string name="id_hint">Digite seu ID</string><!-- after traslate -->
+	<string name="id_retry">Retrying</string><!-- after traslate -->
 	<string name="i_read">Ao clicar em Continuar, você aceita os Termos e Condições</string>
 	<string name="invite">Convite</string>
 	<string name="landing_card_form_header">Melhore a sua experiência</string><!-- after traslate -->

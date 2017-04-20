@@ -216,17 +216,7 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 							jsonObject.put(Message.KEY_ATTACHMENTS, array);
 						}
 
-						result = ApiConnection.request(ApiConnection.MESSAGES+"/"+Common.KEY_ENRICH, context, ApiConnection.METHOD_POST,
-									preferences.getString(Common.KEY_TOKEN, ""), jsonObject.toString());
-
-						if(result != null)
-						{
-							if(result.trim().startsWith("{"))
-							{
-								JSONObject jsonResult	= new JSONObject(result);
-								result					= ApiConnection.checkResponse(context, jsonResult);
-							}
-						}
+						ApiConnection.request(ApiConnection.MESSAGES+"/"+Common.KEY_ENRICH, context, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), jsonObject.toString());
 					}
 				}
 			}

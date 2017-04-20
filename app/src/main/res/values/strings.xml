@@ -49,8 +49,8 @@
 	<string name="feedback_text">Compartinos tu experiencia</string>
 	<string name="feedback_typepush">Respuesta de soporte</string>
 	<string name="folder_btn">Crear carpeta de notas</string><!-- after traslate -->
-	<string name="folder_header">Renombrar carpeta de notas</string><!-- after traslate -->
-	<string name="folder_hint">Escribe un nombre para tu carpeta&#8230;</string><!-- after traslate -->
+	<string name="folder_header">Renombrar</string><!-- after traslate -->
+	<string name="folder_hint">Escribe un nombre&#8230;</string><!-- after traslate -->
 	<string name="folder_industry">Carpeta de notas</string><!-- after traslate -->
 	<string name="folder_notfound">No encontramos resultados para tu búsqueda</string><!-- after traslate -->
 	<string name="folder_showcase">Ahora puedes crear carpetas propias para guardar tus notas y encontrarlas más fácil!</string><!-- after traslate -->
@@ -59,6 +59,14 @@
 	<string name="hello_world">Hola</string>
 	<string name="home">Verifica tu n° de celular para una mejor experiencia con VíaCelular</string>
 	<string name="hours">horas</string>
+	<string name="id_help">Esta empresa permite enlazar tu cuenta con Vloom mediante el ingreso de un código identificador alfanúmerico que normalmente se ubica en el sector superior de la factura</string><!-- after traslate -->
+	<string name="id_ok">Experiencia mejorada</string><!-- after traslate -->
+	<string name="id_oktext">Tu identificador es:</string><!-- after traslate -->
+	<string name="id_title">Mejora tu experiencia</string><!-- after traslate -->
+	<string name="id_text">Recibe mensajes exclusivos como facturas ingresando tu</string><!-- after traslate -->
+	<string name="id_update">Actualiza tu identificador</string><!-- after traslate -->
+	<string name="id_hint">Escribe tu identificador</string><!-- after traslate -->
+	<string name="id_retry">Reintentar</string><!-- after traslate -->
 	<string name="i_read">Al pulsar Continuar aceptas los Términos y Condiciones</string>
 	<string name="invite">Invitación</string>
 	<string name="landing_card_form_header">Mejora tu experiencia</string><!-- after traslate -->
@@ -77,7 +85,7 @@
 	<string name="landing_suscribe">Añadir</string>
 	<string name="landing_suscribed">Añadida</string>
 	<string name="landing_unsuscribe">Quitar</string>
-	<string name="landing_title">Recibe notificaciones de vencimiento, promociones y novedades de<xliff:g example="Empresa" id="company">%s</xliff:g></string>
+	<string name="landing_title">Recibe notificaciones de vencimiento, promociones y novedades de <xliff:g example="Empresa" id="company">%s</xliff:g></string>
 	<string name="login_begin">Inicia sesión para empezar</string>
 	<string name="login">Iniciar sesión con tu e-mail</string>
 	<string name="logout">Cerrar Sesión</string>

@@ -48,9 +48,9 @@
 	<string name="feedback_ok">Wir haben deine Nachricht korrekt empfangen</string>
 	<string name="feedback_text">Teile uns deine Erfahrungen mit</string>
 	<string name="feedback_typepush">Support-Antwort</string>
-	<string name="folder_btn">Erstellen Sie Notizen-Ordner</string><!-- after traslate -->
-	<string name="folder_header">Ordner umbenennen von Notizen</string><!-- after traslate -->
-	<string name="folder_hint">Geben Sie einen Namen für den Ordner&#8230;</string><!-- after traslate -->
+	<string name="folder_btn">Erstellen neuer</string><!-- after traslate -->
+	<string name="folder_header">Umbenennen</string><!-- after traslate -->
+	<string name="folder_hint">Geben Sie einen Namen&#8230;</string><!-- after traslate -->
 	<string name="folder_industry">Notes-Ordner</string><!-- after traslate -->
 	<string name="folder_notfound">Keine Ergebnisse für Ihre Suche gefunden</string><!-- after traslate -->
 	<string name="folder_showcase">Jetzt können Sie Ihre eigenen Ordner erstellen Sie Ihre Notizen zu speichern und zu finden, um sie einfacher!</string><!-- after traslate -->
@@ -59,6 +59,14 @@
 	<string name="hello_world">Hallo</string>
 	<string name="home">Überprüfe deine Handynummer für eine bessere Erfahrung mit VíaCelular</string>
 	<string name="hours">Stunden</string>
+	<string name="id_help">Diese Firma ermöglicht es Ihnen, Ihr Konto mit Vloom zu verknüpfen, indem Sie einen Identifizierungscode Alphanumeric normalerweise befindet sich im oberen Teil der Rechnung eingeben</string><!-- after traslate -->
+	<string name="id_ok">verbesserte Erfahrung</string><!-- after traslate -->
+	<string name="id_oktext">Ihre Identifikation ist:</string><!-- after traslate -->
+	<string name="id_title">Verbessern Sie Ihre Erfahrung</string><!-- after traslate -->
+	<string name="id_text">Erhalten Sie exklusive Nachrichten wie Rechnungen Eingabe Ihrer</string><!-- after traslate -->
+	<string name="id_update">Aktualisieren Sie Ihre ID</string><!-- after traslate -->
+	<string name="id_hint">Geben Sie Ihre ID</string><!-- after traslate -->
+	<string name="id_retry">Retrying</string><!-- after traslate -->
 	<string name="i_read">Durch Drücken auf \"Weiter\" akzeptierst du unsere Allgemeinen Geschäftsbedingungen</string>
 	<string name="invite">Einladung</string>
 	<string name="landing_card_form_header">Verbessern Sie Ihre Erfahrungen</string><!-- after traslate -->

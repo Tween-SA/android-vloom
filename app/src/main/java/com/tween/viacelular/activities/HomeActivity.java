@@ -26,6 +26,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.RecyclerAdapter;
 import com.tween.viacelular.adapters.RecyclerItemClickListener;
@@ -207,6 +209,23 @@ public class HomeActivity extends AppCompatActivity
 		catch(Exception e)
 		{
 			Utils.logError(context, "HomeActivity:modifySubscriptions - Exception:", e);
+		}
+	}
+	
+	public static void search(Activity activity)
+	{
+		try
+		{
+			GoogleAnalytics.getInstance(activity).newTracker(Common.HASH_GOOGLEANALYTICS)
+					.send(new HitBuilders.EventBuilder().setCategory("Company").setAction("Filtro").setLabel("AccionUser").build());
+			Intent intent = new Intent(activity, SearchActivity.class);
+			intent.putExtra(Common.KEY_SECTION, "home");
+			activity.startActivity(intent);
+			activity.finish();
+		}
+		catch(Exception e)
+		{
+			Utils.logError(activity, "HomeActivity:search - Exception:", e);
 		}
 	}
 
