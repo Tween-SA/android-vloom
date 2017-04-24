@@ -20,6 +20,10 @@ import org.json.JSONObject;
 import java.util.Locale;
 import io.realm.Realm;
 
+/**
+ * Manejador para actualización de datos del usuario
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;

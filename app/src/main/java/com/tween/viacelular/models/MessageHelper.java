@@ -15,7 +15,8 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
- * Created by davidfigueroa on 21/3/16.
+ * Manejador para tratamiento y parseo de mensajes
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 21/03/2016
  */
 public abstract class MessageHelper
 {

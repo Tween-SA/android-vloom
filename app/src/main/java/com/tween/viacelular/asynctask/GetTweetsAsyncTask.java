@@ -24,7 +24,8 @@ import java.util.Locale;
 import io.realm.Realm;
 
 /**
- * Created by davidfigueroa on 15/6/16.
+ * Manejador para obtener vía api contenido de Twitter sobre la empresa
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 15/06/2016
  */
 public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 {

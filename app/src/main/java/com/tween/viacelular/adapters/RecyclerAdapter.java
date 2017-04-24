@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.ConnectedAccount;
 import com.tween.viacelular.models.Migration;
@@ -16,9 +15,12 @@ import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import io.realm.Realm;
 
+/**
+ * Adpatador para presentación de opciones en el menú así como también la cabecera del dicho menú
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 11/06/2015
+ */
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder>
 {
 	private static final int	TYPE_HEADER				= 0;

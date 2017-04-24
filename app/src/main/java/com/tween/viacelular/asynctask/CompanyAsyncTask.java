@@ -13,6 +13,10 @@ import com.tween.viacelular.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Manejador para actualizar información de empresas
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;

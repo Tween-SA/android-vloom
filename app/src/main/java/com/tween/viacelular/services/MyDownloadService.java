@@ -15,7 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by David on 27/12/2016.
+ * Servicio para descarga desde Firebase
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 27/12/16
  */
 public class MyDownloadService extends MyBaseTaskService
 {

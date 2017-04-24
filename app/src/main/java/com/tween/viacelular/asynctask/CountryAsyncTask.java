@@ -17,6 +17,10 @@ import org.json.JSONObject;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * Manejador para actualización de países vía api
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;

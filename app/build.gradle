@@ -4,7 +4,7 @@ apply plugin: "realm-android"
 apply plugin: "io.fabric"
 
 def argVersionCode = 40;
-def argVersionName = "1.4";
+def argVersionName = "1.4.1";
 
 android
 {
@@ -107,6 +107,7 @@ dependencies
 	compile "com.readystatesoftware.systembartint:systembartint:1.0.4"
 	compile "com.squareup.picasso:picasso:2.5.2"
 	compile "com.synnapps:carouselview:0.0.10"
+	compile "com.ufreedom.uikit:FloatingViewLib:1.0.2"
 	compile "de.greenrobot:greendao:2.1.0"
 	compile "de.hdodenhof:circleimageview:2.1.0"
 	compile "se.emilsjolander:stickylistheaders:2.7.0"

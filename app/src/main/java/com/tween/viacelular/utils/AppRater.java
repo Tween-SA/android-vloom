@@ -6,7 +6,7 @@ import java.util.Calendar;
 
 /**
  * Implementación de dialog para calificar app
- * Created by davidfigueroa on 14/11/15.
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 14/11/2015
  */
 public class AppRater
 {

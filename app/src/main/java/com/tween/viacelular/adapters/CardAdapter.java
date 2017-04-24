@@ -1,6 +1,5 @@
 package com.tween.viacelular.adapters;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -32,6 +31,7 @@ import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.GalleryActivity;
+import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
@@ -39,15 +39,18 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+import com.ufreedom.floatingview.transition.FloatingTransition;
+import com.ufreedom.floatingview.transition.YumFloating;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
 /**
- * Created by david.figueroa on 8/7/15.
+ * Adaptador para manejar visualización de datos en sus diferentes presentaciones
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 08/07/15
  */
-public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
+public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> implements FloatingTransition
 {
 	private RealmResults<Message>	notificationList;
 	private CardViewActivity		activity;
@@ -56,7 +59,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 	public final static int			OPTION_BLOCK	= 1;
 	public final static int			OPTION_DELETE	= 2;
 	public final static int			OPTION_DISMISS	= 3;
-
+	
+	@Override
+	public void applyFloating(final YumFloating yumFloating)
+	{
+		
+	}
+	
 	public static class ViewHolder extends RecyclerView.ViewHolder
 	{
 		public int					HolderId;
@@ -242,7 +251,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 
 				if(item != null)
 				{
-					final String id = item.getMsgId();
+					final String msgId	= item.getMsgId();
 
 					if(holder.line != null)
 					{
@@ -313,13 +322,19 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 						if(holder.ibOptions != null)
 						{
 							Utils.ampliarAreaTouch(holder.ibOptions, 100);
-							final String msgId = item.getMsgId();
 							holder.ibOptions.setOnClickListener(new View.OnClickListener()
 							{
 								@Override
 								public void onClick(View v)
 								{
-									activity.showOptionsCard(position, msgId);
+									Utils.singleViewTouchAnimation(holder.ibOptions, R.drawable.icon_more, activity, new CallBackListener()
+									{
+										@Override
+										public void invoke()
+										{
+											activity.showOptionsCard(position, msgId);
+										}
+									});
 								}
 							});
 						}
@@ -347,9 +362,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 						}
 					}
 
-					String thumb					= "";
-					String link						= "";
-					final Activity activityContext	= activity;
+					String thumb	= "";
+					String link		= "";
 
 					//Tratamiento de imagen si viene
 					if(StringUtils.isNotEmpty(item.getLink()))
@@ -413,7 +427,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							}
 						}
 
-
 						//Los botones irán al browser salvo Compartir que hace lo mismo que el Compartir una card normal
 						holder.btnView.setOnClickListener(new View.OnClickListener()
 						{
@@ -421,7 +434,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							public void onClick(final View v)
 							{
 								Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-								activityContext.startActivity(intent);
+								activity.startActivity(intent);
 							}
 						});
 
@@ -437,7 +450,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 								sharingIntent.setType("text/plain");
 								sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, type);
 								sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
-								activityContext.startActivity(Intent.createChooser(sharingIntent, activity.getResources().getString(R.string.share)));
+								activity.startActivity(Intent.createChooser(sharingIntent, activity.getResources().getString(R.string.share)));
 							}
 						});
 					}
@@ -450,7 +463,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							public void onClick(final View v)
 							{
 								Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-								activityContext.startActivity(intent);
+								activity.startActivity(intent);
 							}
 						});
 
@@ -460,7 +473,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							public void onClick(final View v)
 							{
 								Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-								activityContext.startActivity(intent);
+								activity.startActivity(intent);
 							}
 						});
 					}
@@ -484,7 +497,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							public void onClick(final View v)
 							{
 								//Indica a Analytics que se uso el contenido social
-								GoogleAnalytics.getInstance(activityContext).newTracker(Common.HASH_GOOGLEANALYTICS)
+								GoogleAnalytics.getInstance(activity).newTracker(Common.HASH_GOOGLEANALYTICS)
 									.send(new HitBuilders.EventBuilder().setCategory("Social").setAction("VerContenido").setLabel("AccionUser").build());
 							}
 						});
@@ -519,7 +532,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 														@Override
 														public void execute(Realm bgRealm)
 														{
-															Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, id).findFirst();
+															Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
 
 															if(message != null)
 															{
@@ -533,10 +546,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 														{
 															holder.txtComment.setText(item.getNote());
 															Utils.showViewWithFade(holder.rlComment, activity);
-															activity.attach(id, comment, item.getAttached(), item.getAttachedTwo(), item.getAttachedThree());
+															activity.attach(msgId, comment, item.getAttached(), item.getAttachedTwo(), item.getAttachedThree());
 														}
 													});
-
 												}
 											}
 										}
@@ -561,98 +573,105 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							@Override
 							public void onClick(final View v)
 							{
-								if(StringUtils.isNotEmpty(item.getNote()))
+								Utils.singleViewTouchAnimation(holder.iconComent, R.drawable.comment, activity, new CallBackListener()
 								{
-									new MaterialDialog.Builder(activity).title(activity.getString(R.string.enrich_commentheader)).inputType(InputType.TYPE_CLASS_TEXT)
-									.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
-									.input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
+									@Override
+									public void invoke()
 									{
-										@Override
-										public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
+										if(StringUtils.isNotEmpty(item.getNote()))
 										{
-											if(input != null)
-											{
-												if(input != "")
+											new MaterialDialog.Builder(activity).title(activity.getString(R.string.enrich_commentheader)).inputType(InputType.TYPE_CLASS_TEXT)
+												.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+												.input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
 												{
-													final String comment = input.toString();
-
-													if(StringUtils.isNotEmpty(comment))
+													@Override
+													public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
 													{
-														Realm realm = Realm.getDefaultInstance();
-														realm.executeTransactionAsync(new Realm.Transaction()
+														if(input != null)
 														{
-															@Override
-															public void execute(Realm bgRealm)
+															if(input != "")
 															{
-																Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, id).findFirst();
-
-																if(message != null)
+																final String comment = input.toString();
+																
+																if(StringUtils.isNotEmpty(comment))
 																{
-																	message.setNote(comment);
+																	Realm realm = Realm.getDefaultInstance();
+																	realm.executeTransactionAsync(new Realm.Transaction()
+																	{
+																		@Override
+																		public void execute(Realm bgRealm)
+																		{
+																			Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+																			
+																			if(message != null)
+																			{
+																				message.setNote(comment);
+																			}
+																		}
+																	}, new Realm.Transaction.OnSuccess()
+																	{
+																		@Override
+																		public void onSuccess()
+																		{
+																			holder.txtComment.setText(item.getNote());
+																			Utils.showViewWithFade(holder.rlComment, activity);
+																			activity.attach(msgId, comment, item.getAttached(), item.getAttachedTwo(), item.getAttachedThree());
+																		}
+																	});
 																}
 															}
-														}, new Realm.Transaction.OnSuccess()
-														{
-															@Override
-															public void onSuccess()
-															{
-																holder.txtComment.setText(item.getNote());
-																Utils.showViewWithFade(holder.rlComment, activity);
-																activity.attach(id, comment, item.getAttached(), item.getAttachedTwo(), item.getAttachedThree());
-															}
-														});
+														}
 													}
-												}
-											}
+												}).show();
 										}
-									}).show();
-								}
-								else
-								{
-									new MaterialDialog.Builder(activity).title(activity.getString(R.string.enrich_addcommentheader)).inputType(InputType.TYPE_CLASS_TEXT)
-									.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
-									.input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
-									{
-										@Override
-										public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
+										else
 										{
-											if(input != null)
-											{
-												if(input != "")
+											new MaterialDialog.Builder(activity).title(activity.getString(R.string.enrich_addcommentheader)).inputType(InputType.TYPE_CLASS_TEXT)
+												.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 160).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+												.input(activity.getString(R.string.enrich_commenthint), item.getNote(), new MaterialDialog.InputCallback()
 												{
-													final String comment = input.toString();
-
-													if(StringUtils.isNotEmpty(comment))
+													@Override
+													public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
 													{
-														Realm realm = Realm.getDefaultInstance();
-														realm.executeTransactionAsync(new Realm.Transaction()
+														if(input != null)
 														{
-															@Override
-															public void execute(Realm bgRealm)
+															if(input != "")
 															{
-																Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, id).findFirst();
-
-																if(message != null)
+																final String comment = input.toString();
+																
+																if(StringUtils.isNotEmpty(comment))
 																{
-																	message.setNote(comment);
+																	Realm realm = Realm.getDefaultInstance();
+																	realm.executeTransactionAsync(new Realm.Transaction()
+																	{
+																		@Override
+																		public void execute(Realm bgRealm)
+																		{
+																			Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+																			
+																			if(message != null)
+																			{
+																				message.setNote(comment);
+																			}
+																		}
+																	}, new Realm.Transaction.OnSuccess()
+																	{
+																		@Override
+																		public void onSuccess()
+																		{
+																			holder.txtComment.setText(item.getNote());
+																			Utils.showViewWithFade(holder.rlComment, activity);
+																			activity.attach(msgId, comment, item.getAttached(), item.getAttachedTwo(), item.getAttachedThree());
+																		}
+																	});
 																}
 															}
-														}, new Realm.Transaction.OnSuccess()
-														{
-															@Override
-															public void onSuccess()
-															{
-																holder.txtComment.setText(item.getNote());
-																Utils.showViewWithFade(holder.rlComment, activity);
-																activity.attach(id, comment, item.getAttached(), item.getAttachedTwo(), item.getAttachedThree());
-															}
-														});
+														}
 													}
-												}
-											}
+												}).show();
 										}
-									}).show();
-								}
+									}
+								});
 							}
 						});
 					}
@@ -706,7 +725,14 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 									}
 									else
 									{
-										activity.callCamera(item.getMsgId());
+										Utils.singleViewTouchAnimation(holder.iconAttach, R.drawable.photo, activity, new CallBackListener()
+										{
+											@Override
+											public void invoke()
+											{
+												activity.callCamera(msgId);
+											}
+										});
 									}
 								}
 							});
@@ -963,7 +989,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>
 							@Override
 							public void onClick(View view)
 							{
-								activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://chain.vloom.io/")));
+								holder.ivChain.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.certificate_cyan));
+								Toast.makeText(activity, activity.getString(R.string.certificate), Toast.LENGTH_SHORT).show();
+								Utils.semicircleViewTouchAnimation(holder.ivChain, R.drawable.certificate_cyan, activity, new CallBackListener()
+								{
+									@Override
+									public void invoke()
+									{
+										activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://chain.vloom.io/")));
+									}
+								});
 							}
 						});
 					}

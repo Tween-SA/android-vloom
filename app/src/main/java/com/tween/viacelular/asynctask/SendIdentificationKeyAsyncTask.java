@@ -16,6 +16,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import io.realm.Realm;
 
+/**
+ * Manejador para actualización de identificador único ante empresas registradas en la plataforma
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class SendIdentificationKeyAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog		progress;

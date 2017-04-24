@@ -18,6 +18,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import io.realm.Realm;
 
+/**
+ * Manejador para adjuntar fotos a un mensaje recibido
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog		progress;

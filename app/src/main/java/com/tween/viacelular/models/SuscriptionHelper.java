@@ -23,7 +23,8 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 
 /**
- * Created by davidfigueroa on 26/2/16.
+ * Manejador para tratamiento y parseo de empresas
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 26/02/2016
  */
 public abstract class SuscriptionHelper
 {

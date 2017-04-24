@@ -20,6 +20,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -74,6 +75,10 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+/**
+ * Manejador de pantalla para visualización de mensajes de una empresa
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class CardViewActivity extends AppCompatActivity
 {
 	private Suscription				suscription		= null;
@@ -870,8 +875,16 @@ public class CardViewActivity extends AppCompatActivity
 			{
 				out = new File(out, String.valueOf(System.currentTimeMillis()));
 			}
-
-			tempUri = Uri.fromFile(out);
+			
+			if(Common.API_LEVEL >= Build.VERSION_CODES.N)
+			{
+				tempUri = FileProvider.getUriForFile(this, getPackageName() + ".provider", out);
+			}
+			else
+			{
+				tempUri = Uri.fromFile(out);
+			}
+			
 			cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
 			startActivityForResult(cameraIntent, 0);
 		}

@@ -27,6 +27,10 @@ import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * Manejador para registrar ante api el usuario de la app
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class RegisterPhoneAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;

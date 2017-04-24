@@ -10,7 +10,8 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.Utils;
 
 /**
- * Created by davidfigueroa on 1/8/16.
+ * Servicio para refrescar token bajo FCM
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 01/08/16
  */
 public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService
 {

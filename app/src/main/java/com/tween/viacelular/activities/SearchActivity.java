@@ -38,9 +38,9 @@ import io.realm.RealmResults;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
- * Created by davidfigueroa on 7/2/17.
+ * Manejador de pantalla para búsqueda de empresas
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 07/02/2017
  */
-
 public class SearchActivity extends AppCompatActivity implements	AdapterView.OnItemClickListener, StickyListHeadersListView.OnHeaderClickListener,
 																	StickyListHeadersListView.OnStickyHeaderOffsetChangedListener, StickyListHeadersListView.OnStickyHeaderChangedListener
 {

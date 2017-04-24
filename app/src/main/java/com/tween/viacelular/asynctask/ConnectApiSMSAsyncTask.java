@@ -20,6 +20,10 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+/**
+ * Manejador para reportar mensajes capturados en el dispositivo para backup
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;

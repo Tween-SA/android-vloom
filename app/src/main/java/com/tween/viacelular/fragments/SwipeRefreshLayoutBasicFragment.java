@@ -56,7 +56,7 @@ import io.realm.Realm;
  *
  * <p>To provide an accessible way to trigger the refresh, this app also provides a refresh action item.
  * <p>In this sample app, the refresh updates the ListView with a random set of new items.
- * Created by davidfigueroa on 17/11/15.
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 17/11/15.
  */
 public class SwipeRefreshLayoutBasicFragment extends Fragment
 {

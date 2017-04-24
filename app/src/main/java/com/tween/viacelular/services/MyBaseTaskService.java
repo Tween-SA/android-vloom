@@ -2,8 +2,10 @@ package com.tween.viacelular.services;
 
 import android.app.Service;
 
+
 /**
- * Created by David on 27/12/2016.
+ * Servicio base para descarga y subida a Firebase
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 27/12/16
  */
 public abstract class MyBaseTaskService extends Service
 {

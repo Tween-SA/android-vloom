@@ -46,6 +46,10 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+/**
+ * Manejador de pantalla principal de la app
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class HomeActivity extends AppCompatActivity
 {
 	private String							companyId	= "";

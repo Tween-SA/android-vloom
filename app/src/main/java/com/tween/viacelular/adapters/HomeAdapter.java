@@ -27,7 +27,8 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 
 /**
- * Created by david.figueroa on 8/7/15.
+ * Adpatador para presentación de empresas en la pantalla principal
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 08/07/2015
  */
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
 {

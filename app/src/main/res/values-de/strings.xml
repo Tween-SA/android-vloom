@@ -1,4 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+	<string name="certificate">Nachricht Zertifizierungsprozess&#8230;</string><!-- after traslate -->
 	<string name="app_name">Vloom</string>
 	<string name="acepted">Angenommen</string>
 	<string name="action_example">Beispiel</string>

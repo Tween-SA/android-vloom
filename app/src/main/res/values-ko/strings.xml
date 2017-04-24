@@ -1,4 +1,5 @@
 <resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+	<string name="certificate">메시지 인증 프로세스&#8230;</string><!-- after traslate -->
 	<string name="app_name">Vloom</string>
 	<string name="acepted">승인됨</string>
 	<string name="action_example">예시</string>

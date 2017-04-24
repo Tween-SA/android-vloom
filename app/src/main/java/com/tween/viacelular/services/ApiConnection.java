@@ -22,7 +22,8 @@ import java.net.URLConnection;
 import java.util.Locale;
 
 /**
- * Created by davidfigueroa on 3/8/15.
+ * Manejador de conexión contra apis REST bajo JSON
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 03/08/15
  */
 public class ApiConnection
 {

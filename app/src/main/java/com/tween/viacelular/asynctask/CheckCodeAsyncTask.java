@@ -20,6 +20,10 @@ import org.json.JSONObject;
 import java.util.Locale;
 import io.realm.Realm;
 
+/**
+ * Manejador para validación de código que recibe el usuario vía sms
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;

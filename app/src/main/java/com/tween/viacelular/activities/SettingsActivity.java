@@ -52,6 +52,10 @@ import java.util.TimerTask;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * Manejador de pantalla para ajustes de la app
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class SettingsActivity extends AppCompatActivity
 {
 	private CheckBox			chkSilence, chkStatistics;

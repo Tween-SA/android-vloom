@@ -19,6 +19,10 @@ import org.json.JSONObject;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * Manejador para obtener información de una empresa determinada
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;

@@ -6,7 +6,8 @@ import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by davidfigueroa on 29/2/16.
+ * Modelo para persistir mensajes
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 31/03/2016
  */
 public class Message extends RealmObject
 {

@@ -32,7 +32,8 @@ import java.util.List;
 import io.realm.Realm;
 
 /**
- * Created by davidfigueroa on 15/6/16.
+ * Manejador para refrescar la ubicación actual del usuario que reportaremos al confirmar llegada de mensajes
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 15/06/2016
  */
 public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implements LocationListener
 {

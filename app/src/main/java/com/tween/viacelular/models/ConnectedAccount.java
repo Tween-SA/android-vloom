@@ -6,7 +6,8 @@ import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by davidfigueroa on 3/2/16.
+ * Modelo para persistir cuentas asociadas al dispositivo
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 03/02/2016
  */
 public class ConnectedAccount extends RealmObject
 {

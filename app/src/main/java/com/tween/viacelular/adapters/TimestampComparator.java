@@ -4,7 +4,8 @@ import com.tween.viacelular.models.Message;
 import java.util.Comparator;
 
 /**
- * Created by davidfigueroa on 4/5/16.
+ * Comparador de fechas para ordenamiento de listas
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 04/05/2016
  */
 public class TimestampComparator implements Comparator<Message>
 {

@@ -21,6 +21,10 @@ import org.json.JSONObject;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * Manejador para actualización de empresas y suscripciones
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;
