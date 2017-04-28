@@ -36,7 +36,7 @@ import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;

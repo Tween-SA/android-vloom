@@ -11,7 +11,7 @@ import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;

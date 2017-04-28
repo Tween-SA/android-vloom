@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -40,14 +41,18 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.UserHelper;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import io.realm.Realm;
 
 /**
@@ -717,7 +722,25 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 						
 						if(jsonData != null)
 						{
-							User userParsed = UserHelper.parseJSON(jsonData, true, homeActivity);
+							UserHelper.parseJSON(jsonData, true, homeActivity);
+						}
+					}
+					
+					//Agregado para refrescar mensajes desde el mongo
+					jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS_MESSAGES.replace(User.KEY_API, userId), homeActivity, ApiConnection.METHOD_GET,
+													preferences.getString(Common.KEY_TOKEN, ""), ""));
+					result		= ApiConnection.checkResponse(homeActivity, jsonResult);
+					
+					if(result.equals(ApiConnection.OK))
+					{
+						JSONArray jsonArray = jsonResult.getJSONArray(Common.KEY_CONTENT);
+						
+						if(jsonArray.length() > 0)
+						{
+							for(int i=0; i<jsonArray.length(); i++)
+							{
+								MessageHelper.parseJSON(jsonArray.getJSONObject(i), homeActivity);
+							}
 						}
 					}
 				}

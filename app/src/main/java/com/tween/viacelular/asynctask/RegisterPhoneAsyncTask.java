@@ -16,7 +16,7 @@ import com.tween.viacelular.models.ConnectedAccount;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.UserHelper;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;

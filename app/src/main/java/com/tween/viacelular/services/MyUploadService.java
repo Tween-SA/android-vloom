@@ -16,6 +16,7 @@ import com.google.firebase.storage.UploadTask;
 import com.tween.viacelular.asynctask.AttachAsyncTask;
 import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;

@@ -7,7 +7,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.Utils;
 import org.json.JSONException;

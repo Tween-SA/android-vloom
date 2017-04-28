@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.TimestampComparator;
 import com.tween.viacelular.interfaces.CallBackListener;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;

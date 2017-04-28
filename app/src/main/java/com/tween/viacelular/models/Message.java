@@ -157,6 +157,8 @@ public class Message extends RealmObject
 	@Ignore
 	public static final String KEY_SOCIALNAME		= "socialName";
 	@Ignore
+	public static final String KEY_RECEIVED			= "received";
+	@Ignore
 	public static final String SMS_CODE				= "ViaCelular code: ";
 	@Ignore
 	public static final String SMS_CODE_ES			= "Tu código ViaCelular es: ";

@@ -5,7 +5,7 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import org.json.JSONArray;

@@ -1,4 +1,4 @@
-package com.tween.viacelular.services;
+package com.tween.viacelular.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,11 +6,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Land;
+import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.utils.Common;
-import com.tween.viacelular.utils.StringUtils;
-import com.tween.viacelular.utils.Utils;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -44,6 +42,14 @@ public class ApiConnection
 	 */
 	public static final String BUSINESS					= "https://business.vloom.io/register";
 	/**
+	 * Url para redirigir a la web de wechain precisamente al explorer
+	 * "http://chain.vloom.io/"; //Production
+	 * "http://chain.vloom.io/"; //Stagging
+	 * "http://chain.vloom.io/"; //Testing
+	 */
+	public static final String CHAIN					= "http://chain.vloom.io/";
+	public static final String CHAIN_ITEM				= CHAIN+"#/item/";
+	/**
 	 * Url base del server
 	 * "https://api.vloom.io/v1/"; //Production - master
 	 * "https://stagging.vloom.io/v1/"; //Stagging - stagging
@@ -59,6 +65,8 @@ public class ApiConnection
 	public static final String USERS					= SERVERP+"users";
 	public static final String COMPANIES_BY_COUNTRY		= COMPANIES+"/"+ Land.KEY_API+"?code";
 	public static final String COMPANIES_SOCIAL			= COMPANIES+"/"+Suscription.KEY_API+"/social";
+	public static final String USERS_MESSAGES			= USERS+"/"+User.KEY_API+"/messages";
+	public static final String CERTIFICATE_MESSAGES		= MESSAGES+"/"+ Message.KEY_API+"/certificate";
 	public static final String SEND_SMS					= MESSAGES+"/lists";
 	public static final String CALLME					= USERS+"/tts";
 	public static final String MODIFY_COMPANIES			= USERS+"/"+ User.KEY_API+"/subscriptions";
@@ -101,7 +109,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			Utils.logError(context, "ApiConnection:checkInternet - Exception:", e);
+			Utils.logError(context, "ApiConnection:checkInternet - Exception: ", e);
 		}
 
 		return result;
@@ -130,7 +138,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			Utils.logError(context, "ApiConnection:getNetwork - Exception:", e);
+			Utils.logError(context, "ApiConnection:getNetwork - Exception: ", e);
 		}
 
 		return network;
@@ -156,7 +164,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			Utils.logError(context, "ApiConnection:loadJSONFromAsset - Exception:", e);
+			Utils.logError(context, "ApiConnection:loadJSONFromAsset - Exception: ", e);
 		}
 
 		return json;
@@ -269,7 +277,7 @@ public class ApiConnection
 			}
 			catch(Exception e)
 			{
-				Utils.logError(context, "ApiConnection:request - Exception:", e);
+				Utils.logError(context, "ApiConnection:request - Exception: ", e);
 			}
 		}
 
@@ -348,7 +356,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			Utils.logError(context, "ApiConnection:convertInputStreamToString - Exception:", e);
+			Utils.logError(context, "ApiConnection:convertInputStreamToString - Exception: ", e);
 		}
 
 		return result;
@@ -436,7 +444,7 @@ public class ApiConnection
 		}
 		catch(Exception e)
 		{
-			Utils.logError(context, "ApiConnection:checkResponse - Exception:", e);
+			Utils.logError(context, "ApiConnection:checkResponse - Exception: ", e);
 		}
 
 		return result;

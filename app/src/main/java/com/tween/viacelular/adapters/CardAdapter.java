@@ -35,6 +35,7 @@ import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
@@ -996,7 +997,14 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> im
 									@Override
 									public void invoke()
 									{
-										activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://chain.vloom.io/")));
+										holder.ivChain.setOnClickListener(new View.OnClickListener()
+										{
+											@Override
+											public void onClick(View view)
+											{
+												activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ApiConnection.CHAIN)));
+											}
+										});
 									}
 								});
 							}

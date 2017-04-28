@@ -11,6 +11,8 @@ import com.tween.viacelular.services.MyFirebaseMessagingService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -20,6 +22,216 @@ import io.realm.RealmResults;
  */
 public abstract class MessageHelper
 {
+	public static void parseJSON(final JSONObject jsonObject, final Context context)
+	{
+		try
+		{
+			if(jsonObject != null)
+			{
+				Realm realm = Realm.getDefaultInstance();
+				realm.executeTransaction(new Realm.Transaction()
+				{
+					@Override
+					public void execute(final Realm realm)
+					{
+						try
+						{
+							String	msgId		= "";
+							String	type		= "";
+							String	msg			= "";
+							String	channel		= "";
+							int		status		= Message.STATUS_RECEIVE;
+							String	phone		= "";
+							String	flags		= "";
+							Long	created		= System.currentTimeMillis();
+							int		kind		= Message.KIND_TEXT;
+							String	companyId	= "";
+							String	txid		= "";
+							String	link		= "";
+							String	linkThumb	= "";
+							String	subMsg		= "";
+							
+							if(jsonObject.has(Message.KEY_API))
+							{
+								if(StringUtils.isNotEmpty(jsonObject.getString(Message.KEY_API)))
+								{
+									msgId = jsonObject.getString(Message.KEY_API);
+								}
+							}
+							
+							if(jsonObject.has(Common.KEY_TYPE))
+							{
+								if(StringUtils.isNotEmpty(jsonObject.getString(Common.KEY_TYPE)))
+								{
+									type = jsonObject.getString(Common.KEY_TYPE);
+								}
+							}
+							
+							if(jsonObject.has(Message.KEY_PLAYLOAD))
+							{
+								if(StringUtils.isNotEmpty(jsonObject.getString(Message.KEY_PLAYLOAD)))
+								{
+									msg = jsonObject.getString(Message.KEY_PLAYLOAD);
+								}
+							}
+							
+							if(jsonObject.has(Message.KEY_CHANNEL))
+							{
+								if(StringUtils.isNotEmpty(jsonObject.getString(Message.KEY_CHANNEL)))
+								{
+									channel = jsonObject.getString(Message.KEY_CHANNEL);
+								}
+							}
+							
+							if(jsonObject.has(Common.KEY_STATUS))
+							{
+								if(!jsonObject.isNull(Common.KEY_STATUS))
+								{
+									if(StringUtils.isNotEmpty(jsonObject.getString(Common.KEY_STATUS)))
+									{
+										if(StringUtils.isNumber(jsonObject.getString(Common.KEY_STATUS)))
+										{
+											status = jsonObject.getInt(Common.KEY_STATUS);
+										}
+									}
+								}
+							}
+							
+							if(jsonObject.has(User.KEY_PHONE))
+							{
+								if(StringUtils.isNotEmpty(jsonObject.getString(User.KEY_PHONE)))
+								{
+									phone = jsonObject.getString(User.KEY_PHONE);
+								}
+							}
+							
+							if(jsonObject.has(Message.KEY_FLAGS))
+							{
+								if(StringUtils.isNotEmpty(jsonObject.getString(Message.KEY_FLAGS)))
+								{
+									flags = jsonObject.getString(Message.KEY_FLAGS);
+								}
+							}
+							
+							if(jsonObject.has(Suscription.KEY_API))
+							{
+								if(StringUtils.isNotEmpty(jsonObject.getString(Suscription.KEY_API)))
+								{
+									companyId = jsonObject.getString(Suscription.KEY_API);
+								}
+							}
+							
+							if(jsonObject.has(Message.KEY_TXID))
+							{
+								if(StringUtils.isNotEmpty(jsonObject.getString(Message.KEY_TXID)))
+								{
+									txid = jsonObject.getString(Message.KEY_TXID);
+								}
+							}
+							
+							if(jsonObject.has(Message.KEY_TIMESTAMP))
+							{
+								if(!jsonObject.isNull(Message.KEY_TIMESTAMP))
+								{
+									if(jsonObject.getJSONObject(Message.KEY_TIMESTAMP) != null)
+									{
+										if(jsonObject.getJSONObject(Message.KEY_TIMESTAMP).has(Message.KEY_RECEIVED))
+										{
+											if(StringUtils.isLong(jsonObject.getJSONObject(Message.KEY_TIMESTAMP).getString(Message.KEY_RECEIVED)))
+											{
+												created = jsonObject.getJSONObject(Message.KEY_TIMESTAMP).getLong(Message.KEY_RECEIVED);
+											}
+										}
+									}
+								}
+							}
+							
+							if(jsonObject.has(Message.KEY_ATTACHMENTS))
+							{
+								if(!jsonObject.isNull(Message.KEY_ATTACHMENTS))
+								{
+									JSONArray attachments = jsonObject.getJSONArray(Message.KEY_ATTACHMENTS);
+									
+									if(attachments.length() > 0)
+									{
+										if(attachments.getJSONObject(0) != null)
+										{
+											if(attachments.getJSONObject(0).has(Common.KEY_TYPE))
+											{
+												if(StringUtils.isNotEmpty(attachments.getJSONObject(0).getString(Common.KEY_TYPE)))
+												{
+													kind = attachments.getJSONObject(0).getInt(Common.KEY_TYPE);
+												}
+											}
+											
+											if(attachments.getJSONObject(0).has(Message.KEY_LINK))
+											{
+												if(StringUtils.isNotEmpty(attachments.getJSONObject(0).getString(Message.KEY_LINK)))
+												{
+													link = attachments.getJSONObject(0).getString(Message.KEY_LINK);
+												}
+											}
+											
+											if(attachments.getJSONObject(0).has(Message.KEY_LINKTHUMB))
+											{
+												if(StringUtils.isNotEmpty(attachments.getJSONObject(0).getString(Message.KEY_LINKTHUMB)))
+												{
+													linkThumb = attachments.getJSONObject(0).getString(Message.KEY_LINKTHUMB);
+												}
+											}
+											
+											if(attachments.getJSONObject(0).has(Message.KEY_SUBMSG))
+											{
+												if(StringUtils.isNotEmpty(attachments.getJSONObject(0).getString(Message.KEY_SUBMSG)))
+												{
+													subMsg = attachments.getJSONObject(0).getString(Message.KEY_SUBMSG);
+												}
+											}
+										}
+									}
+								}
+							}
+							
+							//TODO quizás en algún momento haga falta tomar el valor de vloomcoins
+							
+							Message message = realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+							
+							if(message == null)
+							{
+								message = new Message();
+								message.setMsgId(msgId);
+								message.setCreated(created);
+							}
+							
+							message.setType(type);
+							message.setStatus(status);
+							message.setPhone(phone);
+							message.setMsg(msg);
+							message.setChannel(channel);
+							message.setFlags(flags);
+							message.setCompanyId(companyId);
+							message.setTxid(txid);
+							message.setKind(kind);
+							message.setLink(link);
+							message.setLinkThumbnail(linkThumb);
+							message.setSubMsg(subMsg);
+							realm.copyToRealmOrUpdate(message);
+						}
+						catch(Exception e)
+						{
+							Utils.logError(context, "MessageHelper:parseJSON:transaction - Exception: ", e);
+						}
+					}
+				});
+				realm.close();
+			}
+		}
+		catch(Exception e)
+		{
+			Utils.logError(context, "MessageHelper:parseJSON - Exception: ", e);
+		}
+	}
+	
 	/**
 	 * Imprime los valores del objeto Realm Message
 	 * @param message
