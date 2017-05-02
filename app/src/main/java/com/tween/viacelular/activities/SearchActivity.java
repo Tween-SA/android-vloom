@@ -186,7 +186,28 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 									{
 										public void run()
 										{
-											populateList();
+											Realm realm				= Realm.getDefaultInstance();
+											String id				= "";
+											Suscription suscription	= realm.where(Suscription.class).equalTo(Common.KEY_NAME, name).findFirst();
+											
+											if(suscription != null)
+											{
+												id = suscription.getCompanyId();
+											}
+											
+											realm.close();
+											
+											if(StringUtils.isNotEmpty(id))
+											{
+												Intent intent = new Intent(activity, CardViewActivity.class);
+												intent.putExtra(Common.KEY_ID, id);
+												activity.startActivity(intent);
+												activity.finish();
+											}
+											else
+											{
+												populateList();
+											}
 										}
 									});
 								}

@@ -3,6 +3,7 @@ package com.tween.viacelular.adapters;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -31,6 +32,7 @@ import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.GalleryActivity;
+import com.tween.viacelular.asynctask.CertificateAsyncTask;
 import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
@@ -985,30 +987,46 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> im
 
 					if(holder.ivChain != null)
 					{
-						holder.ivChain.setOnClickListener(new View.OnClickListener()
+						if(StringUtils.isNotEmpty(item.getTxid()))
 						{
-							@Override
-							public void onClick(View view)
+							holder.ivChain.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.certificate_cyan));
+							holder.ivChain.setOnClickListener(new View.OnClickListener()
 							{
-								holder.ivChain.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.certificate_cyan));
-								Toast.makeText(activity, activity.getString(R.string.certificate), Toast.LENGTH_SHORT).show();
-								Utils.semicircleViewTouchAnimation(holder.ivChain, R.drawable.certificate_cyan, activity, new CallBackListener()
+								@Override
+								public void onClick(View view)
 								{
-									@Override
-									public void invoke()
+									activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ApiConnection.CHAIN)));
+								}
+							});
+						}
+						else
+						{
+							holder.ivChain.setOnClickListener(new View.OnClickListener()
+							{
+								@Override
+								public void onClick(View view)
+								{
+									holder.ivChain.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.certificate_cyan));
+									new CertificateAsyncTask(activity, false, item.getMsgId()).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+									Toast.makeText(activity, activity.getString(R.string.certificate), Toast.LENGTH_SHORT).show();
+									Utils.semicircleViewTouchAnimation(holder.ivChain, R.drawable.certificate_cyan, activity, new CallBackListener()
 									{
-										holder.ivChain.setOnClickListener(new View.OnClickListener()
+										@Override
+										public void invoke()
 										{
-											@Override
-											public void onClick(View view)
+											holder.ivChain.setOnClickListener(new View.OnClickListener()
 											{
-												activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ApiConnection.CHAIN)));
-											}
-										});
-									}
-								});
-							}
-						});
+												@Override
+												public void onClick(View view)
+												{
+													activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ApiConnection.CHAIN)));
+												}
+											});
+										}
+									});
+								}
+							});
+						}
 					}
 
 					//Nueva card para recepción de facturas
