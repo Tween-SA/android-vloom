@@ -5,13 +5,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.models.Message;
-import com.tween.viacelular.models.User;
+import com.tween.viacelular.data.Message;
 import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
+import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-import org.json.JSONObject;
-import io.realm.Realm;
 
 /**
  * Manejador para reportar mensajes capturados en el dispositivo para backup
@@ -64,15 +62,10 @@ public class CertificateAsyncTask extends AsyncTask<Void, Void, String>
 	{
 		try
 		{
-			Realm realm						= Realm.getDefaultInstance();
-			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			User user						= realm.where(User.class).findFirst();
-			JSONObject jsonObject			= new JSONObject();
-			jsonObject.put(Message.KEY_API, id);
-			
-			if(user != null)
+			if(StringUtils.isIdMongo(id))
 			{
-				ApiConnection.request(ApiConnection.CERTIFICATE_MESSAGES, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonObject.toString());
+				SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+				ApiConnection.request(ApiConnection.CERTIFICATE_MESSAGES.replace(Message.KEY_API, id), context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), "");
 			}
 			
 			if(displayDialog)

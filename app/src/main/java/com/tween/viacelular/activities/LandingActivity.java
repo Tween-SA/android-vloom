@@ -317,7 +317,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 				iconShowNotif.setVisibility(ImageView.VISIBLE);
 				txtShowNotif.setVisibility(TextView.VISIBLE);
 
-				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()))
+				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()) && suscription.getFollower() == Common.BOOL_YES)
 				{
 					idValue = suscription.getIdentificationValue();
 					txtValue.setText(idValue);

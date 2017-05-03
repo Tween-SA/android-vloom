@@ -300,7 +300,8 @@ public class HomeActivity extends AppCompatActivity
 					@Override
 					public void onClick(final DialogInterface dialog, final int which)
 					{
-						AppRater.delayRateApp(context);
+						//Así no joden más con que aparece el dialog
+						AppRater.rateApp(context);
 						dialog.dismiss();
 					}
 				});

@@ -24,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -46,13 +45,10 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import io.realm.Realm;
 
 /**
@@ -621,14 +617,16 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		super.onResume();
 		try
 		{
-			Handler handler = new android.os.Handler();
-			handler.postDelayed(new Runnable()
+			if(companies.size() <= 1)
 			{
-				public void run()
+				new android.os.Handler().postDelayed(new Runnable()
 				{
-					refresh(true, true);
-				}
-			}, 1000);
+					public void run()
+					{
+						refresh(true, true);
+					}
+				}, 1000);
+			}
 		}
 		catch(Exception e)
 		{
