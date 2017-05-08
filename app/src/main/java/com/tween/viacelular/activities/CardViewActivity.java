@@ -20,6 +20,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -74,6 +75,10 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+/**
+ * Manejador de pantalla para visualización de mensajes de una empresa
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class CardViewActivity extends AppCompatActivity
 {
 	private Suscription				suscription		= null;
@@ -496,58 +501,25 @@ public class CardViewActivity extends AppCompatActivity
 				{
 					if(loading)
 					{
-						if(idTitle.getText().toString().equals(getString(R.string.id_title)))
+						idTitle.setText(getString(R.string.id_ok));
+						idText.setText(getString(R.string.id_oktext)+" "+suscription.getIdentificationValue());
+						ivHelp.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_edit_white_18dp));
+						ivHelp.setOnClickListener(new View.OnClickListener()
 						{
-							idTitle.setText(getString(R.string.id_ok));
-							idText.setText(getString(R.string.id_oktext)+" "+suscription.getIdentificationValue());
-							ivHelp.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_edit_white_18dp));
-							ivHelp.setOnClickListener(new View.OnClickListener()
+							@Override
+							public void onClick(final View view)
 							{
-								@Override
-								public void onClick(final View view)
-								{
-									modifyId(view);
-								}
-							});
-							
-							if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
-							{
-								rlClientId.setBackground(getDrawable(R.drawable.idok));
+								modifyId(view);
 							}
-							else
-							{
-								rlClientId.setBackgroundDrawable(getResources().getDrawable(R.drawable.idok));
-							}
+						});
+						
+						if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
+						{
+							rlClientId.setBackground(getDrawable(R.drawable.idok));
 						}
 						else
 						{
-							idTitle.setText(getString(R.string.id_title));
-							idText.setText(getString(R.string.id_oktext)+" "+idValue);
-							ivHelp.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_edit_white_18dp));
-							idTitle.setOnClickListener(new View.OnClickListener()
-							{
-								@Override
-								public void onClick(final View view)
-								{
-									retry();
-								}
-							});
-							idText.setOnClickListener(new View.OnClickListener()
-							{
-								@Override
-								public void onClick(final View view)
-								{
-									retry();
-								}
-							});
-							if(Common.API_LEVEL >= Build.VERSION_CODES.LOLLIPOP)
-							{
-								rlClientId.setBackground(getDrawable(R.drawable.idfail));
-							}
-							else
-							{
-								rlClientId.setBackgroundDrawable(getResources().getDrawable(R.drawable.idfail));
-							}
+							rlClientId.setBackgroundDrawable(getResources().getDrawable(R.drawable.idok));
 						}
 						
 						ivHelp.setOnClickListener(new View.OnClickListener()
@@ -561,7 +533,7 @@ public class CardViewActivity extends AppCompatActivity
 					}
 					else
 					{
-						if(StringUtils.isNotEmpty(suscription.getIdentificationKey()))
+						if(StringUtils.isNotEmpty(suscription.getIdentificationKey()) && suscription.getFollower() == Common.BOOL_YES)
 						{
 							idValue = suscription.getIdentificationValue();
 							rlClientId.setVisibility(RelativeLayout.VISIBLE);
@@ -870,8 +842,16 @@ public class CardViewActivity extends AppCompatActivity
 			{
 				out = new File(out, String.valueOf(System.currentTimeMillis()));
 			}
-
-			tempUri = Uri.fromFile(out);
+			
+			if(Common.API_LEVEL >= Build.VERSION_CODES.N)
+			{
+				tempUri = FileProvider.getUriForFile(this, getPackageName() + ".provider", out);
+			}
+			else
+			{
+				tempUri = Uri.fromFile(out);
+			}
+			
 			cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
 			startActivityForResult(cameraIntent, 0);
 		}

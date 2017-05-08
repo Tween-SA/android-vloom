@@ -17,13 +17,17 @@ import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * Manejador para persistir sms que el usuario tiene en el dispositivo e identificarlos en la empresa que correponden
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class CaptureSMSAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;

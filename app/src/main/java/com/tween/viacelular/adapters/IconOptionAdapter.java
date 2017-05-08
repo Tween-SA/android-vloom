@@ -16,7 +16,8 @@ import com.tween.viacelular.utils.Utils;
 import io.realm.Realm;
 
 /**
- * Created by david.figueroa on 15/7/15.
+ * Adpatador para presentación de opciones en el menú de cada empresa
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 15/07/2015
  */
 public class IconOptionAdapter extends BaseAdapter
 {

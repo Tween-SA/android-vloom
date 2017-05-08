@@ -14,7 +14,8 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
- * Created by davidfigueroa on 31/3/16.
+ * Manejador para tratamiento y parseo de usuarios
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 31/03/2016
  */
 public abstract class UserHelper
 {

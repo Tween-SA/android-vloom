@@ -23,7 +23,8 @@ import io.realm.RealmResults;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
- * Created by davidfigueroa on 13/1/16.
+ * Manejador para fragmentos y tabs de pantalla antigua Empresas
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 13/01/2016
  */
 public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItemClickListener, StickyListHeadersListView.OnHeaderClickListener,
 																StickyListHeadersListView.OnStickyHeaderOffsetChangedListener, StickyListHeadersListView.OnStickyHeaderChangedListener

@@ -4,6 +4,10 @@ import android.annotation.SuppressLint;
 import android.util.Patterns;
 import com.tween.viacelular.models.Message;
 
+/**
+ * Utilidades para tratamiento y validaciones de textos
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 @SuppressLint("DefaultLocale")
 public class StringUtils
 {

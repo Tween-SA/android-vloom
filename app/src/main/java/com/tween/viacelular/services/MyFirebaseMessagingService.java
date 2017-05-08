@@ -39,7 +39,8 @@ import java.util.Map;
 import io.realm.Realm;
 
 /**
- * Created by davidfigueroa on 1/8/16.
+ * Servicio para capturar push notifications bajo FCM
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 01/08/16
  */
 public class MyFirebaseMessagingService extends FirebaseMessagingService
 {

@@ -9,7 +9,8 @@ import org.json.JSONObject;
 import io.realm.Realm;
 
 /**
- * Created by davidfigueroa on 31/3/16.
+ * Manejador para tratamiento y parseo de países
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 31/03/2016
  */
 public abstract class LandHelper
 {

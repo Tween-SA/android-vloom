@@ -11,7 +11,7 @@ import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
@@ -22,7 +22,8 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
- * Created by david.figueroa on 17/6/15.
+ * Manejador para confirmar lectura y recepción de mensajes obtenidos vía push notificacions
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 17/06/2015
  */
 public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 {

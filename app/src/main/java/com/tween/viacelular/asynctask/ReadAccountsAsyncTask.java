@@ -20,7 +20,8 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
- * Created by david.figueroa on 17/6/15.
+ * Manejador para actualización de cuentas asociadas al dispositivo
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 17/06/2015
  */
 public class ReadAccountsAsyncTask extends AsyncTask<Void, Void, Boolean>
 {

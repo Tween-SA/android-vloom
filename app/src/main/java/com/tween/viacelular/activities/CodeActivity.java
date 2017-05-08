@@ -44,6 +44,10 @@ import org.json.JSONObject;
 import java.util.concurrent.TimeUnit;
 import io.realm.Realm;
 
+/**
+ * Manejador de pantalla para verificación y registro de código por primera vez
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class CodeActivity extends AppCompatActivity
 {
 	private EditText			editCode;

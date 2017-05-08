@@ -16,6 +16,10 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
 
+/**
+ * Manejador para descarga de logos de empresas
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class LogoAsyncTask extends AsyncTask<Void, Void, Bitmap>
 {
 	private MaterialDialog	progress;

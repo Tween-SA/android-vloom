@@ -10,7 +10,7 @@ import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -19,6 +19,10 @@ import org.json.JSONObject;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * Manejador para obtener información de una empresa determinada
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;

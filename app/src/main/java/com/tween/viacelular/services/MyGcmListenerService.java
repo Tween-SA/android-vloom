@@ -6,7 +6,8 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.Utils;
 
 /**
- * Created by david.figueroa on 16/6/15.
+ * Servicio para captura de push notifications bajo GCM
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 16/06/15
  */
 public class MyGcmListenerService extends GcmListenerService
 {

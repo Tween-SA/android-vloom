@@ -12,7 +12,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.method.LinkMovementMethod;
@@ -22,9 +21,7 @@ import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -39,6 +36,10 @@ import com.tween.viacelular.utils.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 
+/**
+ * Manejador de pantalla para visualizar datos de contacto sobre la empresa
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class LandingActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener
 {
 	private static final float	PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR	= 0.9f;
@@ -316,7 +317,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 				iconShowNotif.setVisibility(ImageView.VISIBLE);
 				txtShowNotif.setVisibility(TextView.VISIBLE);
 
-				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()))
+				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()) && suscription.getFollower() == Common.BOOL_YES)
 				{
 					idValue = suscription.getIdentificationValue();
 					txtValue.setText(idValue);

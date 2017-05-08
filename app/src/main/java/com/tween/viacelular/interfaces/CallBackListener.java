@@ -1,7 +1,8 @@
 package com.tween.viacelular.interfaces;
 
 /**
- * Created by davidfigueroa on 23/11/16.
+ * Callback para salir de task
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 23/11/2016
  */
 public interface CallBackListener
 {

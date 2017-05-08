@@ -12,7 +12,7 @@ import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -21,6 +21,10 @@ import org.json.JSONObject;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * Manejador para actualización de empresas y suscripciones
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;

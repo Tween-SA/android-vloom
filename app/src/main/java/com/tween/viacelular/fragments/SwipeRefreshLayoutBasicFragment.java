@@ -40,11 +40,12 @@ import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.UserHelper;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ import io.realm.Realm;
  *
  * <p>To provide an accessible way to trigger the refresh, this app also provides a refresh action item.
  * <p>In this sample app, the refresh updates the ListView with a random set of new items.
- * Created by davidfigueroa on 17/11/15.
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 17/11/15.
  */
 public class SwipeRefreshLayoutBasicFragment extends Fragment
 {
@@ -616,14 +617,16 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		super.onResume();
 		try
 		{
-			Handler handler = new android.os.Handler();
-			handler.postDelayed(new Runnable()
+			if(companies.size() <= 1)
 			{
-				public void run()
+				new android.os.Handler().postDelayed(new Runnable()
 				{
-					refresh(true, true);
-				}
-			}, 1000);
+					public void run()
+					{
+						refresh(true, true);
+					}
+				}, 1000);
+			}
 		}
 		catch(Exception e)
 		{
@@ -717,7 +720,25 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 						
 						if(jsonData != null)
 						{
-							User userParsed = UserHelper.parseJSON(jsonData, true, homeActivity);
+							UserHelper.parseJSON(jsonData, true, homeActivity);
+						}
+					}
+					
+					//Agregado para refrescar mensajes desde el mongo
+					jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS_MESSAGES.replace(User.KEY_API, userId), homeActivity, ApiConnection.METHOD_GET,
+													preferences.getString(Common.KEY_TOKEN, ""), ""));
+					result		= ApiConnection.checkResponse(homeActivity, jsonResult);
+					
+					if(result.equals(ApiConnection.OK))
+					{
+						JSONArray jsonArray = jsonResult.getJSONArray(Common.KEY_CONTENT);
+						
+						if(jsonArray.length() > 0)
+						{
+							for(int i=0; i<jsonArray.length(); i++)
+							{
+								MessageHelper.parseJSON(jsonArray.getJSONObject(i), homeActivity);
+							}
 						}
 					}
 				}

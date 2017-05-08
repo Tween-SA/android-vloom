@@ -11,7 +11,7 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.models.ConnectedAccount;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.UserHelper;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -20,6 +20,10 @@ import org.json.JSONObject;
 import java.util.Locale;
 import io.realm.Realm;
 
+/**
+ * Manejador para validación de código que recibe el usuario vía sms
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class CheckCodeAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;

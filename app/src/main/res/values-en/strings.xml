@@ -1,4 +1,5 @@
 <resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+	<string name="certificate">Message in process of certification&#8230;</string><!-- after traslate -->
 	<string name="app_name">Vloom</string>
 	<string name="acepted">Accepted</string>
 	<string name="action_example">Example</string>

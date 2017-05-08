@@ -1,4 +1,5 @@
 <resources xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+	<string name="certificate">消息认证过程&#8230;</string><!-- after traslate -->
 	<string name="app_name">Vloom</string>
 	<string name="acepted">已接受</string>
 	<string name="action_example">示例</string>

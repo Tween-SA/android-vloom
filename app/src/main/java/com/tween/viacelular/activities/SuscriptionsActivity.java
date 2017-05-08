@@ -30,7 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by davidfigueroa on 13/1/16.
+ * Manejador de pantalla para visualización de empresas añadidas
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 13/01/2016
  */
 public class SuscriptionsActivity extends AppCompatActivity
 {

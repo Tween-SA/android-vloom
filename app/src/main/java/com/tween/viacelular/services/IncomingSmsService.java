@@ -31,7 +31,8 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
- * Created by david.figueroa on 6/7/15.
+ * Recibidor y capturador de sms para reportar a api y autovalidar
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 06/07/15
  */
 public class IncomingSmsService extends BroadcastReceiver
 {

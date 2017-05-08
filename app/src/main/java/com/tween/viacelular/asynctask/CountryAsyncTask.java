@@ -7,7 +7,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.LandHelper;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -17,6 +17,10 @@ import org.json.JSONObject;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * Manejador para actualización de países vía api
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;

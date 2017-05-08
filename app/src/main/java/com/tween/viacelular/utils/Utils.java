@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -22,7 +23,9 @@ import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.TouchDelegate;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
@@ -49,6 +52,10 @@ import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
+import com.ufreedom.floatingview.Floating;
+import com.ufreedom.floatingview.FloatingBuilder;
+import com.ufreedom.floatingview.FloatingElement;
+import com.ufreedom.floatingview.effect.TranslateFloatingTransition;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -65,7 +72,8 @@ import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 
 /**
- * Created by Davo on 11/06/2015.
+ * Utilidades varias
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 11/06/15
  */
 public class Utils
 {
@@ -149,7 +157,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:redirectMenu - Exception:", e);
+			logError(activity, "Utils:redirectMenu - Exception: ", e);
 		}
 	}
 
@@ -192,7 +200,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:showPush - Exception:", e);
+			logError(context, "Utils:showPush - Exception: ", e);
 		}
 	}
 
@@ -360,7 +368,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:checkSession - Exception:", e);
+			logError(activity, "Utils:checkSession - Exception: ", e);
 		}
 
 		return result;
@@ -390,7 +398,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:isLightColor - Exception:", e);
+			logError(context, "Utils:isLightColor - Exception: ", e);
 		}
 
 		return result;
@@ -454,7 +462,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:getChannelSMS - Exception:", e);
+			logError(context, "Utils:getChannelSMS - Exception: ", e);
 		}
 
 		return result;
@@ -527,7 +535,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:goTo - Exception:", e);
+			logError(activity, "Utils:goTo - Exception: ", e);
 		}
 	}
 
@@ -543,7 +551,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:sendContactMail - Exception:", e);
+			logError(activity, "Utils:sendContactMail - Exception: ", e);
 		}
 	}
 
@@ -582,7 +590,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:sendMail - Exception:", e);
+			logError(activity, "Utils:sendMail - Exception: ", e);
 		}
 	}
 
@@ -609,7 +617,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:writeStringInFile - Exception:", e);
+			logError(context, "Utils:writeStringInFile - Exception: ", e);
 		}
 	}
 
@@ -624,7 +632,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:createSubject - Exception:", e);
+			logError(context, "Utils:createSubject - Exception: ", e);
 		}
 
 		return subject;
@@ -648,7 +656,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:createBody - Exception:", e);
+			logError(context, "Utils:createBody - Exception: ", e);
 		}
 
 		return body;
@@ -762,7 +770,7 @@ public class Utils
 			}
 			catch(Exception e)
 			{
-				logError(activity, "Utils:PrepareDB:start - Exception:", e);
+				logError(activity, "Utils:PrepareDB:start - Exception: ", e);
 				FileWriter fichero;
 				PrintWriter pw;
 
@@ -774,7 +782,7 @@ public class Utils
 				}
 				catch(Exception d)
 				{
-					logError(activity, "Utils:PrepareDB:start2 - Exception:", e);
+					logError(activity, "Utils:PrepareDB:start2 - Exception: ", e);
 				}
 			}
 		}
@@ -792,7 +800,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:copyDb - Exception:", e);
+			logError(activity, "Utils:copyDb - Exception: ", e);
 			FileWriter fichero;
 			PrintWriter pw;
 
@@ -804,7 +812,7 @@ public class Utils
 			}
 			catch(Exception d)
 			{
-				logError(activity, "Utils:copyDb2 - Exception:", d);
+				logError(activity, "Utils:copyDb2 - Exception: ", d);
 			}
 		}
 	}
@@ -898,7 +906,73 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:upgradeApp - Exception:", e);
+			logError(activity, "Utils:upgradeApp - Exception: ", e);
+		}
+	}
+	
+	public static void singleViewTouchAnimation(final View view, final int drawable, final Activity activity, final CallBackListener listener)
+	{
+		try
+		{
+			final Floating mFloating		= new Floating(activity);
+			final Handler handler			= new Handler();
+			ImageView effectComment			= new ImageView(activity);
+			effectComment.setLayoutParams(new ViewGroup.LayoutParams(view.getMeasuredWidth(), view.getMeasuredHeight()));
+			effectComment.setImageResource(drawable);
+			FloatingElement floatingElement	= new FloatingBuilder()
+					.anchorView(view)
+					.targetView(effectComment)
+					.floatingTransition(new TranslateFloatingTransition())
+					.build();
+			mFloating.startFloating(floatingElement);
+			handler.postDelayed(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					if(listener != null)
+					{
+						listener.invoke();
+					}
+				}
+			}, 500);
+		}
+		catch(Exception e)
+		{
+			logError(activity, "Utils:singleViewTouchAnimation - Exception: ", e);
+		}
+	}
+	
+	public static void semicircleViewTouchAnimation(final View view, final int drawable, final Activity activity, final CallBackListener listener)
+	{
+		try
+		{
+			final Floating mFloating		= new Floating(activity);
+			final Handler handler			= new Handler();
+			ImageView effectComment			= new ImageView(activity);
+			effectComment.setLayoutParams(new ViewGroup.LayoutParams(view.getMeasuredWidth(), view.getMeasuredHeight()));
+			effectComment.setImageResource(drawable);
+			FloatingElement floatingElement	= new FloatingBuilder()
+					.anchorView(view)
+					.targetView(effectComment)
+					.floatingTransition(new SemicircleFloating())
+					.build();
+			mFloating.startFloating(floatingElement);
+			handler.postDelayed(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					if(listener != null)
+					{
+						listener.invoke();
+					}
+				}
+			}, 600);
+		}
+		catch(Exception e)
+		{
+			logError(activity, "Utils:semicircleViewTouchAnimation - Exception: ", e);
 		}
 	}
 
@@ -960,7 +1034,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:getLocation - Exception:", e);
+			logError(activity, "Utils:getLocation - Exception: ", e);
 		}
 	}
 
@@ -1008,7 +1082,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:showViewWithFade - Exception:", e);
+			logError(context, "Utils:showViewWithFade - Exception: ", e);
 		}
 	}
 
@@ -1101,7 +1175,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:hideViewWithFade - Exception:", e);
+			logError(context, "Utils:hideViewWithFade - Exception: ", e);
 		}
 	}
 

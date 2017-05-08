@@ -7,7 +7,8 @@ import android.view.MotionEvent;
 import android.view.View;
 
 /**
- * Created by Davo on 11/06/2015.
+ * Adpatador para presentación de opciones en el menú así como también la cabecera del dicho menú
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 11/06/2015
  */
 public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener
 {

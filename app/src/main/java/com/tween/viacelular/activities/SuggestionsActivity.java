@@ -9,6 +9,10 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.Utils;
 
+/**
+ * Manejador de pantalla para sugerencias sobre empresas a seguir
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class SuggestionsActivity extends AppCompatActivity
 {
 	private boolean firstTime = false;

@@ -8,7 +8,7 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -16,6 +16,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import io.realm.Realm;
 
+/**
+ * Manejador para actualización de identificador único ante empresas registradas en la plataforma
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class SendIdentificationKeyAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog		progress;

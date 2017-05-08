@@ -24,7 +24,8 @@ import io.realm.Realm;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 /**
- * Created by davidfigueroa on 14/1/16.
+ * Adaptador para presentación de datos sobre empresas diferenciando añadidas del total del país del usuario
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 14/01/2016
  */
 public class SuscriptionsAdapter extends BaseAdapter implements StickyListHeadersAdapter, SectionIndexer
 {

@@ -16,13 +16,15 @@ import com.google.firebase.storage.UploadTask;
 import com.tween.viacelular.asynctask.AttachAsyncTask;
 import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Message;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
 import io.realm.Realm;
 
 /**
- * Created by David on 27/12/2016.
+ * Servicio para subir fotos a Firebase
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 27/12/2016
  */
 public class MyUploadService extends MyBaseTaskService
 {

@@ -8,7 +8,9 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 
 /**
+ * Re-implementación de librería para mostrar letras en cabecera de listados
  * @author Eric Frohnhoefer
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
  */
 public class UnderlineTextView extends AppCompatTextView
 {
