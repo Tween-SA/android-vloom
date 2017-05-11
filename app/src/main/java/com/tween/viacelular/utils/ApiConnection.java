@@ -6,7 +6,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Land;
-import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import org.json.JSONObject;
@@ -66,7 +65,7 @@ public class ApiConnection
 	public static final String COMPANIES_BY_COUNTRY		= COMPANIES+"/"+ Land.KEY_API+"?code";
 	public static final String COMPANIES_SOCIAL			= COMPANIES+"/"+Suscription.KEY_API+"/social";
 	public static final String USERS_MESSAGES			= USERS+"/"+User.KEY_API+"/messages";
-	public static final String CERTIFICATE_MESSAGES		= MESSAGES+"/"+ Message.KEY_API+"/certificate";
+	public static final String CERTIFICATE_MESSAGES		= MESSAGES+"/certificate";
 	public static final String SEND_SMS					= MESSAGES+"/lists";
 	public static final String CALLME					= USERS+"/tts";
 	public static final String MODIFY_COMPANIES			= USERS+"/"+ User.KEY_API+"/subscriptions";

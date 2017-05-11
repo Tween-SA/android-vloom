@@ -141,7 +141,7 @@ public class Message extends RealmObject
 	@Ignore
 	public static final String KEY_DELETED			= "deleted";
 	@Ignore
-	public static final String KEY_PLAYLOAD			= "payload";
+	public static final String KEY_PAYLOAD			= "payload";
 	@Ignore
 	public static final String KEY_TIMESTAMP		= "timestamp";
 	@Ignore

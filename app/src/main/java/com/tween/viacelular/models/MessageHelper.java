@@ -67,11 +67,11 @@ public abstract class MessageHelper
 								}
 							}
 							
-							if(jsonObject.has(Message.KEY_PLAYLOAD))
+							if(jsonObject.has(Message.KEY_PAYLOAD))
 							{
-								if(StringUtils.isNotEmpty(jsonObject.getString(Message.KEY_PLAYLOAD)))
+								if(StringUtils.isNotEmpty(jsonObject.getString(Message.KEY_PAYLOAD)))
 								{
-									msg = jsonObject.getString(Message.KEY_PLAYLOAD);
+									msg = jsonObject.getString(Message.KEY_PAYLOAD);
 								}
 							}
 							
@@ -503,7 +503,7 @@ public abstract class MessageHelper
 		{
 			String msgId					= data.getString(Message.KEY_API, "");
 			String msgType					= data.getString(Common.KEY_TYPE, "");
-			String msg						= data.getString(Message.KEY_PLAYLOAD, "");
+			String msg						= data.getString(Message.KEY_PAYLOAD, "");
 			String channel					= data.getString(Message.KEY_CHANNEL, "");
 			String companyId				= data.getString(Suscription.KEY_API, "");
 			String phone					= data.getString(User.KEY_PHONE, "");

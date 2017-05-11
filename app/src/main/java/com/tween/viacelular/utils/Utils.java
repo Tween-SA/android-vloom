@@ -179,7 +179,7 @@ public class Utils
 			Bundle bundle				= new Bundle();
 			bundle.putString(Common.KEY_SOUND, sound);
 			bundle.putString(Common.KEY_TYPE, message.getType());
-			bundle.putString(Message.KEY_PLAYLOAD, message.getMsg());
+			bundle.putString(Message.KEY_PAYLOAD, message.getMsg());
 			bundle.putString(Message.KEY_TIMESTAMP, String.valueOf(message.getCreated()));
 			bundle.putString(Message.KEY_CHANNEL, message.getChannel());
 			bundle.putString(Common.KEY_STATUS, String.valueOf(message.getStatus()));
