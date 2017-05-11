@@ -5,11 +5,13 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
-import com.tween.viacelular.data.Message;
+import com.tween.viacelular.models.Message;
 import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+import org.json.JSONObject;
+import io.realm.Realm;
 
 /**
  * Manejador para reportar mensajes capturados en el dispositivo para backup
@@ -65,7 +67,22 @@ public class CertificateAsyncTask extends AsyncTask<Void, Void, String>
 			if(StringUtils.isIdMongo(id))
 			{
 				SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-				ApiConnection.request(ApiConnection.CERTIFICATE_MESSAGES.replace(Message.KEY_API, id), context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), "");
+				JSONObject jsonObject			= new JSONObject();
+				Realm realm						= Realm.getDefaultInstance();
+				Message message					= realm.where(Message.class).equalTo(Message.KEY_API, id).findFirst();
+				
+				if(message != null)
+				{
+					jsonObject.put(Message.KEY_PAYLOAD, message.getMsg());
+					jsonObject.put(Message.KEY_API, id);
+					jsonObject.put("from", message.getCompanyId());
+					jsonObject.put("to", message.getPhone());
+					jsonObject.put(Common.KEY_TYPE, "push");
+					jsonObject.put("vloomcoins", "0");
+				}
+				
+				realm.close();
+				ApiConnection.request(ApiConnection.CERTIFICATE_MESSAGES, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonObject.toString());
 			}
 			
 			if(displayDialog)

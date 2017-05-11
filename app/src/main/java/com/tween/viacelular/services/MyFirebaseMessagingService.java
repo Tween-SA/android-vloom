@@ -134,33 +134,33 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 						}
 					}
 
-					if(data.get(Message.KEY_PLAYLOAD) != null)
+					if(data.get(Message.KEY_PAYLOAD) != null)
 					{
-						if(StringUtils.isEmpty(data.get(Message.KEY_PLAYLOAD).toString()))
+						if(StringUtils.isEmpty(data.get(Message.KEY_PAYLOAD).toString()))
 						{
 							if(StringUtils.isNotEmpty(remoteMessage.getNotification().getBody()))
 							{
-								push.putString(Message.KEY_PLAYLOAD, remoteMessage.getNotification().getBody());
+								push.putString(Message.KEY_PAYLOAD, remoteMessage.getNotification().getBody());
 							}
 							else
 							{
-								push.putString(Message.KEY_PLAYLOAD, context.getString(R.string.notification_new));
+								push.putString(Message.KEY_PAYLOAD, context.getString(R.string.notification_new));
 							}
 						}
 						else
 						{
-							push.putString(Message.KEY_PLAYLOAD, data.get(Message.KEY_PLAYLOAD).toString());
+							push.putString(Message.KEY_PAYLOAD, data.get(Message.KEY_PAYLOAD).toString());
 						}
 					}
 					else
 					{
 						if(StringUtils.isNotEmpty(remoteMessage.getNotification().getBody()))
 						{
-							push.putString(Message.KEY_PLAYLOAD, remoteMessage.getNotification().getBody());
+							push.putString(Message.KEY_PAYLOAD, remoteMessage.getNotification().getBody());
 						}
 						else
 						{
-							push.putString(Message.KEY_PLAYLOAD, context.getString(R.string.notification_new));
+							push.putString(Message.KEY_PAYLOAD, context.getString(R.string.notification_new));
 						}
 					}
 
