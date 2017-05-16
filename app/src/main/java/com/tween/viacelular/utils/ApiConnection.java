@@ -50,13 +50,14 @@ public class ApiConnection
 	public static final String CHAIN_ITEM				= CHAIN+"#/item/";
 	/**
 	 * Url base del server
+	 * "https://api.wechain.org/v1/"; //New Production - master
 	 * "https://api.vloom.io/v1/"; //Production - master
 	 * "https://stagging.vloom.io/v1/"; //Stagging - stagging
 	 * "https://dev.vloom.io/v1/"; //Testing - develop
 	 * "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
 	 * "https://private-29fe84-davidfigueroa.apiary-mock.com/v1/"; //Development Apiary Private
 	 */
-	private static final String SERVERP					= "https://api.vloom.io/v1/";
+	private static final String SERVERP					= "https://dev.vloom.io/v1/";
 	public static final String IP_API					= "http://ip-api.com/json";
 	public static final String COMPANIES				= SERVERP+"companies";
 	public static final String COUNTRIES				= SERVERP+"countries?locale="+Locale.getDefault().getLanguage();
@@ -195,8 +196,8 @@ public class ApiConnection
 
 				URL url								= new URL(urlStr);
 				URLConnection connection			= url.openConnection();
-				connection.setConnectTimeout(10500);
-				connection.setReadTimeout(10500);
+				connection.setConnectTimeout(15000);//Antes era 10500 pero ahora con las réplicas de mongo puede que sea mayor
+				connection.setReadTimeout(15000);
 				HttpURLConnection httpConnection	= (HttpURLConnection) connection;
 				httpConnection.setRequestMethod(method);
 				httpConnection.setRequestProperty("Accept", "application/json");

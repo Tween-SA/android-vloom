@@ -760,6 +760,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 				//Simplificamos para re-utilizar desde asyntask
 				SuscriptionHelper.killPhantoms(companyPhantom, getHomeActivity(), null);
+				realm.close();
 			}
 			catch(Exception e)
 			{

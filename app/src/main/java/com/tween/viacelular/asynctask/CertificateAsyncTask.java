@@ -81,8 +81,22 @@ public class CertificateAsyncTask extends AsyncTask<Void, Void, String>
 					jsonObject.put("vloomcoins", "0");
 				}
 				
+				realm.executeTransaction(new Realm.Transaction()
+				{
+					@Override
+					public void execute(Realm realm)
+					{
+						Message message = realm.where(Message.class).equalTo(Message.KEY_API, id).findFirst();
+						
+						if(message != null)
+						{
+							message.setTxid("0");
+						}
+					}
+				});
+				
 				realm.close();
-				ApiConnection.request(ApiConnection.CERTIFICATE_MESSAGES, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonObject.toString());
+				ApiConnection.request(ApiConnection.CERTIFICATE_MESSAGES, context, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), jsonObject.toString());
 			}
 			
 			if(displayDialog)

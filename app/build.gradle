@@ -3,13 +3,13 @@ apply plugin: "newrelic"
 apply plugin: "realm-android"
 apply plugin: "io.fabric"
 
-def argVersionCode = 41;
-def argVersionName = "1.4.2";
+def argVersionCode = 42;
+def argVersionName = "1.4.3";
 
 android
 {
 	compileSdkVersion 25
-	buildToolsVersion "25.0.2"
+	buildToolsVersion "25.0.3"
 	defaultConfig
 	{
 		applicationId "com.tween.viacelular"
