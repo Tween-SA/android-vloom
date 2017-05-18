@@ -120,6 +120,8 @@ public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 			{
 				SuscriptionHelper.parseList(null, activity.getApplicationContext(), false);
 			}
+			
+			realm.close();
 
 			if(displayDialog)
 			{
