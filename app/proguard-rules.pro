@@ -30,3 +30,4 @@
 -dontwarn com.newrelic.**
 -keepattributes Exceptions, Signature, InnerClasses
 -dontwarn com.squareup.okhttp.**
+-keep public class com.google.** {*;}
