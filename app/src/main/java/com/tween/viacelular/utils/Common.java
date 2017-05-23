@@ -10,7 +10,7 @@ public class Common
 {
 	public static DisplayImageOptions	DEFAULT_OPTIONS				= null; //Opciones para la carga de logos
 	public static final boolean			APP_TEST					= false; //En true desbloquea funciones de alpha para simular push, sms, enviar DB, entre otras
-	public static final boolean			DEBUG						= false; //En true desbloquea la impresión de trackers y variables para debug
+	public static final boolean			DEBUG						= true; //En true desbloquea la impresión de trackers y variables para debug
 	public static final boolean			DEBUGDB						= false; //En true desbloquea la impresión de consultas en la db para debug
 	public static final double			DENSITY_HDPI				= 1.5; //Indica que se trata de un dispositivo con una resolución menor a HD
 	public static final double			DENSITY_XHDPI				= 2.0; //Indica que se trata de un dispositivo con una resolución HD
@@ -27,6 +27,7 @@ public class Common
 	public static final int				PHONE_SCREEN				= 1; //Indica que se trata de la pantalla de ingreso en la que se pide el celular y país
 	public static final int				REALMDB_VERSION				= 18; //Indica el número de versión para la base de datos Realm que está usuando la app
 	public static final int				SPLASH_SCREEN				= 0; //Indica que se trata de la pantalla incial en la que arranca la app
+	public static final int				TIMEOUT_API					= 15000; //Indica la cantidad de tiempo para esperar una respuesta de parte de una api
 	public static final String			CODE_FORMAT					= "+00"; //Formato placeholder para el código de País
 	public static final String			COLOR_ACCENT				= "#00BCD4"; //Color de acento en String
 	public static final String			COLOR_ACTION				= "#FF8F00"; //Color primario en String

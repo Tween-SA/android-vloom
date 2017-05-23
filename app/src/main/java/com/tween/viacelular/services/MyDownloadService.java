@@ -74,7 +74,6 @@ public class MyDownloadService extends MyBaseTaskService
 			{
 				Intent broadcast = new Intent(DOWNLOAD_COMPLETED);
 				broadcast.putExtra(EXTRA_DOWNLOAD_PATH, downloadPath);
-				broadcast.putExtra(EXTRA_BYTES_DOWNLOADED, taskSnapshot.getTotalByteCount());
 				LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcast);
 				taskCompleted();
 			}

@@ -196,10 +196,12 @@ public class ApiConnection
 
 				URL url								= new URL(urlStr);
 				URLConnection connection			= url.openConnection();
-				connection.setConnectTimeout(15000);//Antes era 10500 pero ahora con las réplicas de mongo puede que sea mayor
-				connection.setReadTimeout(15000);
+				connection.setConnectTimeout(Common.TIMEOUT_API);//Antes era 10500 pero ahora con las réplicas de mongo puede que sea mayor
+				connection.setReadTimeout(Common.TIMEOUT_API);
 				HttpURLConnection httpConnection	= (HttpURLConnection) connection;
 				httpConnection.setRequestMethod(method);
+				httpConnection.setConnectTimeout(Common.TIMEOUT_API);
+				httpConnection.setReadTimeout(Common.TIMEOUT_API);
 				httpConnection.setRequestProperty("Accept", "application/json");
 				httpConnection.setRequestProperty("Content-type", "application/json");
 				httpConnection.setRequestProperty("Accept-Language", Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());

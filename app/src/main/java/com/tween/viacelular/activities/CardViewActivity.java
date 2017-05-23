@@ -331,10 +331,8 @@ public class CardViewActivity extends AppCompatActivity
 					switch(intent.getAction())
 					{
 						case MyDownloadService.DOWNLOAD_COMPLETED:
-							// Get number of bytes downloaded
-							long numBytes = intent.getLongExtra(MyDownloadService.EXTRA_BYTES_DOWNLOADED, 0);
 							// Alert success
-							System.out.println(numBytes+" bytes downloaded complete in "+intent.getStringExtra(MyDownloadService.EXTRA_DOWNLOAD_PATH));
+							System.out.println("downloaded complete in "+intent.getStringExtra(MyDownloadService.EXTRA_DOWNLOAD_PATH));
 						break;
 
 						case MyDownloadService.DOWNLOAD_ERROR:
