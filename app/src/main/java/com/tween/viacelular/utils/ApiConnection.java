@@ -17,6 +17,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Locale;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Manejador de conexión contra apis REST bajo JSON
@@ -57,7 +61,7 @@ public class ApiConnection
 	 * "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
 	 * "https://private-29fe84-davidfigueroa.apiary-mock.com/v1/"; //Development Apiary Private
 	 */
-	private static final String SERVERP					= "https://api.wechain.org/v1/";
+	private static final String SERVERP					= "https://api.vloom.io/v1/";
 	public static final String IP_API					= "http://ip-api.com/json";
 	public static final String COMPANIES				= SERVERP+"companies";
 	public static final String COUNTRIES				= SERVERP+"countries?locale="+Locale.getDefault().getLanguage();
@@ -169,7 +173,109 @@ public class ApiConnection
 
 		return json;
 	}
-
+	
+	public static String getRequest(String urlStr, Context context, String authorization, String jsonParams)
+	{
+		String result		= "{}";
+		String message		= "";
+		int code			= 0;
+		boolean connected	= checkInternet(context);
+		
+		if(Common.DEBUG)
+		{
+			System.out.println("newRequest isConnected: " + connected);
+		}
+		
+		if(connected)
+		{
+			try
+			{
+				if(Common.DEBUG)
+				{
+					System.out.println("Url: " + urlStr + " Method: GET" + " Authorization: " + authorization + " Lang: " + Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
+					System.out.println("Body: " + jsonParams);
+				}
+				
+				if(StringUtils.isEmpty(authorization))
+				{
+					authorization = TOKEN_AUTHORIZATION;
+				}
+				
+				OkHttpClient client			= new OkHttpClient();
+				HttpUrl.Builder urlBuilder	= HttpUrl.parse(urlStr).newBuilder();
+				Request request				= new Request.Builder()
+												.header("Accept", "application/json")
+												.header("Content-type", "application/json")
+												.header("Accept-Language", Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry())
+												.header("Authorization", authorization)
+												.url(urlBuilder.build().toString())
+												.build();
+				Response response = client.newCall(request).execute();
+				
+				if(response != null)
+				{
+					if(response.body() != null)
+					{
+						result = response.body().string();
+					}
+				}
+				
+				result = StringUtils.removeSpacesJSON(result);
+				
+				if(Common.DEBUG)
+				{
+					System.out.println("Original Result: " + result);
+					System.out.println(	"Original !ifJson: " + (!result.startsWith("{") && !result.endsWith("}") && !result.startsWith("[") && !result.endsWith("]"))+
+										" isHTML: " +(result.contains("Service Temporarily Unavailable") || result.contains("html") || result.contains("HTML")));
+				}
+			}
+			catch(Exception e)
+			{
+				Utils.logError(context, "ApiConnection:newRequest - Exception: ", e);
+			}
+		}
+		
+		if(StringUtils.isNotEmpty(result))
+		{
+			if(!result.startsWith("{") && !result.endsWith("}") && !result.startsWith("[") && !result.endsWith("]"))
+			{
+				if(result.contains("Service Temporarily Unavailable") || result.contains("html") || result.contains("HTML"))
+				{
+					result = "{\"status\":\"FAIL\",\"statusMessage\":\"" + context.getString(R.string.service_unavailable) + "\",\"statusCode\":" + HttpURLConnection.HTTP_UNAVAILABLE
+							+ ",\"content\":null}";
+				}
+				else
+				{
+					result = "{\"status\":\"FAIL\",\"statusMessage\":\"" + context.getString(R.string.service_unavailable) + "\",\"statusCode\":" + HttpURLConnection.HTTP_INTERNAL_ERROR
+							+ ",\"content\":null}";
+				}
+			}
+			else
+			{
+				if(!connected)
+				{
+					result = "{\"status\":\"FAIL\",\"statusMessage\":\"" + context.getString(R.string.no_internet) + "\",\"statusCode\":" + HttpURLConnection.HTTP_INTERNAL_ERROR
+							+ ",\"content\":null}";
+				}
+				else
+				{
+					result = "{\"status\":\"OK\",\"statusMessage\":\"" + message + "\",\"statusCode\":" + code + ",\"content\":" + result + "}";
+				}
+			}
+		}
+		else
+		{
+			result = "{\"status\":\"FAIL\",\"statusMessage\":\"" + context.getString(R.string.service_unavailable) + "\",\"statusCode\":" + code + ",\"content\":null}";
+		}
+		
+		if(Common.DEBUG)
+		{
+			System.out.println("Final Response: " + result);
+		}
+		
+		return result;
+	}
+	
 	public static String request(String urlStr, Context context, String method, String authorization, String jsonParams)
 	{
 		String result		= "{}";

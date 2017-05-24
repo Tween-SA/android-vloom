@@ -188,7 +188,7 @@ public abstract class SuscriptionHelper
 			//Si el usuario hizo pull update o apreto en la opción de actualizar del menú en el home se hace directamente
 			if(forceByUser && ApiConnection.checkInternet(activity))
 			{
-				jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
+				jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, preferences.getString(Common.KEY_TOKEN, ""), ""));
 				result		= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
 
 				if(result.equals(ApiConnection.OK))
@@ -211,7 +211,7 @@ public abstract class SuscriptionHelper
 
 				if(DateUtils.needUpdate(tsUpated, DateUtils.VERYHIGH_FREQUENCY, activity) && ApiConnection.checkInternet(activity))
 				{
-					jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
+					jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, preferences.getString(Common.KEY_TOKEN, ""), ""));
 					result		= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
 
 					if(result.equals(ApiConnection.OK))

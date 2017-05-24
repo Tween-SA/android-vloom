@@ -81,8 +81,7 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 				}
 			});
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			JSONObject jsonResult			= new JSONObject(	ApiConnection.request(ApiConnection.COUNTRIES, context, ApiConnection.METHOD_GET,
-																preferences.getString(Common.KEY_TOKEN, ""), ""));
+			JSONObject jsonResult			= new JSONObject(ApiConnection.getRequest(ApiConnection.COUNTRIES, context, preferences.getString(Common.KEY_TOKEN, ""), ""));
 			result							= ApiConnection.checkResponse(context, jsonResult);
 			boolean parseLocal				= true;
 			JSONObject jsonData;

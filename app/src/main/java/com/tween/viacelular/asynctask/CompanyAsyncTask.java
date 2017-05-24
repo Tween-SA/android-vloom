@@ -69,8 +69,7 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 		{
 			Suscription company;
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			JSONObject jsonResult			= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES + "/" + companyId, context, ApiConnection.METHOD_GET,
-																preferences.getString(Common.KEY_TOKEN, ""), ""));
+			JSONObject jsonResult			= new JSONObject(ApiConnection.getRequest(ApiConnection.COMPANIES + "/" + companyId, context, preferences.getString(Common.KEY_TOKEN, ""), ""));
 			String result					= ApiConnection.checkResponse(context, jsonResult);
 
 			if(result.equals(ApiConnection.OK))

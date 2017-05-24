@@ -710,8 +710,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 				//Agregado para refrescar suscripciones del usuario con el pullupdate
 				if(StringUtils.isIdMongo(userId))
 				{
-					JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + userId, homeActivity, ApiConnection.METHOD_GET,
-																preferences.getString(Common.KEY_TOKEN, ""), ""));
+					JSONObject jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.USERS + "/" + userId, homeActivity, preferences.getString(Common.KEY_TOKEN, ""), ""));
 					String result			= ApiConnection.checkResponse(homeActivity, jsonResult);
 					
 					if(result.equals(ApiConnection.OK))
@@ -725,19 +724,24 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					}
 					
 					//Agregado para refrescar mensajes desde el mongo
-					jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS_MESSAGES.replace(User.KEY_API, userId), homeActivity, ApiConnection.METHOD_GET,
-													preferences.getString(Common.KEY_TOKEN, ""), ""));
+					jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.USERS_MESSAGES.replace(User.KEY_API, userId), homeActivity, preferences.getString(Common.KEY_TOKEN, ""), ""));
 					result		= ApiConnection.checkResponse(homeActivity, jsonResult);
 					
 					if(result.equals(ApiConnection.OK))
 					{
-						JSONArray jsonArray = jsonResult.getJSONArray(Common.KEY_CONTENT);
-						
-						if(jsonArray.length() > 0)
+						if(jsonResult.has(Common.KEY_CONTENT))
 						{
-							for(int i=0; i<jsonArray.length(); i++)
+							if(!jsonResult.isNull(Common.KEY_CONTENT))
 							{
-								MessageHelper.parseJSON(jsonArray.getJSONObject(i), homeActivity);
+								JSONArray jsonArray = jsonResult.getJSONArray(Common.KEY_CONTENT);
+								
+								if(jsonArray.length() > 0)
+								{
+									for(int i=0; i<jsonArray.length(); i++)
+									{
+										MessageHelper.parseJSON(jsonArray.getJSONObject(i), homeActivity);
+									}
+								}
 							}
 						}
 					}

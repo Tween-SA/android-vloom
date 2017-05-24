@@ -131,8 +131,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 						//Modificación para refrescar suscripciones del usuario
 						if(StringUtils.isIdMongo(userId))
 						{
-							jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + userId, context, ApiConnection.METHOD_GET,
-															preferences.getString(Common.KEY_TOKEN, ""), ""));
+							jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.USERS + "/" + userId, context, preferences.getString(Common.KEY_TOKEN, ""), ""));
 							result		= ApiConnection.checkResponse(context, jsonResult);
 						}
 
