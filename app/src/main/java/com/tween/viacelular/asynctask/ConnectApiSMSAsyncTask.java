@@ -10,7 +10,7 @@ import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -20,6 +20,10 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+/**
+ * Manejador para reportar mensajes capturados en el dispositivo para backup
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;
@@ -155,8 +159,7 @@ public class ConnectApiSMSAsyncTask extends AsyncTask<Void, Void, String>
 
 						if(send)
 						{
-							JSONObject jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.SEND_SMS, context, ApiConnection.METHOD_POST,
-																		preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString()));
+							ApiConnection.request(ApiConnection.SEND_SMS, context, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString());
 						}
 					}
 					catch(Exception e)

@@ -26,6 +26,10 @@ import com.tween.viacelular.utils.Utils;
 import java.util.List;
 import io.realm.Realm;
 
+/**
+ * Manejador para actualización antigua de base de datos para replicar los datos que estaban en sqlite
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;
@@ -193,7 +197,7 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 				}
 
 				//Actualizar datos de suscriptions
-				List<String> idsList	= SuscriptionHelper.updateCompanies(activity, false);
+				SuscriptionHelper.updateCompanies(activity, false);
 
 				//Importar mensajes
 				if(messageDao != null)

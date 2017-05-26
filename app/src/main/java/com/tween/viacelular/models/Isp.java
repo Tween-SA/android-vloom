@@ -6,8 +6,9 @@ import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by davidfigueroa on 31/3/16.
+ * Modelo para persistir datos sobre la conexión del usuario
  * Reference by http://ip-api.com/
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 31/03/2016
  */
 public class Isp extends RealmObject
 {

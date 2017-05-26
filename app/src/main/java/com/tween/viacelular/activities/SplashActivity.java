@@ -44,6 +44,10 @@ import java.util.List;
 import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 
+/**
+ * Manejador de pantalla para inicial de la app
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class SplashActivity extends AppCompatActivity
 {
 	private BroadcastReceiver		mRegistrationBroadcastReceiver;

@@ -30,3 +30,7 @@
 -dontwarn com.newrelic.**
 -keepattributes Exceptions, Signature, InnerClasses
 -dontwarn com.squareup.okhttp.**
+-keep public class com.google.** {*;}
+-dontwarn okio.**
+-dontwarn javax.annotation.Nullable
+-dontwarn javax.annotation.ParametersAreNonnullByDefault

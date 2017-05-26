@@ -10,7 +10,8 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
- * Created by david.figueroa on 11/6/15.
+ * Utilidad para tratamiento de fechas y timestamps
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 11/06/2015
  */
 public class DateUtils
 {

@@ -12,7 +12,7 @@ import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -24,7 +24,8 @@ import java.util.Locale;
 import io.realm.Realm;
 
 /**
- * Created by davidfigueroa on 15/6/16.
+ * Manejador para obtener vía api contenido de Twitter sobre la empresa
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 15/06/2016
  */
 public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 {
@@ -86,7 +87,7 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 				{
 					SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 					String url						= ApiConnection.COMPANIES_SOCIAL.replace(Suscription.KEY_API, companyId)+"/"+user.getUserId();
-					JSONObject jsonResult			= new JSONObject(ApiConnection.request(url, context, ApiConnection.METHOD_GET, preferences.getString(Common.KEY_TOKEN, ""), ""));
+					JSONObject jsonResult			= new JSONObject(ApiConnection.getRequest(url, context, preferences.getString(Common.KEY_TOKEN, ""), ""));
 					result							= ApiConnection.checkResponse(context, jsonResult);
 					final Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 					int notificationId				= preferences.getInt(Common.KEY_LAST_MSGID, 0);

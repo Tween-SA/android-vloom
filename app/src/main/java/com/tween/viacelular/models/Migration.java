@@ -13,7 +13,8 @@ import io.realm.RealmObjectSchema;
 import io.realm.RealmSchema;
 
 /**
- * Created by davidfigueroa on 4/2/16.
+ * Manejador para migraciones de versiones de base de datos Realm
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 04/02/2016
  */
 public class Migration implements RealmMigration
 {

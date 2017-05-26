@@ -15,7 +15,8 @@ import com.tween.viacelular.utils.StringUtils;
 import io.realm.Realm;
 
 /**
- * Created by davidfigueroa on 12/12/16.
+ * Manejador de pantalla para visualización de imágenes adjuntas a un mensaje
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 12/12/2016
  */
 public class GalleryActivity extends AppCompatActivity
 {

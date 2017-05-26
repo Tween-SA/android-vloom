@@ -37,6 +37,10 @@ import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Manejador de pantalla para verificación código luego de pasar sin validar
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class VerifyCodeActivity extends AppCompatActivity
 {
 	private EditText			editCode;

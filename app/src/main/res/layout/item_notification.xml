@@ -17,7 +17,7 @@
 		android:layout_marginLeft="16dp"
 		android:layout_marginStart="16dp"
 		android:paddingBottom="8dp"
-		android:src="@drawable/ic_launcher"
+		android:src="@mipmap/ic_launcher"
 		app:layout_behavior="com.tween.viacelular.utils.AvatarImageBehavior" />
 	<TextView
 		android:id="@+id/rowText"

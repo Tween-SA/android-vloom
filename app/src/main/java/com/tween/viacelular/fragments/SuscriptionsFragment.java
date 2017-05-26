@@ -23,7 +23,8 @@ import io.realm.RealmResults;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
- * Created by davidfigueroa on 13/1/16.
+ * Manejador para fragmentos y tabs de pantalla antigua Empresas
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 13/01/2016
  */
 public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItemClickListener, StickyListHeadersListView.OnHeaderClickListener,
 																StickyListHeadersListView.OnStickyHeaderOffsetChangedListener, StickyListHeadersListView.OnStickyHeaderChangedListener
@@ -118,6 +119,14 @@ public class SuscriptionsFragment extends Fragment implements	AdapterView.OnItem
 					if(StringUtils.isIdMongo(suscription.getCompanyId()))
 					{
 						listSuscriptions.add(suscription.getCompanyId());
+					}
+					else
+					{
+						//Mostrar las carpetas creadas
+						if(!StringUtils.isIdMongo(suscription.getCompanyId()) && suscription.getType() == Suscription.TYPE_FOLDER)
+						{
+							listSuscriptions.add(suscription.getCompanyId());
+						}
 					}
 				}
 			}

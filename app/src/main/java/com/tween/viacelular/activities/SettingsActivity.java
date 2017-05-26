@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -37,7 +36,7 @@ import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -53,6 +52,10 @@ import java.util.TimerTask;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * Manejador de pantalla para ajustes de la app
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class SettingsActivity extends AppCompatActivity
 {
 	private CheckBox			chkSilence, chkStatistics;
@@ -458,6 +461,7 @@ public class SettingsActivity extends AppCompatActivity
 	}
 
 	//Agregado para pruebas de notificación sobre recepción de sms
+	@SuppressWarnings("unchecked")
 	public void sendSimilSMS(View view)
 	{
 		//Agregado para capturar excepciones

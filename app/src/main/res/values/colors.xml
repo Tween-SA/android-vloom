@@ -24,4 +24,5 @@
 	<color name="text_note_header">#A96D30</color>
 	<color name="text">#ff303030</color>
 	<color name="photo">#FF2756</color>
+	<color name="filter_icon">#757575</color>
 </resources>

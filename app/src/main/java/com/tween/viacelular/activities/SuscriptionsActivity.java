@@ -18,7 +18,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
@@ -27,12 +26,12 @@ import com.tween.viacelular.adapters.RecyclerItemClickListener;
 import com.tween.viacelular.fragments.SuscriptionsFragment;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by davidfigueroa on 13/1/16.
+ * Manejador de pantalla para visualización de empresas añadidas
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 13/01/2016
  */
 public class SuscriptionsActivity extends AppCompatActivity
 {
@@ -156,7 +155,6 @@ public class SuscriptionsActivity extends AppCompatActivity
 				intent.putExtra(Common.KEY_SECTION, "suscriptions");
 				startActivity(intent);
 				finish();
-
 				return true;
 			}
 		}

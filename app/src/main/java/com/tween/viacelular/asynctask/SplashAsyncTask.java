@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Land;
@@ -14,13 +13,16 @@ import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
-
 import io.realm.Realm;
 
+/**
+ * Manejador para tareas iniciales que se ejecutan por única vez al inicio de la app
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class SplashAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog		progress;

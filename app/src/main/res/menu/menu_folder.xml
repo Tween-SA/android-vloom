@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:context="com.tween.viacelular.activities.CardViewActivity">
+	<item
+		android:id="@+id/actRename"
+		android:orderInCategory="100"
+		android:title="@string/folder_header"
+		app:showAsAction="never" />
+	<item
+		android:id="@+id/actEmpty"
+		android:orderInCategory="200"
+		android:title="@string/empty_messages"
+		app:showAsAction="never" />
+</menu>

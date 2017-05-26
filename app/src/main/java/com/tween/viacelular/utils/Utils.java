@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -22,7 +23,9 @@ import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.TouchDelegate;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
@@ -36,7 +39,6 @@ import com.tween.viacelular.activities.CodeActivity;
 import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.activities.PhoneActivity;
 import com.tween.viacelular.activities.SettingsActivity;
-import com.tween.viacelular.activities.SuscriptionsActivity;
 import com.tween.viacelular.asynctask.GetLocationAsyncTask;
 import com.tween.viacelular.asynctask.MigrationAsyncTask;
 import com.tween.viacelular.asynctask.SplashAsyncTask;
@@ -50,6 +52,10 @@ import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.services.MyFirebaseMessagingService;
+import com.ufreedom.floatingview.Floating;
+import com.ufreedom.floatingview.FloatingBuilder;
+import com.ufreedom.floatingview.FloatingElement;
+import com.ufreedom.floatingview.effect.TranslateFloatingTransition;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -66,7 +72,8 @@ import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 
 /**
- * Created by Davo on 11/06/2015.
+ * Utilidades varias
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 11/06/15
  */
 public class Utils
 {
@@ -132,35 +139,7 @@ public class Utils
 					break;
 
 					case 2:
-						//Agregado para prevenir casos en que no se actualizaron las suscripciones
-						Realm realm = Realm.getDefaultInstance();
-
-						if(realm.where(Suscription.class).equalTo(Suscription.KEY_FOLLOWER, Common.BOOL_YES).count() == 0)
-						{
-							new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-						}
-						else
-						{
-							//Agregado para limitar frecuencia de actualización
-							SharedPreferences preferences	= activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-							long tsUpated					= preferences.getLong(Common.KEY_PREF_TSSUBSCRIPTIONS, System.currentTimeMillis());
-
-							if(DateUtils.needUpdate(tsUpated, DateUtils.HIGH_FREQUENCY, activity))
-							{
-								//Se modifica para reemplazar la pantalla Bloquedas por la pantalla Empresas con tab
-								new UpdateUserAsyncTask(activity, Common.BOOL_YES, true, "", true, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-							}
-							else
-							{
-								intent = new Intent(activity, SuscriptionsActivity.class);
-								intent.putExtra(Common.KEY_TITLE, activity.getString(R.string.title_companies));
-								intent.putExtra(Common.KEY_SECTION, position);
-							}
-						}
-					break;
-
-					case 3:
-						//Agregado para capturar evento en Google Analytics, se incorpora la opción "no quiero ver más esto" que hace lo mismo que marcar como spam por el momento
+						//Se quita la opción de Empresas del menú
 						GoogleAnalytics.getInstance(activity).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Ajustes").setAction("Entrar")
 																											.setLabel("Accion_user").build());
 						intent = new Intent(activity, SettingsActivity.class);
@@ -178,7 +157,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:redirectMenu - Exception:", e);
+			logError(activity, "Utils:redirectMenu - Exception: ", e);
 		}
 	}
 
@@ -200,7 +179,7 @@ public class Utils
 			Bundle bundle				= new Bundle();
 			bundle.putString(Common.KEY_SOUND, sound);
 			bundle.putString(Common.KEY_TYPE, message.getType());
-			bundle.putString(Message.KEY_PLAYLOAD, message.getMsg());
+			bundle.putString(Message.KEY_PAYLOAD, message.getMsg());
 			bundle.putString(Message.KEY_TIMESTAMP, String.valueOf(message.getCreated()));
 			bundle.putString(Message.KEY_CHANNEL, message.getChannel());
 			bundle.putString(Common.KEY_STATUS, String.valueOf(message.getStatus()));
@@ -221,7 +200,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:showPush - Exception:", e);
+			logError(context, "Utils:showPush - Exception: ", e);
 		}
 	}
 
@@ -265,7 +244,7 @@ public class Utils
 	 * <p>Verifica si hay usuario logueado y verificado para redireccionar</p>
 	 *
 	 * @param activity Contexto
-	 * @param pantalla donde se realiza el control - 0 selección de tarjeta, 1 registro, 2 codigo, 3 slider
+	 * @param pantalla donde se realiza el control
 	 * @return void Redirecciona según verificación
 	 */
 	public static boolean checkSesion(Activity activity, int pantalla)
@@ -389,7 +368,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:checkSession - Exception:", e);
+			logError(activity, "Utils:checkSession - Exception: ", e);
 		}
 
 		return result;
@@ -397,7 +376,7 @@ public class Utils
 
 	public static String[] getMenu(Context context)
 	{
-		return new String[]{context.getString(R.string.title_notifications), context.getString(R.string.title_companies), context.getString(R.string.title_settings)};
+		return new String[]{context.getString(R.string.title_notifications), context.getString(R.string.title_settings)};
 	}
 
 	public static boolean isLightColor(String colorHex, Context context)
@@ -419,7 +398,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:isLightColor - Exception:", e);
+			logError(context, "Utils:isLightColor - Exception: ", e);
 		}
 
 		return result;
@@ -483,7 +462,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:getChannelSMS - Exception:", e);
+			logError(context, "Utils:getChannelSMS - Exception: ", e);
 		}
 
 		return result;
@@ -556,7 +535,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:goTo - Exception:", e);
+			logError(activity, "Utils:goTo - Exception: ", e);
 		}
 	}
 
@@ -572,7 +551,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:sendContactMail - Exception:", e);
+			logError(activity, "Utils:sendContactMail - Exception: ", e);
 		}
 	}
 
@@ -611,7 +590,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:sendMail - Exception:", e);
+			logError(activity, "Utils:sendMail - Exception: ", e);
 		}
 	}
 
@@ -632,13 +611,13 @@ public class Utils
 			root.mkdirs();
 			File gpxfile = new File(root, fileName);
 			FileWriter writer = new FileWriter(gpxfile);
-			writer.append(System.getProperty("line.separator")+DateUtils.getDateTimePhone(context)+": "+string);
+			writer.append(System.getProperty("line.separator")).append(DateUtils.getDateTimePhone(context)).append(": ").append(string);
 			writer.flush();
 			writer.close();
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:writeStringInFile - Exception:", e);
+			logError(context, "Utils:writeStringInFile - Exception: ", e);
 		}
 	}
 
@@ -653,7 +632,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:createSubject - Exception:", e);
+			logError(context, "Utils:createSubject - Exception: ", e);
 		}
 
 		return subject;
@@ -677,7 +656,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:createBody - Exception:", e);
+			logError(context, "Utils:createBody - Exception: ", e);
 		}
 
 		return body;
@@ -791,7 +770,7 @@ public class Utils
 			}
 			catch(Exception e)
 			{
-				logError(activity, "Utils:PrepareDB:start - Exception:", e);
+				logError(activity, "Utils:PrepareDB:start - Exception: ", e);
 				FileWriter fichero;
 				PrintWriter pw;
 
@@ -803,7 +782,7 @@ public class Utils
 				}
 				catch(Exception d)
 				{
-					logError(activity, "Utils:PrepareDB:start2 - Exception:", e);
+					logError(activity, "Utils:PrepareDB:start2 - Exception: ", e);
 				}
 			}
 		}
@@ -821,7 +800,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:copyDb - Exception:", e);
+			logError(activity, "Utils:copyDb - Exception: ", e);
 			FileWriter fichero;
 			PrintWriter pw;
 
@@ -833,7 +812,7 @@ public class Utils
 			}
 			catch(Exception d)
 			{
-				logError(activity, "Utils:copyDb2 - Exception:", d);
+				logError(activity, "Utils:copyDb2 - Exception: ", d);
 			}
 		}
 	}
@@ -927,7 +906,73 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:upgradeApp - Exception:", e);
+			logError(activity, "Utils:upgradeApp - Exception: ", e);
+		}
+	}
+	
+	public static void singleViewTouchAnimation(final View view, final int drawable, final Activity activity, final CallBackListener listener)
+	{
+		try
+		{
+			final Floating mFloating		= new Floating(activity);
+			final Handler handler			= new Handler();
+			ImageView effectComment			= new ImageView(activity);
+			effectComment.setLayoutParams(new ViewGroup.LayoutParams(view.getMeasuredWidth(), view.getMeasuredHeight()));
+			effectComment.setImageResource(drawable);
+			FloatingElement floatingElement	= new FloatingBuilder()
+					.anchorView(view)
+					.targetView(effectComment)
+					.floatingTransition(new TranslateFloatingTransition())
+					.build();
+			mFloating.startFloating(floatingElement);
+			handler.postDelayed(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					if(listener != null)
+					{
+						listener.invoke();
+					}
+				}
+			}, 500);
+		}
+		catch(Exception e)
+		{
+			logError(activity, "Utils:singleViewTouchAnimation - Exception: ", e);
+		}
+	}
+	
+	public static void semicircleViewTouchAnimation(final View view, final int drawable, final Activity activity, final CallBackListener listener)
+	{
+		try
+		{
+			final Floating mFloating		= new Floating(activity);
+			final Handler handler			= new Handler();
+			ImageView effectComment			= new ImageView(activity);
+			effectComment.setLayoutParams(new ViewGroup.LayoutParams(view.getMeasuredWidth(), view.getMeasuredHeight()));
+			effectComment.setImageResource(drawable);
+			FloatingElement floatingElement	= new FloatingBuilder()
+					.anchorView(view)
+					.targetView(effectComment)
+					.floatingTransition(new SemicircleFloating())
+					.build();
+			mFloating.startFloating(floatingElement);
+			handler.postDelayed(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					if(listener != null)
+					{
+						listener.invoke();
+					}
+				}
+			}, 600);
+		}
+		catch(Exception e)
+		{
+			logError(activity, "Utils:semicircleViewTouchAnimation - Exception: ", e);
 		}
 	}
 
@@ -945,7 +990,7 @@ public class Utils
 
 			if(isp != null)
 			{
-				if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.HIGH_FREQUENCY, activity))
+				if(DateUtils.needUpdate(isp.getUpdated(), DateUtils.MEAN_FREQUENCY, activity))
 				{
 					new GetLocationAsyncTask(activity, false, true, new CallBackListener()
 					{
@@ -961,7 +1006,7 @@ public class Utils
 								}
 							});
 						}
-					}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 				}
 				else
 				{
@@ -984,12 +1029,12 @@ public class Utils
 							}
 						});
 					}
-				}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 			}
 		}
 		catch(Exception e)
 		{
-			logError(activity, "Utils:getLocation - Exception:", e);
+			logError(activity, "Utils:getLocation - Exception: ", e);
 		}
 	}
 
@@ -1037,7 +1082,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:showViewWithFade - Exception:", e);
+			logError(context, "Utils:showViewWithFade - Exception: ", e);
 		}
 	}
 
@@ -1130,7 +1175,7 @@ public class Utils
 		}
 		catch(Exception e)
 		{
-			logError(context, "Utils:hideViewWithFade - Exception:", e);
+			logError(context, "Utils:hideViewWithFade - Exception: ", e);
 		}
 	}
 

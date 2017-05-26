@@ -31,7 +31,8 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
- * Created by david.figueroa on 6/7/15.
+ * Recibidor y capturador de sms para reportar a api y autovalidar
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 06/07/15
  */
 public class IncomingSmsService extends BroadcastReceiver
 {
@@ -122,7 +123,7 @@ public class IncomingSmsService extends BroadcastReceiver
 									notification.setMsgId(String.valueOf(preferences.getInt(Common.KEY_LAST_MSGID, 1)));
 									//Agregado para continuar numeración de msgId
 
-									Suscription client	= null;
+									Suscription client;
 									String companyId	= "";
 
 									if(message.contains(Message.SMS_CODE))

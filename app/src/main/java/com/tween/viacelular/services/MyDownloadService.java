@@ -15,7 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by David on 27/12/2016.
+ * Servicio para descarga desde Firebase
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 27/12/16
  */
 public class MyDownloadService extends MyBaseTaskService
 {
@@ -73,7 +74,6 @@ public class MyDownloadService extends MyBaseTaskService
 			{
 				Intent broadcast = new Intent(DOWNLOAD_COMPLETED);
 				broadcast.putExtra(EXTRA_DOWNLOAD_PATH, downloadPath);
-				broadcast.putExtra(EXTRA_BYTES_DOWNLOADED, taskSnapshot.getTotalByteCount());
 				LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcast);
 				taskCompleted();
 			}

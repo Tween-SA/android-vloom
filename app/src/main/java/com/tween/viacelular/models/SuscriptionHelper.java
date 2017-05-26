@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.TimestampComparator;
 import com.tween.viacelular.interfaces.CallBackListener;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
@@ -23,7 +23,8 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 
 /**
- * Created by davidfigueroa on 26/2/16.
+ * Manejador para tratamiento y parseo de empresas
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 26/02/2016
  */
 public abstract class SuscriptionHelper
 {
@@ -63,7 +64,7 @@ public abstract class SuscriptionHelper
 						else
 						{
 							//No existe este número corto en la db, generamos company fantasma
-							client		= createPhantom(addressee, context, country);
+							client		= createPhantom(addressee, context, country, false);
 							companyId	= client.getCompanyId();
 						}
 					break;
@@ -108,7 +109,7 @@ public abstract class SuscriptionHelper
 							else
 							{
 								//No existe este número corto en la db, generamos company fantasma
-								client		= createPhantom(addressee, context, country);
+								client		= createPhantom(addressee, context, country, false);
 								companyId	= client.getCompanyId();
 							}
 						}
@@ -140,7 +141,7 @@ public abstract class SuscriptionHelper
 					else
 					{
 						//No existe este número corto en la db, generamos company fantasma
-						client		= createPhantom(addressee, context, country);
+						client		= createPhantom(addressee, context, country, false);
 						companyId	= client.getCompanyId();
 					}
 				}
@@ -187,8 +188,7 @@ public abstract class SuscriptionHelper
 			//Si el usuario hizo pull update o apreto en la opción de actualizar del menú en el home se hace directamente
 			if(forceByUser && ApiConnection.checkInternet(activity))
 			{
-				jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET,
-												preferences.getString(Common.KEY_TOKEN, ""), ""));
+				jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, preferences.getString(Common.KEY_TOKEN, ""), ""));
 				result		= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
 
 				if(result.equals(ApiConnection.OK))
@@ -211,8 +211,7 @@ public abstract class SuscriptionHelper
 
 				if(DateUtils.needUpdate(tsUpated, DateUtils.VERYHIGH_FREQUENCY, activity) && ApiConnection.checkInternet(activity))
 				{
-					jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, ApiConnection.METHOD_GET,
-													preferences.getString(Common.KEY_TOKEN, ""), ""));
+					jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, preferences.getString(Common.KEY_TOKEN, ""), ""));
 					result		= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
 
 					if(result.equals(ApiConnection.OK))
@@ -271,7 +270,7 @@ public abstract class SuscriptionHelper
 				{
 					if(suscription != null)
 					{
-						if(!StringUtils.isIdMongo(suscription.getCompanyId()))
+						if(!StringUtils.isIdMongo(suscription.getCompanyId()) && suscription.getType() != Suscription.TYPE_FOLDER)
 						{
 							companyPhantom.add(suscription);
 						}
@@ -307,9 +306,8 @@ public abstract class SuscriptionHelper
 				{
 					for(Message message : messages)
 					{
-						Suscription client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(	message.getChannel(),
-																																					message.getMsg(),
-																																					context, country)).findFirst();
+						Suscription client = realm.where(Suscription.class).equalTo(Suscription.KEY_API, SuscriptionHelper.classifySubscription(message.getChannel(), message.getMsg(),
+																																				context, country)).findFirst();
 
 						if(client != null)
 						{
@@ -396,6 +394,14 @@ public abstract class SuscriptionHelper
 					if(!companies.contains(suscription) && StringUtils.isIdMongo(suscription.getCompanyId()))
 					{
 						companies.add(suscription);
+					}
+					else
+					{
+						//Mostrar las carpetas creadas
+						if(!companies.contains(suscription) && !StringUtils.isIdMongo(suscription.getCompanyId()) && suscription.getType() == Suscription.TYPE_FOLDER)
+						{
+							companies.add(suscription);
+						}
 					}
 				}
 			}
@@ -554,7 +560,7 @@ public abstract class SuscriptionHelper
 			String jUnsuscribe			= "";
 			Integer jStatus				= Suscription.STATUS_ACTIVE;
 			String jCountryCode			= "";
-			Integer jReceive			= Common.BOOL_NO;
+			Integer jReceive			= Common.BOOL_YES;
 			Integer jSuscribe			= Common.BOOL_NO;
 			String jUrl					= "";
 			String jPhone				= "";
@@ -1468,44 +1474,57 @@ public abstract class SuscriptionHelper
 	 * @param countryCode
 	 * @return Suscription
 	 */
-	private static Suscription createPhantom(String fewness, Context context, String countryCode)
+	public static Suscription createPhantom(String fewness, Context context, String countryCode, boolean isFolder)
 	{
 		Suscription client	= null;
 
 		try
 		{
-			Realm realm = Realm.getDefaultInstance();
-			client	= new Suscription();
+			Realm realm	= Realm.getDefaultInstance();
+			client		= new Suscription();
 			client.setName(fewness);
-			client.setIndustry(context.getString(R.string.app));
-			client.setIndustryCode("2");
 			client.setCountryCode(countryCode);
-			client.setSilenced(Common.BOOL_NO);
-			client.setBlocked(Common.BOOL_NO);
-			client.setImage(Suscription.ICON_APP);
-			client.setColorHex(Common.COLOR_ACTION);
-			client.setType(Suscription.TYPE_AUTOGENERATED);
-			client.setUnsuscribe("");
-			client.setReceive(Common.BOOL_NO);
 			client.setSuscribe(Common.BOOL_YES);
 			client.setUrl("");
 			client.setPhone("");
 			client.setFromNumbers("[]");
 			client.setMsgExamples("[]");
 			client.setAbout("");
+			client.setUnsuscribe("");
+			client.setSilenced(Common.BOOL_NO);
+			client.setBlocked(Common.BOOL_NO);
 			client.setIdentificationKey("");
-			client.setDataSent(Common.BOOL_NO);
 			client.setIdentificationValue("");
 			client.setFollower(Common.BOOL_YES);
 			client.setGray(Common.BOOL_NO);
-
-			if(!StringUtils.isNumber(fewness) && !StringUtils.isLong(fewness))
+			client.setDataSent(Common.BOOL_NO);
+			client.setImage(Suscription.ICON_APP);
+			client.setColorHex(Common.COLOR_ACTION);
+			
+			if(isFolder)
 			{
-				client.setKeywords(fewness + ",");
+				client.setIndustry(context.getString(R.string.folder_industry));
+				client.setIndustryCode("0");
+				client.setType(Suscription.TYPE_FOLDER);
+				client.setReceive(Common.BOOL_YES);
+				client.setKeywords("");
+			}
+			else
+			{
+				client.setIndustry(context.getString(R.string.app));
+				client.setIndustryCode("2");
+				client.setType(Suscription.TYPE_AUTOGENERATED);
+				client.setReceive(Common.BOOL_NO);
+				
+				if(!StringUtils.isNumber(fewness) && !StringUtils.isLong(fewness))
+				{
+					client.setKeywords(fewness + ",");
+				}
+				
+				client.setFromNumbers(addNumber(fewness, Suscription.NUMBER_FREE, client, context));
 			}
 
 			client.setCompanyId(String.valueOf(System.currentTimeMillis())); //Generamos el nuevo id con timestamp para evitar duplicados
-			client.setFromNumbers(addNumber(fewness, Suscription.NUMBER_FREE, client, context));
 			final Suscription suscription = client;
 			realm.executeTransaction(new Realm.Transaction()
 			{

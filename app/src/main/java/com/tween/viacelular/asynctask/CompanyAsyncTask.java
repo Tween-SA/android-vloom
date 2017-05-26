@@ -7,12 +7,16 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Manejador para actualizar información de empresas
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;
@@ -65,8 +69,7 @@ public class CompanyAsyncTask extends AsyncTask<Void, Void, String>
 		{
 			Suscription company;
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			JSONObject jsonResult			= new JSONObject(	ApiConnection.request(ApiConnection.COMPANIES + "/" + companyId, context, ApiConnection.METHOD_GET,
-																preferences.getString(Common.KEY_TOKEN, ""), ""));
+			JSONObject jsonResult			= new JSONObject(ApiConnection.getRequest(ApiConnection.COMPANIES + "/" + companyId, context, preferences.getString(Common.KEY_TOKEN, ""), ""));
 			String result					= ApiConnection.checkResponse(context, jsonResult);
 
 			if(result.equals(ApiConnection.OK))

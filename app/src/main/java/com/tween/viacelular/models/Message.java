@@ -6,7 +6,8 @@ import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by davidfigueroa on 29/2/16.
+ * Modelo para persistir mensajes
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 31/03/2016
  */
 public class Message extends RealmObject
 {
@@ -140,7 +141,7 @@ public class Message extends RealmObject
 	@Ignore
 	public static final String KEY_DELETED			= "deleted";
 	@Ignore
-	public static final String KEY_PLAYLOAD			= "payload";
+	public static final String KEY_PAYLOAD			= "payload";
 	@Ignore
 	public static final String KEY_TIMESTAMP		= "timestamp";
 	@Ignore
@@ -155,6 +156,8 @@ public class Message extends RealmObject
 	public static final String KEY_SOCIALACCOUNT	= "socialAccount";
 	@Ignore
 	public static final String KEY_SOCIALNAME		= "socialName";
+	@Ignore
+	public static final String KEY_RECEIVED			= "received";
 	@Ignore
 	public static final String SMS_CODE				= "ViaCelular code: ";
 	@Ignore
