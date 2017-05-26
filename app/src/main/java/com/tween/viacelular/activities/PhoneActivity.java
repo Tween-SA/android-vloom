@@ -43,6 +43,10 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * Manejador de pantalla para verificación y registro de celular por primera vez
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class PhoneActivity extends AppCompatActivity
 {
 	private Button			btnCountry, btnContinue;

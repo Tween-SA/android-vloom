@@ -4,15 +4,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,18 +30,23 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.tween.viacelular.R;
 import com.tween.viacelular.activities.CardViewActivity;
 import com.tween.viacelular.activities.HomeActivity;
-import com.tween.viacelular.activities.SearchActivity;
 import com.tween.viacelular.activities.VerifyPhoneActivity;
 import com.tween.viacelular.adapters.HomeAdapter;
 import com.tween.viacelular.adapters.IconOptionAdapter;
 import com.tween.viacelular.asynctask.GetTweetsAsyncTask;
+import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.MessageHelper;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
+import com.tween.viacelular.models.User;
+import com.tween.viacelular.models.UserHelper;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.DateUtils;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import io.realm.Realm;
@@ -48,7 +57,7 @@ import io.realm.Realm;
  *
  * <p>To provide an accessible way to trigger the refresh, this app also provides a refresh action item.
  * <p>In this sample app, the refresh updates the ListView with a random set of new items.
- * Created by davidfigueroa on 17/11/15.
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 17/11/15.
  */
 public class SwipeRefreshLayoutBasicFragment extends Fragment
 {
@@ -92,6 +101,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			RecyclerView.LayoutManager mLayoutManager	= new LinearLayoutManager(getActivity());
 			rcwHome.setLayoutManager(mLayoutManager);
 			rlEmpty										= (RelativeLayout) view.findViewById(R.id.rlEmpty);
+			FloatingActionButton fab					= (FloatingActionButton) view.findViewById(R.id.fabAdd);
 			SharedPreferences preferences				= getHomeActivity().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 
 			if(preferences.getBoolean(Common.KEY_PREF_FREEPASS, false))
@@ -111,6 +121,15 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			{
 				rlFreePass.setVisibility(RelativeLayout.GONE);
 			}
+			
+			fab.setOnClickListener(new View.OnClickListener()
+			{
+				@Override
+				public void onClick(final View view)
+				{
+					HomeActivity.search(getHomeActivity());
+				}
+			});
 		}
 		catch(Exception e)
 		{
@@ -195,20 +214,13 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 	{
 		try
 		{
-			if(item.getItemId() == R.id.action_search)
+			switch(item.getItemId())
 			{
-				GoogleAnalytics.getInstance(getHomeActivity()).newTracker(Common.HASH_GOOGLEANALYTICS)
-					.send(new HitBuilders.EventBuilder().setCategory("Company").setAction("Filtro").setLabel("AccionUser").build());
-				Intent intent = new Intent(getHomeActivity(), SearchActivity.class);
-				intent.putExtra(Common.KEY_SECTION, "home");
-				getHomeActivity().startActivity(intent);
-				getHomeActivity().finish();
-				return true;
-			}
-			else
-			{
-				if(item.getItemId() == R.id.menu_refresh)
-				{
+				case R.id.action_search:
+					HomeActivity.search(getHomeActivity());
+				break;
+				
+				default:
 					Handler handler = new android.os.Handler();
 					handler.post(new Runnable()
 					{
@@ -217,10 +229,10 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 							initiateRefresh(true, true);
 						}
 					});
-
-					return true;
-				}
+				break;
 			}
+			
+			return true;
 		}
 		catch(Exception e)
 		{
@@ -228,6 +240,100 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 		}
 
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public void generateFolder(final String companyId)
+	{
+		if(StringUtils.isNotEmpty(companyId))
+		{
+			Realm realm = Realm.getDefaultInstance();
+			final Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+			
+			if(suscription != null)
+			{
+				new MaterialDialog.Builder(getHomeActivity()).title(getString(R.string.folder_header)).inputType(InputType.TYPE_CLASS_TEXT)
+					.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 20).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+					.input(getString(R.string.folder_hint), suscription.getName(), new MaterialDialog.InputCallback()
+					{
+						@Override
+						public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
+						{
+							if(input != null)
+							{
+								if(input != "")
+								{
+									final String name = input.toString().trim();
+									
+									if(StringUtils.isNotEmpty(name))
+									{
+										Realm realm = Realm.getDefaultInstance();
+										realm.executeTransactionAsync(new Realm.Transaction()
+										{
+											@Override
+											public void execute(Realm bgRealm)
+											{
+												Suscription suscription1 = bgRealm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+												suscription1.setName(name);
+											}
+										}, new Realm.Transaction.OnSuccess()
+										{
+											@Override
+											public void onSuccess()
+											{
+												Handler handler = new android.os.Handler();
+												handler.post(new Runnable()
+												{
+													public void run()
+													{
+														initiateRefresh(false, true);
+													}
+												});
+											}
+										});
+										
+										realm.close();
+									}
+								}
+							}
+						}
+					}).show();
+			}
+			
+			realm.close();
+		}
+		else
+		{
+			new MaterialDialog.Builder(getHomeActivity()).title(getString(R.string.folder_btn)).inputType(InputType.TYPE_CLASS_TEXT)
+				.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 20).positiveColor(Color.parseColor(Common.COLOR_COMMENT))
+				.input(getString(R.string.folder_hint), "", new MaterialDialog.InputCallback()
+				{
+					@Override
+					public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
+					{
+						if(input != null)
+						{
+							if(input != "")
+							{
+								final String name = input.toString().trim();
+								
+								if(StringUtils.isNotEmpty(name))
+								{
+									SharedPreferences preferences = activity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+									SuscriptionHelper.createPhantom(name, activity, preferences.getString(Land.KEY_API, ""), true);
+									Handler handler = new android.os.Handler();
+									handler.post(new Runnable()
+									{
+										public void run()
+										{
+											initiateRefresh(false, true);
+										}
+									});
+								}
+							}
+						}
+					}
+				}).show();
+		}
 	}
 
 	/**
@@ -504,7 +610,30 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:refresh - Exception:", e);
 		}
 	}
-
+	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		try
+		{
+			if(companies.size() <= 1)
+			{
+				new android.os.Handler().postDelayed(new Runnable()
+				{
+					public void run()
+					{
+						refresh(true, true);
+					}
+				}, 1000);
+			}
+		}
+		catch(Exception e)
+		{
+			Utils.logError(getHomeActivity(), "SwipeRefreshLayoutBasicFragment:refresh - Exception:", e);
+		}
+	}
+	
 	/**
 	 * When the AsyncTask finishes, it calls onRefreshComplete(), which updates the data in the ListAdapter and turns off the progress bar.
 	 */
@@ -573,9 +702,52 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 			try
 			{
-				Realm realm	= Realm.getDefaultInstance();
+				SharedPreferences preferences	= homeActivity.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
+				Realm realm						= Realm.getDefaultInstance();
+				String userId					= preferences.getString(User.KEY_API, "");
 				idsList.clear();
-				idsList		= SuscriptionHelper.updateCompanies(homeActivity, forceByUser);
+				
+				//Agregado para refrescar suscripciones del usuario con el pullupdate
+				if(StringUtils.isIdMongo(userId))
+				{
+					JSONObject jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.USERS + "/" + userId, homeActivity, preferences.getString(Common.KEY_TOKEN, ""), ""));
+					String result			= ApiConnection.checkResponse(homeActivity, jsonResult);
+					
+					if(result.equals(ApiConnection.OK))
+					{
+						JSONObject jsonData = jsonResult.getJSONObject(Common.KEY_CONTENT);
+						
+						if(jsonData != null)
+						{
+							UserHelper.parseJSON(jsonData, true, homeActivity);
+						}
+					}
+					
+					//Agregado para refrescar mensajes desde el mongo
+					jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.USERS_MESSAGES.replace(User.KEY_API, userId), homeActivity, preferences.getString(Common.KEY_TOKEN, ""), ""));
+					result		= ApiConnection.checkResponse(homeActivity, jsonResult);
+					
+					if(result.equals(ApiConnection.OK))
+					{
+						if(jsonResult.has(Common.KEY_CONTENT))
+						{
+							if(!jsonResult.isNull(Common.KEY_CONTENT))
+							{
+								JSONArray jsonArray = jsonResult.getJSONArray(Common.KEY_CONTENT);
+								
+								if(jsonArray.length() > 0)
+								{
+									for(int i=0; i<jsonArray.length(); i++)
+									{
+										MessageHelper.parseJSON(jsonArray.getJSONObject(i), homeActivity);
+									}
+								}
+							}
+						}
+					}
+				}
+				
+				idsList = SuscriptionHelper.updateCompanies(homeActivity, forceByUser);
 
 				if(idsList.size() > 0)
 				{
@@ -583,7 +755,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					{
 						Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, id).findFirst();
 
-						if(!StringUtils.isIdMongo(suscription.getCompanyId()))
+						if(!StringUtils.isIdMongo(suscription.getCompanyId()) && suscription.getType() != Suscription.TYPE_FOLDER)
 						{
 							companyPhantom.add(suscription);
 						}
@@ -592,6 +764,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 
 				//Simplificamos para re-utilizar desde asyntask
 				SuscriptionHelper.killPhantoms(companyPhantom, getHomeActivity(), null);
+				realm.close();
 			}
 			catch(Exception e)
 			{

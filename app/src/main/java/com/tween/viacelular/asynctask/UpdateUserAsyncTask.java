@@ -12,7 +12,7 @@ import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.models.UserHelper;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -20,6 +20,10 @@ import org.json.JSONObject;
 import java.util.Locale;
 import io.realm.Realm;
 
+/**
+ * Manejador para actualización de datos del usuario
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;
@@ -86,13 +90,8 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 			JSONObject jsonSend				= new JSONObject();
 			JSONObject jsonResult			= new JSONObject();
 			JSONObject info					= new JSONObject();
-			String gcmId					= preferences.getString(User.KEY_GCMID, token);
-			String country					= preferences.getString(Land.KEY_API, "");
-			String phone					= preferences.getString(User.KEY_PHONE, "");
-			String email					= "";
-			String firstName				= "";
-			String lastName					= "";
-			int status						= User.STATUS_UNVERIFIED;
+			String gcmId, country, phone, email, firstName, lastName;
+			int status;
 
 			if(user != null)
 			{
@@ -132,8 +131,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 						//Modificación para refrescar suscripciones del usuario
 						if(StringUtils.isIdMongo(userId))
 						{
-							jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + userId, context, ApiConnection.METHOD_GET,
-															preferences.getString(Common.KEY_TOKEN, ""), ""));
+							jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.USERS + "/" + userId, context, preferences.getString(Common.KEY_TOKEN, ""), ""));
 							result		= ApiConnection.checkResponse(context, jsonResult);
 						}
 
@@ -210,7 +208,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String>
 									info.put("countryLanguage", Locale.getDefault().getLanguage()+"-"+Locale.getDefault().getCountry());
 									jsonSend.put(Common.KEY_INFO, info);
 									jsonResult	= new JSONObject(	ApiConnection.request(ApiConnection.USERS + "/" + user.getUserId(), context, ApiConnection.METHOD_PUT,
-											preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
+																	preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString()));
 									result		= ApiConnection.checkResponse(context, jsonResult);
 									//Guardar la fecha de última actualización
 									SharedPreferences.Editor editor = preferences.edit();

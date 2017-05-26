@@ -4,13 +4,13 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 /**
  * Constantes comunes de uso dentro de la app
- * Created by davidfigueroa on 19/10/15.
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 19/10/2015
  */
 public class Common
 {
 	public static DisplayImageOptions	DEFAULT_OPTIONS				= null; //Opciones para la carga de logos
 	public static final boolean			APP_TEST					= false; //En true desbloquea funciones de alpha para simular push, sms, enviar DB, entre otras
-	public static final boolean			DEBUG						= false; //En true desbloquea la impresión de trackers y variables para debug
+	public static final boolean			DEBUG						= true; //En true desbloquea la impresión de trackers y variables para debug
 	public static final boolean			DEBUGDB						= false; //En true desbloquea la impresión de consultas en la db para debug
 	public static final double			DENSITY_HDPI				= 1.5; //Indica que se trata de un dispositivo con una resolución menor a HD
 	public static final double			DENSITY_XHDPI				= 2.0; //Indica que se trata de un dispositivo con una resolución HD
@@ -25,13 +25,15 @@ public class Common
 	public static final int				CODE_LENGTH					= 4; //Longitud del código de verificación
 	public static final int				DAYS_UNTIL_PROMPT			= 3; //Días necesarios para lanzar dialog sugiriendo que se califique la app en Play Store
 	public static final int				PHONE_SCREEN				= 1; //Indica que se trata de la pantalla de ingreso en la que se pide el celular y país
-	public static final int				REALMDB_VERSION				= 16; //Indica el número de versión para la base de datos Realm que está usuando la app
+	public static final int				REALMDB_VERSION				= 18; //Indica el número de versión para la base de datos Realm que está usuando la app
 	public static final int				SPLASH_SCREEN				= 0; //Indica que se trata de la pantalla incial en la que arranca la app
+	public static final int				TIMEOUT_API					= 15000; //Indica la cantidad de tiempo para esperar una respuesta de parte de una api
 	public static final String			CODE_FORMAT					= "+00"; //Formato placeholder para el código de País
 	public static final String			COLOR_ACCENT				= "#00BCD4"; //Color de acento en String
 	public static final String			COLOR_ACTION				= "#FF8F00"; //Color primario en String
 	public static final String			COLOR_BLOCKED				= "#212121"; //Color de company bloqueada en String
 	public static final String			COLOR_COMMENT				= "#007AF6"; //Color de para textos de pantalla comentarios en String
+	public static final String			COLOR_SEARCH				= "#B1B1B1"; //Color de acento en String
 	public static final String			COLOR_GRAY					= "#717171"; //Color de filtro para iconos en String
 	public static final String			GCM_DEFAULTSENDERID			= "189459365557"; //Referencia al proyecto en la Google Developers Console
 	public static final String			HASH_GOOGLEANALYTICS		= "UA-15307457-3"; //Referencia a la cuenta de Google Analytics
@@ -63,6 +65,7 @@ public class Common
 	public static final String			KEY_PREF_FREEPASS			= "freePassOn"; //Clave de preferencia para indicar que el usuario se registró y espera el código de verificación
 	public static final String			KEY_PREF_LOGGED				= "logged"; //Clave de preferencia para indicar que el usuario se registró y espera el código de verificación
 	public static final String			KEY_PREF_NO_RATE			= "iWontRate"; //Clave de prefencia que indica si el usuario oprimió en "No, gracias" cuando se le sugirió calificar la app
+	public static final String			KEY_PREF_SHOWFOLDER			= "showCaseFolder"; //Clave de preferencia para indicar que ya se efectuó el showcase de carpetas de notas
 	public static final String			KEY_PREF_SHOWFREEPASS		= "showCaseFreePass"; //Clave de preferencia para indicar que ya se efectuó el showcase de notas, comentarios y fotos
 	public static final String			KEY_PREF_SHOWNOTE			= "showCaseNoteComentPhoto"; //Clave de preferencia para indicar que ya se efectuó el showcase de notas, comentarios y fotos
 	public static final String			KEY_PREF_SPLASHED			= "splashed"; //Clave de preferencia para indicar que ya se efectuó el splash de la primera vez

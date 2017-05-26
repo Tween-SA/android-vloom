@@ -3,7 +3,8 @@ package com.tween.viacelular.services;
 import com.google.android.gms.iid.InstanceIDListenerService;
 
 /**
- * Created by david.figueroa on 16/6/15.
+ * Anterior identificación de token para implementación GCM ahora usamos FCM
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 16/06/15
  */
 public class MyInstanceIDListenerService extends InstanceIDListenerService
 {

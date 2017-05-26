@@ -23,7 +23,7 @@ import com.tween.viacelular.models.IspHelper;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -32,7 +32,8 @@ import java.util.List;
 import io.realm.Realm;
 
 /**
- * Created by davidfigueroa on 15/6/16.
+ * Manejador para refrescar la ubicación actual del usuario que reportaremos al confirmar llegada de mensajes
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 15/06/2016
  */
 public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implements LocationListener
 {
@@ -93,7 +94,7 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 
 			if(realm.where(Isp.class).count() == 0)
 			{
-				jsonResult	= new JSONObject(ApiConnection.request(ApiConnection.IP_API, context, ApiConnection.METHOD_GET, "", ""));
+				jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.IP_API, context, "", ""));
 				result		= ApiConnection.checkResponse(context, jsonResult);
 				jsonResult	= jsonResult.getJSONObject(Common.KEY_CONTENT);
 			}
@@ -128,8 +129,8 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 					}
 
 					//Mejora para obtener la ubicación en base al gps
-					Location location				= null;
-					String bestProvider				= null;
+					Location location;
+					String bestProvider;
 					Criteria criteria				= new Criteria();
 					LocationManager locationManager	= (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 

@@ -1,4 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="rn:oasis:names:tc:xliff:document:1.2">
+	<string name="certificate">Nachricht Zertifizierungsprozess&#8230;</string><!-- after traslate -->
 	<string name="app_name">Vloom</string>
 	<string name="acepted">Angenommen</string>
 	<string name="action_example">Beispiel</string>
@@ -48,11 +49,25 @@
 	<string name="feedback_ok">Wir haben deine Nachricht korrekt empfangen</string>
 	<string name="feedback_text">Teile uns deine Erfahrungen mit</string>
 	<string name="feedback_typepush">Support-Antwort</string>
+	<string name="folder_btn">Erstellen neuer</string><!-- after traslate -->
+	<string name="folder_header">Umbenennen</string><!-- after traslate -->
+	<string name="folder_hint">Geben Sie einen Namen&#8230;</string><!-- after traslate -->
+	<string name="folder_industry">Notes-Ordner</string><!-- after traslate -->
+	<string name="folder_notfound">Keine Ergebnisse für Ihre Suche gefunden</string><!-- after traslate -->
+	<string name="folder_showcase">Jetzt können Sie Ihre eigenen Ordner erstellen Sie Ihre Notizen zu speichern und zu finden, um sie einfacher!</string><!-- after traslate -->
 	<string name="gcm_send_message">Token wiedererlangt und an den Server gesendet</string>
 	<string name="get_play_services">Hol dir Google Play-Dienste</string>
 	<string name="hello_world">Hallo</string>
 	<string name="home">Überprüfe deine Handynummer für eine bessere Erfahrung mit VíaCelular</string>
 	<string name="hours">Stunden</string>
+	<string name="id_help">Diese Firma ermöglicht es Ihnen, Ihr Konto mit Vloom zu verknüpfen, indem Sie einen Identifizierungscode Alphanumeric normalerweise befindet sich im oberen Teil der Rechnung eingeben</string><!-- after traslate -->
+	<string name="id_ok">verbesserte Erfahrung</string><!-- after traslate -->
+	<string name="id_oktext">Ihre Identifikation ist:</string><!-- after traslate -->
+	<string name="id_title">Verbessern Sie Ihre Erfahrung</string><!-- after traslate -->
+	<string name="id_text">Erhalten Sie exklusive Nachrichten wie Rechnungen Eingabe Ihrer</string><!-- after traslate -->
+	<string name="id_update">Aktualisieren Sie Ihre ID</string><!-- after traslate -->
+	<string name="id_hint">Geben Sie Ihre ID</string><!-- after traslate -->
+	<string name="id_retry">Retrying</string><!-- after traslate -->
 	<string name="i_read">Durch Drücken auf \"Weiter\" akzeptierst du unsere Allgemeinen Geschäftsbedingungen</string>
 	<string name="invite">Einladung</string>
 	<string name="landing_card_form_header">Verbessern Sie Ihre Erfahrungen</string><!-- after traslate -->

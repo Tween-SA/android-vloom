@@ -10,7 +10,7 @@ import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -18,6 +18,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import io.realm.Realm;
 
+/**
+ * Manejador para adjuntar fotos a un mensaje recibido
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog		progress;
@@ -216,17 +220,7 @@ public class AttachAsyncTask extends AsyncTask<Void, Void, String>
 							jsonObject.put(Message.KEY_ATTACHMENTS, array);
 						}
 
-						result = ApiConnection.request(ApiConnection.MESSAGES+"/"+Common.KEY_ENRICH, context, ApiConnection.METHOD_POST,
-									preferences.getString(Common.KEY_TOKEN, ""), jsonObject.toString());
-
-						if(result != null)
-						{
-							if(result.trim().startsWith("{"))
-							{
-								JSONObject jsonResult	= new JSONObject(result);
-								result					= ApiConnection.checkResponse(context, jsonResult);
-							}
-						}
+						ApiConnection.request(ApiConnection.MESSAGES+"/"+Common.KEY_ENRICH, context, ApiConnection.METHOD_POST, preferences.getString(Common.KEY_TOKEN, ""), jsonObject.toString());
 					}
 				}
 			}

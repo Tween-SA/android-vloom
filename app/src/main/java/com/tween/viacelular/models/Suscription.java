@@ -1,6 +1,6 @@
 package com.tween.viacelular.models;
 
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.StringUtils;
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -9,7 +9,8 @@ import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by davidfigueroa on 3/2/16.
+ * Modelo para persistencia de empresas
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 03/02/2016
  */
 public class Suscription extends RealmObject
 {
@@ -57,6 +58,8 @@ public class Suscription extends RealmObject
 	public static final int TYPE_BLOCK					= 4;
 	@Ignore
 	public static final int TYPE_ONG					= 5;
+	@Ignore
+	public static final int TYPE_FOLDER					= 6;
 	@Ignore
 	public static final int STATUS_ACTIVE				= 0;
 	@Ignore

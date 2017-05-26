@@ -6,20 +6,20 @@
 		android:id="@+id/actSettings"
 		android:orderInCategory="100"
 		android:title="@string/settings"
-		app:showAsAction="never"/>
+		app:showAsAction="never" />
 	<item
 		android:id="@+id/actSilence"
 		android:orderInCategory="200"
 		android:title="@string/silence"
-		app:showAsAction="never"/>
+		app:showAsAction="never" />
 	<item
 		android:id="@+id/actEmpty"
 		android:orderInCategory="300"
 		android:title="@string/empty_messages"
-		app:showAsAction="never"/>
+		app:showAsAction="never" />
 	<item
 		android:id="@+id/actBlock"
 		android:orderInCategory="400"
 		android:title="@string/landing_unsuscribe"
-		app:showAsAction="never"/>
+		app:showAsAction="never" />
 </menu>

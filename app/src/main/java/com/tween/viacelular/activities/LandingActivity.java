@@ -4,14 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.View;
@@ -19,12 +21,14 @@ import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.squareup.picasso.Picasso;
 import com.tween.viacelular.R;
+import com.tween.viacelular.asynctask.SendIdentificationKeyAsyncTask;
+import com.tween.viacelular.interfaces.CallBackListener;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -32,6 +36,10 @@ import com.tween.viacelular.utils.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 
+/**
+ * Manejador de pantalla para visualizar datos de contacto sobre la empresa
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class LandingActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener
 {
 	private static final float	PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR	= 0.9f;
@@ -42,14 +50,15 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	private Suscription			suscription							= null;
 	private String				companyId							= "";
 	private String				section								= "";
+	private String				idValue								= "";
 	private String				color								= Common.COLOR_ACTION;
 	private LinearLayout		mTitleContainer;
-	private TextView			txtTitle, txtEmail, txtPhone, txtBigTitle, txtSubTitle, txtSubTitleCollapsed, txtAbout;
+	private TextView			txtTitle, txtEmail, txtPhone, txtBigTitle, txtSubTitle, txtSubTitleCollapsed, txtAbout, txtId, txtValue;
 	private Toolbar				toolBar;
 	private Context				context;
 	private CircleImageView		circleView;
 	private Button				btnSuscribe;
-	private ImageView			logo;
+	private ImageView			logo, iconId, iconEdit;
 	private float				scale;
 
 	@Override
@@ -70,23 +79,21 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			final AppBarLayout mAppBarLayout				= (AppBarLayout) findViewById(R.id.appBarLayout);
 			txtAbout										= (TextView) findViewById(R.id.txtAbout);
 			TextView txtUrl									= (TextView) findViewById(R.id.txtUrl);
-			TextView txtExample								= (TextView) findViewById(R.id.txtExample);
 			TextView txtContact								= (TextView) findViewById(R.id.txtContact);
 			txtEmail										= (TextView) findViewById(R.id.txtEmail);
 			txtPhone										= (TextView) findViewById(R.id.txtPhone);
-			RecyclerView rcwCard							= (RecyclerView) findViewById(R.id.rcwCard);
-			RelativeLayout rlExample						= (RelativeLayout) findViewById(R.id.rlExample);
 			View contact									= findViewById(R.id.contentContact);
 			btnSuscribe										= (Button) findViewById(R.id.btnSuscribe);
 			circleView										= (CircleImageView) findViewById(R.id.circleView);
 			ImageView ivPlaceholder							= (ImageView) findViewById(R.id.ivPlaceholder);
 			final ImageView ibBack							= (ImageView) findViewById(R.id.ibBack);
 			logo											= (ImageView) findViewById(R.id.logo);
-			View dividerTitle								= findViewById(R.id.dividerTitle);
 			ImageView iconShowNotif							= (ImageView) findViewById(R.id.iconShowNotif);
 			TextView txtShowNotif							= (TextView) findViewById(R.id.txtShowNotif);
-			TextView txtId									= (TextView) findViewById(R.id.txtId);
-			LinearLayout llId								= (LinearLayout) findViewById(R.id.llId);
+			txtId											= (TextView) findViewById(R.id.txtId);
+			txtValue										= (TextView) findViewById(R.id.txtValue);
+			iconId											= (ImageView) findViewById(R.id.iconId);
+			iconEdit										= (ImageView) findViewById(R.id.iconEdit);
 			scale											= getResources().getDisplayMetrics().density;
 			toolBar.setTitle("");
 			toolBar.setSubtitle("");
@@ -138,10 +145,6 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							txtAbout.setText(getString(R.string.landing_title, suscription.getName()));
 						}
 
-						//Momentaneamente queda oculta la sección de Mensajes de Ejemplos por falta de definición, buscar código implementado hasta el momento en VC-954
-						rlExample.setVisibility(RelativeLayout.GONE);
-						rcwCard.setVisibility(RecyclerView.GONE);
-
 						if(StringUtils.isEmpty(suscription.getUrl()) && StringUtils.isEmpty(suscription.getEmail()) && StringUtils.isEmpty(suscription.getPhone()))
 						{
 							contact.setVisibility(View.GONE);
@@ -168,7 +171,7 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 										{
 											//Agregado para capturar evento en Google Analytics
 											GoogleAnalytics.getInstance(activity).newTracker(Common.HASH_GOOGLEANALYTICS).send(	new HitBuilders.EventBuilder().setCategory("Company")
-													.setAction("WebLanding").setLabel("AccionUser").build());
+												.setAction("WebLanding").setLabel("AccionUser").build());
 										}
 									});
 								}
@@ -223,7 +226,6 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 							collapsingToolbarLayout.setExpandedTitleColor(Color.BLACK);
 							toolBar.setSubtitleTextColor(Color.DKGRAY);
 							txtContact.setTextColor(Color.BLACK);
-							txtExample.setTextColor(Color.BLACK);
 							txtTitle.setTextColor(Color.BLACK);
 							txtBigTitle.setTextColor(Color.BLACK);
 							txtSubTitle.setTextColor(Color.DKGRAY);
@@ -234,23 +236,31 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 						{
 							ibBack.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.back));
 							txtContact.setTextColor(Color.parseColor(color));
-							txtExample.setTextColor(Color.parseColor(color));
 						}
 
 						ivPlaceholder.setBackgroundColor(Color.parseColor(color));
-
-						//Modificación para migrar a asynctask la descarga de imágenes
-						if(StringUtils.isNotEmpty(image))
+						
+						if(suscription.getType() == Suscription.TYPE_FOLDER)
 						{
-							//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
-							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(circleView);
-							Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.ic_launcher).into(logo);
+							//Mostramos icono default de carpeta
+							Picasso.with(this).load(R.drawable.ic_folder).into(circleView);
+							Picasso.with(this).load(R.drawable.ic_folder).into(logo);
 						}
 						else
 						{
-							//Mostrar el logo de Vloom si no tiene logo
-							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(circleView);
-							Picasso.with(getApplicationContext()).load(Suscription.ICON_APP).placeholder(R.drawable.ic_launcher).into(logo);
+							//Mostramos el logo de la company
+							if(StringUtils.isNotEmpty(image))
+							{
+								//Modificación de librería para recargar imagenes a mientras se está viendo el listado y optimizar vista
+								Picasso.with(this).load(image).placeholder(R.mipmap.ic_launcher).into(circleView);
+								Picasso.with(this).load(image).placeholder(R.mipmap.ic_launcher).into(logo);
+							}
+							else
+							{
+								//Mostrar el logo de Vloom si no tiene logo
+								Picasso.with(this).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(circleView);
+								Picasso.with(this).load(Suscription.ICON_APP).placeholder(R.mipmap.ic_launcher).into(logo);
+							}
 						}
 
 						Utils.tintColorScreen(this, color);
@@ -266,15 +276,22 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 						});
 
 						//Agregado para diferenciar vista cuando la company está añadida
-						if(suscription.getFollower() == Common.BOOL_YES)
+						if(suscription.getType() == Suscription.TYPE_FOLDER)
 						{
-							btnSuscribe.setText(getString(R.string.landing_suscribed));
-							btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.accent));
+							btnSuscribe.setVisibility(Button.GONE);
 						}
 						else
 						{
-							btnSuscribe.setText(getString(R.string.landing_suscribe));
-							btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.black));
+							if(suscription.getFollower() == Common.BOOL_YES)
+							{
+								btnSuscribe.setText(getString(R.string.landing_suscribed));
+								btnSuscribe.setTextColor(ContextCompat.getColor(context, R.color.accent));
+							}
+							else
+							{
+								btnSuscribe.setText(getString(R.string.landing_suscribe));
+								btnSuscribe.setTextColor(ContextCompat.getColor(context, android.R.color.black));
+							}
 						}
 					}
 				}
@@ -297,28 +314,50 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 			if(suscription != null)
 			{
 				//Se deja siempre visible para ir a la pantalla cards
-				dividerTitle.setVisibility(View.VISIBLE);
 				iconShowNotif.setVisibility(ImageView.VISIBLE);
 				txtShowNotif.setVisibility(TextView.VISIBLE);
 
-				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()))
+				if(StringUtils.isNotEmpty(suscription.getIdentificationKey()) && suscription.getFollower() == Common.BOOL_YES)
 				{
+					idValue = suscription.getIdentificationValue();
+					txtValue.setText(idValue);
+					
+					if(StringUtils.isNotEmpty(suscription.getIdentificationValue()) && suscription.getDataSent() == Common.BOOL_YES)
+					{
+						txtId.setText(getString(R.string.id_ok));
+					}
+					else
+					{
+						txtId.setText(getString(R.string.id_retry));
+					}
+					
+					if(Common.API_LEVEL < Build.VERSION_CODES.M)
+					{
+						iconId.setColorFilter(getResources().getColor(R.color.filter_icon));
+					}
+					else
+					{
+						iconId.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.filter_icon));
+					}
+					
 					txtId.setVisibility(TextView.VISIBLE);
-					//TODO Cuando terminemos de definir esta funcionalidad mostramos llId y seguimos desarrollando el popup para editar el dato
+					iconId.setVisibility(ImageView.VISIBLE);
+					txtValue.setVisibility(TextView.VISIBLE);
+					iconEdit.setVisibility(ImageView.VISIBLE);
 				}
 				else
 				{
 					txtId.setVisibility(TextView.GONE);
-					llId.setVisibility(LinearLayout.GONE);
+					iconId.setVisibility(ImageView.GONE);
+					txtValue.setVisibility(TextView.GONE);
+					iconEdit.setVisibility(ImageView.GONE);
 				}
 			}
 			else
 			{
-				dividerTitle.setVisibility(View.GONE);
 				iconShowNotif.setVisibility(ImageView.GONE);
 				txtShowNotif.setVisibility(TextView.GONE);
 				txtId.setVisibility(TextView.GONE);
-				llId.setVisibility(LinearLayout.GONE);
 			}
 		}
 		catch(Exception e)
@@ -330,6 +369,81 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 	public void goBack(View view)
 	{
 		onBackPressed();
+	}
+	
+	public void retry()
+	{
+		try
+		{
+			new SendIdentificationKeyAsyncTask(this, true, idValue, companyId, new CallBackListener()
+			{
+				@Override
+				public void invoke()
+				{
+					runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							txtId.setText(getString(R.string.id_ok));
+						}
+					});
+				}
+			}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":retry - Exception:", e);
+		}
+	}
+	
+	public void modifyId(View view)
+	{
+		final Activity activity = this;
+		
+		try
+		{
+			new MaterialDialog.Builder(this).title(getString(R.string.id_update)).inputType(InputType.TYPE_CLASS_TEXT)
+				.positiveText(R.string.enrich_save).cancelable(true).inputRange(0, 40)
+				.input(getString(R.string.id_hint), idValue, new MaterialDialog.InputCallback()
+				{
+					@Override
+					public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
+					{
+						if(input != null)
+						{
+							if(input != "")
+							{
+								idValue = input.toString();
+								
+								if(StringUtils.isNotEmpty(idValue))
+								{
+									new SendIdentificationKeyAsyncTask(activity, true, idValue, companyId, new CallBackListener()
+									{
+										@Override
+										public void invoke()
+										{
+											runOnUiThread(new Runnable()
+											{
+												@Override
+												public void run()
+												{
+													txtId.setText(getString(R.string.id_ok));
+													txtValue.setText(idValue);
+												}
+											});
+										}
+									}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+								}
+							}
+						}
+					}
+				}).show();
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":modifyId - Exception:", e);
+		}
 	}
 
 	public void goTo(View view)
@@ -510,7 +624,16 @@ public class LandingActivity extends AppCompatActivity implements AppBarLayout.O
 					logo.setVisibility(CircleImageView.VISIBLE);
 					txtBigTitle.setVisibility(TextView.VISIBLE);
 					txtSubTitle.setVisibility(TextView.VISIBLE);
-					btnSuscribe.setVisibility(Button.VISIBLE);
+					
+					if(suscription.getType() == Suscription.TYPE_FOLDER)
+					{
+						btnSuscribe.setVisibility(Button.GONE);
+					}
+					else
+					{
+						btnSuscribe.setVisibility(Button.VISIBLE);
+					}
+					
 					toolBar.setBackgroundColor(Color.TRANSPARENT);
 					dpAsPixels	= (int) (10*scale + 0.5f);
 					txtAbout.setPadding(0, dpAsPixels, 0, 0);

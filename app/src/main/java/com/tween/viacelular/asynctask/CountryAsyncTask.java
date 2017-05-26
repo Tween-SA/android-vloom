@@ -7,7 +7,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.tween.viacelular.R;
 import com.tween.viacelular.models.Land;
 import com.tween.viacelular.models.LandHelper;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -17,6 +17,10 @@ import org.json.JSONObject;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * Manejador para actualización de países vía api
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;
@@ -77,12 +81,11 @@ public class CountryAsyncTask extends AsyncTask<Void, Void, String>
 				}
 			});
 			SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
-			JSONObject jsonResult			= new JSONObject(	ApiConnection.request(ApiConnection.COUNTRIES, context, ApiConnection.METHOD_GET,
-																preferences.getString(Common.KEY_TOKEN, ""), ""));
+			JSONObject jsonResult			= new JSONObject(ApiConnection.getRequest(ApiConnection.COUNTRIES, context, preferences.getString(Common.KEY_TOKEN, ""), ""));
 			result							= ApiConnection.checkResponse(context, jsonResult);
 			boolean parseLocal				= true;
-			JSONObject jsonData				= null;
-			JSONArray arrayKey				= null;
+			JSONObject jsonData;
+			JSONArray arrayKey;
 
 			if(result.equals(ApiConnection.OK))
 			{

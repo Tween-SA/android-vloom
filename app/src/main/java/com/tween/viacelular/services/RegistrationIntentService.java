@@ -6,7 +6,8 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.tween.viacelular.utils.Utils;
 
 /**
- * Created by david.figueroa on 16/6/15.
+ * Servicio para registar dispositivo al servicio de push notifications
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar) on 16/06/15
  */
 public class RegistrationIntentService extends IntentService
 {

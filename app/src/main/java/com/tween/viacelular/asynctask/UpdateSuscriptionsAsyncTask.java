@@ -12,7 +12,7 @@ import com.tween.viacelular.activities.HomeActivity;
 import com.tween.viacelular.models.Message;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.User;
-import com.tween.viacelular.services.ApiConnection;
+import com.tween.viacelular.utils.ApiConnection;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
@@ -21,6 +21,10 @@ import org.json.JSONObject;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * Manejador para actualización de empresas y suscripciones
+ * Created by Tween (David Figueroa davo.figueroa@tween.com.ar)
+ */
 public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 {
 	private MaterialDialog	progress;
@@ -123,10 +127,6 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 							{
 								localIds = localIds+"'"+suscription.getCompanyId()+"',";
 							}
-						}
-						else
-						{
-							System.out.println("company is null");
 						}
 					}
 					else
@@ -315,11 +315,13 @@ public class UpdateSuscriptionsAsyncTask extends AsyncTask<Void, Void, String>
 							if(ids.contains(results.get(i).getCompanyId()))
 							{
 								results.get(i).setFollower(flag);
+								results.get(i).setReceive(flag);
 								results.get(i).setBlocked(Utils.reverseBool(flag));
 
 								if(flag == Common.BOOL_NO)
 								{
 									results.get(i).setDataSent(flag);
+									results.get(i).setIdentificationValue("");
 								}
 								else
 								{
