@@ -33,6 +33,7 @@ import com.tween.viacelular.R;
 import com.tween.viacelular.asynctask.RegisterPhoneAsyncTask;
 import com.tween.viacelular.models.Isp;
 import com.tween.viacelular.models.Land;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.User;
 import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
@@ -235,6 +236,7 @@ public class PhoneActivity extends AppCompatActivity
 	{
 		try
 		{
+			Migration.getDB(this);
 			hideSoftKeyboard();
 			Realm realm						= Realm.getDefaultInstance();
 			RealmResults<Land> countries	= realm.where(Land.class).findAllSorted(Common.KEY_NAME);

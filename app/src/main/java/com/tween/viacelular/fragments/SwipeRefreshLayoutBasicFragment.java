@@ -733,13 +733,17 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 						{
 							if(!jsonResult.isNull(Common.KEY_CONTENT))
 							{
-								JSONArray jsonArray = jsonResult.getJSONArray(Common.KEY_CONTENT);
-								
-								if(jsonArray.length() > 0)
+								if(	jsonResult.getString(Common.KEY_CONTENT).startsWith("[") &&
+									jsonResult.getString(Common.KEY_CONTENT).endsWith("]"))
 								{
-									for(int i=0; i<jsonArray.length(); i++)
+									JSONArray jsonArray = jsonResult.getJSONArray(Common.KEY_CONTENT);
+									
+									if(jsonArray.length() > 0)
 									{
-										MessageHelper.parseJSON(jsonArray.getJSONObject(i), homeActivity);
+										for(int i=0; i<jsonArray.length(); i++)
+										{
+											MessageHelper.parseJSON(jsonArray.getJSONObject(i), homeActivity);
+										}
 									}
 								}
 							}

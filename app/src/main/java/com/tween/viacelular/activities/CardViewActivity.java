@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -19,6 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
@@ -49,6 +51,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
@@ -71,6 +74,8 @@ import com.tween.viacelular.utils.Utils;
 import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -104,7 +109,12 @@ public class CardViewActivity extends AppCompatActivity
 	private Uri						tempUri;
 	private BroadcastReceiver		mBroadcastReceiver;
 	private ImageView				ivHelp;
-
+	
+	public void goBack(View view)
+	{
+		onBackPressed();
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -145,6 +155,7 @@ public class CardViewActivity extends AppCompatActivity
 			animRotateBackward							= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
 			rcwCard.setHasFixedSize(true);
 			RecyclerView.LayoutManager mLayoutManager	= new LinearLayoutManager(this);
+			FirebaseApp.initializeApp(this);
 			FirebaseAuth mAuth							= FirebaseAuth.getInstance();
 			rcwCard.setLayoutManager(mLayoutManager);
 			setSupportActionBar(toolBar);
@@ -824,39 +835,91 @@ public class CardViewActivity extends AppCompatActivity
 		}
 	}
 
-	public void callCamera(String id)
+	public void callCamera(final String id)
 	{
 		try
 		{
-			msgId				= id;
-			Intent cameraIntent	= new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-			File out			= Environment.getExternalStorageDirectory();
-
-			if(StringUtils.isNotEmpty(id))
+			msgId = id;
+			
+			//Agregado para solicitar permisos en Android 6.0
+			if(Common.API_LEVEL >= Build.VERSION_CODES.M)
 			{
-				out = new File(out, id);
+				List<String> permissionsList = new ArrayList<>();
+				
+				for(String permission : Common.PERMISSIONS_NEEDED)
+				{
+					if(ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED)
+					{
+						//Agregado para evitar solicitar nuevamente permisos si el usuario ya los había negado
+						if(!ActivityCompat.shouldShowRequestPermissionRationale(this, permission))
+						{
+							permissionsList.add(permission);
+						}
+					}
+				}
+				
+				String[] permissions = new String[permissionsList.size()];
+				permissionsList.toArray(permissions);
+				
+				if(permissions.length > 0)
+				{
+					int callBack = 0;
+					ActivityCompat.requestPermissions(this, permissions, callBack);
+				}
+				else
+				{
+					beginCamera();
+				}
 			}
 			else
 			{
-				out = new File(out, String.valueOf(System.currentTimeMillis()));
+				beginCamera();
 			}
-			
-			if(Common.API_LEVEL >= Build.VERSION_CODES.N)
-			{
-				tempUri = FileProvider.getUriForFile(this, getPackageName() + ".provider", out);
-			}
-			else
-			{
-				tempUri = Uri.fromFile(out);
-			}
-			
-			cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
-			startActivityForResult(cameraIntent, 0);
 		}
 		catch(Exception e)
 		{
 			Utils.logError(this, getLocalClassName()+":callCamera - Exception:", e);
 		}
+	}
+	
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
+	{
+		try
+		{
+			beginCamera();
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":onRequestPermissionsResult - Exception:", e);
+		}
+	}
+	
+	public void beginCamera()
+	{
+		Intent cameraIntent	= new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+		File out			= Environment.getExternalStorageDirectory();
+		
+		if(StringUtils.isNotEmpty(msgId))
+		{
+			out = new File(out, msgId);
+		}
+		else
+		{
+			out = new File(out, String.valueOf(System.currentTimeMillis()));
+		}
+		
+		if(Common.API_LEVEL >= Build.VERSION_CODES.N)
+		{
+			tempUri = FileProvider.getUriForFile(this, getPackageName() + ".provider", out);
+		}
+		else
+		{
+			tempUri = Uri.fromFile(out);
+		}
+		
+		cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
+		startActivityForResult(cameraIntent, 0);
 	}
 
 	@Override
@@ -1041,47 +1104,50 @@ public class CardViewActivity extends AppCompatActivity
 				Realm realm	= Realm.getDefaultInstance();
 				suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 				
-				if(suscription.getType() != Suscription.TYPE_FOLDER)
+				if(suscription != null)
 				{
-					if(menu.getItem(1) != null)
+					if(suscription.getType() != Suscription.TYPE_FOLDER)
 					{
-						MenuItem item	= menu.getItem(1);
-						
-						if(suscription != null)
+						if(menu.getItem(1) != null)
 						{
-							if(suscription.getSilenced() == Common.BOOL_YES)
+							MenuItem item	= menu.getItem(1);
+							
+							if(suscription != null)
 							{
-								item.setTitle(R.string.activate_notif);
+								if(suscription.getSilenced() == Common.BOOL_YES)
+								{
+									item.setTitle(R.string.activate_notif);
+								}
+								else
+								{
+									item.setTitle(R.string.silence);
+								}
 							}
 							else
 							{
 								item.setTitle(R.string.silence);
 							}
 						}
-						else
-						{
-							item.setTitle(R.string.silence);
-						}
-					}
-					
-					if(menu.getItem(3) != null)
-					{
-						MenuItem itemSuscribe	= menu.getItem(3);
 						
-						if(suscription != null)
+						if(menu.getItem(3) != null)
 						{
-							if(suscription.getFollower() == Common.BOOL_YES)
+							MenuItem itemSuscribe	= menu.getItem(3);
+							
+							if(suscription != null)
 							{
-								itemSuscribe.setTitle(R.string.landing_unsuscribe);
+								if(suscription.getFollower() == Common.BOOL_YES)
+								{
+									itemSuscribe.setTitle(R.string.landing_unsuscribe);
+								}
+								else
+								{
+									itemSuscribe.setTitle(R.string.landing_suscribe);
+								}
 							}
 							else
 							{
 								itemSuscribe.setTitle(R.string.landing_suscribe);
 							}
-						}
-						else
-						{
-							itemSuscribe.setTitle(R.string.landing_suscribe);
 						}
 					}
 				}
