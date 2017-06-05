@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -72,7 +70,6 @@ import com.tween.viacelular.utils.Common;
 import com.tween.viacelular.utils.StringUtils;
 import com.tween.viacelular.utils.Utils;
 import org.json.JSONObject;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -332,6 +329,8 @@ public class CardViewActivity extends AppCompatActivity
 
 					refresh(false);
 				}
+				
+				realm.close();
 			}
 
 			mBroadcastReceiver = new BroadcastReceiver()
@@ -672,35 +671,42 @@ public class CardViewActivity extends AppCompatActivity
 							@Override
 							public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
 							{
-								if(input != null)
+								try
 								{
-									if(input != "")
+									if(input != null)
 									{
-										final String comment = input.toString();
-
-										if(StringUtils.isNotEmpty(comment))
+										if(input != "")
 										{
-											final Realm realm = Realm.getDefaultInstance();
-											realm.executeTransactionAsync(new Realm.Transaction()
+											final String comment = input.toString();
+											
+											if(StringUtils.isNotEmpty(comment))
 											{
-												@Override
-												public void execute(Realm bgRealm)
+												final Realm realm = Realm.getDefaultInstance();
+												realm.executeTransactionAsync(new Realm.Transaction()
 												{
-													Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
-													message.setMsg(comment);
-													message.setCreated(System.currentTimeMillis());
-												}
-											}, new Realm.Transaction.OnSuccess()
-											{
-												@Override
-												public void onSuccess()
+													@Override
+													public void execute(Realm bgRealm)
+													{
+														Message message = bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+														message.setMsg(comment);
+														message.setCreated(System.currentTimeMillis());
+													}
+												}, new Realm.Transaction.OnSuccess()
 												{
-													refresh(false);
-												}
-											});
-											realm.close();
+													@Override
+													public void onSuccess()
+													{
+														refresh(false);
+													}
+												});
+												realm.close();
+											}
 										}
 									}
+								}
+								catch(Exception e)
+								{
+									Utils.logError(activity, getLocalClassName()+":onCreateNote:onInput1 - Exception:", e);
 								}
 							}
 						}).show();
@@ -717,33 +723,40 @@ public class CardViewActivity extends AppCompatActivity
 						@Override
 						public void onInput(@NonNull MaterialDialog dialog, CharSequence input)
 						{
-							if(input != null)
+							try
 							{
-								if(input != "")
+								if(input != null)
 								{
-									final String comment = input.toString();
-
-									if(StringUtils.isNotEmpty(comment))
+									if(input != "")
 									{
-										final Realm realm = Realm.getDefaultInstance();
-										realm.executeTransactionAsync(new Realm.Transaction()
+										final String comment = input.toString();
+										
+										if(StringUtils.isNotEmpty(comment))
 										{
-											@Override
-											public void execute(Realm bgRealm)
+											final Realm realm = Realm.getDefaultInstance();
+											realm.executeTransactionAsync(new Realm.Transaction()
 											{
-												bgRealm.copyToRealmOrUpdate(MessageHelper.getNewNote(comment, companyId, activity));
-											}
-										}, new Realm.Transaction.OnSuccess()
-										{
-											@Override
-											public void onSuccess()
+												@Override
+												public void execute(Realm bgRealm)
+												{
+													bgRealm.copyToRealmOrUpdate(MessageHelper.getNewNote(comment, companyId, activity));
+												}
+											}, new Realm.Transaction.OnSuccess()
 											{
-												refresh(false);
-											}
-										});
-										realm.close();
+												@Override
+												public void onSuccess()
+												{
+													refresh(false);
+												}
+											});
+											realm.close();
+										}
 									}
 								}
+							}
+							catch(Exception e)
+							{
+								Utils.logError(activity, getLocalClassName()+":onCreateNote:onInput2 - Exception:", e);
 							}
 						}
 					}).show();
@@ -929,94 +942,99 @@ public class CardViewActivity extends AppCompatActivity
 
 		try
 		{
+			if(Common.DEBUG)
+			{
+				System.out.println("requestCode: "+requestCode+" resultCode:"+resultCode+" OK: "+RESULT_OK+" path: "+tempUri.getPath()+" uri: "+tempUri.toString());
+			}
+			
 			if(resultCode == RESULT_OK)
 			{
-				//Nueva forma para reducir procesamiento de imagen
-				BitmapFactory.Options options	= new BitmapFactory.Options();
-				options.inScaled				= false;
-				options.inDither				= false;
-				options.inPreferredConfig		= Bitmap.Config.ARGB_8888;
-				Bitmap bitmap					= BitmapFactory.decodeFile(tempUri.getPath(), options);
-
-				if(bitmap != null)
-				{
-					Realm realm					= Realm.getDefaultInstance();
-					final Activity activity		= this;
-					ByteArrayOutputStream baos	= new ByteArrayOutputStream();
-					bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-					mDownloadUrl				= null;
-
-					if(StringUtils.isNotEmpty(msgId))
-					{
-						Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
-
-						if(message != null)
-						{
-							realm.executeTransactionAsync(new Realm.Transaction()
-							{
-								@Override
-								public void execute(Realm bgRealm)
-								{
-									Message message	= bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
-
-									//Actualizamos la uri primero para refrescar la vista mientras se sube la imagen
-									if(StringUtils.isNotEmpty(message.getUri()) && StringUtils.isNotEmpty(message.getUriTwo()))
-									{
-										message.setUriThree(tempUri.toString());
-									}
-									else
-									{
-										if(StringUtils.isNotEmpty(message.getUri()))
-										{
-											message.setUriTwo(tempUri.toString());
-										}
-										else
-										{
-											message.setUri(tempUri.toString());
-										}
-									}
-								}
-							}, new Realm.Transaction.OnSuccess()
-							{
-								@Override
-								public void onSuccess()
-								{
-									onUploadResultIntent(null);
-									activity.startService(new Intent(activity, MyUploadService.class).putExtra(MyUploadService.EXTRA_FILE_URI, tempUri).putExtra(Common.KEY_ID, msgId)
-											.setAction(MyUploadService.ACTION_UPLOAD));
-								}
-							});
-						}
-					}
-					else
-					{
-						//Se trata de una nota con imagen
-						realm.executeTransactionAsync(new Realm.Transaction()
-						{
-							@Override
-							public void execute(Realm bgRealm)
-							{
-								Message message = MessageHelper.getNewNote("", companyId, activity);
-								message.setUri(tempUri.toString());
-								bgRealm.copyToRealmOrUpdate(message);
-							}
-						}, new Realm.Transaction.OnSuccess()
-						{
-							@Override
-							public void onSuccess()
-							{
-								onUploadResultIntent(null);
-							}
-						});
-					}
-
-					realm.close();
-				}
+				saveImage();
 			}
 		}
 		catch(Exception e)
 		{
 			Utils.logError(this, getLocalClassName()+":onActivityResult - Exception:", e);
+		}
+	}
+	
+	public void saveImage()
+	{
+		try
+		{
+			Realm realm					= Realm.getDefaultInstance();
+			final Activity activity		= this;
+			mDownloadUrl				= null;
+			
+			if(StringUtils.isNotEmpty(msgId))
+			{
+				Message message	= realm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+				
+				if(message != null)
+				{
+					realm.executeTransactionAsync(new Realm.Transaction()
+					{
+						@Override
+						public void execute(Realm bgRealm)
+						{
+							Message message	= bgRealm.where(Message.class).equalTo(Message.KEY_API, msgId).findFirst();
+							
+							//Actualizamos la uri primero para refrescar la vista mientras se sube la imagen
+							if(StringUtils.isNotEmpty(message.getUri()) && StringUtils.isNotEmpty(message.getUriTwo()))
+							{
+								message.setUriThree(tempUri.toString());
+							}
+							else
+							{
+								if(StringUtils.isNotEmpty(message.getUri()))
+								{
+									message.setUriTwo(tempUri.toString());
+								}
+								else
+								{
+									message.setUri(tempUri.toString());
+								}
+							}
+						}
+					}, new Realm.Transaction.OnSuccess()
+					{
+						@Override
+						public void onSuccess()
+						{
+							onUploadResultIntent(null);
+							activity.startService(new Intent(activity, MyUploadService.class).putExtra(MyUploadService.EXTRA_FILE_URI, tempUri).putExtra(Common.KEY_ID, msgId)
+									.setAction(MyUploadService.ACTION_UPLOAD));
+						}
+					});
+				}
+			}
+			else
+			{
+				//Se trata de una nota con imagen
+				realm.executeTransactionAsync(new Realm.Transaction()
+				{
+					@Override
+					public void execute(Realm bgRealm)
+					{
+						Message message = MessageHelper.getNewNote("", companyId, activity);
+						message.setUri(tempUri.toString());
+						bgRealm.copyToRealmOrUpdate(message);
+					}
+				}, new Realm.Transaction.OnSuccess()
+				{
+					@Override
+					public void onSuccess()
+					{
+						onUploadResultIntent(null);
+					}
+				});
+			}
+			
+			realm.close();
+		}
+		catch(Exception e)
+		{
+			Utils.logError(this, getLocalClassName()+":saveImage - Exception:", e);
 		}
 	}
 
@@ -1045,9 +1063,7 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			Realm realm		= Realm.getDefaultInstance();
 			Intent intent	= new Intent(getApplicationContext(), LandingActivity.class); //Modificación para unificar en pantalla Landing
-			suscription		= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			intent.putExtra(Common.KEY_ID, companyId);
 			intent.putExtra(Common.KEY_SECTION, "card");
 			startActivity(intent);
@@ -1064,14 +1080,21 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			MenuInflater inflater = getMenuInflater();
+			MenuInflater inflater	= getMenuInflater();
 			Migration.getDB(CardViewActivity.this);
-			Realm realm	= Realm.getDefaultInstance();
-			suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+			Realm realm				= Realm.getDefaultInstance();
+			suscription				= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 			
-			if(suscription.getType() == Suscription.TYPE_FOLDER)
+			if(suscription != null)
 			{
-				inflater.inflate(R.menu.menu_folder, menu);
+				if(suscription.getType() == Suscription.TYPE_FOLDER)
+				{
+					inflater.inflate(R.menu.menu_folder, menu);
+				}
+				else
+				{
+					inflater.inflate(R.menu.menu_cardview, menu);
+				}
 			}
 			else
 			{
@@ -1253,6 +1276,7 @@ public class CardViewActivity extends AppCompatActivity
 				}
 			});
 			Utils.hideViewWithFade(cardPayout, this);
+			realm.close();
 			RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 			if(Common.API_LEVEL >= Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -1292,6 +1316,7 @@ public class CardViewActivity extends AppCompatActivity
 			intent.putExtra(Common.KEY_ID, companyId);
 			intent.putExtra(Suscription.KEY_BLOCKED, suscription.getBlocked());
 			intent.putExtra(Common.KEY_REFRESH, true);
+			realm.close();
 			startActivity(intent);
 			finish();
 		}
@@ -1351,16 +1376,25 @@ public class CardViewActivity extends AppCompatActivity
 							public void onClick(View v)
 							{
 								Realm realm = Realm.getDefaultInstance();
-								realm.executeTransaction(new Realm.Transaction()
+								try
 								{
-									@Override
-									public void execute(Realm realm)
+									realm.executeTransaction(new Realm.Transaction()
 									{
-										notification.setStatus(Message.STATUS_READ);
-									}
-								});
-								refresh(false);
-								new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+										@Override
+										public void execute(Realm realm)
+										{
+											notification.setStatus(Message.STATUS_READ);
+										}
+									});
+									refresh(false);
+									new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+								}
+								catch(Exception e)
+								{
+									Utils.logError(activity, getLocalClassName()+":dispatchMenu:block - Exception:", e);
+								}
+								
+								realm.close();
 							}
 						});
 					}
@@ -1386,16 +1420,26 @@ public class CardViewActivity extends AppCompatActivity
 						public void onClick(View v)
 						{
 							Realm realm = Realm.getDefaultInstance();
-							realm.executeTransaction(new Realm.Transaction()
+							
+							try
 							{
-								@Override
-								public void execute(Realm realm)
+								realm.executeTransaction(new Realm.Transaction()
 								{
-									notification.setStatus(Message.STATUS_READ);
-								}
-							});
-							refresh(false);
-							new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+									@Override
+									public void execute(Realm realm)
+									{
+										notification.setStatus(Message.STATUS_READ);
+									}
+								});
+								refresh(false);
+								new ConfirmReadingAsyncTask(false, companyId, notification.getMsgId(), Message.STATUS_READ, activity).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+							}
+							catch(Exception e)
+							{
+								Utils.logError(activity, getLocalClassName()+":dispatchMenu:dismiss - Exception:", e);
+							}
+							
+							realm.close();
 						}
 					});
 					break;
@@ -1418,20 +1462,32 @@ public class CardViewActivity extends AppCompatActivity
 						public void onClick(View v)
 						{
 							Realm realm = Realm.getDefaultInstance();
-							realm.executeTransaction(new Realm.Transaction()
+							
+							try
 							{
-								@Override
-								public void execute(Realm realm)
+								realm.executeTransaction(new Realm.Transaction()
 								{
-									notification.setDeleted(Common.BOOL_NO);
-								}
-							});
-							refresh(false);
+									@Override
+									public void execute(Realm realm)
+									{
+										notification.setDeleted(Common.BOOL_NO);
+									}
+								});
+								
+								refresh(false);
+							}
+							catch(Exception e)
+							{
+								Utils.logError(activity, getLocalClassName()+":dispatchMenu:delete - Exception:", e);
+							}
+							
+							realm.close();
 						}
 					});
 				break;
 			}
 
+			realm.close();
 			refresh(false);
 			list.dismiss();
 			Utils.setStyleSnackBar(snackBar, getApplicationContext());
@@ -1766,6 +1822,8 @@ public class CardViewActivity extends AppCompatActivity
 
 				Utils.setStyleSnackBar(snackBar, getApplicationContext());
 			}
+			
+			realm.close();
 		}
 		catch(Exception e)
 		{
