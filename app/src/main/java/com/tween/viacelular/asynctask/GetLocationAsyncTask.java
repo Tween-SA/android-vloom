@@ -94,7 +94,7 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 
 			if(realm.where(Isp.class).count() == 0)
 			{
-				jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.IP_API, context, "", ""));
+				jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.IP_API, context, "", "", Common.TIMEOUT_API));
 				result		= ApiConnection.checkResponse(context, jsonResult);
 				jsonResult	= jsonResult.getJSONObject(Common.KEY_CONTENT);
 			}

@@ -87,7 +87,7 @@ public class GetTweetsAsyncTask extends AsyncTask<Void, Void, String>
 				{
 					SharedPreferences preferences	= context.getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 					String url						= ApiConnection.COMPANIES_SOCIAL.replace(Suscription.KEY_API, companyId)+"/"+user.getUserId();
-					JSONObject jsonResult			= new JSONObject(ApiConnection.getRequest(url, context, preferences.getString(Common.KEY_TOKEN, ""), ""));
+					JSONObject jsonResult			= new JSONObject(ApiConnection.getRequest(url, context, preferences.getString(Common.KEY_TOKEN, ""), "", Common.TIMEOUT_API));
 					result							= ApiConnection.checkResponse(context, jsonResult);
 					final Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 					int notificationId				= preferences.getInt(Common.KEY_LAST_MSGID, 0);
