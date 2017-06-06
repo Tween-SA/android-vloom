@@ -209,6 +209,8 @@ public class HomeActivity extends AppCompatActivity
 					}
 				}
 			}
+			
+			realm.close();
 		}
 		catch(Exception e)
 		{

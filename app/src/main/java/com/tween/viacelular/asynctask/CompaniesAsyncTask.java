@@ -108,12 +108,21 @@ public class CompaniesAsyncTask extends AsyncTask<Void, Void, String>
 			SharedPreferences.Editor editor	= preferences.edit();
 			editor.putString(Land.KEY_API, country);
 			editor.apply();
-			JSONObject jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, preferences.getString(Common.KEY_TOKEN, ""), ""));
+			JSONObject jsonResult	= new JSONObject(	ApiConnection.getRequest(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country,
+														activity, preferences.getString(Common.KEY_TOKEN, ""), "", Common.TIMEOUT_API));
 			result					= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
 
 			if(result.equals(ApiConnection.OK))
 			{
-				SuscriptionHelper.parseList(jsonResult.getJSONArray(Common.KEY_CONTENT), activity.getApplicationContext(), false);
+				if(	jsonResult.getString(Common.KEY_CONTENT).trim().startsWith("[") &&
+					jsonResult.getString(Common.KEY_CONTENT).trim().endsWith("]"))
+				{
+					SuscriptionHelper.parseList(jsonResult.getJSONArray(Common.KEY_CONTENT), activity.getApplicationContext(), false);
+				}
+				else
+				{
+					SuscriptionHelper.parseList(null, activity.getApplicationContext(), false);
+				}
 			}
 			else
 			{

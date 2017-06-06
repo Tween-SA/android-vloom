@@ -1,6 +1,5 @@
 package com.tween.viacelular.activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,6 +24,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.newrelic.agent.android.NewRelic;
@@ -51,12 +51,6 @@ import io.realm.Realm;
 public class SplashActivity extends AppCompatActivity
 {
 	private BroadcastReceiver		mRegistrationBroadcastReceiver;
-	//Ordanamiento de permisos y agregado del permiso para enviar sms
-	private String[]				permissionsNeed = {	Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE,
-														Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.BROADCAST_SMS, Manifest.permission.GET_ACCOUNTS,
-														Manifest.permission.INTERNET, Manifest.permission.READ_CONTACTS, Manifest.permission.CAMERA,
-														Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS,
-														Manifest.permission.RECEIVE_SMS, Manifest.permission.WAKE_LOCK,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 	public static GoogleAnalytics	analytics;
 	public static Tracker			tracker;
 
@@ -105,6 +99,7 @@ public class SplashActivity extends AppCompatActivity
 			Migration.getDB(this);
 			Realm realm = Realm.getDefaultInstance();
 			realm.setAutoRefresh(true);
+			FirebaseApp.initializeApp(this);
 			mRegistrationBroadcastReceiver = new BroadcastReceiver()
 			{
 				@Override
@@ -126,7 +121,7 @@ public class SplashActivity extends AppCompatActivity
 			{
 				List<String> permissionsList = new ArrayList<>();
 
-				for(String permission : permissionsNeed)
+				for(String permission : Common.PERMISSIONS_NEEDED)
 				{
 					if(ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED)
 					{

@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -50,7 +51,7 @@ public class ApiConnection
 	 * "http://chain.vloom.io/"; //Stagging
 	 * "http://chain.vloom.io/"; //Testing
 	 */
-	public static final String CHAIN					= "http://chain.vloom.io/";
+	public static final String CHAIN					= "http://explorer.wechain.org/";
 	public static final String CHAIN_ITEM				= CHAIN+"#/item/";
 	/**
 	 * Url base del server
@@ -61,7 +62,7 @@ public class ApiConnection
 	 * "https://private-16a42-viacelular.apiary-mock.com/v1.0/"; //Development Apiary
 	 * "https://private-29fe84-davidfigueroa.apiary-mock.com/v1/"; //Development Apiary Private
 	 */
-	private static final String SERVERP					= "https://api.vloom.io/v1/";
+	private static final String SERVERP					= "https://api.wechain.org/v1/";
 	public static final String IP_API					= "http://ip-api.com/json";
 	public static final String COMPANIES				= SERVERP+"companies";
 	public static final String COUNTRIES				= SERVERP+"countries?locale="+Locale.getDefault().getLanguage();
@@ -174,7 +175,7 @@ public class ApiConnection
 		return json;
 	}
 	
-	public static String getRequest(String urlStr, Context context, String authorization, String jsonParams)
+	public static String getRequest(String urlStr, Context context, String authorization, String jsonParams, int timeout)
 	{
 		String result		= "{}";
 		String message		= "";
@@ -201,7 +202,7 @@ public class ApiConnection
 					authorization = TOKEN_AUTHORIZATION;
 				}
 				
-				OkHttpClient client			= new OkHttpClient();
+				OkHttpClient client			= new OkHttpClient.Builder().readTimeout(timeout, TimeUnit.MILLISECONDS).connectTimeout(timeout, TimeUnit.MILLISECONDS).build();
 				HttpUrl.Builder urlBuilder	= HttpUrl.parse(urlStr).newBuilder();
 				Request request				= new Request.Builder()
 												.header("Accept", "application/json")

@@ -55,13 +55,16 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 						progress.cancel();
 					}
 				}
-
-				progress = new MaterialDialog.Builder(activity)
-					.title(R.string.landing_card_loading_header)
-					.cancelable(false)
-					.content(R.string.upgrade_text)
-					.progress(true, 0)
-					.show();
+				
+				if(!activity.isFinishing() && !activity.isDestroyed())
+				{
+					progress = new MaterialDialog.Builder(activity)
+								.title(R.string.landing_card_loading_header)
+								.cancelable(false)
+								.content(R.string.upgrade_text)
+								.progress(true, 0)
+								.show();
+				}
 
 				Migration.getDB(activity);
 				new ReadAccountsAsyncTask(activity, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

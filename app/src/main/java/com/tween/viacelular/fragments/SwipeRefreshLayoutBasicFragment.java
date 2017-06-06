@@ -710,7 +710,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 				//Agregado para refrescar suscripciones del usuario con el pullupdate
 				if(StringUtils.isIdMongo(userId))
 				{
-					JSONObject jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.USERS + "/" + userId, homeActivity, preferences.getString(Common.KEY_TOKEN, ""), ""));
+					JSONObject jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.USERS + "/" + userId, homeActivity, preferences.getString(Common.KEY_TOKEN, ""), "", Common.TIMEOUT_API));
 					String result			= ApiConnection.checkResponse(homeActivity, jsonResult);
 					
 					if(result.equals(ApiConnection.OK))
@@ -724,7 +724,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 					}
 					
 					//Agregado para refrescar mensajes desde el mongo
-					jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.USERS_MESSAGES.replace(User.KEY_API, userId), homeActivity, preferences.getString(Common.KEY_TOKEN, ""), ""));
+					jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.USERS_MESSAGES.replace(User.KEY_API, userId), homeActivity, preferences.getString(Common.KEY_TOKEN, ""), "", Common.TIMEOUT_API*2));
 					result		= ApiConnection.checkResponse(homeActivity, jsonResult);
 					
 					if(result.equals(ApiConnection.OK))
@@ -733,13 +733,17 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment
 						{
 							if(!jsonResult.isNull(Common.KEY_CONTENT))
 							{
-								JSONArray jsonArray = jsonResult.getJSONArray(Common.KEY_CONTENT);
-								
-								if(jsonArray.length() > 0)
+								if(	jsonResult.getString(Common.KEY_CONTENT).startsWith("[") &&
+									jsonResult.getString(Common.KEY_CONTENT).endsWith("]"))
 								{
-									for(int i=0; i<jsonArray.length(); i++)
+									JSONArray jsonArray = jsonResult.getJSONArray(Common.KEY_CONTENT);
+									
+									if(jsonArray.length() > 0)
 									{
-										MessageHelper.parseJSON(jsonArray.getJSONObject(i), homeActivity);
+										for(int i=0; i<jsonArray.length(); i++)
+										{
+											MessageHelper.parseJSON(jsonArray.getJSONObject(i), homeActivity);
+										}
 									}
 								}
 							}

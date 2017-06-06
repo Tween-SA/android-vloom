@@ -1,5 +1,6 @@
 package com.tween.viacelular.utils;
 
+import android.Manifest;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 /**
@@ -10,7 +11,7 @@ public class Common
 {
 	public static DisplayImageOptions	DEFAULT_OPTIONS				= null; //Opciones para la carga de logos
 	public static final boolean			APP_TEST					= false; //En true desbloquea funciones de alpha para simular push, sms, enviar DB, entre otras
-	public static final boolean			DEBUG						= true; //En true desbloquea la impresión de trackers y variables para debug
+	public static final boolean			DEBUG						= false; //En true desbloquea la impresión de trackers y variables para debug
 	public static final boolean			DEBUGDB						= false; //En true desbloquea la impresión de consultas en la db para debug
 	public static final double			DENSITY_HDPI				= 1.5; //Indica que se trata de un dispositivo con una resolución menor a HD
 	public static final double			DENSITY_XHDPI				= 2.0; //Indica que se trata de un dispositivo con una resolución HD
@@ -88,4 +89,9 @@ public class Common
 	public static final String			REALMDB_NAME				= "viacelular.realm";
 	public static final String			REALMDB_PATH				= "/data/data/com.tween.viacelular/files/";
 	public static final String			VALUE_FEEDBACKAPPBOY		= "Feedback reply from vloom";
+	public static String[]				PERMISSIONS_NEEDED			= {	Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
+		Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.BROADCAST_SMS,
+		Manifest.permission.GET_ACCOUNTS, Manifest.permission.INTERNET, Manifest.permission.READ_CONTACTS, Manifest.permission.CAMERA,
+			Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS,
+			Manifest.permission.RECEIVE_SMS, Manifest.permission.WAKE_LOCK,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 }

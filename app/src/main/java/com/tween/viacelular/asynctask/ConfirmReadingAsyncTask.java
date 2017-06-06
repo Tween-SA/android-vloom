@@ -112,6 +112,7 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 		try
 		{
+			Migration.getDB(context);
 			JSONObject jsonSend				= new JSONObject();
 			SharedPreferences preferences	= context.getApplicationContext().getSharedPreferences(Common.KEY_PREF, Context.MODE_PRIVATE);
 			JSONArray jsonArray				= new JSONArray();
@@ -163,31 +164,33 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 				//Agregado para contemplar mensajes dentro de listas
 				if(StringUtils.isIdMongo(msgId.replace("-", "")))
 				{
-					ApiConnection.request(ApiConnection.MESSAGES + "/" + msgId, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString());
+					ApiConnection.request(	ApiConnection.MESSAGES + "/" + msgId, context, ApiConnection.METHOD_PUT,
+											preferences.getString(Common.KEY_TOKEN, ""), jsonSend.toString());
 				}
 			}
 			else
 			{
-				Suscription suscription = realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
+				UpdateMessages task		= new UpdateMessages(companyId);
+				task.start();
+				Suscription suscription	= realm.where(Suscription.class).equalTo(Suscription.KEY_API, companyId).findFirst();
 
 				if(suscription != null)
 				{
 					//Agregado para actualizar el status en thread aparte
-					RealmResults<Message> notifications = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
-															.equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAll();
+					RealmResults<Message> notifications = realm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES)
+						.lessThan(Common.KEY_STATUS, Message.STATUS_READ).equalTo(Suscription.KEY_API, suscription.getCompanyId()).findAll();
 
 					if(notifications.size() > 0)
 					{
-						UpdateMessages task = new UpdateMessages(suscription.getCompanyId());
-						task.start();
-
 						//Solamente lo que es real se reporta a la api
 						if(StringUtils.isIdMongo(companyId))
 						{
 							for(Message notification : notifications)
 							{
-								//Agregado para confirmar lectura de varios mensajes contra la api, mejora para evitar enviar confirmación de objecto local que no está en mongo
-								if(StringUtils.isIdMongo(suscription.getCompanyId()) && StringUtils.isIdMongo(notification.getMsgId().replace("-", "")))
+								//Agregado para confirmar lectura de varios mensajes contra la api,
+								// mejora para evitar enviar confirmación de objecto local que no está en mongo
+								if(	StringUtils.isIdMongo(suscription.getCompanyId()) &&
+									StringUtils.isIdMongo(notification.getMsgId().replace("-", "")))
 								{
 									JSONObject jsonObject = new JSONObject();
 									jsonObject.put(Common.KEY_ID, notification.getMsgId());
@@ -211,7 +214,8 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 
 						if(jsonArray.length() > 0)
 						{
-							ApiConnection.request(ApiConnection.MESSAGES, context, ApiConnection.METHOD_PUT, preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString());
+							ApiConnection.request(	ApiConnection.MESSAGES, context, ApiConnection.METHOD_PUT,
+													preferences.getString(Common.KEY_TOKEN, ""), jsonArray.toString());
 						}
 					}
 				}
@@ -227,6 +231,8 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 					}
 				}
 			}
+			
+			realm.close();
 		}
 		catch(Exception e)
 		{
@@ -261,15 +267,20 @@ public class ConfirmReadingAsyncTask extends AsyncTask<Void, Void, String>
 					@Override
 					public void execute(Realm bgRealm)
 					{
-						RealmResults<Message> messages = bgRealm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES).lessThan(Common.KEY_STATUS, Message.STATUS_READ)
-															.equalTo(Suscription.KEY_API, id).findAll();
+						RealmResults<Message> messages = bgRealm.where(Message.class).notEqualTo(Message.KEY_DELETED, Common.BOOL_YES)
+							.lessThan(Common.KEY_STATUS, Message.STATUS_READ).equalTo(Suscription.KEY_API, id).findAll();
 
-						for(int i = messages.size() -1; i >=0; i--)
+						if(messages.size() > 0)
 						{
-							messages.get(i).setStatus(Message.STATUS_READ);
+							for(int i = messages.size() -1; i >=0; i--)
+							{
+								messages.get(i).setStatus(Message.STATUS_READ);
+							}
 						}
 					}
 				});
+				
+				realm.close();
 			}
 			catch(Exception e)
 			{
