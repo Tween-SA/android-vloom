@@ -188,11 +188,12 @@ public abstract class SuscriptionHelper
 			//Si el usuario hizo pull update o apreto en la opción de actualizar del menú en el home se hace directamente
 			if(forceByUser && ApiConnection.checkInternet(activity))
 			{
-				jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, preferences.getString(Common.KEY_TOKEN, ""), ""));
+				jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, preferences.getString(Common.KEY_TOKEN, ""), "", Common.TIMEOUT_API));
 				result		= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
 
 				if(result.equals(ApiConnection.OK))
 				{
+					if(jsonResult.getString(Common.KEY_CONTENT).trim().startsWith("["))
 					parseList(jsonResult.getJSONArray(Common.KEY_CONTENT), activity.getApplicationContext(), true);
 				}
 				else
@@ -211,12 +212,19 @@ public abstract class SuscriptionHelper
 
 				if(DateUtils.needUpdate(tsUpated, DateUtils.VERYHIGH_FREQUENCY, activity) && ApiConnection.checkInternet(activity))
 				{
-					jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, preferences.getString(Common.KEY_TOKEN, ""), ""));
+					jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.COMPANIES_BY_COUNTRY + "=" + country, activity, preferences.getString(Common.KEY_TOKEN, ""), "", Common.TIMEOUT_API));
 					result		= ApiConnection.checkResponse(activity.getApplicationContext(), jsonResult);
 
 					if(result.equals(ApiConnection.OK))
 					{
-						parseList(jsonResult.getJSONArray(Common.KEY_CONTENT), activity.getApplicationContext(), true);
+						if(jsonResult.getString(Common.KEY_CONTENT).trim().startsWith("[") && jsonResult.getString(Common.KEY_CONTENT).trim().endsWith("]"))
+						{
+							parseList(jsonResult.getJSONArray(Common.KEY_CONTENT), activity.getApplicationContext(), true);
+						}
+						else
+						{
+							parseList(null, activity.getApplicationContext(), true);
+						}
 					}
 					else
 					{

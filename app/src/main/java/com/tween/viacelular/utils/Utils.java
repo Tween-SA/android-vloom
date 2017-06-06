@@ -214,18 +214,20 @@ public class Utils
 	{
 		try
 		{
-			if(context != null)
-			{
-				Fabric.with(context, new Crashlytics());
-				Crashlytics.getInstance();
-				Crashlytics.logException(e);
-			}
-
 			System.out.println(referenceName+" "+e);
 
 			if(Common.DEBUG)
 			{
 				e.printStackTrace();
+			}
+			else
+			{
+				if(context != null)
+				{
+					Fabric.with(context, new Crashlytics());
+					Crashlytics.getInstance();
+					Crashlytics.logException(e);
+				}
 			}
 		}
 		catch(Exception ex)
