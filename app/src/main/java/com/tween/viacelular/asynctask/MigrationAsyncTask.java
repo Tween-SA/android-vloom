@@ -314,7 +314,10 @@ public class MigrationAsyncTask extends AsyncTask<Void, Void, String>
 				{
 					if(progress.isShowing())
 					{
-						progress.cancel();
+						if(!activity.isFinishing() && !activity.isDestroyed())
+						{
+							progress.cancel();
+						}
 					}
 				}
 			}

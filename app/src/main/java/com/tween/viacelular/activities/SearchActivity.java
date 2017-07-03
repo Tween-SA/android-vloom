@@ -25,6 +25,7 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.tween.viacelular.R;
 import com.tween.viacelular.adapters.SuscriptionsAdapter;
 import com.tween.viacelular.models.Land;
+import com.tween.viacelular.models.Migration;
 import com.tween.viacelular.models.Suscription;
 import com.tween.viacelular.models.SuscriptionHelper;
 import com.tween.viacelular.utils.Common;
@@ -237,6 +238,7 @@ public class SearchActivity extends AppCompatActivity implements	AdapterView.OnI
 	{
 		try
 		{
+			Migration.getDB(this);
 			Realm realm						= Realm.getDefaultInstance();
 			RealmResults<Suscription> suscriptions;
 			List<String> listSuscriptions	= new ArrayList<>();

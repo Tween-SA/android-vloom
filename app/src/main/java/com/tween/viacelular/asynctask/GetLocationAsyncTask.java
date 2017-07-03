@@ -96,7 +96,15 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 			{
 				jsonResult	= new JSONObject(ApiConnection.getRequest(ApiConnection.IP_API, context, "", "", Common.TIMEOUT_API));
 				result		= ApiConnection.checkResponse(context, jsonResult);
-				jsonResult	= jsonResult.getJSONObject(Common.KEY_CONTENT);
+				
+				if(!jsonResult.isNull(Common.KEY_CONTENT))
+				{
+					jsonResult = jsonResult.getJSONObject(Common.KEY_CONTENT);
+				}
+				else
+				{
+					jsonResult = null;
+				}
 			}
 			else
 			{
@@ -111,21 +119,28 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 					boolean foundCoords	= false;
 					String jLat			= "";
 					String jLon			= "";
-
-					if(jsonResult.has(Isp.KEY_LAT))
+					
+					if(jsonResult != null)
 					{
-						if(StringUtils.isNotEmpty(jsonResult.getString(Isp.KEY_LAT)))
+						if(jsonResult.has(Isp.KEY_LAT))
 						{
-							jLat = jsonResult.getString(Isp.KEY_LAT);
+							if(StringUtils.isNotEmpty(jsonResult.getString(Isp.KEY_LAT)))
+							{
+								jLat = jsonResult.getString(Isp.KEY_LAT);
+							}
+						}
+						
+						if(jsonResult.has(Isp.KEY_LON))
+						{
+							if(StringUtils.isNotEmpty(jsonResult.getString(Isp.KEY_LON)))
+							{
+								jLon = jsonResult.getString(Isp.KEY_LON);
+							}
 						}
 					}
-
-					if(jsonResult.has(Isp.KEY_LON))
+					else
 					{
-						if(StringUtils.isNotEmpty(jsonResult.getString(Isp.KEY_LON)))
-						{
-							jLon = jsonResult.getString(Isp.KEY_LON);
-						}
+						jsonResult = new JSONObject();
 					}
 
 					//Mejora para obtener la ubicación en base al gps
@@ -338,7 +353,7 @@ public class GetLocationAsyncTask extends AsyncTask<Void, Void, String> implemen
 		}
 	}
 
-	public static Address useGeoCoder(final Activity context, final LatLng latLng, final String street)
+	private static Address useGeoCoder(final Activity context, final LatLng latLng, final String street)
 	{
 		Address bestMatch	= null;
 

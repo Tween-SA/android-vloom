@@ -1,5 +1,6 @@
 package com.tween.viacelular.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -42,6 +43,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.getkeepsafe.taptargetview.TapTargetView;
@@ -900,7 +902,14 @@ public class CardViewActivity extends AppCompatActivity
 	{
 		try
 		{
-			beginCamera();
+			if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+			{
+				beginCamera();
+			}
+			else
+			{
+				Toast.makeText(this, "Debes habilitar el permiso para usar la cámara", Toast.LENGTH_SHORT).show();
+			}
 		}
 		catch(Exception e)
 		{
@@ -910,29 +919,64 @@ public class CardViewActivity extends AppCompatActivity
 	
 	public void beginCamera()
 	{
-		Intent cameraIntent	= new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-		File out			= Environment.getExternalStorageDirectory();
-		
-		if(StringUtils.isNotEmpty(msgId))
+		try
 		{
-			out = new File(out, msgId);
+			if(Common.API_LEVEL >= Build.VERSION_CODES.M)
+			{
+				if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+				{
+					Intent cameraIntent	= new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+					File out			= Environment.getExternalStorageDirectory();
+					
+					if(StringUtils.isNotEmpty(msgId))
+					{
+						out = new File(out, msgId);
+					}
+					else
+					{
+						out = new File(out, String.valueOf(System.currentTimeMillis()));
+					}
+					
+					if(Common.API_LEVEL >= Build.VERSION_CODES.N)
+					{
+						tempUri = FileProvider.getUriForFile(this, getPackageName() + ".provider", out);
+					}
+					else
+					{
+						tempUri = Uri.fromFile(out);
+					}
+					
+					cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
+					startActivityForResult(cameraIntent, 0);
+				}
+				else
+				{
+					Toast.makeText(this, "Debes habilitar el permiso para usar la cámara", Toast.LENGTH_SHORT).show();
+				}
+			}
+			else
+			{
+				Intent cameraIntent	= new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+				File out			= Environment.getExternalStorageDirectory();
+				
+				if(StringUtils.isNotEmpty(msgId))
+				{
+					out = new File(out, msgId);
+				}
+				else
+				{
+					out = new File(out, String.valueOf(System.currentTimeMillis()));
+				}
+				
+				tempUri = Uri.fromFile(out);
+				cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
+				startActivityForResult(cameraIntent, 0);
+			}
 		}
-		else
+		catch(Exception e)
 		{
-			out = new File(out, String.valueOf(System.currentTimeMillis()));
+			Utils.logError(this, getLocalClassName()+":beginCamera - Exception:", e);
 		}
-		
-		if(Common.API_LEVEL >= Build.VERSION_CODES.N)
-		{
-			tempUri = FileProvider.getUriForFile(this, getPackageName() + ".provider", out);
-		}
-		else
-		{
-			tempUri = Uri.fromFile(out);
-		}
-		
-		cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
-		startActivityForResult(cameraIntent, 0);
 	}
 
 	@Override
